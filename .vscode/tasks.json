@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev: playground",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "dev", "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "dev: storybook",
+      "type": "npm",
+      "script": "storybook",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "dev", "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "test: watch",
+      "type": "npm",
+      "script": "test:watch",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "group": "dev", "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "dev: all (playground + storybook + tests)",
+      "dependsOn": ["dev: playground", "dev: storybook", "test: watch"],
+      "dependsOrder": "parallel",
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "check: biome",
+      "type": "npm",
+      "script": "check",
+      "problemMatcher": []
+    },
+    {
+      "label": "typecheck",
+      "type": "npm",
+      "script": "typecheck",
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Design System/Introduction" />
+
+# timds Design System
+
+A React component library with a built-in design system, powered by
+**shadcn/ui (new-york)** and **Tailwind CSS v4**. Tokens are defined once as CSS
+variables in `src/styles.css` and consumed everywhere through Tailwind's
+`@theme inline` bridge.
+
+The visual language is derived from a dark, modern **analytics dashboard**:
+deep indigo surfaces, a vibrant violet brand color, and a cyan support accent.
+
+## At a glance
+
+| Aspect | Value |
+| --- | --- |
+| **Primary** | Violet — `oklch(0.622 0.217 302.6)` · `#a25af0` |
+| **Accent** | Cyan — `#5cbbf4` |
+| **Font** | Inter (variable, geometric grotesque) |
+| **Radius** | `0.75rem` — soft, rounded |
+| **Elevation** | Subtle, flat shadows |
+| **Modes** | Light + Dark (dark mirrors the reference) |
+
+## How tokens flow
+
+1. **`:root` / `.dark`** in `styles.css` declare the raw `oklch` values.
+2. **`@theme inline`** maps each `--token` to a Tailwind color utility
+   (e.g. `--color-primary` → `bg-primary`, `text-primary`).
+3. **Components** reference only the semantic utilities — never raw colors — so
+   re-theming is a single-file change.
+
+## Using the library
+
+```tsx
+import { Button, Card, CardHeader, CardTitle, Badge } from 'timds'
+import 'timds/styles.css'
+
+export function Example() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Revenue</CardTitle>
+        <Badge>+9.8%</Badge>
+      </CardHeader>
+    </Card>
+  )
+}
+```
+
+## Explore
+
+- **Colors** — every semantic, chart and sidebar token.
+- **Typography** — the Inter type scale and weights.
+- **Foundations** — radius, spacing rhythm and elevation.
+- **UI** — the component gallery (Button, Card, Badge, Alert, Radio Group).
+
+> Tip: use the **Theme** switch in the toolbar to flip between light and dark.
+> The story canvas defaults to **dark** to match the reference design.
