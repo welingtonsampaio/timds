@@ -46,6 +46,14 @@ export {
 } from '@/components/ui/input-otp'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 export { Spinner } from '@/components/ui/spinner'
+
+export {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  tabsListVariants,
+} from '@/components/ui/tabs'
 export { Textarea } from '@/components/ui/textarea'
 // Utilitários
 export { cn } from '@/lib/utils'
