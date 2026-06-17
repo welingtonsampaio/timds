@@ -30,6 +30,65 @@ describe('Button', () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
+  it('renderiza o ícone via prop icon', () => {
+    render(<Button icon={<svg data-testid="icone" aria-hidden />}>Com ícone</Button>)
+    expect(screen.getByTestId('icone')).toBeInTheDocument()
+  })
+
+  it('substitui o ícone pelo spinner e desabilita quando loading', async () => {
+    const onClick = vi.fn()
+    render(
+      <Button loading icon={<svg data-testid="icone" aria-hidden />} onClick={onClick}>
+        Carregando
+      </Button>,
+    )
+    const button = screen.getByRole('button', { name: /carregando/i })
+    expect(button).toBeDisabled()
+    expect(button).toHaveAttribute('aria-busy', 'true')
+    expect(screen.queryByTestId('icone')).not.toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    await userEvent.click(button)
+    expect(onClick).not.toHaveBeenCalled()
+  })
+
+  it('usa type="button" por padrão e respeita htmlType', () => {
+    const { rerender } = render(<Button>Padrão</Button>)
+    expect(screen.getByRole('button', { name: 'Padrão' })).toHaveAttribute(
+      'type',
+      'button',
+    )
+    rerender(<Button htmlType="submit">Enviar</Button>)
+    expect(screen.getByRole('button', { name: 'Enviar' })).toHaveAttribute(
+      'type',
+      'submit',
+    )
+  })
+
+  it('renderiza como link <a> quando href é fornecido', () => {
+    render(<Button href="/destino">Ir</Button>)
+    const link = screen.getByRole('link', { name: 'Ir' })
+    expect(link.tagName).toBe('A')
+    expect(link).toHaveAttribute('href', '/destino')
+    expect(link).not.toHaveAttribute('type')
+  })
+
+  it('link desabilitado remove href, marca aria-disabled e sai do tab', () => {
+    render(
+      <Button href="/destino" disabled>
+        Ir
+      </Button>,
+    )
+    const link = screen.getByText('Ir').closest('a') as HTMLAnchorElement
+    expect(link).not.toHaveAttribute('href')
+    expect(link).toHaveAttribute('aria-disabled', 'true')
+    expect(link).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('ocupa a largura total quando block é usado', () => {
+    render(<Button block>Largo</Button>)
+    expect(screen.getByRole('button', { name: 'Largo' })).toHaveClass('w-full')
+  })
+
   it('renderiza como o filho quando asChild é usado', () => {
     render(
       <Button asChild>

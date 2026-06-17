@@ -1,6 +1,7 @@
 import type { Decorator, Preview } from '@storybook/react-vite'
 
 import '../src/styles.css'
+import { allModes } from './modes'
 
 const withTheme: Decorator = (Story, context) => {
   const theme = context.globals.theme ?? 'light'
@@ -52,7 +53,14 @@ const preview: Preview = {
       },
     },
     a11y: {
-      test: 'todo',
+      test: 'error',
+    },
+    // Chromatic captura cada story em light e dark (um snapshot por modo).
+    chromatic: {
+      modes: {
+        light: allModes.light,
+        dark: allModes.dark,
+      },
     },
   },
 }

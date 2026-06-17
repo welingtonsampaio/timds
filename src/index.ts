@@ -16,5 +16,6 @@ export {
   CardTitle,
 } from '@/components/ui/card'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+export { Spinner } from '@/components/ui/spinner'
 // Utilitários
 export { cn } from '@/lib/utils'
