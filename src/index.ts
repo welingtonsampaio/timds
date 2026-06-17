@@ -46,7 +46,11 @@ export {
 } from '@/components/ui/input-otp'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 export { Spinner } from '@/components/ui/spinner'
-
+export {
+  Switch,
+  type SwitchProps,
+  switchVariants,
+} from '@/components/ui/switch'
 export {
   Tabs,
   TabsContent,
