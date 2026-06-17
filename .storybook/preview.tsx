@@ -1,4 +1,5 @@
 import type { Decorator, Preview } from '@storybook/react-vite'
+import { useEffect } from 'react'
 
 import '../src/styles.css'
 import { allModes } from './modes'
@@ -8,6 +9,14 @@ const withTheme: Decorator = (Story, context) => {
   // `layout: 'fullscreen'` (token/overview pages) precisa ocupar a área toda;
   // as demais histórias só envolvem o componente, sem esticar o fundo escuro.
   const fullscreen = context.parameters.layout === 'fullscreen'
+  // A classe de tema também vai no <html>, para que portais (Dialog, Popover,
+  // Tooltip…) que o Radix anexa ao document.body herdem o tema — caso contrário
+  // sempre renderizariam em light, fora do wrapper abaixo.
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle('dark', theme === 'dark')
+    return () => root.classList.remove('dark')
+  }, [theme])
   return (
     <div className={theme === 'dark' ? 'dark' : ''}>
       <div
