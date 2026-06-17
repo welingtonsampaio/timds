@@ -2,7 +2,9 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 <Meta title="Design System/Introduction" />
 
-# timds Design System
+# Timds - This Is My Design System
+
+> timds (pronounced "tim-dis") are represents This Is My Design System, a personal project to build a reusable component library and design system for my projects. The goal is to create a cohesive visual language and set of UI components that can be easily integrated into various applications, ensuring consistency and efficiency in design and development.
 
 A React component library with a built-in design system, powered by
 **shadcn/ui (new-york)** and **Tailwind CSS v4**. Tokens are defined once as CSS
@@ -14,22 +16,49 @@ deep indigo surfaces, a vibrant violet brand color, and a cyan support accent.
 
 ## At a glance
 
-| Aspect | Value |
-| --- | --- |
-| **Primary** | Violet — `oklch(0.622 0.217 302.6)` · `#a25af0` |
-| **Accent** | Cyan — `#5cbbf4` |
-| **Font** | Inter (variable, geometric grotesque) |
-| **Radius** | `0.75rem` — soft, rounded |
-| **Elevation** | Subtle, flat shadows |
-| **Modes** | Light + Dark (dark mirrors the reference) |
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+  <tr>
+    <td><strong>Primary</strong></td>
+    <td>Violet — <code>oklch(0.622 0.217 302.6)</code> · <code>#a25af0</code></td>
+  </tr>
+  <tr>
+    <td><strong>Accent</strong></td>
+    <td>Cyan — <code>#5cbbf4</code></td>
+  </tr>
+  <tr>
+    <td><strong>Font</strong></td>
+    <td>Inter (variable, geometric grotesque)</td>
+  </tr>
+  <tr>
+    <td><strong>Radius</strong></td>
+    <td><code>0.75rem</code> — soft, rounded</td>
+  </tr>
+  <tr>
+    <td><strong>Elevation</strong></td>
+    <td>Subtle, flat shadows</td>
+  </tr>
+  <tr>
+    <td><strong>Modes</strong></td>
+    <td>Light + Dark (dark mirrors the reference)</td>
+  </tr>
+  </tbody>
+</table>
 
 ## How tokens flow
 
-1. **`:root` / `.dark`** in `styles.css` declare the raw `oklch` values.
-2. **`@theme inline`** maps each `--token` to a Tailwind color utility
-   (e.g. `--color-primary` → `bg-primary`, `text-primary`).
-3. **Components** reference only the semantic utilities — never raw colors — so
-   re-theming is a single-file change.
+
+<ol style={{ listStyleType: 'decimal' }}>
+  <li><strong><code>:root</code> / <code>.dark</code></strong> in <code>styles.css</code> declare the raw <code>oklch</code> values.</li>
+  <li><strong><code>@theme inline</code></strong> maps each <code>--token</code> to a Tailwind color utility (e.g. <code>--color-primary</code> → <code>bg-primary</code>, <code>text-primary</code>).</li>
+  <li><strong>Components</strong> reference only the semantic utilities — never raw colors — so re-theming is a single-file change.</li>
+</ol>
 
 ## Using the library
 
