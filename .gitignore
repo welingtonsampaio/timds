@@ -10,3 +10,4 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 build-storybook.log
+debug-storybook.log

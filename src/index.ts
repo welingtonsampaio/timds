@@ -15,7 +15,23 @@ export {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+export { Input } from '@/components/ui/input'
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from '@/components/ui/input-group'
+export {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from '@/components/ui/input-otp'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 export { Spinner } from '@/components/ui/spinner'
+export { Textarea } from '@/components/ui/textarea'
 // Utilitários
 export { cn } from '@/lib/utils'
