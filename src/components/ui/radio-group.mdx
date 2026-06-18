@@ -1,0 +1,137 @@
+{/* radio-group.mdx — docs page (prosa em English). Embute as stories que carregam
+    os testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './radio-group.stories'
+
+<Meta of={Stories} />
+
+# RadioGroup · `Stable`
+
+A set of mutually exclusive options where exactly one can be selected at a time.
+
+## Overview
+
+Use a RadioGroup when people must pick a single option from a small, visible list — a
+plan, a shipping method, a payment type. It is built on Radix `RadioGroup`, so it ships
+the correct `radiogroup`/`radio` roles, single-selection semantics and arrow-key roving
+focus. For independent on/off choices, use a **Checkbox** instead.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Group** — the `role="radiogroup"` container; give it an accessible name via
+  `aria-label`/`aria-labelledby`.
+- **Item** — a single `RadioGroupItem` (`role="radio"`); associate each with a
+  `<label htmlFor>`.
+- **Indicator** — the inner dot shown on the selected item.
+- **Label (external)** — the option text; the item renders no label of its own.
+
+## When to use
+
+- Use to choose exactly one option among 2–7 visible, mutually exclusive choices.
+- Use `value` + `onValueChange` to drive selection from state (controlled), or
+  `defaultValue` to seed it (uncontrolled).
+- Use `orientation="horizontal"` for short, inline option sets.
+
+## When not to use
+
+- Avoid for independent toggles where more than one can be on — use **Checkbox**.
+- Avoid for many options or when space is tight — use a **Select**.
+- Avoid for an instant single setting toggle — use a **Switch**.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### Horizontal
+<Canvas of={Stories.Horizontal} />
+
+### Item disabled
+A single item can be disabled while the rest stays navigable.
+
+<Canvas of={Stories.ItemDisabled} />
+
+### Disabled group
+<Canvas of={Stories.Disabled} />
+
+### Controlled
+Selection lives in the parent via `value` + `onValueChange`.
+
+<Canvas of={Stories.Controlled} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `radio-group.stories.tsx`:
+
+- Selecting an item fires `onValueChange` with its value and sets `aria-checked` —
+  `SelectsOnClick`.
+- Only one radio is selected at a time; choosing another clears the previous —
+  `SelectsOnlyOne`.
+- Arrow keys move selection and focus along the group (roving focus) —
+  `NavigatesWithArrows`.
+- A disabled group ignores clicks and does not fire `onValueChange` —
+  `DisabledDoesNotSelect`.
+
+## Code examples
+
+```tsx
+import { RadioGroup, RadioGroupItem } from 'timds'
+
+// Uncontrolled
+<RadioGroup defaultValue="yearly" aria-label="Plan">
+  <label htmlFor="monthly">
+    <RadioGroupItem id="monthly" value="monthly" /> Monthly
+  </label>
+  <label htmlFor="yearly">
+    <RadioGroupItem id="yearly" value="yearly" /> Yearly
+  </label>
+</RadioGroup>
+
+// Controlled
+<RadioGroup value={value} onValueChange={setValue} aria-label="Plan">
+  {/* …items */}
+</RadioGroup>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Option labels** — short, parallel noun phrases in sentence case ("Monthly",
+  "Yearly").
+- **Hints** — keep secondary detail (price, savings) in muted helper text under the
+  label, not in the label itself.
+- **Group label** — name the group ("Billing period"), since the items share one
+  question.
+- **Default** — preselect a safe, common default when one exists; otherwise leave the
+  group empty and require an explicit choice.
+
+## Accessibility
+
+- The group exposes `role="radiogroup"`; each item exposes `role="radio"` with
+  `aria-checked` reflecting selection — see `SelectsOnClick`.
+- Keyboard: Tab moves focus into the group; arrow keys move the selection (roving
+  tabindex) — verified by `NavigatesWithArrows`.
+- Give the group an accessible name (`aria-label`/`aria-labelledby`) and each item a
+  `<label htmlFor>`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do give the group an accessible name and each item a `<label>`.
+- ✅ Do preselect a sensible default when one clearly applies.
+- ❌ Don't use a RadioGroup when more than one option can be selected — use **Checkbox**.
+- ❌ Don't pack many options into a RadioGroup — use a **Select** for long lists.
+
+## Related components & patterns
+
+- **Checkbox** — for independent, multi-select choices.
+- **Select** — for choosing one option from a long or space-constrained list.
+- **Switch** — for an instant on/off setting.
