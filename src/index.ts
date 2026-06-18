@@ -43,6 +43,15 @@ export {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+export {
+  type ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
 export { Input } from '@/components/ui/input'
 export {
   InputGroup,
