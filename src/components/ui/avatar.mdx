@@ -1,0 +1,133 @@
+{/* avatar.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './avatar.stories'
+
+<Meta of={Stories} />
+
+# Avatar · `Stable`
+
+Represents a user or entity with an image, falling back to initials when no image is
+available.
+
+## Overview
+
+Use an Avatar to identify a person or organization in lists, headers, comments, and
+mentions. Built on Radix `Avatar`, it shows `AvatarImage` when the source loads and
+automatically reveals `AvatarFallback` (typically initials) while loading or when the
+image is missing. The `size` prop sets the diameter and propagates to the composed
+parts. Compose `AvatarBadge` for a status indicator and `AvatarGroup` +
+`AvatarGroupCount` for stacks.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Avatar** — the circular root; sets the `size` and the stacking context for the badge.
+- **AvatarImage** — the user image; hides itself if the source fails to load.
+- **AvatarFallback** — the content shown when no image is available (usually initials).
+- **AvatarBadge** — a small overlay dot in the corner for status (online, away…).
+- **AvatarGroup** — stacks several avatars with overlap and a ring around each.
+- **AvatarGroupCount** — the trailing counter chip in a group (e.g. "+3").
+
+## When to use
+
+- Use to represent a user or entity wherever identity needs a face.
+- Use `AvatarFallback` with initials whenever an image may be missing.
+- Use `AvatarBadge` to surface a status (online, busy) on the avatar.
+- Use `AvatarGroup` + `AvatarGroupCount` to show a set of collaborators compactly.
+
+## When not to use
+
+- Avoid for purely decorative imagery — use a plain image.
+- Avoid as a clickable control on its own — wrap it in a Button or link if it must act.
+
+## Variants & states
+
+### Sizes
+The three sizes; `size` propagates to the badge and group count.
+
+<Canvas of={Stories.Sizes} />
+
+### Fallback
+When the image is missing or fails to load, the initials show instead.
+
+<Canvas of={Stories.Fallback} />
+
+### With badge
+A status dot overlaid via `AvatarBadge`.
+
+<Canvas of={Stories.WithBadge} />
+
+### Group
+A stack of avatars closed by a counter.
+
+<Canvas of={Stories.Group} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `avatar.stories.tsx`:
+
+- The fallback initials render when there is no image — `FallbackRenders`.
+- A loaded image exposes its `alt` text via the `img` role — `ImageHasAltText`.
+- The root `size` propagates to subcomponents via `data-size` — `SizePropagates`.
+- A group renders each avatar plus the trailing counter — `GroupRendersCount`.
+
+## Code examples
+
+```tsx
+import { Avatar, AvatarImage, AvatarFallback, AvatarBadge, AvatarGroup, AvatarGroupCount } from 'timds'
+
+// Image with initials fallback
+<Avatar>
+  <AvatarImage src="/users/ada.png" alt="Ada Lovelace" />
+  <AvatarFallback>AL</AvatarFallback>
+</Avatar>
+
+// With a status dot
+<Avatar size="lg">
+  <AvatarImage src="/users/ada.png" alt="Ada Lovelace" />
+  <AvatarFallback>AL</AvatarFallback>
+  <AvatarBadge className="bg-success" />
+</Avatar>
+
+// Stacked group
+<AvatarGroup>
+  <Avatar><AvatarFallback>AL</AvatarFallback></Avatar>
+  <Avatar><AvatarFallback>CB</AvatarFallback></Avatar>
+  <AvatarGroupCount>+3</AvatarGroupCount>
+</AvatarGroup>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Alt text** — describe who the avatar represents ("Ada Lovelace"), not "avatar".
+- **Initials** — use one or two characters, matching the person's name.
+- **Counter** — format the overflow as `+N` (e.g. "+3"), not the total.
+
+## Accessibility
+
+- `AvatarImage` carries the `img` role with the `alt` you pass — verified by
+  `ImageHasAltText`; always provide a meaningful `alt`.
+- `AvatarFallback` is read as text (the initials) — verified by `FallbackRenders`.
+- `AvatarBadge` is decorative; convey status in text nearby, not by color alone.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do provide an `AvatarFallback` for every Avatar, in case the image fails.
+- ✅ Do write descriptive `alt` text naming the person or entity.
+- ❌ Don't rely on an `AvatarBadge` color alone to convey status.
+- ❌ Don't make a bare Avatar clickable — wrap it in a Button or link.
+
+## Related components & patterns
+
+- **Badge** — for standalone status/labels; `AvatarBadge` is the avatar-specific dot.
+- **Button** — wrap an Avatar in one when it must trigger an action (e.g. a menu).

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
+import { expect, waitFor, within } from 'storybook/test'
 
 import {
   Avatar,
@@ -13,18 +13,25 @@ import {
 // Imagem estável usada nas histórias visuais.
 const SRC = 'https://github.com/shadcn.png'
 
+// PNG 1x1 transparente embutido (data URI): carrega localmente, sem rede, então o
+// teste que depende do load da imagem é determinístico no browser de teste.
+const SRC_INLINE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC'
+
 const meta = {
   title: 'UI/Avatar',
   component: Avatar,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (avatar.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
         component:
           'User avatar built on Radix `Avatar`. Renders `AvatarImage` and falls back to ' +
           '`AvatarFallback` (usually initials) when the image is missing or fails to load. ' +
-          'Three `size`s (`sm` / `default` / `lg`) propagate to subcomponents. Compose with ' +
-          '`AvatarBadge` for a status dot and `AvatarGroup` + `AvatarGroupCount` for stacks.',
+          'Three `size`s (`sm` / `default` / `lg`) propagate to subcomponents via `data-size`. ' +
+          'Compose with `AvatarBadge` for a status dot and `AvatarGroup` + `AvatarGroupCount` ' +
+          'for stacks.',
       },
     },
   },
@@ -48,6 +55,11 @@ const meta = {
 export default meta
 
 type Story = StoryObj<typeof meta>
+
+/* --------------------------------------------------------------------------
+ * Render stories — uma por variante / composição visual.
+ * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * -------------------------------------------------------------------------- */
 
 /** Totalmente interativo — ajuste cada prop pelo painel **Controls**. */
 export const Playground: Story = {}
@@ -125,7 +137,14 @@ export const Group: Story = {
   ),
 }
 
-/** Verifica que o fallback é renderizado quando não há imagem. */
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * Avatar não é interativo (sem callbacks/foco): asseguramos a composição
+ * estrutural (image alt, fallback, data-slots, contagem do grupo).
+ * Sempre `await` em expect.
+ * -------------------------------------------------------------------------- */
+
+/** O fallback (iniciais) é renderizado quando não há imagem. */
 export const FallbackRenders: Story = {
   render: () => (
     <Avatar>
@@ -135,5 +154,59 @@ export const FallbackRenders: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByText('WS')).toBeInTheDocument()
+  },
+}
+
+/** A imagem carregada expõe seu texto alternativo (`alt`). */
+export const ImageHasAltText: Story = {
+  render: () => (
+    <Avatar>
+      {/* data URI local: o load é determinístico (sem rede) no browser de teste. */}
+      <AvatarImage src={SRC_INLINE} alt="@shadcn" />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // O Radix só monta a <img> após o load; aguardamos a imagem com role `img`.
+    const img = await waitFor(() => canvas.getByRole('img', { name: '@shadcn' }))
+    await expect(img).toHaveAttribute('alt', '@shadcn')
+  },
+}
+
+/** O `size` do root propaga para os subcomponentes via `data-size`. */
+export const SizePropagates: Story = {
+  args: { size: 'lg' },
+  render: (args) => (
+    <Avatar {...args}>
+      <AvatarFallback>CN</AvatarFallback>
+      <AvatarBadge data-testid="badge" className="bg-success" />
+    </Avatar>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const root = canvas.getByText('CN').closest('[data-slot="avatar"]')
+    await expect(root).toHaveAttribute('data-size', 'lg')
+  },
+}
+
+/** O grupo empilha os avatares e fecha com o contador (ex.: "+3"). */
+export const GroupRendersCount: Story = {
+  render: () => (
+    <AvatarGroup>
+      <Avatar>
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
+      <Avatar>
+        <AvatarFallback>AB</AvatarFallback>
+      </Avatar>
+      <AvatarGroupCount>+3</AvatarGroupCount>
+    </AvatarGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByText('CN')).toBeInTheDocument()
+    await expect(canvas.getByText('AB')).toBeInTheDocument()
+    await expect(canvas.getByText('+3')).toBeInTheDocument()
   },
 }
