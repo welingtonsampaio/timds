@@ -1,0 +1,246 @@
+{/* select.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './select.stories'
+
+<Meta of={Stories} />
+
+# Select · `Stable`
+
+An advanced Select / Combobox built on **Ariakit** with search, multi-select, custom
+rendering, async loading and list virtualization — not the native `<select>`.
+
+## Overview
+
+Use a Select to let people pick one or many values from a list. It is the only timds
+component built on **Ariakit** (every other overlay uses Radix), which gives it
+WAI-ARIA APG combobox semantics and **virtual focus** (the active option is tracked via
+`aria-activedescendant`, not DOM focus) out of the box. Large lists are virtualized with
+**@tanstack/react-virtual**. The data-driven `Select` covers the common cases from a
+single `options` array; the composable primitives (`SelectRoot`, `SelectTrigger`,
+`SelectItem`, …) are also exported for advanced layouts. The popover is rendered in a
+**portal** on `document.body`.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** (`data-slot="select-trigger"`) — the field that opens the listbox; shows
+  the placeholder, the selected value, chips (multi), a `+N` summary, an `N / max`
+  counter, and the optional clear button.
+- **Value / chips** — the single selected value, or removable chips in multi-select
+  (`data-slot="select-chip"`, with a `select-chip-remove` "x").
+- **Clear** (`data-slot="select-clear"`) — appears in the trigger when `clearable` and a
+  value is set; resets the selection without opening the list.
+- **Search** (`data-slot="select-search"`) — the in-list filter field shown when
+  `searchable`. In `editable` mode the trigger itself becomes the input
+  (`select-input`).
+- **List** (`role="listbox"`, portaled) — options, group headers, the empty state and
+  the loading indicator.
+
+## When to use
+
+- Use for choosing one value (or several, with `multiple`) from a list that benefits
+  from search, grouping or custom item rendering.
+- Use `searchable` (or `editable` for in-field autocomplete) when the list is long.
+- Use `multiple` with chips, a `maxDisplayChips` `+N` summary, and an optional `maxCount`
+  cap for tag-like selection.
+- Use `onSearch` + `loading` + `onLoadMore` / `hasMore` for async and infinitely
+  scrolled data.
+
+## When not to use
+
+- Avoid for two or three mutually exclusive options that fit inline — use a
+  **RadioGroup**.
+- Avoid for a simple boolean — use a **Switch** or **Checkbox**.
+- Avoid free-form text without a list of suggestions — use an **Input**.
+
+## Variants & states
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Searchable
+<Canvas of={Stories.Searchable} />
+
+### Groups
+<Canvas of={Stories.Groups} />
+
+### Custom item render
+<Canvas of={Stories.CustomItemRender} />
+
+### Custom trigger value
+<Canvas of={Stories.CustomValue} />
+
+### Async loading
+<Canvas of={Stories.AsyncLoad} />
+
+### Infinite scroll
+<Canvas of={Stories.InfiniteScroll} />
+
+### Virtualized
+<Canvas of={Stories.Virtualized} />
+
+### Clearable
+<Canvas of={Stories.Clearable} />
+
+### Multi-select
+<Canvas of={Stories.Multiple} />
+
+### Multi summary (`+N`)
+<Canvas of={Stories.MultipleSummary} />
+
+### Selection cap (`maxCount`)
+<Canvas of={Stories.MaxCount} />
+
+### Editable (autocomplete)
+<Canvas of={Stories.Editable} />
+
+### Editable + multi
+<Canvas of={Stories.EditableMultiple} />
+
+### Custom values (`allowCustomValue`)
+<Canvas of={Stories.AllowCustomValue} />
+
+### Translated (`messages`)
+<Canvas of={Stories.Translated} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Empty state
+<Canvas of={Stories.EmptyState} />
+
+## Composition (long mode)
+
+When the data-driven `<Select options={…} />` is not flexible enough, assemble the
+exported primitives yourself. The example below is a complete searchable, grouped
+single-select built entirely from `SelectRoot`, `SelectTrigger`, `SelectValue`,
+`SelectContent`, `SelectSearch`, `SelectList`, `SelectGroup`, `SelectItem` and
+`SelectEmpty` — you own the option data and the filtering (`onSearch` feeds a plain
+`includes`). Set `combobox` on `SelectRoot` to enable the search field and virtual
+focus.
+
+<Canvas of={Stories.Composition} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+> **Typing note** — `value` / `defaultValue` / `onValueChange` are a `string` for the
+> single Select and a `string[]` when `multiple` is set; the union is enforced by the
+> public `SelectProps` type.
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `select.stories.tsx`:
+
+- Opening the trigger reveals a portaled `listbox`; clicking an option emits
+  `onValueChange` and closes it — `SelectsOnClick`.
+- Typing in the search field filters the options locally — `SearchFilters`.
+- Keyboard navigation uses virtual focus: arrow keys move `aria-activedescendant`, Enter
+  selects — `KeyboardSelects`.
+- Disabled options expose `aria-disabled` and cannot be selected —
+  `DisabledOptionNotSelectable`.
+- A disabled trigger shows the value but does not open the list — `Disabled`.
+- Clearing resets the value, removes the clear button and does not open the list —
+  `Clearable`.
+- Multi-select adds and removes chips, keeping the list open while selecting —
+  `Multiple`; `maxDisplayChips` summarizes the rest as `+N` — `MultipleSummary`.
+- `maxCount` caps the selection, disabling the remaining options and showing `N / max` —
+  `MaxCount`.
+- Editable mode autocompletes typed text — `Editable` / `EditableMultiple`;
+  `allowCustomValue` creates list-free entries — `AllowCustomValue`.
+- Virtualization renders a window smaller than the full list and still finds a distant
+  item — `Virtualized`.
+- The trigger's `aria-controls` references an existing element, open or closed —
+  `AriaControlsValid`.
+
+## Code examples
+
+Basic usage:
+
+```tsx
+import { Select, type SelectOption } from 'timds'
+
+const fruits: SelectOption[] = [
+  { value: 'apple', label: 'Maçã' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'pear', label: 'Pera', disabled: true },
+]
+
+// Single, searchable
+<Select options={fruits} searchable placeholder="Pick a fruit…" aria-label="Fruit" />
+
+// Multi-select with chips, a clear button and a cap
+<Select
+  options={fruits}
+  multiple
+  clearable
+  maxCount={3}
+  defaultValue={['apple', 'banana']}
+  aria-label="Fruits"
+/>
+
+// Async + infinite scroll
+<Select
+  options={options}
+  searchable
+  onSearch={fetchOptions}
+  loading={loading}
+  onLoadMore={loadMore}
+  hasMore={hasMore}
+  aria-label="User"
+/>
+
+// Editable autocomplete that accepts free text
+<Select
+  options={fruits}
+  editable
+  allowCustomValue
+  multiple
+  aria-label="Tags"
+/>
+```
+
+Multiple select with chips:
+
+<Source of={Stories.Multiple} />
+
+Composing from primitives:
+
+<Source of={Stories.Composition} />
+
+## Content & UX writing
+
+- **Placeholder** — describe the choice, not an instruction ("Select a fruit…", not
+  "Click here"). It is not a substitute for an `aria-label` or `<label>`.
+- **Empty state** — say what is missing and, if relevant, how to proceed ("No results",
+  "Type to search users").
+- **i18n** — every built-in string defaults to English (`Search…`, `No results`,
+  `Loading…`, `Clear`, `Remove <label>`, `Add "<value>"`). Override only what you need
+  through the `messages` prop (a partial merge) — see `Translated`.
+- **Custom value affordance** — when `allowCustomValue` is on, the create option reads
+  `Add "<typed text>"` by default; localize it via `messages.add`.
+
+## Accessibility
+
+- Implements the WAI-ARIA combobox pattern: the list is a `role="listbox"` of
+  `role="option"` items; the trigger exposes `aria-expanded` and `aria-controls`
+  (validated open and closed by `AriaControlsValid`).
+- Uses **virtual focus** — keyboard navigation moves the active option via
+  `aria-activedescendant` while DOM focus stays on the input (`KeyboardSelects`).
+- Disabled options carry `aria-disabled="true"` and are skipped
+  (`DisabledOptionNotSelectable`).
+- Provide an accessible name: an `aria-label` on the trigger or an associated `<label>`.
+- axe runs on every story (`a11y: { test: 'error' }`); the `Visual*` empty/loading
+  fixtures opt axe out only because an option-less `listbox` is an intentional visual
+  snapshot — that a11y is already covered by the interactive stories.
+
+## Related components & patterns
+
+- **RadioGroup** — for a few mutually exclusive options shown inline.
+- **Checkbox / CheckboxGroup** — for multi-select rendered as a static list of toggles.
+- **InputGroup** — compose a Select trigger alongside an input or buttons in one bar.
+- **ButtonGroup** — joins a Select trigger with adjacent buttons into a continuous
+  segment.

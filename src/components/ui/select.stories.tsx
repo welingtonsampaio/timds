@@ -3,7 +3,19 @@ import { useMemo, useState } from 'react'
 import { expect, fn, screen, userEvent, waitFor } from 'storybook/test'
 
 import { Badge } from './badge'
-import { Select, type SelectOption } from './select'
+import {
+  Select,
+  SelectContent,
+  SelectEmpty,
+  SelectGroup,
+  SelectItem,
+  SelectList,
+  type SelectOption,
+  SelectRoot,
+  SelectSearch,
+  SelectTrigger,
+  SelectValue,
+} from './select'
 
 // --- Dados de exemplo -------------------------------------------------------
 const fruits: SelectOption[] = [
@@ -42,7 +54,8 @@ const manyOptions: SelectOption[] = Array.from({ length: 1000 }, (_, i) => ({
 const meta = {
   title: 'UI/Select',
   component: Select,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (select.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -621,6 +634,99 @@ export const AllowCustomValue: Story = {
     await waitFor(() =>
       expect(screen.queryByRole('option', { name: 'Kiwi' })).not.toBeInTheDocument(),
     )
+  },
+}
+
+/**
+ * **Long mode (composition).** Instead of the data-driven `<Select options={…} />`,
+ * assemble the exported primitives yourself when you need full control over the
+ * markup. This complete example wires `SelectRoot` (with `combobox` for search +
+ * virtual focus) → `SelectTrigger` + `SelectValue` → `SelectContent` with
+ * `SelectSearch`, a scrollable `SelectList`, `SelectGroup` headers, `SelectItem`
+ * options and a `SelectEmpty` fallback. You own the data and the filtering — here a
+ * plain `includes` over the grouped options driven by `onSearch`.
+ */
+export const Composition: Story = {
+  args: { onValueChange: fn() },
+  render: (args) => {
+    const [search, setSearch] = useState('')
+    const visible = useMemo(
+      () =>
+        search
+          ? groupedOptions.filter((o) =>
+              o.label.toLowerCase().includes(search.toLowerCase()),
+            )
+          : groupedOptions,
+      [search],
+    )
+    // Agrupa as opções visíveis pelo `group` para montar os cabeçalhos.
+    const groups = useMemo(() => {
+      const map = new Map<string, SelectOption[]>()
+      for (const o of visible) {
+        const key = o.group ?? ''
+        const bucket = map.get(key)
+        if (bucket) bucket.push(o)
+        else map.set(key, [o])
+      }
+      return Array.from(map, ([label, items]) => ({ label, items }))
+    }, [visible])
+
+    return (
+      <SelectRoot
+        combobox
+        onSearch={setSearch}
+        // Single-select: o valor é sempre `string`.
+        onValueChange={(v) =>
+          (args.onValueChange as ((value: string) => void) | undefined)?.(v as string)
+        }
+      >
+        <SelectTrigger className="w-64" aria-label="Ingrediente">
+          <SelectValue placeholder="Selecione um ingrediente...">
+            {(v) => groupedOptions.find((o) => o.value === v)?.label ?? v}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectSearch placeholder="Buscar..." />
+          <SelectList>
+            {groups.length === 0 ? (
+              <SelectEmpty />
+            ) : (
+              groups.map((group) => (
+                <SelectGroup key={group.label} label={group.label}>
+                  {group.items.map((o) => (
+                    <SelectItem key={o.value} value={o.value} disabled={o.disabled}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              ))
+            )}
+          </SelectList>
+        </SelectContent>
+      </SelectRoot>
+    )
+  },
+  play: async ({ args, canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+
+    await userEvent.click(trigger)
+    const search = await screen.findByRole('combobox', { name: /search/i })
+    await userEvent.type(search, 'cen')
+
+    // O filtro local (includes) mantém apenas "Cenoura" — e seu grupo.
+    await waitFor(() => {
+      const options = screen.getAllByRole('option')
+      expect(options).toHaveLength(1)
+      expect(options[0]).toHaveTextContent('Cenoura')
+    })
+
+    await userEvent.click(screen.getByRole('option', { name: 'Cenoura' }))
+    await expect(args.onValueChange).toHaveBeenCalledWith('carrot')
+    await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument())
+    await expect(trigger).toHaveTextContent('Cenoura')
   },
 }
 
