@@ -1,0 +1,119 @@
+{/* input.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './input.stories'
+
+<Meta of={Stories} />
+
+# Input · `Stable`
+
+A single-line text field — the primary way users enter free-form text into a form.
+
+## Overview
+
+Use an Input to collect short, single-line values: a name, an e-mail, a search term, a
+password. It is a thin wrapper over the native `<input>` wired to the design tokens, so
+every native `type` and attribute is forwarded unchanged. The error state is driven by
+`aria-invalid`, and `disabled` locks the field. To add a prefix, suffix or inline button,
+compose it with **InputGroup**.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Field** — the bordered, focusable surface that carries the value and the variant styling.
+- **Placeholder (optional)** — hint text shown while the field is empty; never a substitute for a label.
+- **Label (external)** — an associated `<label htmlFor>` that names the field (see `WithLabel`).
+
+## When to use
+
+- Use to collect a short, single-line value (name, e-mail, search term, password).
+- Use the native `type` that matches the data (`email`, `number`, `tel`, `url`) so the browser validates and shows the right keyboard.
+- Use `aria-invalid` to surface a validation error on the field.
+
+## When not to use
+
+- Avoid for multi-line text — use a **Textarea**.
+- Avoid for a value that needs a prefix/suffix or inline action — use **InputGroup**.
+- Avoid replacing the label with a placeholder — the placeholder disappears on input.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### With label
+<Canvas of={Stories.WithLabel} />
+
+### Types
+<Canvas of={Stories.Types} />
+
+### File
+<Canvas of={Stories.File} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Invalid
+<Canvas of={Stories.Invalid} />
+
+## Props
+
+`Input` forwards every native `<input>` attribute. The props below are the ones the
+design system documents explicitly.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `input.stories.tsx`:
+
+- Typing updates the value and fires `onChange` — `TypesText`.
+- The field is keyboard-focusable (reachable via Tab) — `FocusesWithKeyboard`.
+- The error state exposes `aria-invalid="true"` — `InvalidExposesAria`.
+- A disabled field is not focusable and ignores input — `DisabledDoesNotType`.
+
+## Code examples
+
+```tsx
+import { Input } from 'timds'
+
+// Labelled field
+<label htmlFor="email">E-mail</label>
+<Input id="email" type="email" placeholder="voce@exemplo.com" />
+
+// Error state
+<Input aria-invalid value={email} onChange={onEmailChange} />
+
+// Disabled
+<Input disabled value="Não editável" />
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Label** — always provide one (`<label htmlFor>` or `aria-label`); describe the data, not the action.
+- **Placeholder** — an example or format hint ("voce@exemplo.com"), not the label and not a required-field marker.
+- **Error messages** — specific, blame-free and actionable; render them near the field, not only via styling.
+
+## Accessibility
+
+- Always give the field an accessible name via an associated `<label htmlFor>` or `aria-label`.
+- Reachable and operable by keyboard: Tab to focus, then type — verified by `FocusesWithKeyboard`.
+- The error state is announced through `aria-invalid="true"`, not color alone — verified by `InvalidExposesAria`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do pair every Input with an associated label.
+- ✅ Do pick the native `type` that matches the data being collected.
+- ✅ Do mark validation errors with `aria-invalid` and an adjacent message.
+- ❌ Don't use a placeholder as the only label.
+- ❌ Don't disable a field without making the reason discoverable nearby.
+
+## Related components & patterns
+
+- **InputGroup** — composes the Input with leading/trailing addons (icons, text, buttons).
+- **Textarea** — for multi-line free-form text.
+- **InputOTP** — for fixed-length verification codes split into per-character slots.
