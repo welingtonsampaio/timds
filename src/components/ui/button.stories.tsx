@@ -8,7 +8,8 @@ import { Button } from './button'
 const meta = {
   title: 'UI/Button',
   component: Button,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (button.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -316,5 +317,36 @@ export const ClicksOnce: Story = {
     const button = canvas.getByRole('button', { name: 'Button' })
     await userEvent.click(button)
     await expect(args.onClick).toHaveBeenCalledOnce()
+  },
+}
+
+/** A disabled button ignores clicks and never fires `onClick`. */
+export const DisabledDoesNotFire: Story = {
+  args: { disabled: true },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    const button = canvas.getByRole('button', { name: 'Button' })
+    await expect(button).toBeDisabled()
+    // Em disabled o botão tem `pointer-events: none`; forçamos o clique
+    // (pointerEventsCheck: 0) para provar que `onClick` não dispara mesmo assim.
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    await user.click(button)
+    await expect(args.onClick).not.toHaveBeenCalled()
+  },
+}
+
+/** `asChild` renders the styling onto the child element instead of a `<button>`. */
+export const AsChild: Story = {
+  render: (args) => (
+    <Button {...args} asChild>
+      <a href="https://example.com">Ir para o destino</a>
+    </Button>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // asChild não renderiza <button>: o estilo é mesclado no <a> filho.
+    const link = canvas.getByRole('link', { name: 'Ir para o destino' })
+    await expect(link).toHaveAttribute('data-slot', 'button')
+    await expect(canvas.queryByRole('button')).not.toBeInTheDocument()
   },
 }

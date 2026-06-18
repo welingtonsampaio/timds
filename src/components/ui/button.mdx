@@ -1,0 +1,154 @@
+{/* button.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './button.stories'
+
+<Meta of={Stories} />
+
+# Button · `Stable`
+
+Triggers an action or event — the primary way users commit to something in the UI.
+
+## Overview
+
+Use a Button to let people take an action: submit a form, confirm a choice, open a
+dialog. Built on a `cva` recipe, it offers six `variant`s, four `size`s and two
+`shape`s. Pass an `icon` (with `iconPlacement`) for a leading or trailing affordance;
+the `loading` flag swaps that icon for a spinner and disables the control. Each view
+should have a single primary Button for its main call to action.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Container** — the interactive surface; carries the variant styling and the hit
+  target.
+- **Label** — a verb-first action ("Save", "Delete account").
+- **Icon (optional)** — a leading or trailing icon (`iconPlacement`) reinforcing the
+  action.
+- **Spinner** — replaces the icon while `loading` is true.
+
+## When to use
+
+- Use to commit an action: submit, confirm, save, delete.
+- Use the **default** variant for the single most important action in a view.
+- Use **secondary** / **outline** / **ghost** for supporting actions.
+- Use **destructive** for irreversible or dangerous actions.
+
+## When not to use
+
+- Avoid for navigation between pages — pass `href` only when a button-styled link is
+  genuinely intended.
+- Avoid more than one primary Button in the same group — it dilutes the call to action.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### Secondary
+<Canvas of={Stories.Secondary} />
+
+### Destructive
+<Canvas of={Stories.Destructive} />
+
+### Outline
+<Canvas of={Stories.Outline} />
+
+### Ghost
+<Canvas of={Stories.Ghost} />
+
+### Link
+<Canvas of={Stories.Link} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Rounded
+<Canvas of={Stories.Rounded} />
+
+### With icon
+The `icon` prop places an icon next to the label; `iconPlacement` chooses the side.
+
+<Canvas of={Stories.IconProp} />
+<Canvas of={Stories.IconRight} />
+
+### Icon only
+Icon-only buttons must carry an accessible name via `aria-label`.
+
+<Canvas of={Stories.IconOnly} />
+
+### Loading
+`loading` swaps the icon for a spinner, sets `aria-busy` and disables the button.
+
+<Canvas of={Stories.Loading} />
+
+### Block
+<Canvas of={Stories.Block} />
+
+### Link button
+`href` renders an `<a>` styled as a button.
+
+<Canvas of={Stories.LinkButton} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `button.stories.tsx`:
+
+- Clicking fires `onClick` exactly once — `ClicksOnce`.
+- A disabled button ignores clicks and never fires `onClick` — `DisabledDoesNotFire`.
+- While loading, the button is disabled, exposes `aria-busy` and ignores clicks —
+  `Loading`.
+- `htmlType="submit"` submits the surrounding form — `SubmitInForm`.
+- `href` renders an `<a>` with the URL; a disabled link drops its `href` and leaves the
+  tab order — `LinkButton`, `LinkDisabled`.
+- `asChild` merges the styling onto the child element instead of a `<button>` —
+  `AsChild`.
+- The button is keyboard-focusable — `FocusesWithKeyboard`.
+
+## Code examples
+
+```tsx
+import { Button } from 'timds'
+
+<Button onClick={handleSave}>Save</Button>
+<Button variant="secondary" onClick={handleCancel}>Cancel</Button>
+<Button icon={<Rocket />} loading>Launching</Button>
+<Button href="https://example.com">Open link</Button>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Labels** — verb-first, ideally one or two words ("Save", "Add member"). Avoid vague
+  labels like "OK" when a specific verb fits.
+- **No terminal punctuation** in labels.
+- **Icon-only** buttons must carry an accessible name via `aria-label`.
+
+## Accessibility
+
+- Reachable and operable by keyboard: Tab to focus, Enter/Space to activate — verified
+  by `FocusesWithKeyboard`.
+- Exposes the native `button` role; `aria-busy="true"` reflects the loading state —
+  verified by `Loading`.
+- A disabled link button is marked `aria-disabled` and removed from the tab order
+  (`tabindex="-1"`) — verified by `LinkDisabled`.
+- axe runs on every story (`a11y: { test: 'error' }`), so contrast/name/role rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do use one primary Button per view for the main action.
+- ✅ Do show a loading state for async actions to prevent double submits.
+- ❌ Don't disable a Button without making the reason discoverable nearby.
+- ❌ Don't ship an icon-only Button without an `aria-label`.
+
+## Related components & patterns
+
+- **ButtonGroup** — composes multiple related actions; keep at most one primary inside it.
+- **Spinner** — the loading indicator the `loading` flag renders in the icon slot.
