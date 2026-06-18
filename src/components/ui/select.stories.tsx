@@ -742,15 +742,149 @@ export const AriaControlsValid: Story = {
 }
 
 // --- Histórias visuais (Chromatic) -----------------------------------------
-// Abrem o popover (`defaultOpen`) para capturar a lista em light/dark.
-const visualParameters = {
-  docs: { disable: true },
-  chromatic: { disableSnapshot: false },
+// Existem só para regressão visual: ficam ocultas da sidebar e dos docs
+// (`!dev`/`!autodocs`), mas seguem rodando como smoke test (tag `test`) e
+// reativam o snapshot, desligado por padrão no meta. Juntas devem cobrir TODOS
+// os comportamentos visuais do Select (ver ADR 0006). Triggers fechados são
+// agrupados em grades (um snapshot por família); estados de lista abrem um
+// popover por história (`defaultOpen`) para não sobrepor portais.
+const visual = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { chromatic: { disableSnapshot: false } },
+} satisfies Pick<Story, 'tags' | 'parameters'>
+
+// Variante para listas abertas SEM opções (vazia/carregando): um `role="listbox"`
+// sem filhos `option` dispara o axe (`aria-required-children`). A auditoria de
+// a11y da lista já é coberta pelas histórias interativas (com opções); aqui só
+// queremos o snapshot visual do estado, então desligamos o teste de a11y.
+const visualNoA11y = {
+  tags: visual.tags,
+  parameters: { ...visual.parameters, a11y: { test: 'off' } },
+} satisfies Pick<Story, 'tags' | 'parameters'>
+
+// Mesmo `renderItem` da história CustomItemRender, para o snapshot da lista.
+const renderUserItem = (o: SelectOption) => (
+  <div className="flex items-center gap-2">
+    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
+      {String(o.label).charAt(0)}
+    </span>
+    <div className="flex flex-col">
+      <span className="text-sm">{o.label}</span>
+      <span className="text-xs text-muted-foreground">{o.email as string}</span>
+    </div>
+    <Badge variant="secondary" className="ml-auto">
+      {o.role as string}
+    </Badge>
+  </div>
+)
+
+// --- Triggers fechados (grades) --------------------------------------------
+
+/** Visual — os três tamanhos do trigger, com valor. */
+export const VisualSizes: Story = {
+  ...visual,
+  args: { defaultValue: 'apple' },
+  render: (args) => (
+    <div className="flex w-72 flex-col gap-4">
+      {(['sm', 'default', 'lg'] as const).map((size) => (
+        <Select key={size} {...args} size={size} aria-label={size} />
+      ))}
+    </div>
+  ),
 }
 
-/** Captura visual — lista aberta com busca. */
+/** Visual — estados do trigger: placeholder, valor, valor customizado e desabilitado. */
+export const VisualTriggerStates: Story = {
+  ...visual,
+  render: () => (
+    <div className="grid w-[34rem] grid-cols-2 gap-4">
+      <Select
+        options={fruits}
+        placeholder="Selecione uma fruta..."
+        aria-label="placeholder"
+      />
+      <Select options={fruits} defaultValue="apple" aria-label="valor" />
+      <Select
+        options={users}
+        defaultValue="ana"
+        aria-label="valor customizado"
+        renderValue={(o) => (
+          <span className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-success" />
+            {o.label} · {o.role as string}
+          </span>
+        )}
+      />
+      <Select options={fruits} defaultValue="apple" disabled aria-label="desabilitado" />
+    </div>
+  ),
+}
+
+/** Visual — trigger com botão de limpar (`clearable`). */
+export const VisualClearable: Story = {
+  ...visual,
+  args: { clearable: true, defaultValue: 'apple' },
+}
+
+/** Visual — triggers multi: chips, resumo "+N" e contador "N / max". */
+export const VisualMultiTriggers: Story = {
+  ...visual,
+  render: () => (
+    <div className="flex w-80 flex-col gap-4">
+      <Select
+        multiple
+        clearable
+        options={fruits}
+        defaultValue={['apple', 'banana']}
+        aria-label="chips"
+      />
+      <Select
+        multiple
+        maxDisplayChips={2}
+        options={fruits}
+        defaultValue={['apple', 'banana', 'orange', 'grape']}
+        aria-label="resumo +N"
+      />
+      <Select
+        multiple
+        maxCount={3}
+        options={fruits}
+        defaultValue={['apple', 'banana']}
+        aria-label="contador"
+      />
+    </div>
+  ),
+}
+
+/** Visual — triggers editáveis (autocomplete): vazio e com chips. */
+export const VisualEditable: Story = {
+  ...visual,
+  render: () => (
+    <div className="flex w-80 flex-col gap-4">
+      <Select
+        editable
+        clearable
+        options={fruits}
+        placeholder="Busque uma fruta..."
+        aria-label="editável"
+      />
+      <Select
+        editable
+        multiple
+        clearable
+        options={fruits}
+        defaultValue={['apple', 'banana']}
+        aria-label="editável múltiplo"
+      />
+    </div>
+  ),
+}
+
+// --- Lista aberta (um popover por história) --------------------------------
+
+/** Visual — lista aberta com o campo de busca. */
 export const VisualOpen: Story = {
-  parameters: visualParameters,
+  ...visual,
   args: { searchable: true, defaultOpen: true },
   render: (args) => (
     <div className="h-96">
@@ -759,10 +893,76 @@ export const VisualOpen: Story = {
   ),
 }
 
-/** Captura visual — grupos abertos. */
+/** Visual — lista aberta com uma opção selecionada (check). */
+export const VisualSelected: Story = {
+  ...visual,
+  args: { searchable: true, defaultOpen: true, defaultValue: 'banana' },
+  render: (args) => (
+    <div className="h-96">
+      <Select {...args} />
+    </div>
+  ),
+}
+
+/** Visual — grupos abertos. */
 export const VisualGroups: Story = {
-  parameters: visualParameters,
+  ...visual,
   args: { options: groupedOptions, defaultOpen: true },
+  render: (args) => (
+    <div className="h-96">
+      <Select {...args} />
+    </div>
+  ),
+}
+
+/** Visual — render de item customizado (avatar + texto secundário + badge). */
+export const VisualCustomItem: Story = {
+  ...visual,
+  args: { options: users, defaultOpen: true, renderItem: renderUserItem },
+  render: (args) => (
+    <div className="h-96">
+      <Select {...args} />
+    </div>
+  ),
+}
+
+/** Visual — opção desabilitada dentro da lista (Pera). */
+export const VisualDisabledOption: Story = {
+  ...visual,
+  args: { defaultOpen: true },
+  render: (args) => (
+    <div className="h-96">
+      <Select {...args} />
+    </div>
+  ),
+}
+
+/** Visual — estado vazio (nenhuma opção corresponde). */
+export const VisualEmpty: Story = {
+  ...visualNoA11y,
+  args: {
+    options: [],
+    searchable: true,
+    defaultOpen: true,
+    messages: { empty: 'Nenhuma fruta encontrada' },
+  },
+  render: (args) => (
+    <div className="h-96">
+      <Select {...args} />
+    </div>
+  ),
+}
+
+/** Visual — indicador de carregamento na lista. */
+export const VisualLoading: Story = {
+  ...visualNoA11y,
+  args: {
+    options: [],
+    searchable: true,
+    defaultOpen: true,
+    loading: true,
+    messages: { loading: 'Carregando...' },
+  },
   render: (args) => (
     <div className="h-96">
       <Select {...args} />
