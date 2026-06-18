@@ -1,7 +1,7 @@
 import * as Ariakit from '@ariakit/react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { Check, ChevronDown, Search } from 'lucide-react'
+import { Check, ChevronDown, Search, X } from 'lucide-react'
 import { matchSorter } from 'match-sorter'
 import * as React from 'react'
 
@@ -20,7 +20,8 @@ import { cn } from '@/lib/utils'
 //      `SelectItem`, ...) para casos avançados.
 //   2. Um componente data-driven `Select` (props `options`, `loadOptions`, ...)
 //      construído sobre as primitivas, que cobre busca, async, infinite scroll,
-//      virtualização e grupos.
+//      virtualização, grupos, multi-seleção (chips), limpar (`clearable`) e o
+//      modo editável (`editable`, autocomplete com texto livre opcional).
 //
 // Detalhe crítico de a11y: a navegação por teclado em listas virtualizadas só
 // funciona com foco virtual (`aria-activedescendant`), fornecido pelo
@@ -28,28 +29,78 @@ import { cn } from '@/lib/utils'
 // mesmo sem campo de busca visível. Além disso, passamos `defaultItems` (lista
 // completa com ids determinísticos) aos stores: assim o Ariakit conhece todos
 // os itens mesmo os que não estão montados no DOM.
+//
+// Dois "motores" Ariakit:
+//   • Modo padrão (botão): `useSelectStore` é a fonte do valor (string para
+//     single, string[] para multi). O `useComboboxStore` entra só como busca/
+//     foco virtual. O gatilho é um botão (ou um container quando há chips/clear,
+//     pois não se pode aninhar <button> dentro de <button>).
+//   • Modo editável (input): `useComboboxStore` com `selectedValue` é a fonte do
+//     valor; o gatilho é o próprio input (autocomplete). Suporta texto livre.
 
 const SIZE_ITEM_HEIGHT = { sm: 32, default: 36, lg: 40 } as const
 
 type SelectSize = 'sm' | 'default' | 'lg'
 
 // ---------------------------------------------------------------------------
-// Contexto interno (compartilha o `size` entre as primitivas)
+// Mensagens (i18n) — todos os textos de UI fixos do componente
 // ---------------------------------------------------------------------------
-type SelectContextValue = { size: SelectSize; label?: string }
-const SelectContext = React.createContext<SelectContextValue>({ size: 'default' })
+// Os defaults são em inglês (DS neutro). Sobrescreva por instância via a prop
+// `messages` (merge parcial) para traduzir qualquer texto.
+export type SelectMessages = {
+  /** Placeholder do campo de busca interno. */
+  search: string
+  /** Conteúdo exibido quando a lista está vazia. */
+  empty: React.ReactNode
+  /** Conteúdo do indicador de carregamento. */
+  loading: React.ReactNode
+  /** Rótulo acessível do botão de limpar. */
+  clear: string
+  /** Rótulo acessível do "x" de cada chip (recebe o rótulo do item). */
+  remove: (label: string) => string
+  /** Conteúdo da opção de criar valor livre (recebe o texto digitado). */
+  add: (value: string) => React.ReactNode
+  /** Rótulo acessível da lista/popover (fallback quando não há `aria-label`). */
+  options: string
+}
+
+const defaultMessages: SelectMessages = {
+  search: 'Search…',
+  empty: 'No results',
+  loading: 'Loading…',
+  clear: 'Clear',
+  remove: (label) => `Remove ${label}`,
+  add: (value) => <>Add “{value}”</>,
+  options: 'Options',
+}
+
+// ---------------------------------------------------------------------------
+// Contexto interno (compartilha `size`, `multiple` e `messages` entre primitivas)
+// ---------------------------------------------------------------------------
+type SelectContextValue = {
+  size: SelectSize
+  label?: string
+  multiple?: boolean
+  messages: SelectMessages
+}
+const SelectContext = React.createContext<SelectContextValue>({
+  size: 'default',
+  messages: defaultMessages,
+})
 const useSelectContext = () => React.useContext(SelectContext)
 
 // ---------------------------------------------------------------------------
 // SelectRoot — cria os stores do Ariakit e provê os contextos
 // ---------------------------------------------------------------------------
 type SelectRootProps = {
-  /** Valor selecionado (controlado). */
-  value?: string
-  /** Valor inicial (não controlado). */
-  defaultValue?: string
-  /** Disparado ao selecionar um item. */
-  onValueChange?: (value: string) => void
+  /** Valor selecionado (controlado). `string[]` quando `multiple`. */
+  value?: string | string[]
+  /** Valor inicial (não controlado). `string[]` quando `multiple`. */
+  defaultValue?: string | string[]
+  /** Disparado ao selecionar um item (recebe `string[]` quando `multiple`). */
+  onValueChange?: (value: string | string[]) => void
+  /** Multi-seleção: o valor passa a ser um array. */
+  multiple?: boolean
   /** Estado de abertura do popover (controlado). */
   open?: boolean
   /** Abertura inicial (não controlado). */
@@ -71,6 +122,8 @@ type SelectRootProps = {
   size?: SelectSize
   /** Rótulo acessível base, herdado pela busca e pela lista. */
   label?: string
+  /** Sobrescritas de texto (i18n) — merge parcial sobre os defaults em inglês. */
+  messages?: Partial<SelectMessages>
   children?: React.ReactNode
 }
 
@@ -78,6 +131,7 @@ function SelectRoot({
   value,
   defaultValue,
   onValueChange,
+  multiple = false,
   open,
   defaultOpen,
   onOpenChange,
@@ -86,6 +140,7 @@ function SelectRoot({
   items,
   size = 'default',
   label,
+  messages,
   children,
 }: SelectRootProps) {
   // Estado de abertura: o Ariakit não permite combinar a prop controlada e a
@@ -99,6 +154,10 @@ function SelectRoot({
         ? { defaultOpen, setOpen: onOpenChange }
         : { setOpen: onOpenChange }
 
+  // Valor inicial coerente com o modo: `[]` para multi, `''` para single. O
+  // Ariakit infere multi-seleção pelo tipo do valor (array → multi).
+  const emptyValue = multiple ? [] : ''
+
   const comboboxStore = Ariakit.useComboboxStore({
     resetValueOnHide: true,
     defaultItems: items,
@@ -109,7 +168,7 @@ function SelectRoot({
     combobox: combobox ? comboboxStore : undefined,
     setValue: onValueChange,
     defaultItems: items,
-    ...(value !== undefined ? { value } : { defaultValue: defaultValue ?? '' }),
+    ...(value !== undefined ? { value } : { defaultValue: defaultValue ?? emptyValue }),
     ...(combobox ? {} : openState),
   })
 
@@ -121,7 +180,13 @@ function SelectRoot({
     <Ariakit.SelectProvider store={selectStore}>{children}</Ariakit.SelectProvider>
   )
 
-  return <SelectContext.Provider value={{ size, label }}>{tree}</SelectContext.Provider>
+  const mergedMessages = messages ? { ...defaultMessages, ...messages } : defaultMessages
+
+  return (
+    <SelectContext.Provider value={{ size, label, multiple, messages: mergedMessages }}>
+      {tree}
+    </SelectContext.Provider>
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -142,21 +207,125 @@ function SelectTrigger({
   className,
   children,
   size,
+  clearSlot,
+  countSlot,
   ...props
 }: React.ComponentProps<typeof Ariakit.Select> &
-  VariantProps<typeof selectTriggerVariants>) {
+  VariantProps<typeof selectTriggerVariants> & {
+    /** Controle de limpar, renderizado à esquerda do chevron (ver `SelectClear`). */
+    clearSlot?: React.ReactNode
+    /** Contador "N / max", renderizado à esquerda do clear (ver `maxCount`). */
+    countSlot?: React.ReactNode
+  }) {
   const ctx = useSelectContext()
   const resolvedSize = size ?? ctx.size
+
+  // Quando há chips (multi) ou um controle de limpar, o gatilho precisa conter
+  // <button>s (o "x" dos chips/clear). Como não se pode aninhar <button> dentro
+  // de <button>, renderizamos o `Ariakit.Select` como um <div> (ele mantém o
+  // papel de disclosure) e os controles ficam como irmãos do conteúdo.
+  const asContainer = Boolean(ctx.multiple || clearSlot || countSlot)
+
+  if (!asContainer) {
+    return (
+      <Ariakit.Select
+        data-slot="select-trigger"
+        data-size={resolvedSize}
+        className={cn(selectTriggerVariants({ size: resolvedSize }), className)}
+        {...props}
+      >
+        {children}
+        <ChevronDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+      </Ariakit.Select>
+    )
+  }
+
   return (
     <Ariakit.Select
+      render={<div />}
       data-slot="select-trigger"
       data-size={resolvedSize}
-      className={cn(selectTriggerVariants({ size: resolvedSize }), className)}
+      // `h-auto`/`min-h-*` substituem a altura fixa: chips podem quebrar linha.
+      className={cn(
+        selectTriggerVariants({ size: resolvedSize }),
+        'h-auto min-h-9 cursor-default flex-wrap gap-1.5 py-1 data-[size=sm]:min-h-8 data-[size=lg]:min-h-10',
+        className,
+      )}
       {...props}
     >
-      {children}
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">{children}</div>
+      {countSlot}
+      {clearSlot}
       <ChevronDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
     </Ariakit.Select>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// SelectChip / SelectClear — controles internos do gatilho (multi e clearable)
+// ---------------------------------------------------------------------------
+// Ambos param a propagação no `pointerdown`: o Ariakit abre/foca o popover no
+// pointerdown, então interceptamos antes para que clicar no "x" não abra a lista.
+function stopTriggerOpen(event: React.PointerEvent) {
+  event.stopPropagation()
+  event.preventDefault()
+}
+
+function SelectChip({
+  children,
+  onRemove,
+  removeLabel,
+}: {
+  children: React.ReactNode
+  onRemove?: () => void
+  removeLabel: string
+}) {
+  return (
+    <span
+      data-slot="select-chip"
+      className="inline-flex max-w-[12rem] items-center gap-1 rounded-sm bg-muted py-0.5 pr-0.5 pl-1.5 text-xs font-medium text-foreground"
+    >
+      <span className="truncate">{children}</span>
+      {onRemove && (
+        <button
+          type="button"
+          data-slot="select-chip-remove"
+          aria-label={removeLabel}
+          className="flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          onPointerDown={stopTriggerOpen}
+          onClick={(event) => {
+            event.stopPropagation()
+            onRemove()
+          }}
+        >
+          <X className="size-3" aria-hidden="true" />
+        </button>
+      )}
+    </span>
+  )
+}
+
+function SelectClear({
+  onClear,
+  label = 'Clear',
+}: {
+  onClear: () => void
+  label?: string
+}) {
+  return (
+    <button
+      type="button"
+      data-slot="select-clear"
+      aria-label={label}
+      className="flex size-5 shrink-0 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      onPointerDown={stopTriggerOpen}
+      onClick={(event) => {
+        event.stopPropagation()
+        onClear()
+      }}
+    >
+      <X className="size-4" aria-hidden="true" />
+    </button>
   )
 }
 
@@ -191,8 +360,127 @@ function SelectValue({
 }
 
 // ---------------------------------------------------------------------------
+// SelectChipsValue — exibe a seleção múltipla como chips (com resumo "+N")
+// ---------------------------------------------------------------------------
+// Lê o valor (array) direto do store do Select e renderiza até `maxDisplayChips`
+// chips; o excedente vira um "+N". Cada chip remove o item via `store.setValue`.
+function SelectChipsValue({
+  optionByValue,
+  renderValue,
+  placeholder,
+  maxDisplayChips = 3,
+}: {
+  optionByValue: Map<string, SelectOption>
+  renderValue?: (option: SelectOption) => React.ReactNode
+  placeholder?: React.ReactNode
+  maxDisplayChips?: number
+}) {
+  const { messages } = useSelectContext()
+  const store = Ariakit.useSelectContext()
+  const value = (Ariakit.useStoreState(store, 'value') ?? []) as string[]
+
+  if (value.length === 0) {
+    return <span className="truncate text-muted-foreground">{placeholder}</span>
+  }
+
+  const shown = value.slice(0, maxDisplayChips)
+  const extra = value.length - shown.length
+
+  return (
+    <>
+      {shown.map((v) => {
+        const option = optionByValue.get(v)
+        const content = option ? (renderValue ? renderValue(option) : option.label) : v
+        const text = option?.label ?? v
+        return (
+          <SelectChip
+            key={v}
+            removeLabel={messages.remove(text)}
+            onRemove={() =>
+              store?.setValue((prev) => (prev as string[]).filter((item) => item !== v))
+            }
+          >
+            {content}
+          </SelectChip>
+        )
+      })}
+      {extra > 0 && (
+        <span className="px-0.5 text-xs font-medium text-muted-foreground">+{extra}</span>
+      )}
+    </>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// SelectClearControl — botão de limpar; só aparece quando há seleção
+// ---------------------------------------------------------------------------
+function SelectClearControl({ multiple }: { multiple?: boolean }) {
+  const { messages } = useSelectContext()
+  const store = Ariakit.useSelectContext()
+  const value = Ariakit.useStoreState(store, 'value')
+  const hasValue = multiple
+    ? Array.isArray(value) && value.length > 0
+    : value != null && value !== ''
+  if (!hasValue) return null
+  return (
+    <SelectClear
+      label={messages.clear}
+      onClear={() => store?.setValue(multiple ? [] : '')}
+    />
+  )
+}
+
+// ---------------------------------------------------------------------------
+// SelectCountControl — contador "N / max" (multi com `maxCount`)
+// ---------------------------------------------------------------------------
+function SelectCountControl({ maxCount }: { maxCount: number }) {
+  const store = Ariakit.useSelectContext()
+  const value = (Ariakit.useStoreState(store, 'value') ?? []) as string[]
+  return (
+    <span
+      data-slot="select-count"
+      className="shrink-0 px-0.5 text-xs tabular-nums text-muted-foreground"
+    >
+      {value.length} / {maxCount}
+    </span>
+  )
+}
+
+// SelectItem que respeita o limite `maxCount`: lê a seleção do store e desabilita
+// a opção (quando ainda não selecionada) ao atingir o teto.
+function LimitedSelectItem({
+  value,
+  disabled,
+  maxCount,
+  children,
+  ...props
+}: Omit<React.ComponentProps<'div'>, 'ref'> & {
+  value: string
+  disabled?: boolean
+  maxCount: number
+}) {
+  const store = Ariakit.useSelectContext()
+  const selected = (Ariakit.useStoreState(store, 'value') ?? []) as string[]
+  const reached = selected.length >= maxCount
+  const blocked = reached && !selected.includes(value)
+  return (
+    <SelectItem value={value} disabled={disabled || blocked} {...props}>
+      {children}
+    </SelectItem>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // SelectContent — popover (portal) que envolve a busca e a lista
 // ---------------------------------------------------------------------------
+// Classes compartilhadas entre o popover do Select (`SelectPopover`) e o do
+// modo editável (`ComboboxPopover`). Fallback de 24rem na var do Ariakit (só
+// definida no browser real): sem ele, `min(24rem, var(--undefined))` é inválido
+// e o popover cresce.
+const popoverClass =
+  'z-50 flex max-h-[min(24rem,var(--popover-available-height,24rem))] origin-(--popover-transform-origin) flex-col overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-md'
+const listClass = 'max-h-72 overflow-y-auto overflow-x-hidden p-1'
+
 function SelectContent({
   className,
   children,
@@ -200,10 +488,10 @@ function SelectContent({
   sameWidth = true,
   ...props
 }: React.ComponentProps<typeof Ariakit.SelectPopover>) {
-  const { label } = useSelectContext()
+  const { label, messages } = useSelectContext()
   return (
     <Ariakit.SelectPopover
-      aria-label={label ?? 'Opções'}
+      aria-label={label ?? messages.options}
       data-slot="select-content"
       gutter={gutter}
       sameWidth={sameWidth}
@@ -212,12 +500,7 @@ function SelectContent({
       // existente em qualquer estado. (O axe ainda marca `aria-controls` +
       // `aria-haspopup` como "needs review"/inconclusive — falso-positivo
       // conhecido do padrão combobox, não é uma violação.)
-      className={cn(
-        // Fallback de 24rem na var do Ariakit (só é definida no browser real):
-        // sem ele, `min(24rem, var(--undefined))` é inválido e o popover cresce.
-        'z-50 flex max-h-[min(24rem,var(--popover-available-height,24rem))] origin-(--popover-transform-origin) flex-col overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-md',
-        className,
-      )}
+      className={cn(popoverClass, className)}
       {...props}
     >
       {children}
@@ -230,11 +513,11 @@ function SelectContent({
 // ---------------------------------------------------------------------------
 function SelectSearch({
   className,
-  placeholder = 'Buscar...',
+  placeholder,
   ...props
 }: React.ComponentProps<typeof Ariakit.Combobox>) {
   const combobox = Ariakit.useComboboxContext()
-  const { label } = useSelectContext()
+  const { label, messages } = useSelectContext()
   if (!combobox) return null
   return (
     <div
@@ -243,9 +526,9 @@ function SelectSearch({
     >
       <Search className="size-4 shrink-0 opacity-50" aria-hidden="true" />
       <Ariakit.Combobox
-        aria-label={label ? `Buscar ${label}` : 'Buscar'}
+        aria-label={label ? `${messages.search} ${label}` : messages.search}
         autoSelect
-        placeholder={placeholder}
+        placeholder={placeholder ?? messages.search}
         className={cn(
           'h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground',
           className,
@@ -266,14 +549,14 @@ function SelectList({
   ...props
 }: React.ComponentProps<'div'> & { ref?: React.Ref<HTMLDivElement> }) {
   const combobox = Ariakit.useComboboxContext()
-  const { label } = useSelectContext()
+  const { label, messages } = useSelectContext()
   const Comp = combobox ? Ariakit.ComboboxList : Ariakit.SelectList
   return (
     <Comp
       ref={ref}
-      aria-label={label ?? 'Opções'}
+      aria-label={label ?? messages.options}
       data-slot="select-list"
-      className={cn('max-h-72 overflow-y-auto overflow-x-hidden p-1', className)}
+      className={cn(listClass, className)}
       {...props}
     >
       {children}
@@ -377,27 +660,21 @@ function SelectItem({
 // ---------------------------------------------------------------------------
 // SelectEmpty / SelectLoading — estados auxiliares
 // ---------------------------------------------------------------------------
-function SelectEmpty({
-  className,
-  children = 'Nada encontrado',
-  ...props
-}: React.ComponentProps<'div'>) {
+function SelectEmpty({ className, children, ...props }: React.ComponentProps<'div'>) {
+  const { messages } = useSelectContext()
   return (
     <div
       data-slot="select-empty"
       className={cn('py-6 text-center text-sm text-muted-foreground', className)}
       {...props}
     >
-      {children}
+      {children ?? messages.empty}
     </div>
   )
 }
 
-function SelectLoading({
-  className,
-  children = 'Carregando...',
-  ...props
-}: React.ComponentProps<'div'>) {
+function SelectLoading({ className, children, ...props }: React.ComponentProps<'div'>) {
+  const { messages } = useSelectContext()
   return (
     <div
       data-slot="select-loading"
@@ -408,7 +685,7 @@ function SelectLoading({
       {...props}
     >
       <Spinner className="size-4" />
-      <span>{children}</span>
+      <span>{children ?? messages.loading}</span>
     </div>
   )
 }
@@ -497,11 +774,9 @@ export type SelectOption = {
   [key: string]: unknown
 }
 
-export type SelectProps = {
+/** Props comuns a single e multi. */
+type SelectBaseProps = {
   options: SelectOption[]
-  value?: string
-  defaultValue?: string
-  onValueChange?: (value: string) => void
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
@@ -510,8 +785,6 @@ export type SelectProps = {
   size?: SelectSize
   /** Mostra o campo de busca. */
   searchable?: boolean
-  /** Placeholder do campo de busca. */
-  searchPlaceholder?: string
   /**
    * Busca controlada/assíncrona: ao informar, o filtro local é desativado e a
    * lista passa a ser controlada por `options`.
@@ -534,8 +807,31 @@ export type SelectProps = {
   renderItem?: (option: SelectOption) => React.ReactNode
   /** Render custom do valor no trigger. */
   renderValue?: (option: SelectOption) => React.ReactNode
-  /** Mensagem quando não há itens. */
-  emptyMessage?: React.ReactNode
+  /** Exibe um botão de limpar (`x`) no trigger quando há seleção. */
+  clearable?: boolean
+  /** Multi: nº de chips exibidos antes de resumir em "+N" (padrão 3). */
+  maxDisplayChips?: number
+  /**
+   * Multi: nº máximo de itens selecionáveis. Ao atingir o limite, as opções
+   * não selecionadas ficam desabilitadas e um contador "N / max" aparece no
+   * trigger.
+   */
+  maxCount?: number
+  /**
+   * Gatilho editável (autocomplete): o campo vira um input no qual se digita
+   * diretamente para filtrar. Usa o motor de combobox do Ariakit.
+   */
+  editable?: boolean
+  /**
+   * Modo editável: aceita um valor digitado que não está na lista (Enter/clique
+   * em "Adicionar …" cria o valor). Só tem efeito com `editable`.
+   */
+  allowCustomValue?: boolean
+  /**
+   * Sobrescritas de texto (i18n). Merge parcial sobre os defaults em inglês —
+   * traduza só o que precisar: `messages={{ add: (v) => `Adicionar “${v}”` }}`.
+   */
+  messages?: Partial<SelectMessages>
   className?: string
   triggerClassName?: string
   contentClassName?: string
@@ -543,19 +839,46 @@ export type SelectProps = {
   'aria-label'?: string
 }
 
-function Select({
+/** Variante single: valor é uma `string`. */
+type SelectSingleProps = {
+  multiple?: false
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+}
+
+/** Variante multi: valor é um `string[]` e o trigger exibe chips. */
+type SelectMultipleProps = {
+  multiple: true
+  value?: string[]
+  defaultValue?: string[]
+  onValueChange?: (value: string[]) => void
+}
+
+export type SelectProps = SelectBaseProps & (SelectSingleProps | SelectMultipleProps)
+
+// Tipo interno (amplo): a impl trata o valor como `string | string[]`; a união
+// pública acima é quem garante a tipagem correta por `multiple` no consumo.
+type InternalSelectProps = SelectBaseProps & {
+  multiple?: boolean
+  value?: string | string[]
+  defaultValue?: string | string[]
+  onValueChange?: (value: string | string[]) => void
+}
+
+function StandardSelect({
   options,
   value,
   defaultValue,
   onValueChange,
+  multiple = false,
   open,
   defaultOpen,
   onOpenChange,
-  placeholder = 'Selecione...',
+  placeholder = 'Select…',
   disabled,
   size = 'default',
   searchable = false,
-  searchPlaceholder,
   onSearch,
   loading = false,
   onLoadMore,
@@ -564,11 +887,14 @@ function Select({
   groupBy,
   renderItem,
   renderValue,
-  emptyMessage,
+  clearable = false,
+  maxDisplayChips = 3,
+  maxCount,
+  messages,
   triggerClassName,
   contentClassName,
   'aria-label': ariaLabel,
-}: SelectProps) {
+}: InternalSelectProps) {
   // Callback ref + state: o virtualizer precisa do elemento de scroll já no
   // primeiro render em que existe. Como o ref do `SelectList` (pai) só é
   // atribuído após o layout effect do corpo virtual (filho), um `useRef` ficaria
@@ -644,22 +970,37 @@ function Select({
 
   const itemHeight = SIZE_ITEM_HEIGHT[size]
 
+  // Com `maxCount` (multi), a opção precisa reagir à seleção para desabilitar ao
+  // atingir o teto — daí o `LimitedSelectItem`, que assina o store.
+  const limited = multiple && maxCount != null
   const renderRow = React.useCallback(
     (
       item: InternalItem<SelectOption>,
       extra?: Record<string, unknown>,
-    ): React.ReactNode => (
-      <SelectItem
-        key={item.id}
-        id={item.id}
-        value={item.value}
-        disabled={item.option.disabled}
-        {...extra}
-      >
-        {renderItem ? renderItem(item.option) : item.option.label}
-      </SelectItem>
-    ),
-    [renderItem],
+    ): React.ReactNode =>
+      limited ? (
+        <LimitedSelectItem
+          key={item.id}
+          id={item.id}
+          value={item.value}
+          disabled={item.option.disabled}
+          maxCount={maxCount as number}
+          {...extra}
+        >
+          {renderItem ? renderItem(item.option) : item.option.label}
+        </LimitedSelectItem>
+      ) : (
+        <SelectItem
+          key={item.id}
+          id={item.id}
+          value={item.value}
+          disabled={item.option.disabled}
+          {...extra}
+        >
+          {renderItem ? renderItem(item.option) : item.option.label}
+        </SelectItem>
+      ),
+    [renderItem, limited, maxCount],
   )
 
   const isEmpty = filteredItems.length === 0 && !loading
@@ -669,6 +1010,7 @@ function Select({
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange}
+      multiple={multiple}
       open={open}
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
@@ -677,25 +1019,41 @@ function Select({
       items={registry}
       size={size}
       label={ariaLabel}
+      messages={messages}
     >
       <SelectTrigger
         className={triggerClassName}
         disabled={disabled}
         aria-label={ariaLabel}
+        countSlot={
+          multiple && maxCount != null ? (
+            <SelectCountControl maxCount={maxCount} />
+          ) : undefined
+        }
+        clearSlot={clearable ? <SelectClearControl multiple={multiple} /> : undefined}
       >
-        <SelectValue placeholder={placeholder}>
-          {(v) => {
-            const option = optionByValue.get(v)
-            if (!option) return v
-            return renderValue ? renderValue(option) : option.label
-          }}
-        </SelectValue>
+        {multiple ? (
+          <SelectChipsValue
+            optionByValue={optionByValue}
+            renderValue={renderValue}
+            placeholder={placeholder}
+            maxDisplayChips={maxDisplayChips}
+          />
+        ) : (
+          <SelectValue placeholder={placeholder}>
+            {(v) => {
+              const option = optionByValue.get(v)
+              if (!option) return v
+              return renderValue ? renderValue(option) : option.label
+            }}
+          </SelectValue>
+        )}
       </SelectTrigger>
       <SelectContent className={contentClassName}>
-        {searchable && <SelectSearch placeholder={searchPlaceholder} />}
+        {searchable && <SelectSearch />}
         <SelectList ref={setScrollEl} onScroll={handleScroll}>
           {isEmpty ? (
-            <SelectEmpty>{emptyMessage}</SelectEmpty>
+            <SelectEmpty />
           ) : isVirtualized ? (
             <VirtualSelectBody
               items={filteredItems}
@@ -717,6 +1075,435 @@ function Select({
       </SelectContent>
     </SelectRoot>
   )
+}
+
+// ---------------------------------------------------------------------------
+// Modo editável (autocomplete) — motor `ComboboxStore` com `selectedValue`
+// ---------------------------------------------------------------------------
+// Aqui o gatilho é o próprio input (`Ariakit.Combobox`) e a fonte do valor é o
+// `selectedValue` do combobox (não há `SelectStore`). Cobre single/multi, limpar
+// e — via `allowCustomValue` — aceitar texto fora da lista.
+
+// Chips do modo editável (leem `selectedValue` do ComboboxStore).
+function EditableChips({
+  optionByValue,
+  renderValue,
+  maxDisplayChips = 3,
+}: {
+  optionByValue: Map<string, SelectOption>
+  renderValue?: (option: SelectOption) => React.ReactNode
+  maxDisplayChips?: number
+}) {
+  const { messages } = useSelectContext()
+  const store = Ariakit.useComboboxContext()
+  const selected = (Ariakit.useStoreState(store, 'selectedValue') ?? []) as string[]
+  if (selected.length === 0) return null
+  const shown = selected.slice(0, maxDisplayChips)
+  const extra = selected.length - shown.length
+  return (
+    <>
+      {shown.map((v) => {
+        const option = optionByValue.get(v)
+        const content = option ? (renderValue ? renderValue(option) : option.label) : v
+        const text = option?.label ?? v
+        return (
+          <SelectChip
+            key={v}
+            removeLabel={messages.remove(text)}
+            onRemove={() =>
+              store?.setSelectedValue((prev) =>
+                (prev as string[]).filter((item) => item !== v),
+              )
+            }
+          >
+            {content}
+          </SelectChip>
+        )
+      })}
+      {extra > 0 && (
+        <span className="px-0.5 text-xs font-medium text-muted-foreground">+{extra}</span>
+      )}
+    </>
+  )
+}
+
+// Botão de limpar do modo editável.
+function EditableClear({ multiple }: { multiple?: boolean }) {
+  const { messages } = useSelectContext()
+  const store = Ariakit.useComboboxContext()
+  const selected = Ariakit.useStoreState(store, 'selectedValue')
+  const hasValue = multiple
+    ? Array.isArray(selected) && selected.length > 0
+    : selected != null && selected !== ''
+  if (!hasValue) return null
+  return (
+    <SelectClear
+      label={messages.clear}
+      onClear={() => {
+        store?.setSelectedValue(multiple ? [] : '')
+        store?.setValue('')
+      }}
+    />
+  )
+}
+
+// Opção do modo editável: ComboboxItem que adiciona ao `selectedValue` (não joga
+// o texto no input) e mostra o check via `ComboboxItemCheck`.
+function EditableItem({
+  value,
+  disabled,
+  multiple,
+  children,
+  ...props
+}: Omit<React.ComponentProps<'div'>, 'ref'> & {
+  value: string
+  disabled?: boolean
+  multiple?: boolean
+}) {
+  return (
+    <Ariakit.ComboboxItem
+      value={value}
+      disabled={disabled}
+      selectValueOnClick
+      setValueOnClick={false}
+      hideOnClick={!multiple}
+      resetValueOnSelect={multiple}
+      focusOnHover
+      data-slot="select-item"
+      className={selectItemClass}
+      {...props}
+    >
+      <span className="flex-1 truncate">{children}</span>
+      <Ariakit.ComboboxItemCheck className="flex size-4 shrink-0 items-center justify-center">
+        <Check className="size-4" />
+      </Ariakit.ComboboxItemCheck>
+    </Ariakit.ComboboxItem>
+  )
+}
+
+// Contador "N / max" do modo editável.
+function EditableCountControl({ maxCount }: { maxCount: number }) {
+  const store = Ariakit.useComboboxContext()
+  const selected = (Ariakit.useStoreState(store, 'selectedValue') ?? []) as string[]
+  return (
+    <span
+      data-slot="select-count"
+      className="shrink-0 px-0.5 text-xs tabular-nums text-muted-foreground"
+    >
+      {selected.length} / {maxCount}
+    </span>
+  )
+}
+
+// EditableItem que respeita `maxCount`: desabilita a opção não selecionada ao
+// atingir o teto.
+function LimitedEditableItem({
+  value,
+  disabled,
+  maxCount,
+  multiple,
+  children,
+  ...props
+}: Omit<React.ComponentProps<'div'>, 'ref'> & {
+  value: string
+  disabled?: boolean
+  maxCount: number
+  multiple?: boolean
+}) {
+  const store = Ariakit.useComboboxContext()
+  const selected = (Ariakit.useStoreState(store, 'selectedValue') ?? []) as string[]
+  const reached = selected.length >= maxCount
+  const blocked = reached && !selected.includes(value)
+  return (
+    <EditableItem
+      value={value}
+      disabled={disabled || blocked}
+      multiple={multiple}
+      {...props}
+    >
+      {children}
+    </EditableItem>
+  )
+}
+
+function EditableSelect({
+  options,
+  value,
+  defaultValue,
+  onValueChange,
+  multiple = false,
+  open,
+  defaultOpen,
+  onOpenChange,
+  placeholder = 'Select…',
+  disabled,
+  size = 'default',
+  onSearch,
+  loading = false,
+  onLoadMore,
+  hasMore = false,
+  groupBy,
+  renderItem,
+  renderValue,
+  clearable = false,
+  maxDisplayChips = 3,
+  maxCount,
+  allowCustomValue = false,
+  messages,
+  triggerClassName,
+  contentClassName,
+  'aria-label': ariaLabel,
+}: InternalSelectProps) {
+  const mergedMessages = messages ? { ...defaultMessages, ...messages } : defaultMessages
+  // Âncora do popover: o container do gatilho (não o input). Sem isto, o popover
+  // ancoraria no `Ariakit.Combobox`, que encolhe conforme os chips crescem —
+  // deslocando e estreitando a lista a cada item selecionado.
+  const anchorRef = React.useRef<HTMLDivElement>(null)
+  const [search, setSearch] = React.useState('')
+  const isAsyncSearch = typeof onSearch === 'function'
+
+  const allItems = React.useMemo<InternalItem<SelectOption>[]>(
+    () =>
+      options.map((option, i) => ({
+        id: `tds-select-item-${i}`,
+        value: option.value,
+        option,
+      })),
+    [options],
+  )
+  const registry = React.useMemo(
+    () => allItems.map(({ id, value: v }) => ({ id, value: v })),
+    [allItems],
+  )
+
+  const optionByValue = React.useMemo(
+    () => new Map(options.map((o) => [o.value, o])),
+    [options],
+  )
+
+  const handleSearch = React.useCallback(
+    (next: string) => {
+      setSearch(next)
+      onSearch?.(next)
+    },
+    [onSearch],
+  )
+
+  // O store do combobox tipa `selectedValue` como `string | readonly string[]`;
+  // normalizamos para o array mutável que a API pública expõe.
+  const handleSelectedChange = React.useCallback(
+    (next: string | readonly string[]) =>
+      onValueChange?.(Array.isArray(next) ? [...next] : (next as string)),
+    [onValueChange],
+  )
+
+  const openState =
+    open !== undefined
+      ? { open, setOpen: onOpenChange }
+      : defaultOpen !== undefined
+        ? { defaultOpen, setOpen: onOpenChange }
+        : { setOpen: onOpenChange }
+
+  const comboboxStore = Ariakit.useComboboxStore({
+    defaultItems: registry,
+    setValue: handleSearch,
+    setSelectedValue: handleSelectedChange,
+    ...(value !== undefined
+      ? { selectedValue: value }
+      : { defaultSelectedValue: defaultValue ?? (multiple ? [] : '') }),
+    ...openState,
+  })
+
+  const selectedValue = Ariakit.useStoreState(comboboxStore, 'selectedValue')
+  const isOpen = Ariakit.useStoreState(comboboxStore, 'open')
+
+  // Seleção atual como array (cobre single, multi e valores livres já escolhidos).
+  const selectedArray = Array.isArray(selectedValue)
+    ? (selectedValue as string[])
+    : selectedValue
+      ? [selectedValue as string]
+      : []
+
+  // Valores livres já selecionados (não presentes em `options`) viram itens
+  // "temporários" da lista: aparecem como opção com check e desaparecem quando
+  // desmarcados — espelhando o registro oficial de opções.
+  const customItems: InternalItem<SelectOption>[] = selectedArray
+    .filter((v) => !optionByValue.has(v))
+    .map((v) => ({
+      id: `tds-select-custom-${v}`,
+      value: v,
+      option: { value: v, label: v },
+    }))
+  const combinedItems = customItems.length > 0 ? [...allItems, ...customItems] : allItems
+
+  const filteredItems =
+    isAsyncSearch || !search
+      ? combinedItems
+      : matchSorter(combinedItems, search, { keys: ['option.label', 'value'] })
+
+  // Sincroniza o texto do input quando o popover está fechado: no single mostra
+  // o rótulo selecionado; no multi limpa (a seleção fica nos chips). Enquanto
+  // aberto, o input é livre para digitar/filtrar.
+  React.useEffect(() => {
+    if (isOpen) return
+    if (multiple) {
+      comboboxStore.setValue('')
+      return
+    }
+    const sv = (selectedValue ?? '') as string
+    comboboxStore.setValue(sv ? (optionByValue.get(sv)?.label ?? sv) : '')
+  }, [isOpen, multiple, selectedValue, optionByValue, comboboxStore])
+
+  const handleScroll = React.useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      if (!onLoadMore || !hasMore || loading) return
+      const el = event.currentTarget
+      if (el.scrollHeight - el.scrollTop - el.clientHeight < 96) onLoadMore()
+    },
+    [onLoadMore, hasMore, loading],
+  )
+
+  const hasGroups = groupBy != null || options.some((o) => o.group != null)
+  const groups = React.useMemo(() => {
+    if (!hasGroups) return []
+    const map = new Map<string, InternalItem<SelectOption>[]>()
+    for (const item of filteredItems) {
+      const key = groupBy ? groupBy(item.option) : (item.option.group ?? '')
+      const bucket = map.get(key)
+      if (bucket) bucket.push(item)
+      else map.set(key, [item])
+    }
+    return Array.from(map, ([label, items]) => ({ label, items }))
+  }, [hasGroups, filteredItems, groupBy])
+
+  const limited = multiple && maxCount != null
+  const renderRow = (item: InternalItem<SelectOption>) =>
+    limited ? (
+      <LimitedEditableItem
+        key={item.id}
+        id={item.id}
+        value={item.value}
+        disabled={item.option.disabled}
+        maxCount={maxCount as number}
+        multiple={multiple}
+      >
+        {renderItem ? renderItem(item.option) : item.option.label}
+      </LimitedEditableItem>
+    ) : (
+      <EditableItem
+        key={item.id}
+        id={item.id}
+        value={item.value}
+        disabled={item.option.disabled}
+        multiple={multiple}
+      >
+        {renderItem ? renderItem(item.option) : item.option.label}
+      </EditableItem>
+    )
+
+  // Texto livre: oferece "Adicionar …" quando há busca sem correspondência exata.
+  // Considera tanto as `options` quanto os valores já selecionados — senão um
+  // valor livre já escolhido reapareceria como "Adicionar" e o clique o removeria
+  // (toggle) com um rótulo enganoso.
+  const trimmed = search.trim()
+  const hasExactMatch =
+    options.some((o) => o.value === trimmed || o.label === trimmed) ||
+    selectedArray.includes(trimmed)
+  const showCreate = allowCustomValue && trimmed.length > 0 && !hasExactMatch
+  const isEmpty = filteredItems.length === 0 && !loading && !showCreate
+
+  // `placeholder` da API é ReactNode, mas o atributo do input só aceita string.
+  // No multi, some quando já há chips para não competir com a seleção.
+  const placeholderText = typeof placeholder === 'string' ? placeholder : undefined
+  const hasSelection = selectedArray.length > 0
+  const inputPlaceholder = multiple && hasSelection ? undefined : placeholderText
+
+  return (
+    <SelectContext.Provider
+      value={{ size, label: ariaLabel, multiple, messages: mergedMessages }}
+    >
+      <Ariakit.ComboboxProvider store={comboboxStore}>
+        <div
+          ref={anchorRef}
+          data-slot="select-trigger"
+          data-size={size}
+          className={cn(
+            selectTriggerVariants({ size }),
+            'h-auto min-h-9 flex-wrap gap-1.5 py-1 data-[size=sm]:min-h-8 data-[size=lg]:min-h-10',
+            disabled && 'cursor-not-allowed opacity-50',
+            triggerClassName,
+          )}
+        >
+          {multiple && (
+            <EditableChips
+              optionByValue={optionByValue}
+              renderValue={renderValue}
+              maxDisplayChips={maxDisplayChips}
+            />
+          )}
+          <Ariakit.Combobox
+            data-slot="select-input"
+            aria-label={ariaLabel}
+            disabled={disabled}
+            autoSelect
+            placeholder={inputPlaceholder}
+            className="min-w-16 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+          {multiple && maxCount != null && <EditableCountControl maxCount={maxCount} />}
+          {clearable && <EditableClear multiple={multiple} />}
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-hidden="true"
+            data-slot="select-disclosure"
+            className="flex size-5 shrink-0 items-center justify-center"
+            onClick={() => comboboxStore.setOpen(!isOpen)}
+          >
+            <ChevronDown className="size-4 opacity-50" aria-hidden="true" />
+          </button>
+        </div>
+        <Ariakit.ComboboxPopover
+          aria-label={ariaLabel ?? mergedMessages.options}
+          data-slot="select-content"
+          gutter={4}
+          sameWidth
+          unmountOnHide={false}
+          getAnchorRect={() => anchorRef.current?.getBoundingClientRect() ?? null}
+          className={cn(popoverClass, contentClassName)}
+        >
+          <SelectList onScroll={handleScroll}>
+            {isEmpty ? (
+              <SelectEmpty />
+            ) : hasGroups ? (
+              groups.map((group) => (
+                <SelectGroup key={group.label} label={group.label}>
+                  {group.items.map(renderRow)}
+                </SelectGroup>
+              ))
+            ) : (
+              filteredItems.map(renderRow)
+            )}
+            {showCreate && (
+              <EditableItem value={trimmed} multiple={multiple}>
+                {mergedMessages.add(trimmed)}
+              </EditableItem>
+            )}
+            {loading && <SelectLoading />}
+          </SelectList>
+        </Ariakit.ComboboxPopover>
+      </Ariakit.ComboboxProvider>
+    </SelectContext.Provider>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Select — ponto de entrada público; despacha entre o modo padrão e o editável
+// ---------------------------------------------------------------------------
+function Select(props: SelectProps) {
+  if ((props as InternalSelectProps).editable) {
+    return <EditableSelect {...(props as InternalSelectProps)} />
+  }
+  return <StandardSelect {...(props as InternalSelectProps)} />
 }
 
 export {

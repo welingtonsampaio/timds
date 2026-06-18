@@ -50,9 +50,14 @@ const meta = {
           'virtual focus via `aria-activedescendant`) and **@tanstack/react-virtual** ' +
           '(virtualization). It does NOT use the native `<select>`. Supports search, ' +
           'custom item/value render, async loading, infinite scroll, list virtualization ' +
-          'and groups. Data-driven via `options`, with composable primitives (`SelectRoot`, ' +
-          '`SelectItem`, ...) also exported for advanced cases. Each interactive story starts ' +
-          'closed — click the trigger to open the listbox.',
+          'and groups. It also covers **multi-select** (chips with a `+N` summary), a ' +
+          '**clear** button (`clearable`), a selection cap (`maxCount`, disables the rest ' +
+          'and shows an `N / max` counter) and an **editable** mode (`editable`, ' +
+          'autocomplete typed directly in the field, with optional free text via ' +
+          '`allowCustomValue`). All UI strings default to English and are translatable ' +
+          'via the `messages` prop. Data-driven via `options`, with composable primitives ' +
+          '(`SelectRoot`, `SelectItem`, ...) also exported for advanced cases. Each ' +
+          'interactive story starts closed — click the trigger to open the listbox.',
       },
     },
     // As histórias interativas começam fechadas (só o trigger): o snapshot
@@ -76,6 +81,24 @@ const meta = {
       table: { defaultValue: { summary: 'default' } },
     },
     searchable: { control: 'boolean', description: 'Exibe o campo de busca.' },
+    multiple: { control: 'boolean', description: 'Multi-seleção com chips.' },
+    clearable: { control: 'boolean', description: 'Exibe o botão de limpar.' },
+    editable: {
+      control: 'boolean',
+      description: 'Gatilho editável (autocomplete no próprio campo).',
+    },
+    allowCustomValue: {
+      control: 'boolean',
+      description: 'Editável: aceita texto fora da lista.',
+    },
+    maxCount: {
+      control: 'number',
+      description: 'Multi: nº máximo de itens (mostra "N / max").',
+    },
+    maxDisplayChips: {
+      control: 'number',
+      description: 'Multi: chips antes de resumir em "+N".',
+    },
     virtualized: {
       control: 'boolean',
       description: 'Liga a virtualização (auto para > 100 itens).',
@@ -108,7 +131,7 @@ export const Sizes: Story = {
 
 /** With a search field — filters locally with `match-sorter`. */
 export const Searchable: Story = {
-  args: { searchable: true, searchPlaceholder: 'Buscar fruta...' },
+  args: { searchable: true, messages: { search: 'Search fruit…' } },
 }
 
 /** Groups via `option.group` (or the `groupBy` prop). */
@@ -117,6 +140,18 @@ export const Groups: Story = {
     options: groupedOptions,
     searchable: true,
     placeholder: 'Selecione um item...',
+  },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    await userEvent.click(trigger)
+    await screen.findByRole('listbox')
+    // Os rótulos de grupo são exibidos junto às opções.
+    await expect(screen.getByText('Frutas')).toBeInTheDocument()
+    await expect(screen.getByText('Legumes')).toBeInTheDocument()
+    await expect(screen.getByText('Proteínas')).toBeInTheDocument()
   },
 }
 
@@ -140,6 +175,17 @@ export const CustomItemRender: Story = {
         </Badge>
       </div>
     ),
+  },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    await userEvent.click(trigger)
+    await screen.findByRole('listbox')
+    // O `renderItem` é aplicado: o e-mail e o badge de papel aparecem na opção.
+    await expect(screen.getByText('ana@timds.dev')).toBeInTheDocument()
+    await expect(screen.getByText('Admin')).toBeInTheDocument()
   },
 }
 
@@ -190,8 +236,10 @@ export const AsyncLoad: Story = {
         onSearch={handleSearch}
         loading={loading}
         placeholder="Busque um usuário..."
-        searchPlaceholder="Digite para buscar..."
-        emptyMessage="Digite para buscar usuários"
+        messages={{
+          search: 'Digite para buscar...',
+          empty: 'Digite para buscar usuários',
+        }}
         aria-label="Usuário"
       />
     )
@@ -261,7 +309,7 @@ export const Virtualized: Story = {
     options: manyOptions,
     searchable: true,
     placeholder: 'Selecione entre 10k itens...',
-    searchPlaceholder: 'Buscar item...',
+    messages: { search: 'Buscar item...' },
     onValueChange: fn(),
   },
   play: async ({ args, canvasElement }) => {
@@ -303,11 +351,276 @@ export const Virtualized: Story = {
 /** Disabled trigger. */
 export const Disabled: Story = {
   args: { disabled: true, defaultValue: 'apple' },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    // Mostra o valor, mas clicar não abre a lista.
+    await expect(trigger).toHaveTextContent('Maçã')
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    await user.click(trigger)
+    await expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+  },
 }
 
 /** Empty state when no option matches. */
 export const EmptyState: Story = {
-  args: { options: [], searchable: true, emptyMessage: 'Nenhuma fruta encontrada' },
+  args: {
+    options: [],
+    searchable: true,
+    messages: { empty: 'Nenhuma fruta encontrada' },
+  },
+}
+
+/** Clearable: a clear (`x`) button appears in the trigger once there is a value. */
+export const Clearable: Story = {
+  args: { clearable: true, defaultValue: 'apple' },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    await expect(trigger).toHaveTextContent('Maçã')
+
+    const clear = canvasElement.querySelector<HTMLElement>('[data-slot="select-clear"]')
+    await expect(clear).toBeInTheDocument()
+    await userEvent.click(clear as HTMLElement)
+
+    // Limpar zera o valor (some o chip do valor), some o botão e NÃO abre a lista.
+    await waitFor(() =>
+      expect(canvasElement.querySelector('[data-slot="select-clear"]')).toBeNull(),
+    )
+    await expect(trigger).not.toHaveTextContent('Maçã')
+    await expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+  },
+}
+
+/** Multi-select: selected items become removable chips, summarized as `+N`. */
+export const Multiple: Story = {
+  args: {
+    multiple: true,
+    clearable: true,
+    defaultValue: ['apple', 'banana'],
+    placeholder: 'Selecione frutas...',
+    searchable: true,
+    'aria-label': 'Frutas',
+  },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    // Começa com dois chips.
+    await expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2)
+
+    await userEvent.click(trigger)
+    // Selecionar mais um mantém a lista aberta (multi).
+    await userEvent.click(await screen.findByRole('option', { name: 'Uva' }))
+    await expect(screen.getByRole('listbox')).toBeInTheDocument()
+    await expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(3)
+
+    // Remover um chip pelo "x" volta para dois (sem reabrir/alterar a lista).
+    const remove = trigger.querySelector<HTMLElement>('[data-slot="select-chip-remove"]')
+    await userEvent.click(remove as HTMLElement)
+    await waitFor(() =>
+      expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2),
+    )
+  },
+}
+
+/** `maxDisplayChips` keeps the trigger compact, summarizing the rest as `+N`. */
+export const MultipleSummary: Story = {
+  args: {
+    multiple: true,
+    maxDisplayChips: 2,
+    defaultValue: ['apple', 'banana', 'orange', 'grape'],
+    'aria-label': 'Frutas',
+  },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    // 4 selecionados, mas só 2 chips visíveis + resumo "+2".
+    await expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2)
+    await expect(trigger).toHaveTextContent('+2')
+
+    // Remover um chip atualiza o resumo para "+1".
+    const remove = trigger.querySelector<HTMLElement>('[data-slot="select-chip-remove"]')
+    await userEvent.click(remove as HTMLElement)
+    await waitFor(() => expect(trigger).toHaveTextContent('+1'))
+  },
+}
+
+/**
+ * `maxCount` caps the selection: once reached, the remaining options are
+ * disabled and an `N / max` counter is shown in the trigger.
+ */
+export const MaxCount: Story = {
+  args: {
+    multiple: true,
+    maxCount: 3,
+    defaultValue: ['apple', 'banana'],
+    placeholder: 'Até 3 frutas...',
+    'aria-label': 'Frutas',
+  },
+  play: async ({ canvasElement }) => {
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="select-trigger"]',
+    )
+    if (!trigger) throw new Error('trigger não encontrado')
+    await expect(trigger.querySelector('[data-slot="select-count"]')).toHaveTextContent(
+      '2 / 3',
+    )
+
+    await userEvent.click(trigger)
+    // Ao chegar no teto (3), as demais opções ficam desabilitadas.
+    await userEvent.click(await screen.findByRole('option', { name: 'Uva' }))
+    await waitFor(() =>
+      expect(trigger.querySelector('[data-slot="select-count"]')).toHaveTextContent(
+        '3 / 3',
+      ),
+    )
+    await expect(screen.getByRole('option', { name: 'Manga' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    )
+  },
+}
+
+/** Editable: type directly in the field (autocomplete). */
+export const Editable: Story = {
+  args: {
+    editable: true,
+    clearable: true,
+    placeholder: 'Busque uma fruta...',
+    'aria-label': 'Fruta',
+  },
+  play: async ({ canvasElement }) => {
+    const input = canvasElement.querySelector<HTMLInputElement>(
+      '[data-slot="select-input"]',
+    )
+    if (!input) throw new Error('input não encontrado')
+    await userEvent.click(input)
+    await userEvent.type(input, 'man')
+    const match = await screen.findByRole('option', { name: 'Manga' })
+    await userEvent.click(match)
+    await waitFor(() => expect(input).toHaveValue('Manga'))
+  },
+}
+
+/** Editable + multi: typed search with removable chips. */
+export const EditableMultiple: Story = {
+  args: {
+    editable: true,
+    multiple: true,
+    clearable: true,
+    maxCount: 4,
+    placeholder: 'Adicione frutas...',
+    'aria-label': 'Frutas',
+  },
+  play: async ({ canvasElement }) => {
+    const input = canvasElement.querySelector<HTMLInputElement>(
+      '[data-slot="select-input"]',
+    )
+    if (!input) throw new Error('input não encontrado')
+
+    await userEvent.click(input)
+    await userEvent.type(input, 'man')
+    await userEvent.click(await screen.findByRole('option', { name: 'Manga' }))
+    // Selecionar um item no multi limpa a busca e mantém a lista aberta.
+    await userEvent.click(await screen.findByRole('option', { name: 'Laranja' }))
+
+    await expect(screen.getByRole('listbox')).toBeInTheDocument()
+    await waitFor(() =>
+      expect(canvasElement.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2),
+    )
+    // O contador reflete a seleção contra o teto (maxCount).
+    await expect(
+      canvasElement.querySelector('[data-slot="select-count"]'),
+    ).toHaveTextContent('2 / 4')
+  },
+}
+
+/**
+ * i18n: every UI string defaults to English and can be overridden via the
+ * `messages` prop (partial — translate only what you need).
+ */
+export const Translated: Story = {
+  args: {
+    editable: true,
+    multiple: true,
+    allowCustomValue: true,
+    clearable: true,
+    placeholder: 'Selecione frutas...',
+    messages: {
+      search: 'Buscar...',
+      empty: 'Nada encontrado',
+      loading: 'Carregando...',
+      clear: 'Limpar',
+      remove: (label) => `Remover ${label}`,
+      add: (value) => `Adicionar “${value}”`,
+    },
+    'aria-label': 'Frutas',
+  },
+  play: async ({ canvasElement }) => {
+    const input = canvasElement.querySelector<HTMLInputElement>(
+      '[data-slot="select-input"]',
+    )
+    if (!input) throw new Error('input não encontrado')
+
+    // Placeholder traduzido via `messages` não é o do input; aqui validamos os
+    // textos da lista: a opção de criar e o rótulo de remover.
+    await userEvent.click(input)
+    await userEvent.type(input, 'Pêssego')
+    await userEvent.click(
+      await screen.findByRole('option', { name: 'Adicionar “Pêssego”' }),
+    )
+
+    // O chip criado expõe o rótulo de remoção traduzido.
+    await expect(
+      await screen.findByRole('button', { name: 'Remover Pêssego' }),
+    ).toBeInTheDocument()
+  },
+}
+
+/** `allowCustomValue`: accept a typed value that is not in the list. */
+export const AllowCustomValue: Story = {
+  args: {
+    editable: true,
+    multiple: true,
+    allowCustomValue: true,
+    placeholder: 'Digite e crie tags...',
+    'aria-label': 'Tags',
+  },
+  play: async ({ canvasElement }) => {
+    const input = canvasElement.querySelector<HTMLInputElement>(
+      '[data-slot="select-input"]',
+    )
+    if (!input) throw new Error('input não encontrado')
+
+    // Cria um valor livre — vira chip.
+    await userEvent.click(input)
+    await userEvent.type(input, 'Kiwi')
+    await userEvent.click(await screen.findByRole('option', { name: /Add/ }))
+    await waitFor(() =>
+      expect(canvasElement.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(1),
+    )
+
+    // Redigitar mostra o valor como item da lista (selecionado), sem reoferecer
+    // "Add" — é um item "temporário" derivado da seleção.
+    await userEvent.type(input, 'Kiwi')
+    const item = await screen.findByRole('option', { name: 'Kiwi' })
+    await expect(item).toHaveAttribute('aria-selected', 'true')
+    await expect(screen.queryByRole('option', { name: /Add/ })).not.toBeInTheDocument()
+
+    // Desmarcar pelo item remove-o da seleção e da lista.
+    await userEvent.click(item)
+    await waitFor(() =>
+      expect(screen.queryByRole('option', { name: 'Kiwi' })).not.toBeInTheDocument(),
+    )
+  },
 }
 
 // --- Testes de interação (play) --------------------------------------------
@@ -344,7 +657,7 @@ export const SearchFilters: Story = {
     if (!trigger) throw new Error('trigger não encontrado')
 
     await userEvent.click(trigger)
-    const search = await screen.findByRole('combobox', { name: /buscar/i })
+    const search = await screen.findByRole('combobox', { name: /search/i })
     await userEvent.type(search, 'lar')
 
     // Apenas "Laranja" deve permanecer.
@@ -369,7 +682,7 @@ export const KeyboardSelects: Story = {
     if (!trigger) throw new Error('trigger não encontrado')
 
     await userEvent.click(trigger)
-    const search = await screen.findByRole('combobox', { name: /buscar/i })
+    const search = await screen.findByRole('combobox', { name: /search/i })
     await waitFor(() => expect(search).toHaveFocus())
 
     // Com foco virtual, a opção ativa é referenciada por aria-activedescendant.

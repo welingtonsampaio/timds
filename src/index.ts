@@ -85,6 +85,7 @@ export {
   SelectItem,
   SelectList,
   SelectLoading,
+  type SelectMessages,
   type SelectOption,
   type SelectProps,
   SelectRoot,
