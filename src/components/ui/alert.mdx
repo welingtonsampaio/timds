@@ -1,0 +1,132 @@
+{/* alert.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './alert.stories'
+
+<Meta of={Stories} />
+
+# Alert · `Stable`
+
+A contextual feedback banner that surfaces a short message inline, in place on the page.
+
+## Overview
+
+Use an Alert to communicate a status, outcome or piece of context next to the content it
+relates to — a saved confirmation, a failed payment, a maintenance notice. It is a
+static banner, not an overlay: it does not interrupt the user or demand a choice. For a
+blocking confirmation use **AlertDialog** instead. Compose it from an optional leading
+icon, an `AlertTitle`, and an `AlertDescription`.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Container** — the bordered surface; carries the `variant` styling and `role="alert"`.
+- **Icon (optional)** — any `lucide-react` icon passed as a direct child; laid out into
+  the leading grid column automatically. Omit it and the column collapses to zero width.
+- **Title** — `AlertTitle`, the one-line headline (clamped to a single line).
+- **Description** — `AlertDescription`, the supporting body text in a muted tone.
+
+## When to use
+
+- Use to give inline feedback about an action or state (success, error, warning).
+- Use the soft semantic variants (`success`, `warning`, `info`, `accent`) to color-code
+  the message to its meaning.
+- Use `destructive` for an error that needs attention but not a separate dialog.
+
+## When not to use
+
+- Avoid for a choice the user must confirm or cancel — use **AlertDialog**.
+- Avoid for transient, self-dismissing notifications — use a toast pattern instead.
+- Avoid stacking many Alerts; collapse related messages into one.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### Destructive
+<Canvas of={Stories.Destructive} />
+
+### Success
+<Canvas of={Stories.Success} />
+
+### Warning
+<Canvas of={Stories.Warning} />
+
+### Info
+<Canvas of={Stories.Info} />
+
+### Accent
+<Canvas of={Stories.Accent} />
+
+### All variants
+<Canvas of={Stories.AllVariants} />
+
+### Title only
+The description is optional; the layout stays aligned without it.
+
+<Canvas of={Stories.TitleOnly} />
+
+### No icon
+Drop the leading icon and the text aligns to the container edge.
+
+<Canvas of={Stories.NoIcon} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+Alert is a static banner with no interactive callbacks. The guarded behaviors are
+structural:
+
+- It renders with `role="alert"` and exposes its title and description as text content —
+  `HasAlertRole`.
+- Every variant mounts with `role="alert"` — `AllVariants`.
+
+## Code examples
+
+```tsx
+import { Alert, AlertTitle, AlertDescription } from 'timds'
+import { CheckCircle2 } from 'lucide-react'
+
+<Alert variant="success">
+  <CheckCircle2 />
+  <AlertTitle>Changes saved</AlertTitle>
+  <AlertDescription>Your settings were updated successfully.</AlertDescription>
+</Alert>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Title** — a short, scannable headline (it is clamped to one line). State the outcome,
+  not the mechanism ("Payment failed", not "Error 402").
+- **Description** — one or two sentences; say what happened and what to do next.
+- **Tone** — error messages are specific, blame-free and actionable.
+- **Match the variant to the meaning** — don't dress a routine notice as `destructive`.
+
+## Accessibility
+
+- Renders with `role="alert"`, so assistive tech announces the message when it appears —
+  verified by `HasAlertRole`.
+- Color is reinforced by an icon and the wording, never used alone to convey meaning.
+- Body text keeps AA contrast in light and dark themes; axe runs on every story
+  (`a11y: { test: 'error' }`), so contrast/role rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do pair the variant with an icon and wording that match its meaning.
+- ✅ Do keep the title to one scannable line and the description short.
+- ❌ Don't use an Alert for a choice the user must confirm — use AlertDialog.
+- ❌ Don't rely on color alone to signal severity.
+
+## Related components & patterns
+
+- **AlertDialog** — for a blocking confirmation that interrupts the user and demands a
+  choice, rather than an inline banner.
+- **Button** — pair an Alert with an action (Retry, Upgrade) when the message is
+  actionable.

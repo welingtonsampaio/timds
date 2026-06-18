@@ -14,7 +14,8 @@ import { Alert, AlertDescription, AlertTitle } from './alert'
 const meta = {
   title: 'UI/Alert',
   component: Alert,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (alert.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -23,7 +24,7 @@ const meta = {
           'leading icon (any `lucide-react` icon as a direct child) is laid out automatically via the ' +
           'CSS grid. Variants: `default` (neutral), `destructive` (error), and the soft semantic styles ' +
           '`success`, `warning`, `info` and `accent` (brand) — tinted background with a colored icon, ' +
-          'keeping body text at AA contrast in both light and dark themes.',
+          'keeping body text at AA contrast in both light and dark themes. Renders with `role="alert"`.',
       },
     },
   },
@@ -35,12 +36,22 @@ const meta = {
         'Neutral, destructive (error) or one of the soft semantic styles (success, warning, info, accent).',
       table: { defaultValue: { summary: 'default' } },
     },
+    children: {
+      control: false,
+      description:
+        'Composed content — typically an icon, `AlertTitle` and `AlertDescription`.',
+    },
   },
 } satisfies Meta<typeof Alert>
 
 export default meta
 
 type Story = StoryObj<typeof meta>
+
+/* --------------------------------------------------------------------------
+ * Render stories — uma por variante / composição.
+ * Cada uma é render-testada (monta sem erro) e passa pelo axe automaticamente.
+ * -------------------------------------------------------------------------- */
 
 /** Fully interactive — switch the `variant` from the **Controls** panel. */
 export const Playground: Story = {
@@ -126,6 +137,51 @@ export const Accent: Story = {
       </AlertDescription>
     </Alert>
   ),
+}
+
+/** Title-only — the description is optional; the grid stays aligned. */
+export const TitleOnly: Story = {
+  args: { variant: 'info' },
+  render: (args) => (
+    <Alert {...args} className="max-w-md">
+      <InfoIcon />
+      <AlertTitle>Sync complete</AlertTitle>
+    </Alert>
+  ),
+}
+
+/** Without an icon the leading column collapses to zero width. */
+export const NoIcon: Story = {
+  render: (args) => (
+    <Alert {...args} className="max-w-md">
+      <AlertTitle>Plain banner</AlertTitle>
+      <AlertDescription>No leading icon — text aligns to the edge.</AlertDescription>
+    </Alert>
+  ),
+}
+
+/* --------------------------------------------------------------------------
+ * Interaction / behavior tests — play functions que SÃO os testes de regressão.
+ * Alert é estático (sem callbacks): cobrimos estrutura, role e composição.
+ * -------------------------------------------------------------------------- */
+
+/** Exposes `role="alert"` so assistive tech announces it on render. */
+export const HasAlertRole: Story = {
+  render: (args) => (
+    <Alert {...args} className="max-w-md">
+      <Rocket />
+      <AlertTitle>Deploy scheduled</AlertTitle>
+      <AlertDescription>Going live soon.</AlertDescription>
+    </Alert>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const alert = canvas.getByRole('alert')
+    await expect(alert).toBeVisible()
+    // O título e a descrição compõem o nome acessível anunciado pelo role alert.
+    await expect(alert).toHaveTextContent('Deploy scheduled')
+    await expect(alert).toHaveTextContent('Going live soon.')
+  },
 }
 
 /** Every variant stacked, so visual diffs catch any token regression. */
