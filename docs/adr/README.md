@@ -24,6 +24,7 @@ and the consequences. We use a format based on
 | 0005 | [Storybook for documentation and development](./0005-storybook-para-documentacao.md)      | Accepted |
 | 0006 | [Vitest + Testing Library (jsdom) for testing](./0006-vitest-testing-library.md)          | Accepted |
 | 0007 | [Biome for lint, formatting and imports](./0007-biome-lint-format.md)                     | Accepted |
+| 0008 | [Ariakit (+ TanStack Virtual) for the advanced Select](./0008-ariakit-para-select-avancado.md) | Accepted |
 
 ## Creating a new ADR
 

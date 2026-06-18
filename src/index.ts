@@ -45,6 +45,22 @@ export {
   InputOTPSlot,
 } from '@/components/ui/input-otp'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+export {
+  Select,
+  SelectContent,
+  SelectEmpty,
+  SelectGroup,
+  SelectItem,
+  SelectList,
+  SelectLoading,
+  type SelectOption,
+  type SelectProps,
+  SelectRoot,
+  SelectSearch,
+  SelectTrigger,
+  SelectValue,
+  selectTriggerVariants,
+} from '@/components/ui/select'
 export { Spinner } from '@/components/ui/spinner'
 export {
   Switch,
