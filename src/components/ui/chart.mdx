@@ -1,0 +1,163 @@
+{/* chart.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes/smoke. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './chart.stories'
+
+<Meta of={Stories} />
+
+# Chart · `Stable`
+
+A thin, themeable wrapper around [Recharts](https://recharts.org) that drives series
+colors, tooltips and legends from one design-system-aware config.
+
+## Overview
+
+You compose a native Recharts chart (Area, Bar, Line, Pie, Radar, Radial…) inside
+`<ChartContainer>` and feed it a **`ChartConfig`** — a map from each data series to a
+`label`, an optional `icon`, and a `color` (or per-theme colors). The container injects
+each color as a `--color-<key>` CSS variable that the Recharts series reference
+(`fill="var(--color-desktop)"`), so a single config drives the series, the tooltip and
+the legend, and adapts to dark mode automatically. The design-system palette lives in
+the `--chart-1`…`--chart-5` tokens.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **ChartContainer** — the `data-slot="chart"` wrapper. Holds the `config`, injects the
+  `--color-*` variables (via `ChartStyle`), and wraps the chart in a Recharts
+  `ResponsiveContainer`.
+- **ChartConfig** — the series-to-`{ label, icon, color | theme }` map shared by the
+  series, tooltip and legend.
+- **ChartTooltip / ChartTooltipContent** — the hover overlay; `ChartTooltipContent`
+  takes a `dot` | `line` | `dashed` indicator, plus `hideLabel`, `hideIndicator`,
+  `nameKey`/`labelKey` and a custom `formatter`.
+- **ChartLegend / ChartLegendContent** — the series legend, rendered from the same
+  config (`hideIcon`, `nameKey`).
+
+## When to use
+
+- Use to render a data visualization that should match the design-system palette and
+  dark mode without per-chart color wiring.
+- Use the shared `ChartConfig` so the series, tooltip and legend stay in sync.
+- Give two or more charts a common `syncId` (and the same axis) to synchronize hover —
+  cursor, tooltip and label highlight the same point on all of them (see **Synchronized**).
+
+## When not to use
+
+- Avoid for a single KPI number or a sparkline-only need where a full chart is overkill.
+- Avoid combining virtualization-heavy custom Recharts internals the wrapper does not
+  expose — drop down to Recharts directly when you need primitives outside this surface.
+
+## Variants & states
+
+The gallery covers every family from the shadcn chart set.
+
+### Area
+<Canvas of={Stories.AreaBasic} />
+<Canvas of={Stories.AreaStacked} />
+
+### Bar
+<Canvas of={Stories.BarBasic} />
+<Canvas of={Stories.BarMultiple} />
+<Canvas of={Stories.BarStacked} />
+<Canvas of={Stories.BarHorizontal} />
+<Canvas of={Stories.BarLabel} />
+
+### Line
+<Canvas of={Stories.LineBasic} />
+<Canvas of={Stories.LineMultiple} />
+
+### Pie
+<Canvas of={Stories.PieBasic} />
+<Canvas of={Stories.PieDonut} />
+
+### Radar
+<Canvas of={Stories.RadarBasic} />
+
+### Radial
+<Canvas of={Stories.RadialBasic} />
+<Canvas of={Stories.RadialText} />
+
+### Tooltips
+Three indicators (`dot`, `line`, `dashed`), plus `hideLabel` and a custom `formatter`.
+
+<Canvas of={Stories.Tooltips} />
+
+### Synchronized
+A shared `syncId` highlights the same point across charts on hover.
+
+<Canvas of={Stories.Synchronized} />
+
+## Props
+
+`<ChartContainer>` takes the `config`, the chart `children`, and an `initialDimension`
+(used to render before the responsive container has measured). Tooltip and legend
+options are passed to `ChartTooltipContent` / `ChartLegendContent`.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+The charts render via Recharts; the wrapper's job is config-driven styling, which the
+smoke tests in `chart.stories.tsx` verify:
+
+- The container mounts and exposes its `data-slot="chart"` — `Playground`.
+- The legend renders the series labels from the config — `AreaStacked`.
+- Synchronized charts mount as a pair sharing one config — `Synchronized`.
+
+> `ChartTooltipContent` and `ChartLegendContent` must be used inside a `ChartContainer`:
+> their `useChart` hook throws otherwise. This guard is covered by `chart.test.tsx`.
+
+## Code examples
+
+```tsx
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from 'timds'
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+
+const config = {
+  desktop: { label: 'Desktop', color: 'var(--chart-1)' },
+} satisfies ChartConfig
+
+<ChartContainer config={config} className="h-[240px] w-full">
+  <AreaChart accessibilityLayer data={data}>
+    <CartesianGrid vertical={false} />
+    <XAxis dataKey="month" tickLine={false} axisLine={false} />
+    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+    {/* a cor `desktop` vira a variável CSS `--color-desktop` */}
+    <Area dataKey="desktop" fill="var(--color-desktop)" stroke="var(--color-desktop)" />
+  </AreaChart>
+</ChartContainer>
+```
+
+<Source of={Stories.AreaBasic} />
+
+## Content & UX writing
+
+- **Series labels** — short and human ("Desktop", "Mobile"); they appear in the tooltip
+  and the legend, so keep them consistent with the surrounding copy.
+- **Numbers** — the tooltip formats numeric values with `toLocaleString()`; supply a
+  custom `formatter` for units or currency.
+- **Empty / loading** — handle the data-fetch states in the consumer; the wrapper does
+  not render its own placeholder.
+
+## Accessibility
+
+- Pass `accessibilityLayer` to the Recharts chart for keyboard and screen-reader support
+  of the plotted points (the gallery does this throughout).
+- Color is never the only signal — pair series with labels in the legend and tooltip.
+- Per-theme colors (`theme={{ light, dark }}`) keep contrast correct in both modes.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Related components & patterns
+
+- **Card** — the gallery wraps each chart in a Card with a title/description; the
+  recommended frame for a dashboard tile.
+- **Recharts** — the underlying library; drop to its primitives directly when you need
+  chart types or props this wrapper does not surface.
