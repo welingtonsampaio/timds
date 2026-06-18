@@ -52,6 +52,11 @@ export {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+export {
+  Checkbox,
+  type CheckboxProps,
+  checkboxVariants,
+} from '@/components/ui/checkbox'
 export { Input } from '@/components/ui/input'
 export {
   InputGroup,
