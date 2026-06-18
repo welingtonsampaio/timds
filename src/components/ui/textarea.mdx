@@ -1,0 +1,115 @@
+{/* textarea.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './textarea.stories'
+
+<Meta of={Stories} />
+
+# Textarea · `Stable`
+
+A multi-line text field for free-form input that can span several lines.
+
+## Overview
+
+Use a Textarea when input is naturally longer than a single line — a comment, a bio, a
+message. It is a thin wrapper over the native `<textarea>` sharing the same tokens as
+**Input**, so the two line up in a form. It auto-grows with its content
+(`field-sizing-content`) from a minimum height, and supports the standard `disabled` and
+`aria-invalid` states.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Field** — the bordered, resizable text area; carries focus, disabled and invalid
+  styling.
+- **Placeholder (optional)** — hint text shown while the field is empty; not a substitute
+  for a label.
+- **Label (external)** — an associated `<label htmlFor>` providing the accessible name.
+
+## When to use
+
+- Use for free-form text that may wrap to multiple lines (messages, notes, descriptions).
+- Use when you want the field to grow with its content rather than scroll.
+
+## When not to use
+
+- Avoid for single-line values (name, email, search) — use **Input**.
+- Avoid for choosing from fixed options — use **Select** or **RadioGroup**.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### With label
+<Canvas of={Stories.WithLabel} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Invalid
+`aria-invalid` switches the field to the destructive error styling.
+
+<Canvas of={Stories.Invalid} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `textarea.stories.tsx`:
+
+- Typing fires `onChange` and preserves line breaks — `TypesText`.
+- The field is keyboard-focusable via Tab — `FocusesWithKeyboard`.
+- A disabled field is not editable and does not fire `onChange` — `DisabledDoesNotType`.
+- The invalid state exposes `aria-invalid="true"` — `InvalidExposesAria`.
+
+## Code examples
+
+```tsx
+import { Textarea } from 'timds'
+
+// Com label associado (nome acessível)
+<label htmlFor="bio">Bio</label>
+<Textarea id="bio" placeholder="Tell us about yourself…" />
+
+// Estado de erro
+<Textarea aria-invalid aria-describedby="bio-error" />
+
+// Desabilitado
+<Textarea disabled value="Read-only" />
+```
+
+<Source of={Stories.WithLabel} />
+
+## Content & UX writing
+
+- **Label** — always provide one; describe the content expected ("Bio", "Message").
+- **Placeholder** — an example or hint, never a replacement for the label.
+- **Error messages** — specific and actionable; associate them with `aria-describedby`.
+
+## Accessibility
+
+- Exposes the native `textbox` role; give it an accessible name via an associated
+  `<label htmlFor>` or `aria-label`.
+- Reachable and operable by keyboard: Tab to focus, type to edit — verified by
+  `FocusesWithKeyboard` and `TypesText`.
+- The error state sets `aria-invalid="true"` — verified by `InvalidExposesAria`; pair it
+  with `aria-describedby` pointing at the error text.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do give every Textarea an associated label.
+- ✅ Do set `aria-invalid` and link an error message via `aria-describedby` on failure.
+- ❌ Don't use a placeholder as the only label.
+- ❌ Don't use a Textarea for single-line input — use Input.
+
+## Related components & patterns
+
+- **Input** — for single-line values; shares the same tokens and form layout.
+- **InputGroup** — for affixing icons/addons around a field; see `InputGroupTextarea`
+  for a Textarea inside a group.
