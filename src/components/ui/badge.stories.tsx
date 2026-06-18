@@ -1,12 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CheckCircle2 } from 'lucide-react'
+import { expect, userEvent, within } from 'storybook/test'
 
 import { Badge } from './badge'
 
 const meta = {
   title: 'UI/Badge',
   component: Badge,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (badge.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -14,7 +16,7 @@ const meta = {
           'Compact pill for labels, counts and status. Semantic states (`success` / `warning` / ' +
           '`info`) and the decorative chart palette (`chart-1`…`chart-5`) ship as first-class, ' +
           'soft/tonal variants with AA contrast in both themes. Three `size`s (`sm` / `md` / `lg`) ' +
-          'are available. Use `asChild` to turn it into a link.',
+          'are available. Use `asChild` to render the styling onto a child element (e.g. an `<a>`).',
       },
     },
   },
@@ -50,7 +52,7 @@ const meta = {
     children: { control: 'text', description: 'Badge content.' },
     asChild: {
       control: false,
-      description: 'Render onto the child element (e.g. an `<a>`).',
+      description: 'Render the styling onto the child element (e.g. an `<a>`).',
     },
   },
 } satisfies Meta<typeof Badge>
@@ -58,6 +60,11 @@ const meta = {
 export default meta
 
 type Story = StoryObj<typeof meta>
+
+/* --------------------------------------------------------------------------
+ * Render stories — uma por variante / estado visual.
+ * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak every prop from the **Controls** panel. */
 export const Playground: Story = {}
@@ -105,6 +112,7 @@ export const Sizes: Story = {
   ),
 }
 
+/** A leading icon reinforces the label. */
 export const WithIcon: Story = {
   args: {
     children: (
@@ -126,4 +134,62 @@ export const Status: Story = {
       <Badge variant="destructive">Failed</Badge>
     </div>
   ),
+}
+
+/** With `asChild`, the badge styling is applied to a real link. */
+export const AsLink: Story = {
+  args: {
+    asChild: true,
+    children: <a href="#filters">Filters</a>,
+  },
+}
+
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * Badge é um `<span>` decorativo: sem role próprio. Quando vira link via
+ * `asChild`, é navegável e clicável. Sempre `await` em userEvent/expect.
+ * -------------------------------------------------------------------------- */
+
+/** Renders the content and carries the variant/size data-attributes. */
+export const RendersContent: Story = {
+  args: { variant: 'success', size: 'lg', children: 'Active' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const badge = canvas.getByText('Active')
+    await expect(badge).toBeInTheDocument()
+    // data-attributes refletem variant/size (hooks de estrutura, não de teste).
+    await expect(badge).toHaveAttribute('data-slot', 'badge')
+    await expect(badge).toHaveAttribute('data-variant', 'success')
+    await expect(badge).toHaveAttribute('data-size', 'lg')
+  },
+}
+
+/** `asChild` renders the badge styling onto a real link (role `link` + href). */
+export const AsLinkIsNavigable: Story = {
+  args: {
+    asChild: true,
+    children: <a href="#filters">Filters</a>,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Com asChild o elemento renderizado é um <a>, exposto com role `link`.
+    // Não clicamos: a navegação real do <a> fecharia a página do browser de teste;
+    // basta validar que o link carrega o href e o data-slot herdado do Badge.
+    const link = canvas.getByRole('link', { name: 'Filters' })
+    await expect(link).toHaveAttribute('href', '#filters')
+    await expect(link).toHaveAttribute('data-slot', 'badge')
+  },
+}
+
+/** As a link, the badge is reachable by keyboard. */
+export const AsLinkFocusesWithKeyboard: Story = {
+  args: {
+    asChild: true,
+    children: <a href="#filters">Filters</a>,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.tab()
+    await expect(canvas.getByRole('link', { name: 'Filters' })).toHaveFocus()
+  },
 }

@@ -1,0 +1,124 @@
+{/* badge.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './badge.stories'
+
+<Meta of={Stories} />
+
+# Badge · `Stable`
+
+A compact pill that labels, counts, or surfaces the status of an item.
+
+## Overview
+
+Use a Badge to attach a short, glanceable marker to something — a status, a category, or
+a count. It is a decorative `<span>` by default, so it carries no interactive role; pass
+`asChild` to render the styling onto a real element (typically an `<a>`) when it must be
+clickable. Semantic variants map to the feedback tokens and the chart palette offers
+neutral, decorative colors for categorization.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Container** — the rounded pill that carries the `variant` styling and the hit area.
+- **Label** — the short text or count inside the pill.
+- **Icon (optional)** — a leading icon reinforcing the meaning; in the chart variants it
+  inherits the matching hue.
+
+## When to use
+
+- Use to show the status of an item (success, pending, failed) with a semantic variant.
+- Use for a short count or tag next to a title or list item.
+- Use the `chart-*` variants to color-code categories decoratively.
+- Use `asChild` to make a badge an actual link (e.g. a removable filter chip).
+
+## When not to use
+
+- Avoid as a primary action — use a **Button** for actions the user commits to.
+- Avoid long sentences; a Badge is for one or two words or a count.
+- Avoid relying on color alone to convey status — pair it with a clear label.
+
+## Variants & states
+
+### Variants
+<Canvas of={Stories.Variants} />
+
+### Chart colors
+Decorative palette for categorization, built on the chart tokens.
+
+<Canvas of={Stories.ChartColors} />
+
+### Status
+Semantic states built from the feedback tokens.
+
+<Canvas of={Stories.Status} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### With icon
+<Canvas of={Stories.WithIcon} />
+
+### As link
+With `asChild`, the styling is applied to a child element.
+
+<Canvas of={Stories.AsLink} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `badge.stories.tsx`:
+
+- The badge renders its content and exposes `data-variant` / `data-size` — `RendersContent`.
+- With `asChild`, the badge becomes a real link with `href` and the `link` role —
+  `AsLinkIsNavigable`.
+- As a link, it is reachable by keyboard — `AsLinkFocusesWithKeyboard`.
+
+## Code examples
+
+```tsx
+import { Badge } from 'timds'
+
+<Badge>New</Badge>
+<Badge variant="success">Completed</Badge>
+<Badge variant="warning" size="sm">Pending</Badge>
+
+// As a link (e.g. a filter chip)
+<Badge asChild variant="outline">
+  <a href="#filters">Filters</a>
+</Badge>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Labels** — keep them to one or two words; sentence case for status ("In review").
+- **Counts** — show the number alone or with a unit; avoid abbreviating below clarity.
+- **No terminal punctuation** inside a badge.
+- **Don't encode meaning in color alone** — the text must carry the status too.
+
+## Accessibility
+
+- The default Badge is a non-interactive `<span>` with no role; it is read as plain text.
+- When using `asChild` with an `<a>`, the element exposes the `link` role and is
+  keyboard-focusable — verified by `AsLinkFocusesWithKeyboard`.
+- axe runs on every story (`a11y: { test: 'error' }`), so contrast/name/role rules are
+  gated in CI — the soft/tonal variants meet AA in both themes.
+
+## Do's and Don'ts
+
+- ✅ Do pair a status color with a clear text label.
+- ✅ Do use `asChild` when the badge must be clickable, so it gets a proper role.
+- ❌ Don't use a Badge for an action — reach for a **Button**.
+- ❌ Don't put long sentences inside a Badge.
+
+## Related components & patterns
+
+- **Button** — for actions the user commits to; a Badge only labels or links.
+- **Avatar** — `AvatarBadge` is a status dot for an avatar, not this component.
+- **Card** — Badges commonly sit in `CardAction` to surface a metric delta or status.
