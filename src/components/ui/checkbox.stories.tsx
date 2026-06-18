@@ -7,7 +7,8 @@ import { Checkbox, CheckboxGroup, CheckboxGroupItem } from './checkbox'
 const meta = {
   title: 'UI/Checkbox',
   component: Checkbox,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (checkbox.mdx), que
+  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -158,6 +159,38 @@ export const TogglesWithKeyboard: Story = {
     await userEvent.tab()
     await expect(cb).toHaveFocus()
     await userEvent.keyboard(' ')
+    await expect(args.onCheckedChange).toHaveBeenCalledWith(true)
+  },
+}
+
+/** Exposes the `checkbox` role and flips `aria-checked` when toggled. */
+export const ExposesAriaChecked: Story = {
+  args: { onCheckedChange: fn() },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const cb = canvas.getByRole('checkbox')
+
+    // Estado inicial desmarcado é refletido em aria-checked.
+    await expect(cb).toHaveAttribute('aria-checked', 'false')
+    await userEvent.click(cb)
+    await expect(cb).toHaveAttribute('aria-checked', 'true')
+  },
+}
+
+/**
+ * Mixed (indeterminate) state: the box reports `aria-checked="mixed"` and the
+ * next click resolves it to a fully checked box.
+ */
+export const IndeterminateResolvesOnClick: Story = {
+  args: { checked: 'indeterminate', onCheckedChange: fn() },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    const cb = canvas.getByRole('checkbox')
+
+    await expect(cb).toHaveAttribute('data-state', 'indeterminate')
+    await expect(cb).toHaveAttribute('aria-checked', 'mixed')
+    // A partir de indeterminate, Radix emite o próximo estado como `true`.
+    await userEvent.click(cb)
     await expect(args.onCheckedChange).toHaveBeenCalledWith(true)
   },
 }

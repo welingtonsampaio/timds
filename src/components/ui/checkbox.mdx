@@ -1,0 +1,157 @@
+{/* checkbox.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './checkbox.stories'
+
+<Meta of={Stories} />
+
+# Checkbox · `Stable`
+
+A boolean control for selecting an option, typically as part of a form submitted later.
+
+## Overview
+
+Use a Checkbox to let people turn a single option on or off, or to pick several items
+from a list. It is built on Radix `Checkbox`, so it ships the correct `checkbox` role,
+keyboard behavior and a third `indeterminate` state out of the box. For settings that
+take effect the instant they are flipped, prefer a **Switch** instead.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Box** — the square control surface; carries the `variant` color when checked and the
+  focus ring.
+- **Indicator** — the inner icon: a check when `checked`, a minus when `indeterminate`.
+- **Label (external)** — associate a `<label htmlFor>` with the box `id`; the Checkbox
+  does not render its own label.
+
+## When to use
+
+- Use for opt-in choices submitted with a form (terms, preferences).
+- Use a `CheckboxGroup` to select several values from a related set.
+- Use the `indeterminate` state for a parent "select all" that is only partially checked.
+
+## When not to use
+
+- Avoid for a setting that applies immediately — use a **Switch**.
+- Avoid for choosing exactly one option among several mutually exclusive ones — use a
+  **RadioGroup**.
+
+## Variants & states
+
+### Variants
+Three chromatic schemes for the checked box.
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Indeterminate
+Renders a minus icon and reports `aria-checked="mixed"`.
+
+<Canvas of={Stories.Indeterminate} />
+
+### With label
+<Canvas of={Stories.WithLabel} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Invalid
+Set `aria-invalid` to turn the border and ring destructive.
+
+<Canvas of={Stories.Invalid} />
+
+### Group
+`CheckboxGroup` manages the set of checked values and propagates `variant`/`size`/
+`disabled` to each item.
+
+<Canvas of={Stories.Group} />
+
+### Group — select all
+A parent indeterminate checkbox that toggles the whole set at once.
+
+<Canvas of={Stories.GroupSelectAll} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `checkbox.stories.tsx`:
+
+- Clicking toggles the state and fires `onCheckedChange` with the new value —
+  `TogglesOnClick`.
+- The checkbox is keyboard-focusable and toggles with Space — `TogglesWithKeyboard`.
+- It exposes the `checkbox` role and flips `aria-checked` — `ExposesAriaChecked`.
+- An indeterminate box reports `aria-checked="mixed"` and resolves to checked on the
+  next click — `IndeterminateResolvesOnClick`.
+- A disabled checkbox does not toggle and does not fire `onCheckedChange` —
+  `DisabledDoesNotToggle`.
+- In a group, toggling items updates the value set via `onValueChange` —
+  `GroupTogglesItems`.
+
+## Code examples
+
+```tsx
+import { Checkbox, CheckboxGroup, CheckboxGroupItem } from 'timds'
+
+// Single checkbox paired with a label
+<label htmlFor="terms" className="flex items-center gap-2">
+  <Checkbox id="terms" />
+  Accept the terms
+</label>
+
+// Controlled
+<Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} />
+
+// Indeterminate
+<Checkbox checked="indeterminate" />
+
+// Group of related values
+<CheckboxGroup defaultValue={['react']} onValueChange={setValues}>
+  <CheckboxGroupItem value="react" />
+  <CheckboxGroupItem value="vue" />
+</CheckboxGroup>
+```
+
+<Source of={Stories.Group} />
+
+## Content & UX writing
+
+- **Labels** — describe the option as a noun phrase in sentence case ("Email
+  notifications"), not the action.
+- **Required choices** — when an opt-in is mandatory (e.g. accepting terms), surface the
+  requirement in nearby text, not only via `aria-invalid`.
+- **Group label** — give a `CheckboxGroup` an accessible name with `aria-label` or
+  `aria-labelledby`, since it does not render its own heading.
+
+## Accessibility
+
+- Exposes the native `checkbox` role with `data-state="checked" | "unchecked" |
+  "indeterminate"` and the matching `aria-checked` (`true` / `false` / `mixed`) — see
+  `ExposesAriaChecked` and `IndeterminateResolvesOnClick`.
+- Reachable and operable by keyboard: Tab to focus, Space to toggle — verified by
+  `TogglesWithKeyboard`.
+- The Checkbox has no built-in label; provide one via `<label htmlFor>` or `aria-label`,
+  and label a `CheckboxGroup` via `aria-label`/`aria-labelledby`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do pair every Checkbox with a label (`<label htmlFor>` or `aria-label`).
+- ✅ Do use the `indeterminate` state for a partially-selected "select all" parent.
+- ❌ Don't use a Checkbox for a setting that applies immediately — use a **Switch**.
+- ❌ Don't use multiple Checkboxes for a single mutually-exclusive choice — use a
+  **RadioGroup**.
+
+## Related components & patterns
+
+- **Switch** — for an instant on/off setting that takes effect immediately.
+- **RadioGroup** — for choosing exactly one option among several.
+- **CheckboxGroup** — composes related Checkboxes and manages their value set; pair each
+  item with a `<label>`.
