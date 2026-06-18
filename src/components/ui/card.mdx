@@ -1,0 +1,143 @@
+{/* card.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './card.stories'
+
+<Meta of={Stories} />
+
+# Card · `Stable`
+
+A surface container that groups related content and actions into a single panel.
+
+## Overview
+
+Use a Card to frame a self-contained unit of content — a KPI, a form, a summary panel —
+on a raised surface. It is composed from slot parts (`CardHeader`, `CardTitle`,
+`CardDescription`, `CardAction`, `CardContent`, `CardFooter`) so you assemble exactly the
+structure you need. The header is a grid: drop a `CardAction` in and it automatically
+docks to the top-right of the title.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Card** — the outer surface; border, padding, and shadow.
+- **CardHeader** — the top grid region holding the title, description, and action.
+- **CardTitle** — the primary heading text of the card.
+- **CardDescription** — secondary supporting text under the title.
+- **CardAction** — a slot that docks to the top-right of the header (button, badge…).
+- **CardContent** — the main body region.
+- **CardFooter** — the bottom region for actions or summaries.
+
+## When to use
+
+- Use to group related content and its actions into one bounded surface.
+- Use for KPI tiles, summary panels, settings sections, and compact forms.
+- Use `CardAction` for a single top-right affordance (menu, edit, status badge).
+
+## When not to use
+
+- Avoid nesting cards deeply — it adds visual noise; prefer a flat layout or sections.
+- Avoid for a single line of text with no grouping need — a plain element is enough.
+
+## Variants & states
+
+### Default
+A full card with header, action, content, and footer.
+
+<Canvas of={Stories.Default} />
+
+### Title only
+The minimal composition: header plus content.
+
+<Canvas of={Stories.TitleOnly} />
+
+### With action
+The header docks `CardAction` to the top-right.
+
+<Canvas of={Stories.WithAction} />
+
+### KPI grid
+Cards composed into a responsive metrics grid.
+
+<Canvas of={Stories.KpiGrid} />
+
+## Props
+
+`Card` and its parts are thin `div` wrappers that forward all native props (and accept a
+`className`). The interactive Playground exposes the card copy as controls:
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+Card has no behavior of its own; it composes parts. These structural guarantees are
+verified by interaction tests in `card.stories.tsx`:
+
+- Every composed part renders inside the card — `RendersAllSlots`.
+- A `CardAction` marks the header so it docks top-right — `ActionDocksInHeader`.
+- Controls placed in the footer/action stay interactive — `FooterButtonClicks`.
+
+## Code examples
+
+```tsx
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardAction,
+  CardContent,
+  CardFooter,
+  Button,
+  Badge,
+} from 'timds'
+
+<Card className="w-80">
+  <CardHeader>
+    <CardTitle>Total revenue</CardTitle>
+    <CardDescription>Last 30 days</CardDescription>
+    <CardAction>
+      <Badge variant="success">+9.8%</Badge>
+    </CardAction>
+  </CardHeader>
+  <CardContent>
+    <p className="text-3xl font-bold">$125,830</p>
+  </CardContent>
+  <CardFooter>
+    <Button variant="outline" className="w-full">View report</Button>
+  </CardFooter>
+</Card>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Title** — short and specific ("Total revenue"), sentence case, no terminal period.
+- **Description** — one supporting line; don't repeat the title.
+- **Action** — keep to a single affordance in `CardAction`; verb-first if it's a button.
+- **Footer** — use for a primary action or a summary, not for dense secondary content.
+
+## Accessibility
+
+- The parts are non-semantic `div`s — use real headings/landmarks inside when a card
+  represents a section, so assistive tech can navigate it.
+- Interactive controls inside a card (buttons, links) keep their own roles and keyboard
+  behavior — verified by `FooterButtonClicks`.
+- axe runs on every story (`a11y: { test: 'error' }`), so contrast/name/role rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do compose only the parts you need (header/content/footer are all optional).
+- ✅ Do reserve `CardAction` for one top-right affordance.
+- ❌ Don't deeply nest cards within cards.
+- ❌ Don't rely on the card border alone to convey grouping for screen readers — use
+  headings.
+
+## Related components & patterns
+
+- **Badge** — sits in `CardAction` to surface a status or a metric delta.
+- **Button** — the primary action in `CardFooter` or `CardAction`.
+- **Chart** — pairs with `CardContent` for KPI and analytics panels.

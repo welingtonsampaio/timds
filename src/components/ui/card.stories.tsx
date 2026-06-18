@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TrendingUp } from 'lucide-react'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import { Badge } from './badge'
 import { Button } from './button'
@@ -16,15 +17,17 @@ import {
 const meta = {
   title: 'UI/Card',
   component: Card,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (card.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component:
-          'Surface container composed from slot parts: `CardHeader`, `CardTitle`, `CardDescription`, ' +
-          '`CardAction` (top-right slot), `CardContent` and `CardFooter`. The header is a grid, so ' +
-          '`CardAction` automatically docks to the right of the title. Ideal for KPIs, forms and panels.',
+          'Surface container composed from slot parts: `CardHeader`, `CardTitle`, ' +
+          '`CardDescription`, `CardAction` (top-right slot), `CardContent` and `CardFooter`. ' +
+          'The header is a grid, so `CardAction` automatically docks to the right of the title. ' +
+          'Ideal for KPIs, forms and panels.',
       },
     },
   },
@@ -40,6 +43,11 @@ type PlaygroundArgs = {
   value: string
   footer: string
 }
+
+/* --------------------------------------------------------------------------
+ * Render stories — composições do Card.
+ * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * -------------------------------------------------------------------------- */
 
 /** Fully interactive — edit the card copy from the **Controls** panel. */
 export const Playground: StoryObj<PlaygroundArgs> = {
@@ -105,6 +113,42 @@ export const Default: Story = {
   ),
 }
 
+/** Minimal card — only header (title + description) and content. */
+export const TitleOnly: Story = {
+  render: () => (
+    <Card className="w-80">
+      <CardHeader>
+        <CardTitle>Notifications</CardTitle>
+        <CardDescription>You have 3 unread messages.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm">Open the inbox to review them.</p>
+      </CardContent>
+    </Card>
+  ),
+}
+
+/** The header docks `CardAction` to the top-right of the title. */
+export const WithAction: Story = {
+  render: () => (
+    <Card className="w-80">
+      <CardHeader>
+        <CardTitle>Project Apollo</CardTitle>
+        <CardDescription>Sprint 14</CardDescription>
+        <CardAction>
+          <Button variant="ghost" size="sm">
+            Edit
+          </Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">12 of 20 tasks completed.</p>
+      </CardContent>
+    </Card>
+  ),
+}
+
+/** KPI cards laid out in a responsive grid. */
 export const KpiGrid: Story = {
   parameters: { layout: 'fullscreen' },
   render: () => (
@@ -129,4 +173,84 @@ export const KpiGrid: Story = {
       ))}
     </div>
   ),
+}
+
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * Card é composição (sem callbacks próprios): asseguramos que cada slot
+ * renderiza, que o CardAction marca o header como tendo ação, e que controles
+ * dentro do footer/action seguem interativos. Sempre `await` em userEvent/expect.
+ * -------------------------------------------------------------------------- */
+
+/** Cada parte composta renderiza com seu `data-slot`. */
+export const RendersAllSlots: Story = {
+  render: () => (
+    <Card className="w-80">
+      <CardHeader>
+        <CardTitle>Total revenue</CardTitle>
+        <CardDescription>Last 30 days</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>$125,830</p>
+      </CardContent>
+      <CardFooter>Footer</CardFooter>
+    </Card>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Os data-slots são hooks de estrutura; aqui validamos a composição completa.
+    const card = canvas.getByText('Total revenue').closest('[data-slot="card"]')
+    await expect(card).toBeInTheDocument()
+    await expect(canvas.getByText('Total revenue')).toBeInTheDocument()
+    await expect(canvas.getByText('Last 30 days')).toBeInTheDocument()
+    await expect(canvas.getByText('$125,830')).toBeInTheDocument()
+    await expect(canvas.getByText('Footer')).toBeInTheDocument()
+  },
+}
+
+/** O `CardAction` marca o header (selector `has-data-[slot=card-action]`). */
+export const ActionDocksInHeader: Story = {
+  render: () => (
+    <Card className="w-80">
+      <CardHeader data-testid="header">
+        <CardTitle>Project Apollo</CardTitle>
+        <CardAction>
+          <Button variant="ghost" size="sm">
+            Edit
+          </Button>
+        </CardAction>
+      </CardHeader>
+    </Card>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const header = canvas.getByTestId('header')
+    // O header contém um filho com data-slot=card-action: é o gancho que o
+    // CSS usa para ativar o grid de duas colunas.
+    await expect(header.querySelector('[data-slot="card-action"]')).toBeInTheDocument()
+  },
+}
+
+// Spy dedicado ao botão do footer: `args.onClick` do Card é tipado para `div`,
+// incompatível com o handler de `button`.
+const handleViewReport = fn()
+
+/** Controles dentro do Card (footer/action) permanecem interativos. */
+export const FooterButtonClicks: Story = {
+  render: () => (
+    <Card className="w-80">
+      <CardHeader>
+        <CardTitle>Total revenue</CardTitle>
+      </CardHeader>
+      <CardFooter>
+        <Button onClick={handleViewReport}>View report</Button>
+      </CardFooter>
+    </Card>
+  ),
+  play: async ({ canvasElement }) => {
+    handleViewReport.mockClear()
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'View report' }))
+    await expect(handleViewReport).toHaveBeenCalledOnce()
+  },
 }
