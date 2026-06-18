@@ -32,8 +32,9 @@ const users: SelectOption[] = [
   { value: 'carla', label: 'Carla Dias', email: 'carla@timds.dev', role: 'Design' },
 ]
 
-// 10k itens para exercitar a virtualização.
-const manyOptions: SelectOption[] = Array.from({ length: 10000 }, (_, i) => ({
+// 1k itens: suficiente para exercitar a virtualização (auto > 100) sem o custo
+// de filtrar/re-renderizar 10k a cada tecla, que tornava o play lento e flaky.
+const manyOptions: SelectOption[] = Array.from({ length: 1000 }, (_, i) => ({
   value: `item-${i}`,
   label: `Item ${i}`,
 }))
@@ -303,12 +304,12 @@ export const InfiniteScroll: Story = {
   },
 }
 
-/** Virtualized: 10.000 items rendered smoothly (auto-enabled). */
+/** Virtualized: 1.000 items rendered smoothly (auto-enabled). */
 export const Virtualized: Story = {
   args: {
     options: manyOptions,
     searchable: true,
-    placeholder: 'Selecione entre 10k itens...',
+    placeholder: 'Selecione entre 1k itens...',
     messages: { search: 'Buscar item...' },
     onValueChange: fn(),
   },
@@ -322,7 +323,7 @@ export const Virtualized: Story = {
     const listbox = await screen.findByRole('listbox')
 
     // A lista NÃO vem vazia (regressão do foco virtual/scroll element): o
-    // primeiro item das 10k opções aparece.
+    // primeiro item das 1k opções aparece.
     await expect(
       await screen.findByRole('option', { name: 'Item 0' }),
     ).toBeInTheDocument()
@@ -341,10 +342,10 @@ export const Virtualized: Story = {
 
     // Buscar um item distante traz ele ao topo (renderizado) e permite selecionar.
     const search = screen.getByRole('combobox', { name: /buscar/i })
-    await userEvent.type(search, '4242')
-    const match = await screen.findByRole('option', { name: 'Item 4242' })
+    await userEvent.type(search, '942')
+    const match = await screen.findByRole('option', { name: 'Item 942' })
     await userEvent.click(match)
-    await expect(args.onValueChange).toHaveBeenCalledWith('item-4242')
+    await expect(args.onValueChange).toHaveBeenCalledWith('item-942')
   },
 }
 

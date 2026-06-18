@@ -1,8 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { Select, type SelectOption } from './select'
+import { Select, type SelectOption, SelectRoot, SelectSearch } from './select'
 
 const options: SelectOption[] = [
   { value: 'apple', label: 'Maçã' },
@@ -374,6 +374,320 @@ describe('Select', () => {
       expect(screen.getByRole('listbox')).toBeInTheDocument()
       expect(onValueChange).toHaveBeenLastCalledWith(['apple', 'banana'])
       expect(container.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2)
+    })
+
+    it('remove um chip pelo "x" no modo editável multi', async () => {
+      const onValueChange = vi.fn()
+      const { container } = render(
+        <Select
+          options={options}
+          editable
+          multiple
+          defaultValue={['apple', 'banana']}
+          onValueChange={onValueChange}
+          aria-label="Frutas"
+        />,
+      )
+      const removes = container.querySelectorAll<HTMLElement>(
+        '[data-slot="select-chip-remove"]',
+      )
+      expect(removes).toHaveLength(2)
+      await userEvent.click(removes[0])
+      expect(onValueChange).toHaveBeenLastCalledWith(['banana'])
+    })
+
+    it('limpa a seleção pelo botão de limpar no modo editável', async () => {
+      const onValueChange = vi.fn()
+      const { container } = render(
+        <Select
+          options={options}
+          editable
+          clearable
+          defaultValue="apple"
+          onValueChange={onValueChange}
+          aria-label="Fruta"
+        />,
+      )
+      const clear = container.querySelector<HTMLElement>('[data-slot="select-clear"]')
+      expect(clear).not.toBeNull()
+      await userEvent.click(clear as HTMLElement)
+      expect(onValueChange).toHaveBeenLastCalledWith('')
+    })
+
+    it('abre a lista pelo botão de disclosure', async () => {
+      const { container } = render(
+        <Select options={options} editable aria-label="Fruta" />,
+      )
+      const disclosure = container.querySelector<HTMLElement>(
+        '[data-slot="select-disclosure"]',
+      )
+      expect(disclosure).not.toBeNull()
+      await userEvent.click(disclosure as HTMLElement)
+      expect(await screen.findByRole('listbox')).toBeInTheDocument()
+    })
+
+    it('usa renderItem na lista do modo editável', async () => {
+      render(
+        <Select
+          options={options}
+          editable
+          renderItem={(o) => `E:${o.label}`}
+          aria-label="Fruta"
+        />,
+      )
+      const input = screen.getByRole('combobox')
+      await userEvent.click(input)
+      expect(await screen.findByText('E:Maçã')).toBeInTheDocument()
+    })
+
+    it('usa renderItem com maxCount (LimitedEditableItem)', async () => {
+      render(
+        <Select
+          options={options}
+          editable
+          multiple
+          maxCount={2}
+          renderItem={(o) => `L:${o.label}`}
+          aria-label="Frutas"
+        />,
+      )
+      const input = screen.getByRole('combobox')
+      await userEvent.click(input)
+      expect(await screen.findByText('L:Maçã')).toBeInTheDocument()
+    })
+
+    it('usa renderValue nos chips e resume em "+N" (editável multi)', () => {
+      const many: SelectOption[] = Array.from({ length: 4 }, (_, i) => ({
+        value: `v${i}`,
+        label: `I${i}`,
+      }))
+      const { container } = render(
+        <Select
+          options={many}
+          editable
+          multiple
+          renderValue={(o) => `C:${o.label}`}
+          maxDisplayChips={2}
+          defaultValue={['v0', 'v1', 'v2']}
+          aria-label="Tags"
+        />,
+      )
+      expect(container).toHaveTextContent('C:I0')
+      expect(container).toHaveTextContent('+1')
+    })
+
+    it('editável: não dispara onLoadMore quando loading', async () => {
+      const onLoadMore = vi.fn()
+      render(
+        <Select
+          options={options}
+          editable
+          onLoadMore={onLoadMore}
+          hasMore
+          loading
+          aria-label="Fruta"
+        />,
+      )
+      const input = screen.getByRole('combobox')
+      await userEvent.click(input)
+      const list = (await screen.findByRole('listbox')) as HTMLElement
+      fireEvent.scroll(list)
+      expect(onLoadMore).not.toHaveBeenCalled()
+    })
+
+    it('agrupa as opções por group no modo editável', async () => {
+      const grouped: SelectOption[] = [
+        { value: 'apple', label: 'Maçã', group: 'Frutas' },
+        // Segundo item no mesmo grupo exercita o "append" no bucket existente.
+        { value: 'pear', label: 'Pera', group: 'Frutas' },
+        { value: 'carrot', label: 'Cenoura', group: 'Legumes' },
+      ]
+      render(<Select options={grouped} editable aria-label="Comida" />)
+      const input = screen.getByRole('combobox')
+      await userEvent.click(input)
+      await screen.findByRole('listbox')
+      expect(screen.getByText('Frutas')).toBeInTheDocument()
+      expect(screen.getByText('Legumes')).toBeInTheDocument()
+    })
+  })
+
+  describe('infinite scroll (onLoadMore)', () => {
+    it('dispara onLoadMore ao rolar a lista (single)', async () => {
+      const onLoadMore = vi.fn()
+      const { container } = render(
+        <Select options={options} onLoadMore={onLoadMore} hasMore aria-label="Fruta" />,
+      )
+      await userEvent.click(openTrigger(container))
+      await screen.findByRole('listbox')
+      const list = container.querySelector<HTMLElement>('[data-slot="select-list"]')
+      fireEvent.scroll(list as HTMLElement)
+      expect(onLoadMore).toHaveBeenCalled()
+    })
+
+    it('não dispara onLoadMore quando loading', async () => {
+      const onLoadMore = vi.fn()
+      const { container } = render(
+        <Select
+          options={options}
+          onLoadMore={onLoadMore}
+          hasMore
+          loading
+          aria-label="Fruta"
+        />,
+      )
+      await userEvent.click(openTrigger(container))
+      await screen.findByRole('listbox')
+      const list = container.querySelector<HTMLElement>('[data-slot="select-list"]')
+      fireEvent.scroll(list as HTMLElement)
+      expect(onLoadMore).not.toHaveBeenCalled()
+    })
+
+    it('dispara onLoadMore ao rolar a lista (editável)', async () => {
+      const onLoadMore = vi.fn()
+      render(
+        <Select
+          options={options}
+          editable
+          onLoadMore={onLoadMore}
+          hasMore
+          aria-label="Fruta"
+        />,
+      )
+      const input = screen.getByRole('combobox')
+      await userEvent.click(input)
+      const list = (await screen.findByRole('listbox')) as HTMLElement
+      fireEvent.scroll(list)
+      expect(onLoadMore).toHaveBeenCalled()
+    })
+
+    it('não dispara onLoadMore quando ainda longe do fim (standard)', async () => {
+      const onLoadMore = vi.fn()
+      const { container } = render(
+        <Select options={options} onLoadMore={onLoadMore} hasMore aria-label="Fruta" />,
+      )
+      await userEvent.click(openTrigger(container))
+      await screen.findByRole('listbox')
+      const list = container.querySelector<HTMLElement>(
+        '[data-slot="select-list"]',
+      ) as HTMLElement
+      // Forja as métricas de layout: ainda falta muito para o fim (>= 96px).
+      Object.defineProperty(list, 'scrollHeight', { configurable: true, value: 1000 })
+      Object.defineProperty(list, 'clientHeight', { configurable: true, value: 200 })
+      Object.defineProperty(list, 'scrollTop', { configurable: true, value: 0 })
+      fireEvent.scroll(list)
+      expect(onLoadMore).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('render customizado e grupos (standard)', () => {
+    const kinded: SelectOption[] = [
+      { value: 'a', label: 'A', kind: 'X' },
+      { value: 'b', label: 'B', kind: 'Y' },
+    ]
+
+    it('agrupa via groupBy e usa renderItem/renderValue', async () => {
+      const { container } = render(
+        <Select
+          options={kinded}
+          groupBy={(o) => o.kind as string}
+          renderItem={(o) => `item:${o.label}`}
+          renderValue={(o) => `val:${o.label}`}
+          defaultValue="a"
+          aria-label="K"
+        />,
+      )
+      // renderValue reflete no trigger.
+      expect(openTrigger(container)).toHaveTextContent('val:A')
+      await userEvent.click(openTrigger(container))
+      await screen.findByRole('listbox')
+      expect(screen.getByText('X')).toBeInTheDocument()
+      expect(screen.getByText('Y')).toBeInTheDocument()
+      // renderItem reflete na lista.
+      expect(screen.getByText('item:A')).toBeInTheDocument()
+    })
+
+    it('usa rótulo de grupo vazio quando a opção não tem group', async () => {
+      const mixed: SelectOption[] = [
+        { value: 'a', label: 'A', group: 'Grupo' },
+        { value: 'b', label: 'B' },
+      ]
+      const { container } = render(<Select options={mixed} aria-label="M" />)
+      await userEvent.click(openTrigger(container))
+      await screen.findByRole('listbox')
+      expect(screen.getByText('Grupo')).toBeInTheDocument()
+      expect(screen.getByRole('option', { name: 'B' })).toBeInTheDocument()
+    })
+
+    it('mostra o valor cru no trigger quando não está nas opções (single)', () => {
+      const { container } = render(
+        <Select options={options} defaultValue="desconhecido" aria-label="Fruta" />,
+      )
+      expect(openTrigger(container)).toHaveTextContent('desconhecido')
+    })
+
+    it('limpa a seleção multi pelo botão de limpar', async () => {
+      const onValueChange = vi.fn()
+      const { container } = render(
+        <Select
+          options={options}
+          multiple
+          clearable
+          defaultValue={['apple', 'banana']}
+          onValueChange={onValueChange}
+          aria-label="Frutas"
+        />,
+      )
+      const clear = container.querySelector<HTMLElement>('[data-slot="select-clear"]')
+      expect(clear).not.toBeNull()
+      await userEvent.click(clear as HTMLElement)
+      expect(onValueChange).toHaveBeenLastCalledWith([])
+    })
+
+    it('exibe o indicador de carregamento', async () => {
+      const { container } = render(
+        <Select options={options} loading aria-label="Fruta" />,
+      )
+      await userEvent.click(openTrigger(container))
+      expect(container.querySelector('[data-slot="select-loading"]')).toBeInTheDocument()
+    })
+
+    it('usa renderItem com maxCount no standard (LimitedSelectItem)', async () => {
+      const { container } = render(
+        <Select
+          options={options}
+          multiple
+          maxCount={2}
+          renderItem={(o) => `X:${o.label}`}
+          aria-label="Frutas"
+        />,
+      )
+      await userEvent.click(openTrigger(container))
+      expect(await screen.findByText('X:Maçã')).toBeInTheDocument()
+    })
+
+    it('renderiza em modo virtualizado', async () => {
+      const many: SelectOption[] = Array.from({ length: 150 }, (_, i) => ({
+        value: `v${i}`,
+        label: `Item ${i}`,
+      }))
+      const { container } = render(<Select options={many} virtualized aria-label="V" />)
+      await userEvent.click(openTrigger(container))
+      expect(await screen.findByRole('listbox')).toBeInTheDocument()
+    })
+
+    it('funciona sem aria-label explícito (usa os messages padrão)', async () => {
+      const { container } = render(<Select options={options} searchable />)
+      await userEvent.click(openTrigger(container))
+      expect(await screen.findByRole('listbox')).toBeInTheDocument()
+    })
+
+    it('SelectSearch retorna null fora de um ComboboxProvider', () => {
+      const { container } = render(
+        <SelectRoot combobox={false} items={[]}>
+          <SelectSearch />
+        </SelectRoot>,
+      )
+      expect(container.querySelector('[data-slot="select-search"]')).toBeNull()
     })
   })
 })

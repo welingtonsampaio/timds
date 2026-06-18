@@ -144,15 +144,14 @@ function CheckboxGroup({
 
   const toggle = React.useCallback(
     (itemValue: string, checked: boolean) => {
-      const current = isControlled ? (valueProp ?? []) : uncontrolled
-      const set = new Set(current)
+      const set = new Set(value)
       if (checked) set.add(itemValue)
       else set.delete(itemValue)
       const next = Array.from(set)
       if (!isControlled) setUncontrolled(next)
       onValueChange?.(next)
     },
-    [isControlled, valueProp, uncontrolled, onValueChange],
+    [isControlled, value, onValueChange],
   )
 
   const ctx = React.useMemo<CheckboxGroupContextValue>(

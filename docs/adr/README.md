@@ -22,7 +22,7 @@ and the consequences. We use a format based on
 | 0003 | [Tailwind v4 with CSS-first tokens and precompiled CSS](./0003-tailwind-v4-tokens-css.md) | Accepted |
 | 0004 | [shadcn/ui as the base (copied components)](./0004-shadcn-ui-como-base.md)                 | Accepted |
 | 0005 | [Storybook for documentation and development](./0005-storybook-para-documentacao.md)      | Accepted |
-| 0006 | [Vitest + Testing Library (jsdom) for testing](./0006-vitest-testing-library.md)          | Accepted |
+| 0006 | [Vitest with two projects (jsdom unit + Storybook browser)](./0006-vitest-testing-library.md) | Accepted |
 | 0007 | [Biome for lint, formatting and imports](./0007-biome-lint-format.md)                     | Accepted |
 | 0008 | [Ariakit (+ TanStack Virtual) for the advanced Select](./0008-ariakit-para-select-avancado.md) | Accepted |
 
