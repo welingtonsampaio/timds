@@ -8,7 +8,8 @@ import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from './button-gro
 const meta = {
   title: 'UI/ButtonGroup',
   component: ButtonGroup,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (button-group.mdx), que
+  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -128,25 +129,72 @@ export const Nested: Story = {
   ),
 }
 
-/** Each child button keeps its own click handler. */
+// Spies de módulo: a `render` é estática, então limpamos no início do play.
+const onFirst = fn()
+const onSecond = fn()
+
+/** Each child button keeps its own click handler; clicking fires only that one. */
 export const ClicksFire: Story = {
   render: () => (
     <ButtonGroup>
-      <Button variant="outline" onClick={fn()}>
+      <Button variant="outline" onClick={onFirst}>
         One
       </Button>
-      <Button variant="outline" onClick={fn()}>
+      <Button variant="outline" onClick={onSecond}>
         Two
       </Button>
     </ButtonGroup>
   ),
   play: async ({ canvasElement }) => {
+    onFirst.mockClear()
+    onSecond.mockClear()
     const canvas = within(canvasElement)
+
+    // O wrapper expõe `role="group"` e reflete a orientação em `data-orientation`.
     const group = canvas.getByRole('group')
     await expect(group).toHaveAttribute('data-orientation', 'horizontal')
 
+    // Cada filho continua sendo um `button` independente com seu próprio handler.
     const one = canvas.getByRole('button', { name: 'One' })
     await userEvent.click(one)
+    await expect(onFirst).toHaveBeenCalledOnce()
+    await expect(onSecond).not.toHaveBeenCalled()
     await expect(one).toHaveFocus()
+  },
+}
+
+/** Switching `orientation` to `vertical` reflects on `data-orientation`. */
+export const VerticalReflectsOrientation: Story = {
+  render: () => (
+    <ButtonGroup orientation="vertical">
+      <Button variant="outline">Top</Button>
+      <Button variant="outline">Bottom</Button>
+    </ButtonGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const group = canvas.getByRole('group')
+    await expect(group).toHaveAttribute('data-orientation', 'vertical')
+  },
+}
+
+/** A static `ButtonGroupText` segment is exposed as text, not as a button. */
+export const TextIsNotAButton: Story = {
+  render: () => (
+    <ButtonGroup>
+      <Button variant="outline" size="icon" aria-label="Decrease">
+        <Minus />
+      </Button>
+      <ButtonGroupText>12</ButtonGroupText>
+      <Button variant="outline" size="icon" aria-label="Increase">
+        <Plus />
+      </Button>
+    </ButtonGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // O segmento de texto é estático: só os dois ícones são botões.
+    await expect(canvas.getAllByRole('button')).toHaveLength(2)
+    await expect(canvas.getByText('12')).toBeInTheDocument()
   },
 }

@@ -1,0 +1,141 @@
+{/* button-group.mdx — docs page (prosa em English). Embute as stories que
+    carregam os testes de interação. Doc Blocks de @storybook/addon-docs/blocks. */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './button-group.stories'
+
+<Meta of={Stories} />
+
+# ButtonGroup · `Stable`
+
+A layout wrapper that joins buttons (and related controls) into a single continuous
+segment, collapsing the inner borders and corners between them.
+
+## Overview
+
+Use a ButtonGroup to present a set of closely related actions as one cohesive unit — a
+toolbar, a segmented control, a stepper, or a pager. It only handles layout: each child
+keeps its own behavior, so a grouped `Button` still fires its own `onClick`. Lay the
+group out `horizontal` (default) or `vertical`, and compose it with `ButtonGroupText`
+for static segments and `ButtonGroupSeparator` for divisions.
+
+<Canvas of={Stories.Horizontal} />
+
+## Anatomy
+
+- **Group** — the `role="group"` container; carries the `orientation` and reflects it on
+  `data-orientation`. It joins children by zeroing their adjacent borders and corners.
+- **Items** — the grouped controls (`Button`, an `Input`, a `Select` trigger). Each
+  keeps its own role and handlers.
+- **Text** — `ButtonGroupText`, a static, non-interactive segment (a count, a prefix, a
+  label).
+- **Separator** — `ButtonGroupSeparator`, a divider that splits clusters within one bar.
+
+## When to use
+
+- Use to bind related actions into one visual unit: a toolbar, a pager, a stepper.
+- Use `orientation="vertical"` when a stacked menu reads better than a row.
+- Use nested groups to insert a gap between clusters that should stay visually distinct.
+- Use `ButtonGroupText` to show a static value between actions (a counter between − / +).
+
+## When not to use
+
+- Avoid for a single action — use a plain **Button**.
+- Avoid for choosing one option among several mutually exclusive ones — use a
+  **RadioGroup** (a ButtonGroup carries no selected state of its own).
+- Avoid mixing more than one primary **Button** in the same group; keep at most one.
+
+## Variants & states
+
+### Horizontal
+<Canvas of={Stories.Horizontal} />
+
+### Vertical
+<Canvas of={Stories.Vertical} />
+
+### Icon-only
+<Canvas of={Stories.IconOnly} />
+
+### With static text
+<Canvas of={Stories.WithText} />
+
+### With separator
+<Canvas of={Stories.WithSeparator} />
+
+### Nested (gapped clusters)
+<Canvas of={Stories.Nested} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+ButtonGroup is a layout primitive — it does not own any interactive state. These
+behaviors are guarded by interaction tests in `button-group.stories.tsx`:
+
+- Each child keeps its own click handler; clicking one fires only that button —
+  `ClicksFire`.
+- `orientation` is reflected on `data-orientation` (`horizontal` / `vertical`) —
+  `VerticalReflectsOrientation`.
+- A `ButtonGroupText` segment is static text, not a button — `TextIsNotAButton`.
+
+## Code examples
+
+```tsx
+import { Button, ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from 'timds'
+
+// Joined actions
+<ButtonGroup>
+  <Button variant="outline">Archive</Button>
+  <Button variant="outline">Report</Button>
+  <Button variant="outline">Snooze</Button>
+</ButtonGroup>
+
+// Stepper with a static value
+<ButtonGroup>
+  <Button variant="outline" size="icon" aria-label="Decrease"><Minus /></Button>
+  <ButtonGroupText>12</ButtonGroupText>
+  <Button variant="outline" size="icon" aria-label="Increase"><Plus /></Button>
+</ButtonGroup>
+
+// Vertical stack
+<ButtonGroup orientation="vertical">
+  <Button variant="outline">Top</Button>
+  <Button variant="outline">Bottom</Button>
+</ButtonGroup>
+```
+
+<Source of={Stories.WithSeparator} />
+
+## Content & UX writing
+
+- **Labels** — keep grouped action labels short and parallel ("Archive", "Report",
+  "Snooze"), so the bar scans as one set.
+- **Icon-only items** — must carry an accessible name via `aria-label`.
+- **Static text** — use `ButtonGroupText` for values or prefixes, never as a disguised
+  button.
+
+## Accessibility
+
+- The container exposes `role="group"`; pair it with an `aria-label` or
+  `aria-labelledby` when the grouping is not obvious from context.
+- Each child keeps its own role and keyboard behavior — buttons remain individually
+  focusable and operable (Tab to focus, Enter/Space to activate).
+- Icon-only buttons inside the group still need an `aria-label`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role rules are gated in
+  CI.
+
+## Do's and Don'ts
+
+- ✅ Do group only genuinely related actions into one bar.
+- ✅ Do give icon-only buttons an `aria-label`.
+- ✅ Do nest groups to separate distinct clusters with a gap.
+- ❌ Don't place more than one primary Button inside a single group.
+- ❌ Don't use a ButtonGroup to fake a selection control — use a RadioGroup.
+
+## Related components & patterns
+
+- **Button** — the primary child; composes into the group keeping its own variant and
+  handlers.
+- **Separator** — the primitive `ButtonGroupSeparator` builds on, for in-bar divisions.
+- **RadioGroup** — when the set represents one exclusive choice with a selected state.
