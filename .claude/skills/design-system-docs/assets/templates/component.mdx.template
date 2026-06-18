@@ -1,0 +1,78 @@
+{/* {{component-name}}.mdx — docs page (prosa em English). Embute as stories que
+    carregam os testes de interação. Doc Blocks de @storybook/addon-docs/blocks. */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './{{component-name}}.stories'
+
+<Meta of={Stories} />
+
+# {{ComponentName}} · `{{Stable}}`
+
+{{One-sentence summary of what the component does and its role in the system.}}
+
+## Overview
+
+{{2–4 sentences: purpose, the problem it solves, where it fits.}}
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **{{Container}}** — {{description}}
+- **{{Label}}** — {{description}}
+
+## When to use
+
+- Use when {{condition}}.
+
+## When not to use
+
+- Avoid when {{condition}}; use **{{AlternativeComponent}}** instead.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+{{Describe the interactive behaviors and point to the stories that verify them.}}
+Activation fires `onClick` (verified by `ClicksOnce`); a disabled component does not
+(`DisabledDoesNotFire`).
+
+## Code examples
+
+```tsx
+import { {{ComponentName}} } from 'timds'
+
+<{{ComponentName}}>{{Label}}</{{ComponentName}}>
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Labels** — {{verb-first, sentence case, length limit}}.
+- **Errors** — {{specific, blame-free, actionable}}.
+
+## Accessibility
+
+- Focusable and operable by keyboard (Tab to focus, Enter/Space to activate) — see
+  `FocusesWithKeyboard`.
+- Exposes role `{{button}}`; `{{aria-disabled}}` reflects the disabled state.
+- axe runs on every story (`a11y: { test: 'error' }`), so static rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do {{prescriptive guidance}}.
+- ❌ Don't {{anti-pattern}}.
+
+## Related components & patterns
+
+- **{{SiblingComponent}}** — {{when to use it instead, or how they compose}}.

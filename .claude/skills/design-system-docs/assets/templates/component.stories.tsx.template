@@ -1,0 +1,105 @@
+// {{component-name}}.stories.tsx
+// Stories + interaction (play function) regression tests para o timds.
+// Storybook 10 · @storybook/react-vite · utilitários de teste de `storybook/test`.
+// Substitua {{ComponentName}} / {{component-name}} e a API pelos valores reais
+// do componente. NÃO invente props — leia src/components/ui/{{component-name}}.tsx.
+
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, fn, userEvent, within } from 'storybook/test'
+
+import { {{ComponentName}} } from './{{component-name}}'
+
+const meta = {
+  title: 'UI/{{ComponentName}}',
+  component: {{ComponentName}},
+  // Sem `tags: ['autodocs']`: a página de docs é a MDX customizada
+  // ({{component-name}}.mdx). Ter os dois gera Docs duplicada (MultipleIndexingError).
+  parameters: {
+    docs: {
+      description: {
+        component: '{{One-paragraph English description for autodocs.}}',
+      },
+    },
+  },
+  args: {
+    // 👇 spies para cada callback — herdados por todas as stories, auto-reset
+    onClick: fn(),
+  },
+  argTypes: {
+    // Enriqueça o que o JSDoc não expressa; a prosa fica no JSDoc dos tipos.
+    // variant: {
+    //   control: 'select',
+    //   options: ['default', 'secondary'],
+    //   description: 'Estilo visual.',
+    //   table: { defaultValue: { summary: 'default' } },
+    // },
+  },
+} satisfies Meta<typeof {{ComponentName}}>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+/* --------------------------------------------------------------------------
+ * Render stories — uma por variante / estado visual.
+ * Cada uma é render-testada (monta sem erro) e passa pelo axe automaticamente.
+ * -------------------------------------------------------------------------- */
+
+/** Fully interactive — tweak every prop from the **Controls** panel. */
+export const Playground: Story = {}
+
+export const Default: Story = {}
+
+/** Disabled suppresses interaction. */
+export const Disabled: Story = {
+  args: { disabled: true },
+}
+
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * Um comportamento claro por story. Sempre `await` em userEvent/expect.
+ * Query por role primeiro; testId por último. Portais → use `screen`.
+ * -------------------------------------------------------------------------- */
+
+/** Activating the component calls `onClick` exactly once. */
+export const ClicksOnce: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: '{{Label}}' }))
+    await expect(args.onClick).toHaveBeenCalledOnce()
+  },
+}
+
+/** A disabled component must not call `onClick`. */
+export const DisabledDoesNotFire: Story = {
+  args: { disabled: true },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    const el = canvas.getByRole('button', { name: '{{Label}}' })
+    // Em disabled o elemento pode ter pointer-events:none; forçamos o clique
+    // (pointerEventsCheck: 0) para provar que onClick não dispara mesmo assim.
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    await user.click(el)
+    await expect(args.onClick).not.toHaveBeenCalled()
+  },
+}
+
+/** Keyboard focus reaches the control. */
+export const FocusesWithKeyboard: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.tab()
+    await expect(canvas.getByRole('button', { name: '{{Label}}' })).toHaveFocus()
+  },
+}
+
+/* Exemplo de overlay/portal — o popover é anexado ao body, fora do canvas.
+   Importe `screen` de 'storybook/test' e use-o para alcançar o conteúdo portado:
+export const OpensOverlay: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: '{{Label}}' }))
+    const overlay = await screen.findByRole('dialog')
+    await expect(overlay).toBeVisible()
+  },
+}
+*/
