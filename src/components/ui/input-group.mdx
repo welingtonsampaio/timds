@@ -1,0 +1,130 @@
+{/* input-group.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './input-group.stories'
+
+<Meta of={Stories} />
+
+# InputGroup · `Stable`
+
+A container that wraps a text control with addons — icons, text or buttons — sharing a
+single border, focus ring and error state.
+
+## Overview
+
+Use an InputGroup when a field needs a prefix, suffix or inline action: a search icon, a
+`https://` prefix, a `.com` suffix, an "Aplicar" button. The group owns one border; focus
+and `aria-invalid` propagate from the inner control to the whole frame, so it reads as a
+single field. Compose it from `InputGroupInput`/`InputGroupTextarea` (the control) plus
+`InputGroupAddon`s; addons can sit inline (`inline-start` / `inline-end`) or stack
+(`block-start` / `block-end`).
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **InputGroup** — the `role="group"` frame; carries the shared border, focus ring and error styling.
+- **InputGroupInput / InputGroupTextarea** — the inner control (`data-slot="input-group-control"`), borderless inside the frame.
+- **InputGroupAddon** — an addon slot aligned via `align`; clicking it focuses the control.
+- **InputGroupText** — muted prefix/suffix text inside an addon.
+- **InputGroupButton** — a compact `ghost` Button addon (`xs` by default) for an inline action.
+
+## When to use
+
+- Use to attach a prefix/suffix (icon, unit, domain) to a single field.
+- Use to place an inline action (apply, clear, send) beside the control.
+- Use `align="block-start"`/`"block-end"` to stack a toolbar above or below a textarea.
+
+## When not to use
+
+- Avoid for a plain field with no adornment — use **Input** directly.
+- Avoid grouping several independent fields — this wraps one control plus its addons.
+
+## Variants & states
+
+### Default (leading icon)
+<Canvas of={Stories.Default} />
+
+### With text prefix/suffix
+<Canvas of={Stories.WithText} />
+
+### With button
+<Canvas of={Stories.WithButton} />
+
+### With textarea
+<Canvas of={Stories.WithTextarea} />
+
+### Invalid
+The control's `aria-invalid` propagates to the whole group.
+
+<Canvas of={Stories.Invalid} />
+
+## Props
+
+`InputGroup` is a `role="group"` `<div>` and forwards native div props. Alignment lives on
+`InputGroupAddon` (`align`) and sizing/variant on `InputGroupButton` (which extends
+**Button**). See the stories for each composition.
+
+<Controls of={Stories.Default} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `input-group.stories.tsx`:
+
+- Typing in the inner control updates the value and fires `onChange` — `TypesInControl`.
+- A button addon fires `onClick` when activated — `ButtonClicks`.
+- Clicking a non-interactive addon focuses the control — `AddonFocusesInput`.
+- Tab reaches the control, then the trailing button — `FocusOrder`.
+
+## Code examples
+
+```tsx
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupButton, InputGroupText } from 'timds'
+import { Search } from 'lucide-react'
+
+// Search field with a leading icon
+<InputGroup>
+  <InputGroupAddon>
+    <Search />
+  </InputGroupAddon>
+  <InputGroupInput placeholder="Buscar…" aria-label="Buscar" />
+</InputGroup>
+
+// Field with a trailing action button
+<InputGroup>
+  <InputGroupInput aria-label="Cupom" />
+  <InputGroupAddon align="inline-end">
+    <InputGroupButton onClick={apply}>Aplicar</InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>
+```
+
+<Source of={Stories.WithButton} />
+
+## Content & UX writing
+
+- **Inner control** — still needs an accessible name (`aria-label` or an associated label); addons are not labels.
+- **Addon text** — keep prefixes/suffixes terse (`https://`, `.com`, a unit).
+- **Addon button** — verb-first, one or two words ("Aplicar", "Enviar"); no terminal punctuation.
+
+## Accessibility
+
+- Give the inner `InputGroupInput`/`InputGroupTextarea` an accessible name; the group itself is only a `role="group"` wrapper.
+- Focus order is left-to-right: the control, then any trailing button — verified by `FocusOrder`.
+- Clicking a decorative addon focuses the control (mouse shortcut) — verified by `AddonFocusesInput`.
+- The error state propagates via the control's `aria-invalid`, not color alone (see `Invalid`).
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do give the inner control an accessible name.
+- ✅ Do use `InputGroupButton` for inline actions so it inherits the compact addon sizing.
+- ✅ Do set `aria-invalid` on the control to surface errors on the whole group.
+- ❌ Don't rely on an addon icon to name the field — add an `aria-label`.
+- ❌ Don't pack multiple unrelated controls into one group.
+
+## Related components & patterns
+
+- **Input** — the standalone field; use it directly when no addon is needed.
+- **Textarea** — the multi-line control wrapped by `InputGroupTextarea`.
+- **Button** — `InputGroupButton` is a compact Button; share its variant/sizing semantics.

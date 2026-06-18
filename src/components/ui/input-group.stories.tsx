@@ -14,7 +14,8 @@ import {
 const meta = {
   title: 'UI/InputGroup',
   component: InputGroup,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (input-group.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -27,11 +28,22 @@ const meta = {
       },
     },
   },
+  argTypes: {
+    children: {
+      control: false,
+      description:
+        'Inner control (`InputGroupInput`/`InputGroupTextarea`) plus any `InputGroupAddon`s.',
+    },
+  },
 } satisfies Meta<typeof InputGroup>
 
 export default meta
 
 type Story = StoryObj<typeof meta>
+
+/* --------------------------------------------------------------------------
+ * Render stories — uma por composição/estado visual (render-testadas + axe).
+ * -------------------------------------------------------------------------- */
 
 /** Leading icon addon — the classic search field. */
 export const Default: Story = {
@@ -103,9 +115,35 @@ export const Invalid: Story = {
   ),
 }
 
-/** Interaction test: the button addon fires `onClick` when activated. */
-const handleApply = fn()
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * Spies de módulo: limpos manualmente no início de cada play (mesmo idioma do button).
+ * -------------------------------------------------------------------------- */
 
+const handleApply = fn()
+const handleChange = fn()
+
+/** Typing in the inner control updates the value and fires `onChange`. */
+export const TypesInControl: Story = {
+  render: () => (
+    <InputGroup className="w-80">
+      <InputGroupAddon>
+        <Search />
+      </InputGroupAddon>
+      <InputGroupInput aria-label="Buscar" onChange={handleChange} />
+    </InputGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    handleChange.mockClear()
+    const canvas = within(canvasElement)
+    const input = canvas.getByRole('textbox', { name: 'Buscar' })
+    await userEvent.type(input, 'timds')
+    await expect(input).toHaveValue('timds')
+    await expect(handleChange).toHaveBeenCalled()
+  },
+}
+
+/** The button addon fires `onClick` when activated. */
 export const ButtonClicks: Story = {
   render: () => (
     <InputGroup className="w-80">
@@ -123,7 +161,7 @@ export const ButtonClicks: Story = {
   },
 }
 
-/** Interaction test: clicking the addon focuses the inner control. */
+/** Clicking the addon focuses the inner control. */
 export const AddonFocusesInput: Story = {
   render: () => (
     <InputGroup className="w-80">
@@ -135,8 +173,28 @@ export const AddonFocusesInput: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    // O addon é decorativo (sem role acionável), então consultamos por testId.
     const addon = canvas.getByTestId('search-addon')
     await userEvent.click(addon)
     await expect(canvas.getByRole('textbox', { name: 'Buscar' })).toHaveFocus()
+  },
+}
+
+/** Tab reaches the inner control, then the trailing button — focus order is left-to-right. */
+export const FocusOrder: Story = {
+  render: () => (
+    <InputGroup className="w-80">
+      <InputGroupInput placeholder="Cupom" aria-label="Cupom" />
+      <InputGroupAddon align="inline-end">
+        <InputGroupButton>Aplicar</InputGroupButton>
+      </InputGroupAddon>
+    </InputGroup>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.tab()
+    await expect(canvas.getByRole('textbox', { name: 'Cupom' })).toHaveFocus()
+    await userEvent.tab()
+    await expect(canvas.getByRole('button', { name: 'Aplicar' })).toHaveFocus()
   },
 }
