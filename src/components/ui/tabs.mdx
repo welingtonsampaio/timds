@@ -1,0 +1,148 @@
+{/* tabs.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './tabs.stories'
+
+<Meta of={Stories} />
+
+# Tabs · `Stable`
+
+Switches between sibling panels of content within the same context, one visible at a time.
+
+## Overview
+
+Use Tabs to organize related content into panels the user can switch between without
+leaving the page. It is built on Radix Tabs, so it ships the correct `tablist`/`tab`/
+`tabpanel` roles and arrow-key navigation. The `TabsList` offers four visual variants
+(`default`, `line`, `pill`, `card`), plus `size`, `centered` and `tabPlacement`, while
+`TabsTrigger` adds `closable`/`onClose` for editable tab strips.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Tabs** — the root; holds the selected value and `tabPlacement`.
+- **TabsList** — the `role="tablist"` rail carrying the `variant`, `size` and `centered`
+  layout.
+- **TabsTrigger** — a single `role="tab"`; with `closable` it shows a close affordance.
+- **TabsContent** — the `role="tabpanel"` shown for the active tab.
+
+## When to use
+
+- Use to split related content into a few peer sections within one view.
+- Use `value` + `onValueChange` to drive the active tab from state, or `defaultValue`
+  to seed it.
+- Use `closable` tabs for an editable, dynamic set (e.g. open documents).
+
+## When not to use
+
+- Avoid for sequential steps that must be completed in order — use a stepper/wizard.
+- Avoid for navigation between distinct pages or routes — use links/navigation.
+- Avoid hiding critical content the user always needs visible behind a tab.
+
+## Variants & states
+
+### Variants
+The four list styles: `default`, `line`, `pill`, `card`.
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Centered
+<Canvas of={Stories.Centered} />
+
+### Placement
+The tab rail can sit on any of the four sides via `tabPlacement`.
+
+<Canvas of={Stories.Placement} />
+
+### Vertical
+<Canvas of={Stories.Vertical} />
+
+### Disabled tab
+A disabled tab cannot be selected.
+
+<Canvas of={Stories.Disabled} />
+
+### Closable
+`closable` renders a close affordance on each tab.
+
+<Canvas of={Stories.Closable} />
+
+### Editable
+Add and remove tabs dynamically.
+
+<Canvas of={Stories.Editable} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `tabs.stories.tsx`:
+
+- Clicking a tab activates it and swaps the visible panel — `SwitchesTab`.
+- Arrow keys move focus and selection between tabs — `NavigatesWithArrows`.
+- The component exposes `tablist`/`tab`/`tabpanel` roles with `aria-selected` on the
+  active tab — `ExposesTabRoles`.
+- A disabled tab cannot be selected, even when clicked — `DisabledNotSelectable`.
+- Closable tabs can be closed by the (x) affordance or by Delete/Backspace on the focused
+  tab; the editable demo adds and removes tabs — `Editable`.
+
+## Code examples
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'timds'
+
+<Tabs defaultValue="home">
+  <TabsList variant="pill">
+    <TabsTrigger value="home">Home</TabsTrigger>
+    <TabsTrigger value="products">Products</TabsTrigger>
+  </TabsList>
+  <TabsContent value="home">Home panel</TabsContent>
+  <TabsContent value="products">Products panel</TabsContent>
+</Tabs>
+
+// Editable tabs
+<TabsTrigger value="1" closable onClose={() => remove('1')}>
+  Tab 1
+</TabsTrigger>
+```
+
+<Source of={Stories.Pill} />
+
+## Content & UX writing
+
+- **Tab labels** — short noun phrases in sentence case ("Overview", "Billing"); one or
+  two words where possible.
+- **No terminal punctuation** in tab labels.
+- **Stable order** — keep tab order stable across sessions; don't reorder by recency.
+- **Close affordance** — only mark tabs `closable` when removal is genuinely supported.
+
+## Accessibility
+
+- Exposes `role="tablist"` on the list, `role="tab"` on each trigger and
+  `role="tabpanel"` on the content; the active tab carries `aria-selected="true"` —
+  verified by `ExposesTabRoles`.
+- Keyboard: Tab moves focus into the active tab; arrow keys move focus/selection along
+  the list (roving tabindex) — verified by `NavigatesWithArrows`.
+- Closable tabs are removable from the keyboard via Delete/Backspace on the focused tab;
+  the inline (x) is `aria-hidden` to avoid nesting an interactive control inside the tab
+  button — exercised by `Editable`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do keep tab labels short and the tab order stable.
+- ✅ Do use `closable` only when removing a tab is actually supported.
+- ❌ Don't use Tabs for ordered, multi-step flows — use a stepper.
+- ❌ Don't bury content the user always needs behind a tab.
+
+## Related components & patterns
+
+- **Card** — frequently wraps tabbed content to group it visually.
+- **Select** — for choosing among many options when a tab strip would not fit.

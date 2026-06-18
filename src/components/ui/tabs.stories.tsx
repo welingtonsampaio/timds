@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs'
 const meta = {
   title: 'UI/Tabs',
   component: Tabs,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (tabs.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -155,6 +156,67 @@ export const SwitchesTab: Story = {
     )
     await expect(canvas.getByText('Conteúdo da aba Products.')).toBeVisible()
     await expect(home).toHaveAttribute('data-state', 'inactive')
+  },
+}
+
+/** Setas do teclado movem o foco/seleção entre as abas (padrão WAI-ARIA). */
+export const NavigatesWithArrows: Story = {
+  render: () => (
+    <Tabs defaultValue="home" className="w-[420px]">
+      <TabsList variant="pill">
+        <TabsTrigger value="home">Home</TabsTrigger>
+        <TabsTrigger value="products">Products</TabsTrigger>
+        <TabsTrigger value="contact">Contact</TabsTrigger>
+      </TabsList>
+      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
+      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
+      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+    </Tabs>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const home = canvas.getByRole('tab', { name: 'Home' })
+
+    // Tab leva o foco à aba ativa (roving tabindex).
+    await userEvent.tab()
+    await expect(home).toHaveFocus()
+
+    // Seta para a direita move foco e ativa a próxima aba.
+    await userEvent.keyboard('{ArrowRight}')
+    const products = canvas.getByRole('tab', { name: 'Products' })
+    await expect(products).toHaveFocus()
+    await expect(products).toHaveAttribute('aria-selected', 'true')
+    await expect(canvas.getByText('Conteúdo da aba Products.')).toBeVisible()
+  },
+}
+
+/** Exposes the `tablist` / `tab` / `tabpanel` roles with the active tab selected. */
+export const ExposesTabRoles: Story = {
+  render: () => (
+    <Tabs defaultValue="home" className="w-[420px]">
+      <TabsList variant="line">
+        <TabsTrigger value="home">Home</TabsTrigger>
+        <TabsTrigger value="products">Products</TabsTrigger>
+      </TabsList>
+      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
+      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
+    </Tabs>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await expect(canvas.getByRole('tablist')).toBeInTheDocument()
+    await expect(canvas.getAllByRole('tab')).toHaveLength(2)
+    // Apenas a aba ativa expõe aria-selected="true" e há um único tabpanel.
+    await expect(canvas.getByRole('tab', { name: 'Home' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    await expect(canvas.getByRole('tab', { name: 'Products' })).toHaveAttribute(
+      'aria-selected',
+      'false',
+    )
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Conteúdo da aba Home.')
   },
 }
 
