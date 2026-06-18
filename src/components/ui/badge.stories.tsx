@@ -11,9 +11,10 @@ const meta = {
     docs: {
       description: {
         component:
-          'Compact pill for labels, counts and status. Six variants share a rounded-full shape. ' +
-          'For semantic states (success / warning / info) pass the matching token classes, e.g. ' +
-          '`className="bg-success text-success-foreground"`. Use `asChild` to turn it into a link.',
+          'Compact pill for labels, counts and status. Semantic states (`success` / `warning` / ' +
+          '`info`) and the decorative chart palette (`chart-1`…`chart-5`) ship as first-class, ' +
+          'soft/tonal variants with AA contrast in both themes. Three `size`s (`sm` / `md` / `lg`) ' +
+          'are available. Use `asChild` to turn it into a link.',
       },
     },
   },
@@ -21,9 +22,30 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'secondary', 'destructive', 'outline', 'ghost', 'link'],
+      options: [
+        'default',
+        'secondary',
+        'destructive',
+        'success',
+        'warning',
+        'info',
+        'chart-1',
+        'chart-2',
+        'chart-3',
+        'chart-4',
+        'chart-5',
+        'outline',
+        'ghost',
+        'link',
+      ],
       description: 'Visual style of the badge.',
       table: { defaultValue: { summary: 'default' } },
+    },
+    size: {
+      control: 'inline-radio',
+      options: ['sm', 'md', 'lg'],
+      description: 'Padding and font size of the badge.',
+      table: { defaultValue: { summary: 'md' } },
     },
     children: { control: 'text', description: 'Badge content.' },
     asChild: {
@@ -49,8 +71,36 @@ export const Variants: Story = {
       <Badge>Default</Badge>
       <Badge variant="secondary">Secondary</Badge>
       <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="success">Success</Badge>
+      <Badge variant="warning">Warning</Badge>
+      <Badge variant="info">Info</Badge>
       <Badge variant="outline">Outline</Badge>
       <Badge variant="ghost">Ghost</Badge>
+      <Badge variant="link">Link</Badge>
+    </div>
+  ),
+}
+
+/** Decorative palette for categorization, built on the chart tokens. */
+export const ChartColors: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Badge variant="chart-1">Violet</Badge>
+      <Badge variant="chart-2">Cyan</Badge>
+      <Badge variant="chart-3">Blue</Badge>
+      <Badge variant="chart-4">Pink</Badge>
+      <Badge variant="chart-5">Green</Badge>
+    </div>
+  ),
+}
+
+/** Three sizes share the same pill shape. */
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Badge size="sm">Small</Badge>
+      <Badge size="md">Medium</Badge>
+      <Badge size="lg">Large</Badge>
     </div>
   ),
 }
@@ -70,9 +120,9 @@ export const WithIcon: Story = {
 export const Status: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
-      <Badge className="bg-success text-success-foreground">Completed</Badge>
-      <Badge className="bg-warning text-warning-foreground">Pending</Badge>
-      <Badge className="bg-info text-info-foreground">In review</Badge>
+      <Badge variant="success">Completed</Badge>
+      <Badge variant="warning">Pending</Badge>
+      <Badge variant="info">In review</Badge>
       <Badge variant="destructive">Failed</Badge>
     </div>
   ),
