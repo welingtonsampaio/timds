@@ -1,0 +1,113 @@
+{/* spinner.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './spinner.stories'
+
+<Meta of={Stories} />
+
+# Spinner · `Stable`
+
+An animated indicator that communicates an ongoing, indeterminate loading state.
+
+## Overview
+
+Use a Spinner to signal that work is in progress with no measurable percentage —
+fetching data, saving a form, waiting on a request. It is built on the lucide `Loader2`
+icon with `animate-spin`, inherits `currentColor` and sizes from its context, and
+exposes `role="status"` so screen readers announce the loading state. Inside a
+**Button**, the `loading` prop renders this Spinner automatically.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Glyph** — the spinning `Loader2` icon, sized via `className` (`size-*`) and colored
+  by the inherited `currentColor`.
+
+## When to use
+
+- Use for indeterminate waits where no progress percentage is known.
+- Use inside a Button (via its `loading` prop) to block a control during an async action.
+- Use to fill a region that is fetching its content.
+
+## When not to use
+
+- Avoid when progress is measurable — use a progress bar instead.
+- Avoid scattering many Spinners on one screen — prefer a single, clearly scoped one.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Default} />
+
+### Sizes
+Size and color are driven entirely by `className` and the inherited text color.
+
+<Canvas of={Stories.Sizes} />
+
+### Custom label
+<Canvas of={Stories.CustomLabel} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+The Spinner forwards every native `<svg>` prop. The most common overrides are
+`className` (size/color) and `aria-label` (announced name).
+
+## Behavior & interaction
+
+The Spinner is non-interactive — it renders no events and runs a continuous CSS
+animation. Its behavioral surface is its accessibility contract, guarded by interaction
+tests in `spinner.stories.tsx`:
+
+- It exposes `role="status"` with the default `aria-label` `Carregando` —
+  `ExposesStatusRole`.
+- A custom `aria-label` overrides the announced name — `CustomLabelIsAnnounced`.
+
+## Code examples
+
+```tsx
+import { Spinner } from 'timds'
+
+// Tamanho e cor herdados do contexto
+<span className="text-primary">
+  <Spinner className="size-6" />
+</span>
+
+// Dentro de um Button, via a prop `loading`
+<Button loading>Salvando</Button>
+
+// Nome acessível customizado
+<Spinner aria-label="Salvando alterações" />
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Accessible name** — describe what is loading when context helps ("Saving changes"),
+  otherwise the default `Carregando` is fine.
+- Pair a Spinner with brief nearby text ("Loading…") when the wait may be long, so the
+  state is clear to sighted users too.
+
+## Accessibility
+
+- Exposes `role="status"` with an `aria-label` (default `Carregando`) so the loading
+  state is announced — verified by `ExposesStatusRole`.
+- A custom `aria-label` is reflected on the status node — verified by
+  `CustomLabelIsAnnounced`.
+- The animation honors `prefers-reduced-motion` through Tailwind's motion utilities.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role rules are gated in
+  CI.
+
+## Do's and Don'ts
+
+- ✅ Do keep one clearly scoped Spinner per loading region.
+- ✅ Do give it a meaningful `aria-label` when the default is too generic.
+- ❌ Don't use a Spinner for determinate progress — use a progress bar.
+- ❌ Don't hide the Spinner from assistive tech; its `role="status"` is the point.
+
+## Related components & patterns
+
+- **Button** — renders this Spinner in the icon slot when `loading` is true.
