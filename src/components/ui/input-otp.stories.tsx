@@ -20,7 +20,8 @@ function continuousSlots(count: number) {
 const meta = {
   title: 'UI/InputOTP',
   component: InputOTP,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (input-otp.mdx), que embute
+  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -54,15 +55,34 @@ const meta = {
     ),
   },
   argTypes: {
-    maxLength: { control: 'number', description: 'Total number of characters/slots.' },
-    disabled: { control: 'boolean', description: 'Disable the field.' },
-    children: { control: false, description: 'Slot layout (groups, slots, separators).' },
+    maxLength: {
+      control: 'number',
+      description: 'Total number of characters/slots the field accepts.',
+    },
+    pattern: {
+      control: false,
+      description: 'Regex restricting accepted characters (e.g. `REGEXP_ONLY_DIGITS`).',
+    },
+    disabled: { control: 'boolean', description: 'Disables the field.' },
+    value: { control: 'text', description: 'Controlled value.' },
+    onChange: {
+      control: false,
+      description: 'Fires with the full string on every change.',
+    },
+    children: {
+      control: false,
+      description: 'Slot layout: `InputOTPGroup`, `InputOTPSlot`, `InputOTPSeparator`.',
+    },
   },
 } satisfies Meta<typeof InputOTP>
 
 export default meta
 
 type Story = StoryObj<typeof meta>
+
+/* --------------------------------------------------------------------------
+ * Render stories — uma por estado visual (render-testadas + axe).
+ * -------------------------------------------------------------------------- */
 
 /** Six digits split 3 + 3 by a separator. */
 export const Default: Story = {}
@@ -77,11 +97,20 @@ export const DigitsOnly: Story = {
   args: { pattern: REGEXP_ONLY_DIGITS, children: continuousSlots(6) },
 }
 
+/** A partially-filled field: the first slots carry chars, the next is active. */
+export const Filled: Story = {
+  args: { value: '123', children: continuousSlots(6) },
+}
+
 export const Disabled: Story = {
   args: { disabled: true, value: '123', children: continuousSlots(6) },
 }
 
-/** Interaction test: typing fills the slots and fires `onChange` with the value. */
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * -------------------------------------------------------------------------- */
+
+/** Typing fills the slots in order and fires `onChange` with the full value. */
 export const TypesCode: Story = {
   args: { pattern: REGEXP_ONLY_DIGITS, children: continuousSlots(6) },
   play: async ({ args, canvasElement }) => {
@@ -90,5 +119,59 @@ export const TypesCode: Story = {
     await userEvent.type(input, '123456')
     await expect(input).toHaveValue('123456')
     await expect(args.onChange).toHaveBeenLastCalledWith('123456')
+  },
+}
+
+/** The hidden input is keyboard-focusable, so typing can start immediately. */
+export const FocusesWithKeyboard: Story = {
+  args: { children: continuousSlots(6) },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.tab()
+    await expect(
+      canvas.getByRole('textbox', { name: 'Código de verificação' }),
+    ).toHaveFocus()
+  },
+}
+
+/** `pattern` rejects characters outside the allowed set (digits only here). */
+export const RejectsNonMatchingChars: Story = {
+  args: { pattern: REGEXP_ONLY_DIGITS, children: continuousSlots(6) },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByRole('textbox', { name: 'Código de verificação' })
+    // Letras não casam com REGEXP_ONLY_DIGITS e são descartadas; só os dígitos entram.
+    await userEvent.type(input, 'ab12')
+    await expect(input).toHaveValue('12')
+    await expect(args.onChange).toHaveBeenLastCalledWith('12')
+  },
+}
+
+/** Backspace removes the last character and updates the value. */
+export const BackspaceDeletes: Story = {
+  args: { pattern: REGEXP_ONLY_DIGITS, children: continuousSlots(6) },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByRole('textbox', { name: 'Código de verificação' })
+    await userEvent.type(input, '123')
+    await userEvent.keyboard('{Backspace}')
+    await expect(input).toHaveValue('12')
+    await expect(args.onChange).toHaveBeenLastCalledWith('12')
+  },
+}
+
+/** A disabled field does not accept input. */
+export const DisabledDoesNotType: Story = {
+  args: { disabled: true, children: continuousSlots(6) },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByRole('textbox', { name: 'Código de verificação' })
+    await expect(input).toBeDisabled()
+    // Em disabled o input tem pointer-events:none; forçamos a digitação
+    // (pointerEventsCheck: 0) para provar que nada é registrado mesmo assim.
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    await user.type(input, '123')
+    await expect(input).toHaveValue('')
+    await expect(args.onChange).not.toHaveBeenCalled()
   },
 }

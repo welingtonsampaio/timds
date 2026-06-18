@@ -1,0 +1,128 @@
+{/* input-otp.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './input-otp.stories'
+
+<Meta of={Stories} />
+
+# InputOTP · `Stable`
+
+A fixed-length code field that splits a one-time password or verification code into
+per-character slots.
+
+## Overview
+
+Use InputOTP when a user must enter a short code of known length — an SMS/e-mail
+verification code, a 2FA token, a PIN. Built on `input-otp`, a single hidden input drives
+the slots, so paste, caret tracking and the active slot are handled for you. Lay the slots
+out with `InputOTPGroup` + `InputOTPSlot` (the `index` maps each slot to a character) and
+optionally split groups with `InputOTPSeparator`. Restrict the accepted characters with
+`pattern` (e.g. `REGEXP_ONLY_DIGITS`).
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **InputOTP** — the root; owns `maxLength`, `pattern` and the hidden input that captures typing.
+- **InputOTPGroup** — visually groups a run of slots (rounds the outer corners).
+- **InputOTPSlot** — one character cell, identified by its `index`; shows the char and an animated caret when active.
+- **InputOTPSeparator** — a decorative `separator` between groups (e.g. the dash in `123 - 456`).
+
+## When to use
+
+- Use for a code of a known, fixed length (verification code, 2FA token, PIN).
+- Use `pattern={REGEXP_ONLY_DIGITS}` for numeric-only codes so non-digits are rejected.
+- Use `InputOTPSeparator` to chunk long codes (3 + 3) for readability.
+
+## When not to use
+
+- Avoid for free-form or variable-length text — use an **Input**.
+- Avoid for secret passwords the user types repeatedly — use an `Input type="password"`.
+
+## Variants & states
+
+### Default
+Six digits split 3 + 3 by a separator.
+
+<Canvas of={Stories.Default} />
+
+### Four digits
+A single continuous group, no separator.
+
+<Canvas of={Stories.FourDigits} />
+
+### Digits only
+`pattern={REGEXP_ONLY_DIGITS}` blocks non-numeric characters.
+
+<Canvas of={Stories.DigitsOnly} />
+
+### Filled
+A partially-filled field — the next empty slot is the active one.
+
+<Canvas of={Stories.Filled} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+## Props
+
+<Controls of={Stories.Default} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `input-otp.stories.tsx`:
+
+- Typing fills the slots in order and fires `onChange` with the full string — `TypesCode`.
+- The hidden input is keyboard-focusable so typing starts immediately — `FocusesWithKeyboard`.
+- `pattern` rejects characters outside the allowed set — `RejectsNonMatchingChars`.
+- Backspace removes the last character — `BackspaceDeletes`.
+- A disabled field ignores input — `DisabledDoesNotType`.
+
+## Code examples
+
+```tsx
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from 'timds'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+
+<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} onChange={setCode}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
+  <InputOTPSeparator />
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+<Source of={Stories.FourDigits} />
+
+## Content & UX writing
+
+- **Accessible name** — give the root an `aria-label` (e.g. "Código de verificação") since the slots carry no text label.
+- **Helper text** — state where the code came from ("Enviamos um código por SMS") near the field, not inside the slots.
+- **Errors** — on a wrong code, show a specific, blame-free message and let the user re-enter without clearing context.
+
+## Accessibility
+
+- Give the root an accessible name via `aria-label` (or an associated label) — the slots are visual only.
+- Reachable and operable by keyboard: Tab to focus, then type; Backspace deletes — verified by `FocusesWithKeyboard` and `BackspaceDeletes`.
+- The separator carries `role="separator"` and is non-interactive.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do set `maxLength` to the exact code length and render that many slots.
+- ✅ Do use `pattern={REGEXP_ONLY_DIGITS}` for numeric codes.
+- ✅ Do give the root an `aria-label`.
+- ❌ Don't use it for variable-length input — use an **Input**.
+- ❌ Don't rely on the slots alone to convey what the code is for — add helper text.
+
+## Related components & patterns
+
+- **Input** — for free-form, single-line text of any length.
+- **InputGroup** — to add an inline action (e.g. a "Reenviar" button) beside a related field.
