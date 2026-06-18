@@ -29,6 +29,12 @@ export {
 export { Badge, badgeVariants } from '@/components/ui/badge'
 export { Button, type ButtonProps, buttonVariants } from '@/components/ui/button'
 export {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+  buttonGroupVariants,
+} from '@/components/ui/button-group'
+export {
   Card,
   CardAction,
   CardContent,
@@ -69,6 +75,7 @@ export {
   SelectValue,
   selectTriggerVariants,
 } from '@/components/ui/select'
+export { Separator } from '@/components/ui/separator'
 export { Spinner } from '@/components/ui/spinner'
 export {
   Switch,
