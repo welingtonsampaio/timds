@@ -7,7 +7,8 @@ import { Switch } from './switch'
 const meta = {
   title: 'UI/Switch',
   component: Switch,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (switch.mdx), que
+  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {

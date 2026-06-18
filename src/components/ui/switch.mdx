@@ -1,0 +1,132 @@
+{/* switch.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './switch.stories'
+
+<Meta of={Stories} />
+
+# Switch · `Stable`
+
+A boolean toggle that flips a single setting on or off, taking effect immediately.
+
+## Overview
+
+Use a Switch for an instant on/off choice — a setting that applies the moment it is
+flipped, with no separate confirmation step. It is built on Radix `Switch`, so it ships
+the correct `switch` role and keyboard behavior out of the box. For choices that are
+submitted later with a form, prefer a **Checkbox**.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Track** — the rounded rail that carries the chromatic `variant` and changes color
+  between the on and off states.
+- **Thumb** — the circle that slides across the track to indicate the state.
+- **Texts (optional)** — `texts={{ on, off }}` renders a label inside the track; it is
+  decorative (`aria-hidden`) and grows the rail to fit.
+
+## When to use
+
+- Use for a setting that takes effect immediately (notifications, dark mode, a feature
+  flag).
+- Use `texts={{ on, off }}` when an in-context label (ON/OFF, Ativo/Inativo) helps
+  scanning a list of toggles.
+- Use the `green_red` variant for a status that is meaningfully positive vs negative.
+
+## When not to use
+
+- Avoid for choices that only apply after submitting a form — use a **Checkbox**.
+- Avoid for selecting one option among several — use a **RadioGroup**.
+- Avoid relying on the inner `texts` as the only label — they are `aria-hidden`.
+
+## Variants & states
+
+### Variants
+Four chromatic schemes for the track, each shown off and on.
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### With text
+The rail grows to fit the inner labels; switching does not jump the width.
+
+<Canvas of={Stories.WithText} />
+
+### Status toggle
+`green_red` reads green when active and red when inactive.
+
+<Canvas of={Stories.StatusToggle} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Controlled
+State lives in the parent via `checked` + `onCheckedChange`.
+
+<Canvas of={Stories.Controlled} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `switch.stories.tsx`:
+
+- Clicking toggles the state and fires `onCheckedChange` with the new value —
+  `TogglesOnClick`.
+- The switch is keyboard-focusable and toggles with Space — `TogglesWithKeyboard`.
+- A disabled switch does not toggle and does not fire `onCheckedChange` —
+  `DisabledDoesNotToggle`.
+
+## Code examples
+
+```tsx
+import { Switch } from 'timds'
+
+// Uncontrolled
+<Switch defaultChecked aria-label="Notifications" />
+
+// Controlled
+<Switch checked={enabled} onCheckedChange={setEnabled} aria-label="Dark mode" />
+
+// With in-track labels (decorative) + an accessible name
+<Switch texts={{ on: 'Ativo', off: 'Inativo' }} variant="green_red" aria-label="Status" />
+```
+
+Pair it with a `<label>` so clicking the text also toggles the control:
+
+<Source of={Stories.Controlled} />
+
+## Content & UX writing
+
+- **Inner texts** — keep them ultra-short (≤ 4 chars: ON/OFF, Sim/Não). The rail is
+  small; longer strings make it disproportionately wide.
+- **Accessible name** — describe the setting, not the action ("Dark mode", not "Toggle").
+- **State labels nearby** — when you show the current state as adjacent text, keep it in
+  sync with the control (see the Controlled example).
+
+## Accessibility
+
+- Exposes the native `switch` role with `data-state="checked" | "unchecked"`.
+- Reachable and operable by keyboard: Tab to focus, Space to toggle — verified by
+  `TogglesWithKeyboard`.
+- The inner `texts` are `aria-hidden`; always provide an `aria-label` or an associated
+  `<label htmlFor>` so the control has an accessible name.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do give every Switch an accessible name (`aria-label` or a `<label>`).
+- ✅ Do use a Switch when the change applies immediately.
+- ❌ Don't use a Switch inside a form whose changes only apply on submit — use a Checkbox.
+- ❌ Don't depend on the in-track `texts` as the control's only label.
+
+## Related components & patterns
+
+- **Checkbox** — for choices that are submitted with a form, or for multi-select lists.
+- **RadioGroup** — for choosing one option among several mutually exclusive ones.
