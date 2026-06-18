@@ -19,7 +19,8 @@ import { Button } from './button'
 const meta = {
   title: 'UI/AlertDialog',
   component: AlertDialog,
-  tags: ['autodocs'],
+  // Sem `autodocs`: a página de docs é a MDX customizada (alert-dialog.mdx), que
+  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
   parameters: {
     docs: {
       description: {
@@ -47,6 +48,11 @@ type Story = StoryObj<typeof meta>
 
 const onConfirm = fn()
 const onCancel = fn()
+
+/* --------------------------------------------------------------------------
+ * Render stories (começam fechadas) — uma por composição.
+ * O conteúdo é portado para document.body: nas play functions use `screen`.
+ * -------------------------------------------------------------------------- */
 
 /** Fully interactive — open the dialog and pick an action. */
 export const Playground: Story = {
@@ -142,7 +148,46 @@ export const WithMedia: Story = {
   ),
 }
 
-/** Interaction test: opening the trigger reveals the dialog; Continue confirms and closes it. */
+/* --------------------------------------------------------------------------
+ * Interaction tests — play functions que SÃO os testes de regressão.
+ * Conteúdo portado: busque o diálogo e os botões via `screen`, não `canvas`.
+ * -------------------------------------------------------------------------- */
+
+/** Clicking the trigger opens the dialog and exposes `role="alertdialog"`. */
+export const OpensOnTrigger: Story = {
+  render: (args) => (
+    <AlertDialog {...args}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Delete account</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // O diálogo começa fechado: nada portado ainda.
+    await expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
+    const dialog = await screen.findByRole('alertdialog')
+    await expect(dialog).toBeVisible()
+    // O diálogo é nomeado pelo título e descrito pela descrição (Radix faz o wiring).
+    await expect(dialog).toHaveAccessibleName('Are you absolutely sure?')
+    // Fecha para a story não terminar aberta (evita aria-hidden-focus com o trigger).
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
+  },
+}
+
+/** Opening the trigger reveals the dialog; Continue confirms and closes it. */
 export const ConfirmFlow: Story = {
   render: (args) => (
     <AlertDialog {...args}>
@@ -175,7 +220,7 @@ export const ConfirmFlow: Story = {
   },
 }
 
-/** Interaction test: Cancel dismisses the dialog without confirming. */
+/** Cancel dismisses the dialog without confirming. */
 export const CancelFlow: Story = {
   render: (args) => (
     <AlertDialog {...args}>
@@ -207,11 +252,42 @@ export const CancelFlow: Story = {
   },
 }
 
+/** Pressing `Escape` closes the dialog without confirming the action. */
+export const EscapeDismisses: Story = {
+  render: (args) => (
+    <AlertDialog {...args}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Delete account</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ),
+  play: async ({ canvasElement }) => {
+    onConfirm.mockClear()
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
+    await screen.findByRole('alertdialog')
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
+    // Escape resolve via Cancel: a ação destrutiva nunca é executada.
+    await expect(onConfirm).not.toHaveBeenCalled()
+  },
+}
+
 /**
- * Interaction test: ao abrir, o foco vai para o **Cancel**, não para a action.
- * É o padrão de segurança do WAI-ARIA Alert Dialog — o caminho rápido (Enter)
- * cancela em vez de executar a ação destrutiva. Trava também a ordem dos botões
- * (Cancel antes de Action), evitando regressões.
+ * Ao abrir, o foco vai para o **Cancel**, não para a action. É o padrão de
+ * segurança do WAI-ARIA Alert Dialog — o caminho rápido (Enter) cancela em vez
+ * de executar a ação destrutiva. Trava também a ordem dos botões (Cancel antes
+ * de Action), evitando regressões.
  */
 export const FocusStartsOnCancel: Story = {
   render: (args) => (
@@ -246,19 +322,20 @@ export const FocusStartsOnCancel: Story = {
   },
 }
 
-// Histórias dedicadas à regressão visual (Chromatic): renderizam o diálogo
-// aberto (`defaultOpen`, sem trigger — evita a violação `aria-hidden-focus` e a
-// poluição da autodocs). Ficam fora da página de docs (`docs.disable`) e
-// reativam o snapshot que o `meta` desliga, capturando cada variante em
-// light/dark.
-const visualParameters = {
-  docs: { disable: true },
-  chromatic: { disableSnapshot: false },
-}
+/* --------------------------------------------------------------------------
+ * Fixtures de regressão visual (Chromatic): renderizam o diálogo aberto
+ * (`defaultOpen`, sem trigger — evita a violação `aria-hidden-focus` e a
+ * poluição da docs). Ocultas do sidebar/docs (`!dev`/`!autodocs`), mas seguem
+ * rodando como smoke test (tag `test`) e reativam o snapshot que o meta desliga.
+ * -------------------------------------------------------------------------- */
+const visual = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { chromatic: { disableSnapshot: false } },
+} satisfies Partial<Story>
 
 /** Captura visual — diálogo padrão aberto. */
 export const VisualDefault: Story = {
-  parameters: visualParameters,
+  ...visual,
   render: (args) => (
     <AlertDialog {...args} defaultOpen>
       <AlertDialogContent>
@@ -280,7 +357,7 @@ export const VisualDefault: Story = {
 
 /** Captura visual — action destrutiva. */
 export const VisualDestructive: Story = {
-  parameters: visualParameters,
+  ...visual,
   render: (args) => (
     <AlertDialog {...args} defaultOpen>
       <AlertDialogContent>
@@ -301,7 +378,7 @@ export const VisualDestructive: Story = {
 
 /** Captura visual — `size="sm"` (compacto, rodapé em duas colunas). */
 export const VisualSmall: Story = {
-  parameters: visualParameters,
+  ...visual,
   render: (args) => (
     <AlertDialog {...args} defaultOpen>
       <AlertDialogContent size="sm">
@@ -320,7 +397,7 @@ export const VisualSmall: Story = {
 
 /** Captura visual — com `AlertDialogMedia`. */
 export const VisualMedia: Story = {
-  parameters: visualParameters,
+  ...visual,
   render: (args) => (
     <AlertDialog {...args} defaultOpen>
       <AlertDialogContent>

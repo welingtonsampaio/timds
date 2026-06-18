@@ -1,0 +1,152 @@
+{/* alert-dialog.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './alert-dialog.stories'
+
+<Meta of={Stories} />
+
+# AlertDialog · `Stable`
+
+A modal confirmation that interrupts the user and demands an explicit choice before a
+destructive or irreversible action.
+
+## Overview
+
+Use an AlertDialog when an action cannot be undone — deleting an account, discarding
+unsaved work, removing a project. It is built on Radix `AlertDialog`: it traps focus,
+blocks the rest of the page, and resolves only through its Cancel or Action buttons (or
+`Escape`, which cancels). Unlike a generic modal, it is purpose-built to interrupt and
+confirm; for non-blocking inline feedback use an **Alert** instead.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** — `AlertDialogTrigger` (usually `asChild` wrapping a Button) opens the
+  dialog.
+- **Overlay** — `AlertDialogOverlay`, the dimmed backdrop behind the content.
+- **Content** — `AlertDialogContent`; `size` is `default` or `sm` (compact, centered,
+  two-column footer).
+- **Header** — `AlertDialogHeader` wrapping `AlertDialogTitle` and
+  `AlertDialogDescription`.
+- **Media (optional)** — `AlertDialogMedia`, a leading icon slot above or beside the
+  title.
+- **Footer** — `AlertDialogFooter` holding the `AlertDialogCancel` and
+  `AlertDialogAction` buttons; both accept the Button `variant` and `size`.
+
+## When to use
+
+- Use to confirm a destructive or irreversible action (delete, discard, remove).
+- Use when the user must consciously commit before proceeding.
+- Use the `destructive` Button variant on the Action when the outcome is dangerous.
+
+## When not to use
+
+- Avoid for routine, reversible actions — the interruption is friction.
+- Avoid for inline status or feedback — use an **Alert**.
+- Avoid for general content or forms — a confirmation dialog is the wrong frame.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Playground} />
+
+### Destructive action
+<Canvas of={Stories.DestructiveAction} />
+
+### Small size
+<Canvas of={Stories.SmallSize} />
+
+### With media
+<Canvas of={Stories.WithMedia} />
+
+## Props
+
+`AlertDialog` is the Radix Root and forwards its open-state props (`open`,
+`defaultOpen`, `onOpenChange`). The visual options live on the parts:
+`AlertDialogContent` (`size`) and `AlertDialogAction` / `AlertDialogCancel` (Button
+`variant`, `size`).
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `alert-dialog.stories.tsx`:
+
+- Clicking the trigger opens the dialog with `role="alertdialog"`, named by its title —
+  `OpensOnTrigger`.
+- The Action confirms, fires its `onClick` and closes the dialog — `ConfirmFlow`.
+- Cancel dismisses without confirming — `CancelFlow`.
+- `Escape` closes the dialog and does not run the action — `EscapeDismisses`.
+- On open, focus lands on **Cancel** (the safe default), not the action —
+  `FocusStartsOnCancel`.
+
+## Code examples
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  Button,
+} from 'timds'
+
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="destructive">Delete project</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete this project?</AlertDialogTitle>
+      <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Keep project</AlertDialogCancel>
+      <AlertDialogAction variant="destructive" onClick={handleDelete}>
+        Delete
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+<Source of={Stories.DestructiveAction} />
+
+## Content & UX writing
+
+- **Title** — ask the question or name the consequence ("Delete this project?").
+- **Description** — spell out what is lost and that it cannot be undone.
+- **Action label** — a specific verb matching the title ("Delete", "Discard"), never a
+  vague "OK".
+- **Cancel label** — describe the safe path ("Keep project", "Cancel"), not just "No".
+
+## Accessibility
+
+- Exposes `role="alertdialog"`, named by `AlertDialogTitle` and described by
+  `AlertDialogDescription` (Radix wires `aria-labelledby`/`aria-describedby`) — verified
+  by `OpensOnTrigger`.
+- Focus is trapped inside the dialog and starts on **Cancel**, the safe default — verified
+  by `FocusStartsOnCancel`.
+- `Escape` dismisses via Cancel without running the action — verified by
+  `EscapeDismisses`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do reserve AlertDialog for destructive or irreversible actions.
+- ✅ Do label the Action with a specific verb and keep Cancel as the safe path.
+- ✅ Do mark a dangerous Action with the `destructive` variant.
+- ❌ Don't use it for routine, reversible actions — the interruption is friction.
+- ❌ Don't make the Action the default-focused button — focus belongs on Cancel.
+
+## Related components & patterns
+
+- **Alert** — for inline, non-interrupting feedback on the page.
+- **Button** — composes the Action and Cancel; pass its `variant`/`size` through.
