@@ -1,0 +1,118 @@
+{/* separator.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './separator.stories'
+
+<Meta of={Stories} />
+
+# Separator · `Stable`
+
+A thin visual divider that groups or splits content, horizontally or vertically.
+
+## Overview
+
+Use a Separator to draw a clear line between sections of content — a list, a toolbar, a
+group of settings. Built on Radix Separator, it is `decorative` by default (hidden from
+the accessibility tree). When the division carries meaning that assistive tech should
+announce, set `decorative={false}` to expose the `separator` role and its
+`aria-orientation`.
+
+<Canvas of={Stories.Horizontal} />
+
+## Anatomy
+
+- **Rule** — the single thin line; 1px on the cross axis, stretching to fill the main
+  axis (full width when `horizontal`, full height when `vertical`).
+
+## When to use
+
+- Use to separate sections within a card, menu, or list.
+- Use a `vertical` separator to divide inline items (e.g. a breadcrumb or a meta row).
+- Use `decorative={false}` when the boundary is semantically meaningful and should be
+  announced.
+
+## When not to use
+
+- Avoid as a decorative flourish where spacing alone would group content well enough.
+- Avoid for layout structure that needs a labelled region — use a landmark or heading.
+
+## Variants & states
+
+### Horizontal
+The default: a full-width rule between stacked content.
+
+<Canvas of={Stories.Horizontal} />
+
+### Vertical
+Needs a sized container to stretch within.
+
+<Canvas of={Stories.Vertical} />
+
+### Showcase
+<Canvas of={Stories.Showcase} />
+
+### Semantic
+`decorative={false}` exposes the `separator` role to assistive tech.
+
+<Canvas of={Stories.Semantic} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+The Separator is non-interactive — it renders no events. Its only behavioral surface is
+its accessibility role, guarded by interaction tests in `separator.stories.tsx`:
+
+- Decorative (the default) is hidden from the accessibility tree — `Decorative`.
+- `decorative={false}` exposes the `separator` role — `Semantic`.
+- A non-decorative `vertical` separator announces `aria-orientation="vertical"` —
+  `SemanticVertical`.
+
+## Code examples
+
+```tsx
+import { Separator } from 'timds'
+
+// Divisor horizontal (decorativo)
+<Separator className="my-4" />
+
+// Divisor inline vertical, dentro de um contêiner com altura
+<div className="flex h-5 items-center gap-4">
+  <span>Docs</span>
+  <Separator orientation="vertical" />
+  <span>Source</span>
+</div>
+
+// Semântico: exposto para tecnologias assistivas
+<Separator decorative={false} />
+```
+
+<Source of={Stories.Horizontal} />
+
+## Content & UX writing
+
+- A Separator carries no text. Keep the content it divides scannable; if a section needs
+  a name, add a heading above the rule rather than relying on the line alone.
+
+## Accessibility
+
+- Decorative by default: rendered with `role="none"` and absent from the accessibility
+  tree — verified by `Decorative`.
+- With `decorative={false}` it exposes the `separator` role — verified by `Semantic`.
+- A non-default (`vertical`) orientation is announced via `aria-orientation` — verified
+  by `SemanticVertical`.
+- axe runs on every story (`a11y: { test: 'error' }`), so role rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do give a `vertical` separator a sized container so it has a height to fill.
+- ✅ Do set `decorative={false}` when the division is meaningful to convey.
+- ❌ Don't stack Separators to fake spacing — use margin/padding instead.
+- ❌ Don't rely on a Separator to label a region — pair it with a heading.
+
+## Related components & patterns
+
+- **ButtonGroup** — uses `ButtonGroupSeparator` to divide grouped actions.
+- **Card** — frequently pairs a Separator between its header and body.
