@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Fragment, useState } from 'react'
 import { expect, fn, userEvent, within } from 'storybook/test'
 
-import { Checkbox } from './checkbox'
+import { Checkbox, CheckboxGroup, CheckboxGroupItem } from './checkbox'
 
 const meta = {
   title: 'UI/Checkbox',
@@ -159,6 +159,131 @@ export const TogglesWithKeyboard: Story = {
     await expect(cb).toHaveFocus()
     await userEvent.keyboard(' ')
     await expect(args.onCheckedChange).toHaveBeenCalledWith(true)
+  },
+}
+
+// Lista reutilizada pelas stories de grupo.
+const FRAMEWORKS = [
+  { value: 'react', label: 'React' },
+  { value: 'vue', label: 'Vue' },
+  { value: 'svelte', label: 'Svelte' },
+  { value: 'solid', label: 'Solid' },
+] as const
+
+// Item + rótulo associado por `id`/`htmlFor` (convenção das stories deste arquivo).
+function Field({ value, label }: { value: string; label: string }) {
+  const id = `fw-${value}`
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      <CheckboxGroupItem id={id} value={value} />
+      <label htmlFor={id}>{label}</label>
+    </div>
+  )
+}
+
+/**
+ * `CheckboxGroup` gerencia o conjunto de valores marcados e propaga
+ * `variant`/`size`/`disabled` para cada `CheckboxGroupItem`.
+ */
+export const Group: Story = {
+  render: () => (
+    <CheckboxGroup aria-label="Frameworks" defaultValue={['react']} variant="success">
+      {FRAMEWORKS.map((fw) => (
+        <Field key={fw.value} value={fw.value} label={fw.label} />
+      ))}
+    </CheckboxGroup>
+  ),
+}
+
+/** Itens lado a lado com `orientation="horizontal"`. */
+export const GroupHorizontal: Story = {
+  render: () => (
+    <CheckboxGroup aria-label="Frameworks" orientation="horizontal">
+      {FRAMEWORKS.map((fw) => (
+        <Field key={fw.value} value={fw.value} label={fw.label} />
+      ))}
+    </CheckboxGroup>
+  ),
+}
+
+/** O grupo inteiro pode ser desabilitado de uma vez. */
+export const GroupDisabled: Story = {
+  render: () => (
+    <CheckboxGroup aria-label="Frameworks" defaultValue={['react']} disabled>
+      {FRAMEWORKS.map((fw) => (
+        <Field key={fw.value} value={fw.value} label={fw.label} />
+      ))}
+    </CheckboxGroup>
+  ),
+}
+
+/**
+ * Modo controlado com um "selecionar todos" indeterminado: o checkbox-pai
+ * reflete o estado parcial e alterna todos os itens de uma vez.
+ */
+export const GroupSelectAll: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>(['react'])
+    const allValues = FRAMEWORKS.map((fw) => fw.value)
+    const allChecked = value.length === allValues.length
+    const someChecked = value.length > 0 && !allChecked
+
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Checkbox
+            id="select-all"
+            checked={allChecked ? true : someChecked ? 'indeterminate' : false}
+            onCheckedChange={(state) => setValue(state === true ? [...allValues] : [])}
+          />
+          <label htmlFor="select-all">Selecionar todos</label>
+        </div>
+        <CheckboxGroup
+          aria-label="Frameworks"
+          value={value}
+          onValueChange={setValue}
+          className="ml-6"
+        >
+          {FRAMEWORKS.map((fw) => (
+            <Field key={fw.value} value={fw.value} label={fw.label} />
+          ))}
+        </CheckboxGroup>
+      </div>
+    )
+  },
+}
+
+/** Marcar/desmarcar itens atualiza o conjunto de valores via `onValueChange`. */
+export const GroupTogglesItems: Story = {
+  render: () => {
+    const [value, setValue] = useState<string[]>([])
+    return (
+      <CheckboxGroup aria-label="Frameworks" value={value} onValueChange={setValue}>
+        {FRAMEWORKS.map((fw) => (
+          <Field key={fw.value} value={fw.value} label={fw.label} />
+        ))}
+        <output data-testid="value">{value.join(',')}</output>
+      </CheckboxGroup>
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const out = canvas.getByTestId('value')
+
+    const react = canvas.getByRole('checkbox', { name: 'React' })
+    const vue = canvas.getByRole('checkbox', { name: 'Vue' })
+
+    await userEvent.click(react)
+    await expect(react).toHaveAttribute('data-state', 'checked')
+    await expect(out).toHaveTextContent('react')
+
+    await userEvent.click(vue)
+    await expect(out).toHaveTextContent('react,vue')
+
+    // Desmarcar remove apenas o item clicado.
+    await userEvent.click(react)
+    await expect(react).toHaveAttribute('data-state', 'unchecked')
+    await expect(out).toHaveTextContent('vue')
   },
 }
 

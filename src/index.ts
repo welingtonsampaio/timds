@@ -54,6 +54,10 @@ export {
 } from '@/components/ui/chart'
 export {
   Checkbox,
+  CheckboxGroup,
+  CheckboxGroupItem,
+  type CheckboxGroupItemProps,
+  type CheckboxGroupProps,
   type CheckboxProps,
   checkboxVariants,
 } from '@/components/ui/checkbox'
