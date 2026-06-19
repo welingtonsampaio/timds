@@ -75,6 +75,18 @@ export {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+export {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerPortal,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
 export { Input } from '@/components/ui/input'
 export {
   InputGroup,

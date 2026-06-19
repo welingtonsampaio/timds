@@ -1,0 +1,156 @@
+{/* drawer.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './drawer.stories'
+
+<Meta of={Stories} />
+
+# Drawer · `Stable`
+
+A panel that slides in from an edge of the viewport to hold secondary content — filters,
+details, navigation, or a short form — without taking over the whole screen.
+
+## Overview
+
+Use a Drawer when content should overlay the page from one of its edges and the user
+resolves it before returning underneath. It is built on `vaul`: it traps focus, dims the
+page behind a backdrop, and can be dismissed by the close button, `Escape`, or a click on
+the overlay. The `direction` prop anchors it to the `bottom` (default), `top`, `left`, or
+`right` edge. For focused, centered tasks prefer a **Dialog**; for destructive
+confirmations that must block, prefer an **AlertDialog**.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** — `DrawerTrigger` (usually `asChild` wrapping a Button) opens the drawer.
+- **Overlay** — the dimmed backdrop behind the content; clicking it dismisses the drawer.
+- **Content** — `DrawerContent`; `showCloseButton` (default `true`) toggles the corner "X".
+  The anchored edge is set by `direction` on the root `Drawer`.
+- **Header** — `DrawerHeader` wrapping `DrawerTitle` and `DrawerDescription`.
+- **Footer** — `DrawerFooter` holding the action buttons.
+- **Close** — `DrawerClose` (often `asChild` around a Button) dismisses the drawer from
+  anywhere inside it.
+
+## When to use
+
+- Use for secondary content that overlays the page from an edge — filters, a details
+  panel, navigation, a short form.
+- Use `direction="right"` / `"left"` for side panels, `"bottom"` for mobile-style sheets.
+- Use when the surrounding context should remain visible behind the overlay.
+
+## When not to use
+
+- Avoid for focused, centered tasks — use a **Dialog**.
+- Avoid for destructive or irreversible confirmations — use **AlertDialog**, which blocks
+  overlay-click dismissal.
+- Avoid for non-blocking, inline feedback — use an **Alert**.
+
+## Variants & states
+
+### Default (bottom)
+<Canvas of={Stories.Playground} />
+
+### From the right
+<Canvas of={Stories.FromRight} />
+
+### From the left
+<Canvas of={Stories.FromLeft} />
+
+### With a form
+<Canvas of={Stories.WithForm} />
+
+### Without the close button
+<Canvas of={Stories.WithoutCloseButton} />
+
+## Props
+
+`Drawer` is the `vaul` Root and forwards its open-state props (`open`, `defaultOpen`,
+`onOpenChange`) plus `direction` (`bottom` | `top` | `left` | `right`). The visual option
+lives on `DrawerContent`: `showCloseButton`.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `drawer.stories.tsx`:
+
+- Clicking the trigger opens the drawer with `role="dialog"`, named by its title and
+  described by its description — `OpensOnTrigger`.
+- The corner close button dismisses the drawer — `CloseButtonDismisses`.
+- `Escape` closes the drawer — `EscapeDismisses`.
+- Focus is trapped inside the drawer while open and returns to the trigger on close —
+  `FocusIsTrappedAndReturns`.
+- `showCloseButton={false}` hides the corner "X" — `HidesCloseButton`.
+
+## Code examples
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+  Button,
+} from 'timds'
+
+<Drawer direction="right">
+  <DrawerTrigger asChild>
+    <Button variant="outline">Open panel</Button>
+  </DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Filters</DrawerTitle>
+      <DrawerDescription>Refine the results shown in the list.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <Button onClick={handleApply}>Apply</Button>
+      <DrawerClose asChild>
+        <Button variant="outline">Cancel</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+<Source of={Stories.WithForm} />
+
+## Content & UX writing
+
+- **Title** — name the panel in a few words ("Filters", "Edit profile").
+- **Description** — one line of context or instruction; keep it short.
+- **Action label** — a specific verb for the primary action ("Apply", "Save changes"),
+  not a vague "OK".
+- **Dismiss label** — describe the neutral path ("Cancel", "Not now").
+
+## Accessibility
+
+- Exposes `role="dialog"`, named by `DrawerTitle` and described by `DrawerDescription`
+  (`vaul` wires `aria-labelledby`/`aria-describedby`) — verified by `OpensOnTrigger`.
+- Focus is trapped inside the drawer while open and returns to the trigger on close —
+  verified by `FocusIsTrappedAndReturns`.
+- `Escape`, the close button, and an overlay click all dismiss it — verified by
+  `EscapeDismisses` and `CloseButtonDismisses`.
+- The icon-only close button carries an accessible name ("Close") via an `sr-only` label.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do always provide a `DrawerTitle` (and ideally a `DrawerDescription`) for an
+  accessible name.
+- ✅ Do label the primary action with a specific verb.
+- ✅ Do reach for `Dialog` when the task is focused and centered, or `AlertDialog` when it
+  must block.
+- ❌ Don't hide the close affordances entirely — always leave at least one way out.
+- ❌ Don't pack a long, multi-step flow into a drawer.
+
+## Related components & patterns
+
+- **Dialog** — for focused, centered tasks the user completes in place.
+- **AlertDialog** — for destructive confirmations that must block until decided.
+- **Button** — composes the trigger, footer actions, and close controls.
