@@ -7,7 +7,7 @@ import { Button } from './button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs'
 
 const meta = {
-  title: 'UI/Tabs',
+  title: 'Navigation/Tabs',
   component: Tabs,
   // Sem `autodocs`: a página de docs é a MDX customizada (tabs.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

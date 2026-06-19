@@ -32,7 +32,7 @@ import {
 } from './item'
 
 const meta = {
-  title: 'UI/Item',
+  title: 'Data Display/Item',
   component: Item,
   // Sem `autodocs`: a página de docs é a MDX customizada (item.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

@@ -5,7 +5,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { RadioGroup, RadioGroupItem } from './radio-group'
 
 const meta = {
-  title: 'UI/RadioGroup',
+  title: 'Data Entry/RadioGroup',
   component: RadioGroup,
   // Sem `autodocs`: a página de docs é a MDX customizada (radio-group.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

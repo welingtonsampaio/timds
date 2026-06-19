@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test'
 import { Separator } from './separator'
 
 const meta = {
-  title: 'UI/Separator',
+  title: 'Layout/Separator',
   component: Separator,
   // Sem `autodocs`: a página de docs é a MDX customizada (separator.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).

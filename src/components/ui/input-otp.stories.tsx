@@ -18,7 +18,7 @@ function continuousSlots(count: number) {
 }
 
 const meta = {
-  title: 'UI/InputOTP',
+  title: 'Data Entry/InputOTP',
   component: InputOTP,
   // Sem `autodocs`: a página de docs é a MDX customizada (input-otp.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).

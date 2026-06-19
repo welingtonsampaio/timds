@@ -4,7 +4,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Input } from './input'
 
 const meta = {
-  title: 'UI/Input',
+  title: 'Data Entry/Input',
   component: Input,
   // Sem `autodocs`: a página de docs é a MDX customizada (input.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).

@@ -20,7 +20,7 @@ import {
 } from './context-menu'
 
 const meta = {
-  title: 'UI/ContextMenu',
+  title: 'Overlays/ContextMenu',
   component: ContextMenu,
   // Sem `autodocs`: a página de docs é a MDX customizada (context-menu.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

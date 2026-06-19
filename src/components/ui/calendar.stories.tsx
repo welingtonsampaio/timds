@@ -12,7 +12,7 @@ const FIXED_MONTH = new Date(2025, 5, 1)
 const FIXED_DAY = new Date(2025, 5, 15)
 
 const meta = {
-  title: 'UI/Calendar',
+  title: 'Data Entry/Calendar',
   component: Calendar,
   // Sem `autodocs`: a página de docs é a MDX customizada (calendar.mdx).
   parameters: {

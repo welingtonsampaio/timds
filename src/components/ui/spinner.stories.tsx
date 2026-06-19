@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test'
 import { Spinner } from './spinner'
 
 const meta = {
-  title: 'UI/Spinner',
+  title: 'Feedback/Spinner',
   component: Spinner,
   // Sem `autodocs`: a página de docs é a MDX customizada (spinner.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).

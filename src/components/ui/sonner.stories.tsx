@@ -21,7 +21,7 @@ function Demo({ children, toaster }: { children: ReactNode; toaster?: ToasterPro
 }
 
 const meta = {
-  title: 'UI/Toaster',
+  title: 'Feedback/Toaster',
   component: Toaster,
   // Sem `autodocs`: a página de docs é a MDX customizada (sonner.mdx). Ter os
   // dois geraria entradas de Docs duplicadas (MultipleIndexingError).

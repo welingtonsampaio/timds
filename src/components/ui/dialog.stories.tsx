@@ -15,7 +15,7 @@ import {
 import { Input } from './input'
 
 const meta = {
-  title: 'UI/Dialog',
+  title: 'Overlays/Dialog',
   component: Dialog,
   // Sem `autodocs`: a página de docs é a MDX customizada (dialog.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

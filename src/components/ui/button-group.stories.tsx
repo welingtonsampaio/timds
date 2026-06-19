@@ -6,7 +6,7 @@ import { Button } from './button'
 import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from './button-group'
 
 const meta = {
-  title: 'UI/ButtonGroup',
+  title: 'Data Entry/ButtonGroup',
   component: ButtonGroup,
   // Sem `autodocs`: a página de docs é a MDX customizada (button-group.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

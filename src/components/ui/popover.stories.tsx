@@ -17,7 +17,7 @@ import {
 // documentáveis (`align`, `side`, `sideOffset`) — o `Popover` (Root do Radix)
 // não tem props visíveis. Assim o `<Controls>` da MDX renderiza uma tabela útil.
 const meta = {
-  title: 'UI/Popover',
+  title: 'Overlays/Popover',
   component: PopoverContent,
   // Sem `autodocs`: a página de docs é a MDX customizada (popover.mdx).
   parameters: {

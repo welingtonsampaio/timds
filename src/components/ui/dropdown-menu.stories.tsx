@@ -21,7 +21,7 @@ import {
 } from './dropdown-menu'
 
 const meta = {
-  title: 'UI/DropdownMenu',
+  title: 'Overlays/DropdownMenu',
   component: DropdownMenu,
   // Sem `autodocs`: a página de docs é a MDX customizada (dropdown-menu.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

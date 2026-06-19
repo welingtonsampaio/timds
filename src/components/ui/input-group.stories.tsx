@@ -12,7 +12,7 @@ import {
 } from './input-group'
 
 const meta = {
-  title: 'UI/InputGroup',
+  title: 'Data Entry/InputGroup',
   component: InputGroup,
   // Sem `autodocs`: a página de docs é a MDX customizada (input-group.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).

@@ -17,7 +17,7 @@ import {
 import { Button } from './button'
 
 const meta = {
-  title: 'UI/AlertDialog',
+  title: 'Overlays/AlertDialog',
   component: AlertDialog,
   // Sem `autodocs`: a página de docs é a MDX customizada (alert-dialog.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

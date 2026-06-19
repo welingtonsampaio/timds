@@ -5,7 +5,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Checkbox, CheckboxGroup, CheckboxGroupItem } from './checkbox'
 
 const meta = {
-  title: 'UI/Checkbox',
+  title: 'Data Entry/Checkbox',
   component: Checkbox,
   // Sem `autodocs`: a página de docs é a MDX customizada (checkbox.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

@@ -12,7 +12,7 @@ import { expect, within } from 'storybook/test'
 import { Alert, AlertDescription, AlertTitle } from './alert'
 
 const meta = {
-  title: 'UI/Alert',
+  title: 'Feedback/Alert',
   component: Alert,
   // Sem `autodocs`: a página de docs é a MDX customizada (alert.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

@@ -6,7 +6,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Toggle } from './toggle'
 
 const meta = {
-  title: 'UI/Toggle',
+  title: 'Data Entry/Toggle',
   component: Toggle,
   // Sem `autodocs`: a página de docs é a MDX customizada (toggle.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test'
 import { Skeleton } from './skeleton'
 
 const meta = {
-  title: 'UI/Skeleton',
+  title: 'Feedback/Skeleton',
   component: Skeleton,
   // Sem `autodocs`: a página de docs é a MDX customizada (skeleton.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

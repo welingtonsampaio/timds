@@ -4,7 +4,7 @@ import { expect, within } from 'storybook/test'
 import { Progress } from './progress'
 
 const meta = {
-  title: 'UI/Progress',
+  title: 'Feedback/Progress',
   component: Progress,
   // Sem `autodocs`: a página de docs é a MDX customizada (progress.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

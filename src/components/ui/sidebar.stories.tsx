@@ -56,7 +56,7 @@ function InsetHeader({ title = 'Dashboard' }: { title?: string }) {
 }
 
 const meta = {
-  title: 'UI/Sidebar',
+  title: 'Navigation/Sidebar',
   component: Sidebar,
   // Sem `autodocs`: a página de docs é a MDX customizada (sidebar.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

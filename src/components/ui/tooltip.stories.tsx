@@ -5,7 +5,7 @@ import { Button } from './button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip'
 
 const meta = {
-  title: 'UI/Tooltip',
+  title: 'Overlays/Tooltip',
   component: Tooltip,
   // Sem `autodocs`: a página de docs é a MDX customizada (tooltip.mdx).
   parameters: {

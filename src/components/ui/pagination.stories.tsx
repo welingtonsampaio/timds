@@ -44,7 +44,7 @@ function Controlled(args: PaginationShortProps) {
 }
 
 const meta = {
-  title: 'UI/Pagination',
+  title: 'Navigation/Pagination',
   component: PaginationShort,
   // Sem `autodocs`: a página de docs é a MDX customizada (pagination.mdx).
   parameters: {

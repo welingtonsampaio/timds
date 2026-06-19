@@ -5,7 +5,7 @@ import { expect, userEvent, within } from 'storybook/test'
 import { Badge } from './badge'
 
 const meta = {
-  title: 'UI/Badge',
+  title: 'Data Display/Badge',
   component: Badge,
   // Sem `autodocs`: a página de docs é a MDX customizada (badge.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

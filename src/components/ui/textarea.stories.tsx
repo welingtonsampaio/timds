@@ -4,7 +4,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Textarea } from './textarea'
 
 const meta = {
-  title: 'UI/Textarea',
+  title: 'Data Entry/Textarea',
   component: Textarea,
   // Sem `autodocs`: a página de docs é a MDX customizada (textarea.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

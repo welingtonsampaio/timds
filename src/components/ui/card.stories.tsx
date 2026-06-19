@@ -15,7 +15,7 @@ import {
 } from './card'
 
 const meta = {
-  title: 'UI/Card',
+  title: 'Layout/Card',
   component: Card,
   // Sem `autodocs`: a página de docs é a MDX customizada (card.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

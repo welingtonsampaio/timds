@@ -5,7 +5,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Switch } from './switch'
 
 const meta = {
-  title: 'UI/Switch',
+  title: 'Data Entry/Switch',
   component: Switch,
   // Sem `autodocs`: a página de docs é a MDX customizada (switch.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

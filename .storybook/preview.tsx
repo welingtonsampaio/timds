@@ -55,6 +55,22 @@ export const initialGlobals = {
 
 const preview: Preview = {
   parameters: {
+    // Ordena a sidebar por categoria; o que não estiver listado vai para o fim,
+    // em ordem alfabética. As entradas internas ordenam as páginas do grupo.
+    options: {
+      storySort: {
+        order: [
+          'Design System',
+          ['Introduction', 'Foundations', 'Colors', 'Typography'],
+          'Layout',
+          'Navigation',
+          'Data Entry',
+          'Data Display',
+          'Feedback',
+          'Overlays',
+        ],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,

@@ -5,7 +5,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Slider } from './slider'
 
 const meta = {
-  title: 'UI/Slider',
+  title: 'Data Entry/Slider',
   component: Slider,
   // Sem `autodocs`: a página de docs é a MDX customizada (slider.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

@@ -52,7 +52,7 @@ const manyOptions: SelectOption[] = Array.from({ length: 1000 }, (_, i) => ({
 }))
 
 const meta = {
-  title: 'UI/Select',
+  title: 'Data Entry/Select',
   component: Select,
   // Sem `autodocs`: a página de docs é a MDX customizada (select.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

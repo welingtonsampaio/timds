@@ -5,7 +5,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { ToggleGroup, ToggleGroupItem } from './toggle-group'
 
 const meta = {
-  title: 'UI/ToggleGroup',
+  title: 'Data Entry/ToggleGroup',
   component: ToggleGroup,
   // Sem `autodocs`: a página de docs é a MDX customizada (toggle-group.mdx).
   parameters: {

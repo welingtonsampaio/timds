@@ -15,7 +15,7 @@ import {
 import { Input } from './input'
 
 const meta = {
-  title: 'UI/Drawer',
+  title: 'Overlays/Drawer',
   component: Drawer,
   // Sem `autodocs`: a página de docs é a MDX customizada (drawer.mdx), que
   // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.

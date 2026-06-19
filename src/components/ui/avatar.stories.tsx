@@ -19,7 +19,7 @@ const SRC_INLINE =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC'
 
 const meta = {
-  title: 'UI/Avatar',
+  title: 'Data Display/Avatar',
   component: Avatar,
   // Sem `autodocs`: a página de docs é a MDX customizada (avatar.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.

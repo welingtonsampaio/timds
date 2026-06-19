@@ -162,7 +162,7 @@ function DateRangeDualField({ initialRange }: { initialRange?: DateRange }) {
 }
 
 const meta = {
-  title: 'UI/DatePicker',
+  title: 'Data Entry/DatePicker',
   component: DatePicker,
   // Sem `autodocs`: a página de docs é a MDX customizada (date-picker.mdx).
   parameters: {

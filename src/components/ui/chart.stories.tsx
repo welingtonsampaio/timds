@@ -43,7 +43,7 @@ import {
 } from './chart'
 
 const meta = {
-  title: 'UI/Chart',
+  title: 'Data Display/Chart',
   component: ChartContainer,
   // Sem `autodocs`: a página de docs é a MDX customizada (chart.mdx), que embute
   // estas stories. Ter ambos geraria entradas de Docs duplicadas.
