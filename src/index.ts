@@ -157,6 +157,7 @@ export {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
+export { Progress, progressVariants } from '@/components/ui/progress'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 export {
   Select,

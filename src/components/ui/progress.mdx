@@ -1,0 +1,123 @@
+{/* progress.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './progress.stories'
+
+<Meta of={Stories} />
+
+# Progress · `Stable`
+
+A linear bar that communicates how far along a determinate task is, or that work of
+unknown duration is underway.
+
+## Overview
+
+Use a Progress bar to give feedback on an operation that takes time — an upload, an
+import, a multi-step form. Pass a `value` from 0 to 100 for a determinate bar; omit it for
+the indeterminate state when the remaining time is unknown. It is built on Radix
+`Progress`, so it exposes the `progressbar` role and the matching ARIA value attributes.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Track** — the rounded, translucent background that defines the bar's full length.
+- **Indicator** — the solid fill whose width reflects the current `value`.
+
+## When to use
+
+- Use to show determinate progress of a task with a measurable percentage (upload, sync).
+- Use the indeterminate state when work is ongoing but its duration is unknown.
+- Use a semantic `variant` to tie the bar to an outcome (e.g. `destructive` for a quota
+  near its limit).
+
+## When not to use
+
+- Avoid for a brief, indeterminate wait with no measurable progress — use a **Spinner**.
+- Avoid as a step indicator for a wizard — use a dedicated stepper pattern.
+- Avoid for storage/segmented meters that need multiple values — this bar is single-value.
+
+## Variants & states
+
+### Variants
+Each semantic scheme colors the track and indicator from the matching tokens.
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+Three heights share the same rounded track.
+
+<Canvas of={Stories.Sizes} />
+
+### Values
+Boundary values: empty, halfway and complete.
+
+<Canvas of={Stories.Values} />
+
+### Indeterminate
+With no `value`, the bar reports progress of unknown duration and drops `aria-valuenow`.
+
+<Canvas of={Stories.Indeterminate} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+Progress is non-interactive; its contract is the ARIA semantics, guarded by interaction
+tests in `progress.stories.tsx`:
+
+- Exposes the `progressbar` role with `aria-valuemin` / `aria-valuemax` / `aria-valuenow`
+  and a `loading` state — `HasProgressbarSemantics`.
+- Without `value`, Radix marks it `indeterminate` and omits `aria-valuenow` —
+  `IndeterminateHasNoValueNow`.
+- At `value={100}` it reports the maximum and the `complete` state — `CompleteReflectsMax`.
+
+## Code examples
+
+```tsx
+import { Progress } from 'timds'
+
+// Determinate — always give it an accessible name.
+<Progress value={60} aria-label="Uploading files" />
+
+// Semantic variant + size.
+<Progress value={90} variant="destructive" size="lg" aria-label="Storage used" />
+
+// Indeterminate (omit value).
+<Progress aria-label="Loading" />
+```
+
+<Source of={Stories.Default} />
+
+## Content & UX writing
+
+- **Accessible name** — describe the task, not the widget ("Uploading files", not
+  "Progress bar").
+- **Pair with text** — when the percentage matters to the user, show it next to the bar;
+  the bar alone is a glanceable summary.
+- **Indeterminate copy** — accompany an indeterminate bar with a short status like
+  "Loading…" so the state is clear without motion.
+
+## Accessibility
+
+- Exposes the `progressbar` role with `aria-valuemin="0"`, `aria-valuemax="100"` and, when
+  determinate, `aria-valuenow` — verified by `HasProgressbarSemantics`.
+- The indeterminate state omits `aria-valuenow` so assistive tech announces unknown
+  progress — verified by `IndeterminateHasNoValueNow`.
+- Always provide an accessible name via `aria-label` or `aria-labelledby`; axe runs on
+  every story (`a11y: { test: 'error' }`), so a nameless bar fails CI.
+
+## Do's and Don'ts
+
+- ✅ Do give every bar an accessible name describing the underlying task.
+- ✅ Do omit `value` for genuinely indeterminate work instead of faking a percentage.
+- ❌ Don't rely on color alone to convey an outcome — pair the variant with text.
+- ❌ Don't use Progress for a quick spinner-style wait — reach for **Spinner**.
+
+## Related components & patterns
+
+- **Spinner** — for indeterminate waits with no measurable progress.
+- **Badge** — pair a `success` / `warning` Badge with a finished or stalled bar to label
+  the outcome.
