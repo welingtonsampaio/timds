@@ -25,6 +25,7 @@ and the consequences. We use a format based on
 | 0006 | [Vitest with two projects (jsdom unit + Storybook browser)](./0006-vitest-testing-library.md) | Accepted |
 | 0007 | [Biome for lint, formatting and imports](./0007-biome-lint-format.md)                     | Accepted |
 | 0008 | [Ariakit (+ TanStack Virtual) for the advanced Select](./0008-ariakit-para-select-avancado.md) | Accepted |
+| 0009 | [Shared style presets in `src/lib/styles.ts`](./0009-shared-style-presets.md)              | Accepted |
 
 ## Creating a new ADR
 

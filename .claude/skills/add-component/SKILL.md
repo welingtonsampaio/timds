@@ -65,6 +65,16 @@ Generated shadcn code mostly already matches, but verify each:
   as a different element (e.g. an `<a>`).
 - **`cn(...)`** from `@/lib/utils` to merge `className` last so consumers can override.
 - **Icons** from `lucide-react`.
+- **Shared style presets (`src/lib/styles.ts`).** The repo extracts repeated
+  Tailwind utility combinations into reusable constants (`focusRing`,
+  `ariaInvalid`, `disabledControl`, `svgIcon`, `overlayClass`, `modalSurface`).
+  - **Reuse them** via `cn(...)` whenever the component has focus, an
+    `aria-invalid` state, a disabled state, or embedded icons — don't recopy the
+    class strings (this keeps tailwind-merge overrides working). See ADR 0009.
+  - **Extract a new preset** if a class combination you're adding also appears in
+    an existing component: add it to `src/lib/styles.ts` (with a Portuguese
+    comment) instead of duplicating. Color/spacing tokens still belong in
+    `src/styles.css`.
 - **Comments in Portuguese.**
 
 Reference shape (mirrors `src/components/ui/badge.tsx`):
@@ -193,6 +203,7 @@ src/
 
 - [ ] File in `src/components/ui/`, kebab-case name
 - [ ] `cva` variants + `data-slot` + `cn(className)` merge + `asChild` via `Slot.Root`
+- [ ] Reuse shared presets from `src/lib/styles.ts` (`focusRing`, `ariaInvalid`, `disabledControl`, `svgIcon`, …) via `cn(...)` — and extract a new preset instead of duplicating a combination already used elsewhere (ADR 0009)
 - [ ] Comments and code in **Portuguese**
 - [ ] Exported from `src/index.ts` (component + types + variants)
 - [ ] `*.stories.tsx` with Playground, Variants, states, and `play` functions
