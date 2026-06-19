@@ -120,6 +120,19 @@ export {
   InputOTPSlot,
 } from '@/components/ui/input-otp'
 export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+  itemVariants,
+} from '@/components/ui/item'
+export {
   Popover,
   PopoverAnchor,
   PopoverContent,

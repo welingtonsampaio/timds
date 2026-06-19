@@ -1,0 +1,209 @@
+{/* item.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks. */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './item.stories'
+
+<Meta of={Stories} />
+
+# Item · `Stable`
+
+A flexible row primitive for lists, cards, and menus — a leading media slot, a
+central title/description, and trailing actions, composed from small named parts.
+
+## Overview
+
+Use `Item` whenever you need a consistent, well-aligned row: a settings list, a member
+roster, a notification, a playlist, a rich menu entry. It only handles layout and
+surface styling — each child (a `Button` action, a link, an `Avatar`) keeps its own
+behavior. Pick a `variant` for the surface, a `size` for density, and render the whole
+row as a link (or any element) with `asChild`.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Item** — the row container; carries `variant`, `size`, and reflects them on
+  `data-variant` / `data-size`. Becomes its single child when `asChild` is set.
+- **ItemMedia** — the leading slot; `variant` `default` (bare), `icon` (boxed icon), or
+  `image` (clipped thumbnail). Holds an icon, `Avatar`, or `img`.
+- **ItemContent** — the central, growing column; usually wraps `ItemTitle` +
+  `ItemDescription`. A second `ItemContent` collapses to its content width (e.g. a
+  trailing duration).
+- **ItemTitle** — the primary line.
+- **ItemDescription** — the secondary, muted line; supports inline links.
+- **ItemActions** — the trailing slot for buttons or affordances.
+- **ItemHeader** / **ItemFooter** — full-width rows above / below the content (a cover
+  image, a footer action bar).
+- **ItemGroup** — a `role="list"` wrapper that stacks Items.
+- **ItemSeparator** — a divider between Items in a group.
+
+## When to use
+
+- Use for any repeating row with a leading visual, text, and an optional trailing action.
+- Use `ItemGroup` + `ItemSeparator` to present a cohesive list.
+- Use `asChild` to make the entire row a single click target (a link or button).
+- Use `ItemHeader` for a card-like cell with a cover image above the content.
+
+## When not to use
+
+- Avoid for free-form layouts that aren't row-shaped — compose with **Card** instead.
+- Avoid for selectable option lists with a managed value — use **RadioGroup** or
+  **Select**.
+- Avoid nesting interactive controls inside an `asChild` link (a button inside an `a`):
+  keep the row a link **or** give it inner actions, not both.
+
+## Variants & states
+
+### Variants
+<Canvas of={Stories.Variants} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### With an icon
+<Canvas of={Stories.WithIcon} />
+
+### With an avatar
+<Canvas of={Stories.WithAvatar} />
+
+### With an image
+<Canvas of={Stories.WithImage} />
+
+### As a link
+<Canvas of={Stories.AsLink} />
+
+### Compact link
+<Canvas of={Stories.Compact} />
+
+### Grouped with separators
+<Canvas of={Stories.Group} />
+
+### Music list
+<Canvas of={Stories.MusicList} />
+
+### Header with cover
+<Canvas of={Stories.HeaderWithCover} />
+
+### With a footer
+<Canvas of={Stories.WithFooter} />
+
+### Description with a link
+<Canvas of={Stories.DescriptionWithLink} />
+
+### Inside a dropdown menu
+<Canvas of={Stories.InDropdownMenu} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+`Item` is a layout primitive — it owns no interactive state. The behaviors below are
+guarded by interaction tests in `item.stories.tsx`:
+
+- `asChild` renders the row as its child element, so it is exposed with that element's
+  role (a link gets `role="link"` and the `href`) — `RendersAsLink`.
+- `ItemGroup` exposes `role="list"` and contains its `listitem` rows — `GroupHasListRole`.
+- A trailing `ItemActions` button keeps its own handler; clicking fires only that
+  callback — `ActionFires`.
+- Composed inside a `DropdownMenu`, each `Item` is reachable as a `menuitem` —
+  `OpensInDropdownMenu`.
+
+## Code examples
+
+```tsx
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from 'timds'
+
+// Basic row with a trailing action
+<Item variant="outline">
+  <ItemContent>
+    <ItemTitle>Basic Item</ItemTitle>
+    <ItemDescription>A simple row with title and description.</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Button variant="outline" size="sm">Action</Button>
+  </ItemActions>
+</Item>
+
+// The whole row as a link
+<Item variant="outline" asChild>
+  <a href="/docs">
+    <ItemContent>
+      <ItemTitle>Visit our documentation</ItemTitle>
+      <ItemDescription>Learn how to get started.</ItemDescription>
+    </ItemContent>
+  </a>
+</Item>
+
+// A grouped, separated list
+<ItemGroup>
+  <Item>
+    <ItemMedia>
+      <Avatar>
+        <AvatarImage src="/shadcn.png" alt="shadcn" />
+        <AvatarFallback>S</AvatarFallback>
+      </Avatar>
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>shadcn</ItemTitle>
+      <ItemDescription>shadcn@vercel.com</ItemDescription>
+    </ItemContent>
+  </Item>
+  <ItemSeparator />
+  {/* …more items */}
+</ItemGroup>
+```
+
+<Source of={Stories.WithIcon} />
+
+## Content & UX writing
+
+- **Title** — short and scannable; the row's primary label. Avoid full sentences.
+- **Description** — one supporting line; `ItemDescription` clamps to two lines, so keep
+  it brief.
+- **Icon-only actions** — must carry an accessible name via `aria-label`.
+- **Images** — always provide meaningful `alt` text (or empty `alt=""` when purely
+  decorative).
+
+## Accessibility
+
+- With `asChild`, the row inherits the child's semantics — an `<a>` is announced as a
+  link with its `href` (see `RendersAsLink`); make the link text meaningful.
+- `ItemGroup` exposes `role="list"`; mark its rows as `role="listitem"` when they aren't
+  already (see `GroupHasListRole`).
+- Trailing actions stay individually focusable and operable by keyboard (Tab to focus,
+  Enter/Space to activate) — see `ActionFires`.
+- Icon-only buttons and meaningful images require `aria-label` / `alt`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do use `ItemGroup` + `ItemSeparator` for cohesive lists.
+- ✅ Do choose a single click target per row — either `asChild` link **or** inner actions.
+- ✅ Do give icon-only actions an `aria-label` and images an `alt`.
+- ✅ Do match `ItemMedia variant` to the content (`icon` / `image` / default avatar).
+- ❌ Don't nest a `Button` inside an `asChild` link — it produces invalid, untabbable markup.
+- ❌ Don't pack more than two text lines into `ItemDescription`; it clamps.
+- ❌ Don't rebuild a non-row layout with Item — reach for **Card**.
+
+## Related components & patterns
+
+- **Card** — for richer, non-row content blocks; Item is the row-shaped counterpart.
+- **DropdownMenu** — Item composes inside menu items for rich entries (see
+  `InDropdownMenu`).
+- **Avatar** / **Button** — the usual media and action children.
+- **Separator** — the primitive `ItemSeparator` builds on.
