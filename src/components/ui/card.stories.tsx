@@ -211,10 +211,13 @@ export const RendersAllSlots: Story = {
 /** O `CardAction` marca o header (selector `has-data-[slot=card-action]`). */
 export const ActionDocksInHeader: Story = {
   render: () => (
+    // Header sem `CardDescription`: colapsamos o grid para uma única linha
+    // (`grid-rows-[auto]`) — senão a 2ª linha vazia some, mas o `gap-2` sobra
+    // como espaço extra embaixo. Título e ação ficam centralizados na linha.
     <Card className="w-80">
-      <CardHeader data-testid="header">
+      <CardHeader data-testid="header" className="grid-rows-[auto] items-center">
         <CardTitle>Project Apollo</CardTitle>
-        <CardAction>
+        <CardAction className="row-span-1 self-center">
           <Button variant="ghost" size="sm">
             Edit
           </Button>
