@@ -36,7 +36,7 @@ const meta = {
     variant: {
       control: 'select',
       options: ['default', 'success', 'destructive'],
-      description: 'Chromatic scheme of the filled range and thumb border.',
+      description: 'Chromatic scheme of the filled range and thumb.',
       table: { defaultValue: { summary: 'default' } },
     },
     size: {

@@ -36,13 +36,17 @@ const trackVariants = cva('relative grow overflow-hidden rounded-full bg-muted',
 // (não do atributo `disabled`), então neutralizamos hover/foco por aí — caso
 // contrário o anel continuaria aparecendo no slider desabilitado.
 const thumbVariants = cva(
-  'block shrink-0 rounded-full border bg-background shadow-sm ring-ring/50 transition-[color,box-shadow] outline-hidden hover:ring-4 focus-visible:ring-4 data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:hover:ring-0',
+  // Miolo sólido na cor da variante com uma borda na cor do fundo, que separa
+  // a bolinha da barra preenchida (mesma cor). O anel (halo) aparece no
+  // hover/foco e some no estado desabilitado.
+  'block shrink-0 rounded-full border-2 border-background shadow-sm ring-ring/50 transition-[color,box-shadow] outline-hidden hover:ring-4 focus-visible:ring-4 data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:hover:ring-0',
   {
     variants: {
+      // Preenchimento na cor da variante: a bolinha acompanha a barra preenchida.
       variant: {
-        default: 'border-primary',
-        success: 'border-success',
-        destructive: 'border-destructive',
+        default: 'bg-primary',
+        success: 'bg-success',
+        destructive: 'bg-destructive',
       },
       size: {
         sm: 'size-3',
