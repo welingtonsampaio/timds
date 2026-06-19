@@ -1,0 +1,159 @@
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './sonner.stories'
+
+<Meta of={Stories} />
+
+# Toaster · `Stable`
+
+Brief, non-blocking notifications anchored to a corner of the screen. Built on
+[sonner](https://sonner.emilkowal.ski/): mount `<Toaster />` once, then fire toasts from
+anywhere with the imperative `toast` function.
+
+## Overview
+
+The component you render is the **container**. The notifications themselves are created
+imperatively — `toast('message')`, `toast.success(...)`, `toast.error(...)`, and so on —
+so any event handler can raise one without prop drilling or local state.
+
+<Canvas of={Stories.Playground} />
+
+The wrapper maps sonner’s color variables to the design-system tokens (`--success`,
+`--destructive`, `--warning`, `--info`) via `color-mix` over `--popover`, so semantic
+colors and contrast adapt to light/dark automatically — no `next-themes` needed (dark
+mode follows the `.dark` class, like every other component).
+
+## Anatomy
+
+- **Toaster** — the portal/container, mounted once near the app root. Owns global
+  defaults (`position`, `richColors`, `duration`, `visibleToasts`, `closeButton`).
+- **Toast** — a single notification: an optional type icon, a **title**, an optional
+  **description**, and optional **action** / **cancel** buttons.
+- **Close button** — an explicit `×` (opt-in via `closeButton`), required for persistent
+  toasts.
+
+## When to use
+
+- Confirm that an async action succeeded or failed (saved, deleted, copied).
+- Offer a quick, reversible follow-up — an **Undo** action on a destructive change.
+- Surface low-priority, transient system events (new version available, back online).
+
+## When not to use
+
+- For information the user must act on or acknowledge — use **Dialog** / **AlertDialog**.
+- For persistent, inline validation of a field — use the form’s error text instead.
+- For long or formatted content — toasts are one or two short lines.
+
+## Variants & states
+
+### Semantic colors
+
+<Canvas of={Stories.Colors} />
+
+### With an action (and cancel)
+
+<Canvas of={Stories.WithAction} />
+
+### Durations
+
+<Canvas of={Stories.Durations} />
+
+### Persistent + close button
+
+<Canvas of={Stories.Persistent} />
+
+### Promise
+
+<Canvas of={Stories.PromiseToast} />
+
+## Props
+
+The props below configure the `<Toaster />` container. Per-toast options (`description`,
+`action`, `cancel`, `duration`, `id`, …) are passed to the `toast` call.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+- Firing a toast renders the message in a portal on `document.body` — see `FiresToast`.
+- Each semantic helper tags its toast with `data-type` (drives the color) — see
+  `SemanticType`.
+- An `action` button runs its `onClick` callback when pressed — see
+  `ActionRunsCallback`.
+- A toast with a finite `duration` auto-dismisses — see `ShortDurationAutoDismisses`.
+- A toast with `duration: Infinity` stays until the close button is pressed — see
+  `CloseButtonDismisses`.
+- `toast.promise` shows the loading message, then success/error on settle — see
+  `PromiseResolves`.
+
+## Code examples
+
+Mount the container once (e.g. in your root layout):
+
+```tsx
+import { Toaster } from 'timds'
+
+export function App({ children }) {
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  )
+}
+```
+
+Then raise toasts from any handler:
+
+```tsx
+import { toast } from 'timds'
+
+toast.success('Changes saved')
+toast.error('Could not save', { description: 'Please try again.' })
+
+// Reversible action
+toast('File moved to trash', {
+  action: { label: 'Undo', onClick: () => restore() },
+})
+
+// Persistent until dismissed (pair with <Toaster closeButton />)
+toast('Connection lost', { duration: Number.POSITIVE_INFINITY })
+
+// Async flow
+toast.promise(save(), {
+  loading: 'Saving…',
+  success: 'All saved!',
+  error: 'Could not save',
+})
+```
+
+## Content & UX writing
+
+- Lead with the outcome: “Changes saved”, not “We have saved your changes.”
+- Keep the title to a short clause; put details in `description`, not the title.
+- Action labels are verbs (“Undo”, “Retry”, “View”) — one primary action per toast.
+- Don’t put critical or legally required information in a toast; it disappears.
+
+## Accessibility
+
+- The container renders an `aria-live="polite"` region, so new toasts are announced
+  without stealing focus.
+- Icon-only affordances are labeled: the close button exposes `aria-label="Close toast"`
+  — see `CloseButtonDismisses`.
+- Persistent toasts (`duration: Infinity`) must offer a close button, since they never
+  time out — see `Persistent`.
+- Action buttons are real, focusable `<button>`s reachable by keyboard.
+
+## Do's and Don'ts
+
+- ✅ Mount exactly one `<Toaster />` for the whole app.
+- ✅ Use the semantic helpers (`toast.success`/`toast.error`) so color matches meaning.
+- ✅ Give persistent toasts a close button.
+- ❌ Don’t stack many toasts for one event — collapse them into a single message.
+- ❌ Don’t use a toast for content the user must read or act on — use a dialog.
+- ❌ Don’t set `duration: Infinity` without a way to dismiss it.
+
+## Related components & patterns
+
+- **AlertDialog** — when the user must confirm or acknowledge before continuing.
+- **Alert** — for persistent, inline status that stays on the page.
+- **Button** — toast actions reuse the same action vocabulary; keep one primary action.

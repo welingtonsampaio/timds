@@ -211,6 +211,7 @@ export {
   type SliderProps,
   thumbVariants as sliderThumbVariants,
 } from '@/components/ui/slider'
+export { Toaster, type ToasterProps, toast } from '@/components/ui/sonner'
 export { Spinner } from '@/components/ui/spinner'
 export {
   Switch,
