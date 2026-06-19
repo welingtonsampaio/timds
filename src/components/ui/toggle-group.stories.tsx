@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { AlignCenter, AlignLeft, AlignRight, Bold, Italic, Underline } from 'lucide-react'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 import { ToggleGroup, ToggleGroupItem } from './toggle-group'
 
@@ -246,6 +246,13 @@ export const KeyboardNavigation: Story = {
     const canvas = within(canvasElement)
     const left = canvas.getByRole('radio', { name: 'Align left' })
     const center = canvas.getByRole('radio', { name: 'Align center' })
+
+    // O roving tabindex do Radix só torna o grupo "tabbable" (root com
+    // tabindex=0) depois que os itens se registram num efeito. Em ambientes de
+    // captura (Chromatic) o `tab()` pode rodar antes disso e o foco ficaria no
+    // <body>; esperamos o grupo ficar focável antes de navegar.
+    const group = canvasElement.querySelector('[data-slot="toggle-group"]')
+    await waitFor(() => expect(group).toHaveAttribute('tabindex', '0'))
 
     await userEvent.tab()
     await expect(left).toHaveFocus()
