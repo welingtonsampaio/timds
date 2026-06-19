@@ -34,6 +34,7 @@ export {
   ButtonGroupText,
   buttonGroupVariants,
 } from '@/components/ui/button-group'
+export { Calendar, CalendarDayButton } from '@/components/ui/calendar'
 export {
   Card,
   CardAction,
@@ -61,6 +62,7 @@ export {
   type CheckboxProps,
   checkboxVariants,
 } from '@/components/ui/checkbox'
+export { DatePicker, type DatePickerProps } from '@/components/ui/date-picker'
 export { Input } from '@/components/ui/input'
 export {
   InputGroup,
@@ -76,6 +78,15 @@ export {
   InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
+export {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 export { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 export {
   Select,

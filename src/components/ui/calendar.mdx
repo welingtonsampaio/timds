@@ -1,0 +1,127 @@
+{/* calendar.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './calendar.stories'
+
+<Meta of={Stories} />
+
+# Calendar · `Stable`
+
+An inline month grid for selecting a single date, a range, or multiple days.
+
+## Overview
+
+`Calendar` wraps [`react-day-picker`](https://daypicker.dev) and styles it with the
+design-system tokens, reusing the repo `Button` for days and navigation arrows. Pick the
+selection shape with `mode` (`single` | `range` | `multiple`); the value is controlled via
+`selected` + `onSelect`. It renders **inline** — for a single date behind a popover
+trigger, use **DatePicker** instead.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Caption / navigation** — the month label (or month/year dropdowns via `captionLayout`)
+  and the previous/next arrows.
+- **Weekday header** — the row of weekday abbreviations.
+- **Day grid** — a `role="grid"` of day buttons; outside days from adjacent months show
+  when `showOutsideDays` is on.
+- **Months** — one or more month panels side by side, set by `numberOfMonths`.
+
+## When to use
+
+- Use to select a date when an always-visible calendar fits the layout (booking, filters,
+  scheduling).
+- Use `mode="range"` for a contiguous interval, or `mode="multiple"` for a set of days.
+- Use `captionLayout="dropdown"` and `numberOfMonths` to speed up navigation across months
+  and years.
+
+## When not to use
+
+- Avoid when the calendar should be tucked behind a compact trigger — use **DatePicker**.
+- Avoid for free-text date entry where typing is faster — use an **Input**.
+
+## Variants & states
+
+### Range mode
+<Canvas of={Stories.RangeMode} />
+
+### Multiple mode
+<Canvas of={Stories.MultipleMode} />
+
+### Dropdown caption
+<Canvas of={Stories.WithDropdowns} />
+
+### Two months
+<Canvas of={Stories.TwoMonths} />
+
+### Disabled days
+<Canvas of={Stories.DisabledDays} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `calendar.stories.tsx`:
+
+- Clicking a day fires `onSelect` with that `Date` and marks the day selected —
+  `SelectsADay`.
+- The next/previous arrows page the visible month and fire `onMonthChange` —
+  `NavigatesMonths`.
+- A disabled day ignores clicks and never fires `onSelect` — `DisabledDayDoesNotSelect`.
+
+## Code examples
+
+```tsx
+import { Calendar } from 'timds'
+import { useState } from 'react'
+import type { DateRange } from 'react-day-picker'
+
+// Single date (controlled)
+const [date, setDate] = useState<Date>()
+<Calendar mode="single" selected={date} onSelect={setDate} />
+
+// Range
+const [range, setRange] = useState<DateRange>()
+<Calendar mode="range" selected={range} onSelect={setRange} numberOfMonths={2} />
+
+// Constrain selectable days + dropdown caption
+<Calendar mode="single" disabled={{ before: new Date() }} captionLayout="dropdown" />
+```
+
+<Source of={Stories.RangeMode} />
+
+## Content & UX writing
+
+- **Locale** — pass a date-fns `locale` (and matching `weekStartsOn`) so weekday names and
+  the first day of the week match the audience.
+- **Disabled rationale** — when many days are disabled, explain why nearby (a helper line),
+  since the grid alone can't say it.
+
+## Accessibility
+
+- The month is a `role="grid"` labelled by the visible month/year; each day is a button
+  whose accessible name is the full date, gaining ", selected" when chosen.
+- Day-to-day movement and selection are operable by keyboard (arrow keys move focus, Enter
+  selects); the focused day is programmatically focused — see `SelectsADay`.
+- The navigation arrows expose accessible names ("Go to the Previous/Next Month") and fire
+  `onMonthChange` — `NavigatesMonths`.
+- Disabled days are exposed as disabled buttons and are not selectable —
+  `DisabledDayDoesNotSelect`.
+- axe runs on every story (`a11y: { test: 'error' }`), gating name/role/contrast rules.
+
+## Do's and Don'ts
+
+- ✅ Do control the value with `selected` + `onSelect` matched to the `mode`.
+- ✅ Do constrain invalid days with `disabled` rather than rejecting them after selection.
+- ❌ Don't use Calendar inline when a compact trigger is expected — use **DatePicker**.
+- ❌ Don't mix a `selected` shape that disagrees with `mode` (e.g. a `Date` with
+  `mode="range"`).
+
+## Related components & patterns
+
+- **DatePicker** — wraps this Calendar in single mode behind a `Popover` trigger.
+- **Popover** — the floating container used to tuck a calendar behind a button.
+- **Input** — for fast keyboard date entry when a visual grid isn't needed.

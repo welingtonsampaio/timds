@@ -1,0 +1,119 @@
+{/* popover.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './popover.stories'
+
+<Meta of={Stories} />
+
+# Popover · `Stable`
+
+A floating panel anchored to a trigger, for secondary content shown on demand.
+
+## Overview
+
+`Popover` is built on Radix `Popover` and renders its content in a portal, with
+positioning, collision handling, and focus managed for you. Compose `PopoverTrigger`
+(usually `asChild` over a `Button`) with `PopoverContent`; the optional
+`PopoverHeader` / `PopoverTitle` / `PopoverDescription` slots structure the body. It is
+**non-modal** — the page stays interactive — so reach for it to reveal extra controls or
+context next to their trigger. It is the floating container behind **DatePicker**.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** — the element that toggles the panel (`PopoverTrigger`, typically `asChild`).
+- **Content** — the floating panel (`PopoverContent`); props `align`, `side`, `sideOffset`
+  position it relative to the trigger.
+- **Header / Title / Description (optional)** — `PopoverHeader`, `PopoverTitle`,
+  `PopoverDescription` structure the top of the body.
+- **Anchor (optional)** — `PopoverAnchor` anchors the panel to a different element than the
+  trigger.
+
+## When to use
+
+- Use to reveal secondary controls or context on demand (filters, a quick form, settings).
+- Use when the page should stay interactive behind the panel (it is non-modal).
+- Use `align` / `side` to keep the panel near its trigger within the viewport.
+
+## When not to use
+
+- Avoid for a destructive or blocking confirmation — use **AlertDialog** (modal, focus
+  trapped).
+- Avoid for a short, non-interactive hint on hover — use a **Tooltip**.
+- Avoid for choosing from a list of options — use **Select**.
+
+## Variants & states
+
+### Plain content
+<Canvas of={Stories.PlainContent} />
+
+## Props
+
+The composition is split across parts. `PopoverContent` carries the positioning props
+(`align`, `side`, `sideOffset`) shown below; `Popover` (the Root) forwards the open-state
+props (`open`, `defaultOpen`, `onOpenChange`, `modal`).
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `popover.stories.tsx`:
+
+- Clicking the trigger opens the panel; Escape closes it and returns focus to the trigger —
+  `OpensAndCloses`.
+- Clicking outside the open panel dismisses it — `ClosesOnOutsideClick`.
+- On open, focus moves into the panel (its first focusable control) —
+  `MovesFocusIntoContent`.
+
+## Code examples
+
+```tsx
+import { Button, Input, Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from 'timds'
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Open</Button>
+  </PopoverTrigger>
+  <PopoverContent align="start">
+    <PopoverHeader>
+      <PopoverTitle>Dimensions</PopoverTitle>
+    </PopoverHeader>
+    <Input aria-label="Width" defaultValue="100%" />
+  </PopoverContent>
+</Popover>
+```
+
+## Content & UX writing
+
+- **Title** — short and noun-led ("Dimensions", "Filters"); skip it when the content is
+  self-evident.
+- **Scope** — keep a popover focused on one task; if it grows into a multi-step flow,
+  promote it to a dialog or a page.
+
+## Accessibility
+
+- `PopoverContent` exposes `role="dialog"`, so it **requires an accessible name**: pass
+  `aria-label` (or `aria-labelledby` pointing at a `PopoverTitle`). axe fails the story
+  otherwise.
+- The trigger toggles the panel and is operable by keyboard (Enter/Space).
+- On open, focus moves into the content; on close, it returns to the trigger —
+  `OpensAndCloses`, `MovesFocusIntoContent`.
+- Escape and an outside click both dismiss the panel — `OpensAndCloses`,
+  `ClosesOnOutsideClick`.
+- It is non-modal: content outside the panel stays reachable (unlike **AlertDialog**).
+- axe runs on every story (`a11y: { test: 'error' }`), gating name/role/contrast rules.
+
+## Do's and Don'ts
+
+- ✅ Do use `PopoverTrigger asChild` over a real `Button` so the trigger is a proper
+  control.
+- ✅ Do keep the panel scoped to a single, light task.
+- ❌ Don't use a Popover for a blocking confirmation — use **AlertDialog**.
+- ❌ Don't put a hover-only hint in a Popover — use a **Tooltip**.
+
+## Related components & patterns
+
+- **DatePicker** — composes a Popover with a Calendar behind a date trigger.
+- **AlertDialog** — when the interaction must be modal and focus-trapped.
+- **Select** — for choosing one option from a list, with the listbox semantics.

@@ -1,0 +1,171 @@
+{/* date-picker.mdx — docs page (prosa em English). Embute as stories que carregam
+    os testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './date-picker.stories'
+
+<Meta of={Stories} />
+
+# DatePicker · `Stable`
+
+A trigger that shows the selected date and opens a calendar popover to pick a single day.
+
+## Overview
+
+`DatePicker` is the high-level way to choose **one date**. It composes a `Button` trigger,
+a `Popover`, and a `Calendar`: the trigger shows the formatted date (or a placeholder),
+clicking it opens the calendar, and picking a day selects it and closes the popover. Value
+and open state are each controlled or uncontrolled. For ranges or multiple days, use the
+**Calendar** directly with `mode`.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Trigger** — an outline `Button` with a leading calendar icon; renders the formatted
+  date, or the `placeholder` (muted) while empty.
+- **Popover** — the floating panel that holds the calendar, in a portal.
+- **Calendar** — the `single`-mode month grid; reach its props via `calendarProps`.
+- **Hidden input (optional)** — when `name` is set, a hidden `<input>` carries the date as
+  ISO (`yyyy-MM-dd`) for native form submission.
+
+## When to use
+
+- Use to pick a single calendar date (a due date, a birthday, a start date).
+- Use `calendarProps` to constrain the choice (disabled days, `defaultMonth`, dropdown
+  caption for fast year jumps).
+- Use `name` when the value must be submitted with a plain HTML form.
+
+## When not to use
+
+- Avoid for a date **range** or **multiple** dates — render a **Calendar** with the
+  matching `mode`.
+- Avoid for a free-text or masked date entry where typing is faster — use an **Input**.
+- Avoid when the calendar should always be visible inline — drop the popover and use
+  **Calendar** on its own.
+
+## Variants & states
+
+### With a value
+<Canvas of={Stories.WithValue} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Full width
+<Canvas of={Stories.Block} />
+
+### Custom format
+The `formatStr` (a date-fns pattern) controls the trigger label.
+
+<Canvas of={Stories.CustomFormat} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Controlled
+State lives in the parent via `value` + `onValueChange`.
+
+<Canvas of={Stories.Controlled} />
+
+## Date ranges
+
+`DatePicker` is single-date by design. A **range** is the same composition with the
+calendar in `mode="range"` — `Popover` + `Calendar` + a trigger — so these are shown as
+copyable example patterns rather than a `DatePicker` prop.
+
+Selecting a day **does not close** the calendar (dismiss it by clicking outside or
+pressing Escape). Re-clicking on a complete range restarts the start date: if the new
+start is before the current end, the end is kept; the next click then moves the end.
+The clicked day comes from the second argument of `Calendar`'s `onSelect`, which the
+examples use to drive this rule.
+
+### Range
+A single trigger that opens a two-month range calendar and shows `start – end`.
+
+<Canvas of={Stories.Range} />
+
+### Range, dual field
+Separate **Start** and **End** fields share one range calendar — the classic
+check-in / check-out layout. Either field opens the same popover, and selecting an
+interval fills both.
+
+<Canvas of={Stories.RangeDualField} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `date-picker.stories.tsx`:
+
+- Clicking the trigger opens the calendar; picking a day fires `onValueChange` with the
+  `Date`, updates the label, and closes the popover — `OpensAndSelects`.
+- The trigger is keyboard-focusable and opens with Enter — `OpensWithKeyboard`.
+- A disabled trigger does not open the calendar and never fires `onOpenChange` —
+  `DisabledDoesNotOpen`.
+- Range: picking start then end fills the trigger and keeps the calendar open —
+  `RangeSelectsInterval`.
+- Range restart: re-clicking a complete range moves the start, keeps the end when the
+  new start is earlier, then the next click moves the end — `RangeRestartKeepsEnd`.
+- Dual field: selecting a range fills both the Start and End fields —
+  `RangeDualFieldFillsBothFields`.
+
+## Code examples
+
+```tsx
+import { DatePicker } from 'timds'
+
+// Uncontrolled
+<DatePicker defaultValue={new Date()} onValueChange={(date) => console.log(date)} />
+
+// Controlled
+<DatePicker value={date} onValueChange={setDate} />
+
+// Localized label + constrained calendar
+<DatePicker
+  formatStr="dd/MM/yyyy"
+  calendarProps={{ disabled: { before: new Date() }, captionLayout: 'dropdown' }}
+/>
+
+// In a form (emits a hidden yyyy-MM-dd input)
+<DatePicker name="dueDate" />
+```
+
+<Source of={Stories.Controlled} />
+
+## Content & UX writing
+
+- **Placeholder** — keep it an action-neutral hint ("Pick a date", "Select date"), not an
+  example date that could be mistaken for a value.
+- **Format** — match the audience's locale via `formatStr`/`locale`; prefer an unambiguous
+  pattern over a numeric one when day/month order could confuse.
+- **Accessible name** — give the trigger an `aria-label` (or an associated `<label>`) when
+  the surrounding context doesn't already name the field.
+
+## Accessibility
+
+- The trigger is a real `button`: reachable with Tab and operable with Enter/Space — see
+  `OpensWithKeyboard`.
+- The calendar exposes the `react-day-picker` grid (`role="grid"`); each day is a button
+  whose accessible name is the full date, gaining ", selected" when chosen.
+- The popover is non-modal: focus moves into the calendar on open and returns to the
+  trigger on close; Escape dismisses it.
+- A disabled trigger is not operable and does not open the calendar — `DisabledDoesNotOpen`.
+- axe runs on every story (`a11y: { test: 'error' }`), gating name/role/contrast rules.
+
+## Do's and Don'ts
+
+- ✅ Do give the trigger an accessible name when context doesn't supply one.
+- ✅ Do constrain selectable days with `calendarProps` instead of validating after the fact.
+- ❌ Don't use a DatePicker for a date range — use a **Calendar** with `mode="range"`.
+- ❌ Don't put an example date in the `placeholder`; it reads as a pre-filled value.
+
+## Related components & patterns
+
+- **Calendar** — the underlying month grid; use it directly for range/multiple selection
+  or an always-visible inline calendar.
+- **Popover** — the floating container the picker is built on; reuse it for other anchored
+  panels.
+- **Input** — pair with, or swap for, when fast keyboard date entry matters more than a
+  visual calendar.
