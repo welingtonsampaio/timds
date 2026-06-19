@@ -1,0 +1,74 @@
+{/* skeleton.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks'
+import * as Stories from './skeleton.stories'
+
+<Meta of={Stories} />
+
+# Skeleton · `Stable`
+
+A pulsing placeholder that reserves layout space while real content loads.
+
+## Overview
+
+Use a Skeleton to stand in for content that has not arrived yet — an avatar, a line of
+text, a card. It keeps the layout from jumping when data resolves and signals "loading"
+without a spinner. Its size and shape come entirely from `className`; the component itself
+only supplies the pulse animation, rounded corners and accent background.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Block** — a single `<div>` with `data-slot="skeleton"`. Shape it with utilities:
+  `rounded-full` for circles (avatars), `h-4 w-…` for text lines, `rounded-xl` for media.
+
+## When to use
+
+- Use to placehold content with a known, stable shape (lists, cards, profile headers).
+- Use several small blocks mirroring the real layout, so the swap to real content is calm.
+- Use when loading takes long enough that a blank area would read as broken.
+
+## When not to use
+
+- Avoid for indeterminate background work with no fixed layout — use a **Spinner**.
+- Avoid for determinate progress (uploads, multi-step) — use **Progress**.
+- Avoid wrapping it in interactive roles; it is decorative and must stay out of the tab order.
+
+## Variants & states
+
+### Shapes
+<Canvas of={Stories.Shapes} />
+
+### Card placeholder
+<Canvas of={Stories.Card} />
+
+## Props
+
+<Controls of={Stories.Default} />
+
+The only API is the standard `div` props; everything visual is driven by `className`.
+
+## Behavior & interaction
+
+Skeleton is non-interactive — it has no behavior to drive. The `RendersPlaceholder` story
+asserts only that it mounts and carries its `data-slot`.
+
+## Accessibility
+
+- Decorative by default: it exposes no role or text, so screen readers skip it.
+- Announce loading on the surrounding region instead (e.g. `aria-busy="true"` on the
+  container, or a visually-hidden "Loading…"). Do not give the Skeleton itself an ARIA role.
+
+## Do's and Don'ts
+
+- ✅ Do match the skeleton's size and count to the content it replaces.
+- ✅ Do mark the loading region with `aria-busy` and swap to real content once loaded.
+- ❌ Don't animate or stack so many blocks that the screen flickers.
+- ❌ Don't use a Skeleton as the only loading cue for assistive tech.
+
+## Related components & patterns
+
+- **Spinner** — for indeterminate work without a fixed layout.
+- **Progress** — for determinate progress with a known percentage.
+- **Sidebar** — `SidebarMenuSkeleton` composes Skeletons into menu-row placeholders.

@@ -177,6 +177,34 @@ export {
   selectTriggerVariants,
 } from '@/components/ui/select'
 export { Separator } from '@/components/ui/separator'
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  sidebarMenuButtonVariants,
+  useSidebar,
+} from '@/components/ui/sidebar'
+export { Skeleton } from '@/components/ui/skeleton'
 export { Spinner } from '@/components/ui/spinner'
 export {
   Switch,
@@ -191,5 +219,11 @@ export {
   tabsListVariants,
 } from '@/components/ui/tabs'
 export { Textarea } from '@/components/ui/textarea'
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 // Utilitários
 export { cn } from '@/lib/utils'

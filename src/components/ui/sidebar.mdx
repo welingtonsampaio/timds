@@ -1,0 +1,304 @@
+{/* sidebar.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './sidebar.stories'
+
+<Meta of={Stories} />
+
+# Sidebar · `Stable`
+
+A composable, collapsible application sidebar — the persistent navigation frame for a
+page, with a desktop layout and a mobile off-canvas overlay built in.
+
+## Overview
+
+The Sidebar is not a single element but a **kit of building blocks** wired together by a
+`SidebarProvider` context: a header, a scrollable content area of groups and menus, a
+footer, and a rail. It collapses to an icon rail or slides off-canvas, remembers its state
+in a cookie, and toggles via a trigger, the rail, or `Cmd/Ctrl + B`. On small screens it
+becomes an off-canvas overlay automatically. Wrap your whole layout in `SidebarProvider`,
+put the navigation in `Sidebar`, and render the page beside it in `SidebarInset`.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+The pieces nest as shown below — `SidebarProvider` wraps everything; `Sidebar` and
+`SidebarInset` sit side by side inside it.
+
+<figure>
+  <svg
+    viewBox="0 0 720 470"
+    role="img"
+    aria-label="Sidebar composition: SidebarProvider wraps a Sidebar (header, content with groups and menus, footer, rail) next to a SidebarInset holding the page and its trigger."
+    width="100%"
+    style={{ maxWidth: 720, fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}
+  >
+    {/* SidebarProvider — frame externo */}
+    <rect x="4" y="4" width="712" height="462" rx="12" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="6 5" />
+    <rect x="20" y="-6" width="132" height="22" rx="6" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
+    <text x="30" y="9" fontSize="12" fontWeight="600" fill="#334155">SidebarProvider</text>
+
+    {/* Sidebar — coluna esquerda */}
+    <rect x="24" y="40" width="250" height="410" rx="10" fill="#faf5ff" stroke="#c4b5fd" strokeWidth="1.5" />
+    <rect x="36" y="30" width="62" height="20" rx="6" fill="#ffffff" stroke="#c4b5fd" strokeWidth="1" />
+    <text x="45" y="44" fontSize="11" fontWeight="600" fill="#6d28d9">Sidebar</text>
+
+    {/* SidebarHeader */}
+    <rect x="38" y="58" width="216" height="46" rx="8" fill="#ffffff" stroke="#e2e8f0" />
+    <rect x="48" y="68" width="26" height="26" rx="6" fill="#7c3aed" />
+    <text x="82" y="80" fontSize="11" fontWeight="600" fill="#1e293b">Acme Inc.</text>
+    <text x="82" y="94" fontSize="9" fill="#94a3b8">SidebarHeader</text>
+
+    {/* SidebarContent */}
+    <rect x="38" y="112" width="216" height="246" rx="8" fill="#ffffff" stroke="#e2e8f0" />
+    <text x="48" y="127" fontSize="9" fill="#94a3b8">SidebarContent · SidebarGroup</text>
+    <text x="48" y="147" fontSize="10" fontWeight="600" fill="#64748b">SidebarGroupLabel</text>
+
+    {/* SidebarMenu — item ativo com badge */}
+    <rect x="48" y="156" width="196" height="30" rx="6" fill="#ede9fe" stroke="#c4b5fd" />
+    <rect x="56" y="164" width="14" height="14" rx="3" fill="#7c3aed" />
+    <text x="78" y="175" fontSize="11" fontWeight="600" fill="#5b21b6">Home</text>
+    <circle cx="232" cy="171" r="9" fill="#7c3aed" />
+    <text x="232" y="174" fontSize="9" fontWeight="700" fill="#ffffff" textAnchor="middle">3</text>
+
+    {/* SidebarMenuItem comuns */}
+    <rect x="48" y="190" width="196" height="28" rx="6" fill="#f8fafc" stroke="#e2e8f0" />
+    <rect x="56" y="197" width="14" height="14" rx="3" fill="#cbd5e1" />
+    <text x="78" y="208" fontSize="11" fill="#475569">Inbox</text>
+
+    <rect x="48" y="222" width="196" height="28" rx="6" fill="#f8fafc" stroke="#e2e8f0" />
+    <rect x="56" y="229" width="14" height="14" rx="3" fill="#cbd5e1" />
+    <text x="78" y="240" fontSize="11" fill="#475569">Calendar</text>
+
+    {/* SidebarMenuSub */}
+    <line x1="64" y1="256" x2="64" y2="318" stroke="#c4b5fd" strokeWidth="1.5" />
+    <text x="78" y="270" fontSize="10" fill="#64748b">SidebarMenuSubButton</text>
+    <text x="78" y="288" fontSize="10" fill="#94a3b8">— Genesis</text>
+    <text x="78" y="306" fontSize="10" fill="#94a3b8">— Explorer</text>
+    <text x="78" y="338" fontSize="9" fill="#cbd5e1">SidebarMenuSub</text>
+
+    {/* SidebarFooter */}
+    <rect x="38" y="366" width="216" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0" />
+    <rect x="48" y="376" width="22" height="22" rx="5" fill="#cbd5e1" />
+    <text x="80" y="386" fontSize="11" fontWeight="600" fill="#1e293b">Account</text>
+    <text x="80" y="399" fontSize="9" fill="#94a3b8">SidebarFooter</text>
+
+    {/* SidebarRail */}
+    <rect x="266" y="48" width="6" height="394" rx="3" fill="#c4b5fd" />
+    <line x1="269" y1="240" x2="300" y2="240" stroke="#94a3b8" strokeWidth="1" strokeDasharray="3 3" />
+    <text x="304" y="236" fontSize="9" fill="#64748b">SidebarRail</text>
+    <text x="304" y="248" fontSize="8" fill="#94a3b8">(drag/toggle)</text>
+
+    {/* SidebarInset — coluna direita */}
+    <rect x="290" y="40" width="410" height="410" rx="10" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1.5" />
+    <rect x="290" y="40" width="410" height="44" rx="10" fill="#f8fafc" stroke="#e2e8f0" />
+    <rect x="306" y="54" width="22" height="18" rx="4" fill="#ffffff" stroke="#cbd5e1" />
+    <line x1="310" y1="60" x2="324" y2="60" stroke="#64748b" strokeWidth="1.5" />
+    <line x1="310" y1="63" x2="324" y2="63" stroke="#64748b" strokeWidth="1.5" />
+    <line x1="310" y1="66" x2="324" y2="66" stroke="#64748b" strokeWidth="1.5" />
+    <text x="338" y="66" fontSize="11" fontWeight="600" fill="#334155">SidebarTrigger</text>
+    <text x="500" y="250" fontSize="13" fontWeight="600" fill="#94a3b8" textAnchor="middle">SidebarInset</text>
+    <text x="500" y="270" fontSize="10" fill="#cbd5e1" textAnchor="middle">page content</text>
+  </svg>
+  <figcaption style={{ fontSize: 12, color: '#64748b', marginTop: 8 }}>
+    The composition tree. Every labeled region maps to an exported component.
+  </figcaption>
+</figure>
+
+The same composition, live:
+
+<Canvas of={Stories.Anatomy} />
+
+- **`SidebarProvider`** — the context owner. Wrap the entire layout; it holds open/collapsed
+  state, the mobile flag, the `Cmd/Ctrl + B` shortcut, and the cookie persistence. Read it
+  with `useSidebar()`.
+- **`Sidebar`** — the navigation container. Props: `side` (`left`/`right`), `variant`
+  (`sidebar`/`floating`/`inset`), `collapsible` (`offcanvas`/`icon`/`none`).
+- **`SidebarHeader`** / **`SidebarFooter`** — pinned top and bottom regions (brand switcher,
+  user menu).
+- **`SidebarContent`** — the scrollable middle; holds one or more groups.
+- **`SidebarGroup`** + **`SidebarGroupLabel`** + **`SidebarGroupContent`** + **`SidebarGroupAction`**
+  — a titled section, with an optional action button on the label.
+- **`SidebarMenu`** → **`SidebarMenuItem`** → **`SidebarMenuButton`** — the list, its rows, and
+  the interactive row control (`isActive`, `variant`, `size`, `tooltip`).
+- **`SidebarMenuAction`** / **`SidebarMenuBadge`** — a per-row action button and a count badge.
+- **`SidebarMenuSub`** → **`SidebarMenuSubItem`** → **`SidebarMenuSubButton`** — a nested level
+  of links.
+- **`SidebarMenuSkeleton`** — a loading placeholder shaped like a menu row.
+- **`SidebarRail`** — the thin edge strip that toggles the sidebar.
+- **`SidebarTrigger`** — the toggle button, placed in your page header.
+- **`SidebarInset`** — the main content area beside the sidebar; pair with `variant="inset"`.
+
+## When to use
+
+- Use as the primary, persistent navigation for an application shell or dashboard.
+- Use when navigation must stay reachable while the user works in the main content.
+- Use `collapsible="icon"` when screen space is tight but the nav should remain visible.
+
+## When not to use
+
+- Avoid for transient, on-demand menus tied to one control — use a **DropdownMenu**.
+- Avoid for a temporary panel that overlays content briefly — use a **Drawer** or **Dialog**.
+- Avoid for in-page section switching — use **Tabs**.
+
+## Variants & states
+
+### Variant: floating
+<Canvas of={Stories.Floating} />
+
+### Variant: inset
+<Canvas of={Stories.Inset} />
+
+### Side: right
+<Canvas of={Stories.RightSide} />
+
+### Collapsible: icon
+<Canvas of={Stories.CollapsibleIcon} />
+
+### Group with action
+<Canvas of={Stories.GroupWithAction} />
+
+### Row actions and badges
+<Canvas of={Stories.ActionsAndBadges} />
+
+### Submenu
+<Canvas of={Stories.WithSubmenu} />
+
+### Loading
+<Canvas of={Stories.Loading} />
+
+## Props
+
+The controls below target the `Sidebar` element. State and behavior (open/collapsed, mobile)
+live on `SidebarProvider`; sub-components take standard element props plus the slots noted in
+Anatomy.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+- `SidebarTrigger` toggles the sidebar, flipping its `data-state` between `expanded` and
+  `collapsed` — see `TogglesViaTrigger`.
+- `Cmd/Ctrl + B` toggles it from anywhere on the page — see `TogglesViaKeyboardShortcut`.
+- `SidebarRail` (the edge strip) toggles it too, and shares the "Toggle Sidebar" label.
+- When collapsed to icons, a `SidebarMenuButton` with a `tooltip` reveals its label on
+  hover or focus — see `CollapsedShowsTooltip`.
+- Navigation rows are buttons; submenu rows are links — see `RendersNavigation`.
+- Below the `md` breakpoint the sidebar renders as an off-canvas overlay (an internal
+  Sheet); the same trigger opens it. State persists across reloads via a cookie.
+
+## Code examples
+
+Minimal application shell:
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from 'timds'
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton isActive tooltip="Home">
+                    <HomeIcon />
+                    <span>Home</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-12 items-center gap-2 border-b px-4">
+          <SidebarTrigger />
+        </header>
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}
+```
+
+Driving it from your own UI with `useSidebar()`:
+
+```tsx
+import { useSidebar } from 'timds'
+
+function CollapseButton() {
+  const { state, toggleSidebar } = useSidebar()
+  return <button onClick={toggleSidebar}>{state === 'expanded' ? 'Collapse' : 'Expand'}</button>
+}
+```
+
+Controlled open state (`SidebarProvider` is controllable; default is `defaultOpen`):
+
+```tsx
+const [open, setOpen] = useState(true)
+
+<SidebarProvider open={open} onOpenChange={setOpen}>
+  {/* … */}
+</SidebarProvider>
+```
+
+<Source of={Stories.WithSubmenu} />
+
+## Content & UX writing
+
+- Keep menu labels short and noun-based (`Inbox`, `Settings`), title-case, one or two words.
+- Group related destinations under a `SidebarGroupLabel`; keep labels to a single line.
+- Always pair an icon with a text label; the icon alone is only acceptable in the collapsed
+  icon rail, where the `tooltip` supplies the name.
+- Reserve `SidebarMenuButton variant="outline"` and badges for signal (counts, status), not
+  decoration.
+
+## Accessibility
+
+- Operable by keyboard: every `SidebarMenuButton`/`SidebarMenuSubButton` is focusable and
+  activates with Enter/Space (native button/link semantics).
+- `SidebarTrigger` and `SidebarRail` are real buttons with the accessible name
+  "Toggle Sidebar"; the `Cmd/Ctrl + B` shortcut mirrors them — see
+  `TogglesViaKeyboardShortcut`.
+- In the icon-collapsed state, the `tooltip` on a `SidebarMenuButton` restores the visible
+  label and opens on focus, not only hover — see `CollapsedShowsTooltip`.
+- Give icon-only controls (`SidebarMenuAction`, `SidebarGroupAction`) an explicit
+  `aria-label`.
+- The active item carries `data-active="true"`; pair it with `aria-current="page"` on your
+  link for assistive tech — see `RendersNavigation`.
+- Axe runs on every story (`a11y: { test: 'error' }`), gating static a11y rules.
+
+## Do's and Don'ts
+
+- ✅ Do wrap the whole layout in `SidebarProvider` and place page content in `SidebarInset`.
+- ✅ Do supply a `tooltip` on menu buttons when using `collapsible="icon"`.
+- ✅ Do label icon-only actions and mark the active route with `aria-current`.
+- ❌ Don't render a `Sidebar` (or `useSidebar()`) outside `SidebarProvider` — the hook throws.
+- ❌ Don't nest more than one sublevel of `SidebarMenuSub`; flatten deep trees instead.
+- ❌ Don't use the Sidebar for transient menus — reach for **DropdownMenu** or **Drawer**.
+
+## Related components & patterns
+
+- **DropdownMenu** — on-demand action menus, including the user menu often placed in
+  `SidebarFooter`.
+- **Drawer** / **Dialog** — temporary overlays, as opposed to persistent navigation.
+- **Tooltip** — supplies labels for collapsed menu buttons (mounted by the provider).
+- **Skeleton** — `SidebarMenuSkeleton` is built from it for loading rows.
+- **Separator** — `SidebarSeparator` divides regions inside the sidebar.

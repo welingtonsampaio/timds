@@ -1,0 +1,100 @@
+{/* tooltip.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './tooltip.stories'
+
+<Meta of={Stories} />
+
+# Tooltip · `Stable`
+
+A small floating label that explains an element on hover or keyboard focus.
+
+## Overview
+
+Use a Tooltip to give a short, supplementary hint about an interactive element — most often
+an icon-only button whose purpose is not obvious from its glyph. It is built on Radix
+`Tooltip`: it opens on hover and on keyboard focus, dismisses on blur or `Escape`, and is
+portaled to the document body so it never gets clipped. Because it is hidden until the user
+hovers or focuses, never put information there that the user *must* have to proceed.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Provider** — `TooltipProvider` shares the open `delayDuration` across the tooltips it
+  wraps. Mount it once near the app root. (The **Sidebar** mounts its own internally.)
+- **Root** — `Tooltip` pairs a single trigger with its content and owns the open state.
+- **Trigger** — `TooltipTrigger` (usually `asChild`, wrapping the real control) is the
+  element the hint describes.
+- **Content** — `TooltipContent` is the portaled bubble; `side` and `sideOffset` place it.
+
+## When to use
+
+- Use to label icon-only controls (a toolbar button, a `SidebarMenuButton` when collapsed).
+- Use for brief, non-essential clarification of a visible element.
+
+## When not to use
+
+- Avoid for essential information — touch users and many screen-reader flows never trigger
+  it. Put critical text in the UI itself.
+- Avoid for rich or interactive content (links, buttons, forms) — use a **Popover**.
+- Avoid on non-interactive, non-focusable elements; the trigger must be reachable.
+
+## Variants & states
+
+### Sides
+<Canvas of={Stories.Sides} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+- Hovering the trigger opens the tooltip — see `ShowsOnHover`.
+- Keyboard focus opens it too, so it is reachable without a pointer — see `ShowsOnFocus`.
+- `Escape` or moving focus/pointer away dismisses it (Radix default).
+
+## Code examples
+
+```tsx
+import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'timds'
+
+function SaveButton() {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline" size="icon" aria-label="Save">
+            <SaveIcon />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Save changes</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+```
+
+<Source of={Stories.Sides} />
+
+## Accessibility
+
+- The trigger must be a focusable, interactive element — the tooltip opens on focus, not
+  only on hover, so keyboard users get the hint too (`ShowsOnFocus`).
+- Still give icon-only triggers their own `aria-label`; a tooltip is a hint, not the
+  accessible name.
+- `TooltipContent` exposes `role="tooltip"`; `Escape` dismisses it.
+
+## Do's and Don'ts
+
+- ✅ Do keep the text to a few words.
+- ✅ Do label the trigger independently (`aria-label`) — don't rely on the tooltip for the name.
+- ❌ Don't hide essential information or actions in a tooltip.
+- ❌ Don't attach a tooltip to a disabled or non-focusable element.
+
+## Related components & patterns
+
+- **Popover** — for richer, interactive floating content the user can click into.
+- **Button** — the most common trigger; pair with `size="icon"` for icon-only actions.
+- **Sidebar** — `SidebarMenuButton` shows a tooltip with the item label when collapsed to icons.
