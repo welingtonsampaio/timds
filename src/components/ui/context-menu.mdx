@@ -1,0 +1,169 @@
+{/* context-menu.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './context-menu.stories'
+
+<Meta of={Stories} />
+
+# Context Menu · `Stable`
+
+A menu of actions opened by right-clicking (or long-pressing) a region — the actions appear
+at the pointer and dismiss once the user picks one or moves away.
+
+## Overview
+
+Use a Context Menu to expose actions tied to a specific surface or element through the
+platform's right-click gesture: a row in a list, an item on a canvas, a file thumbnail. It
+is built on Radix `ContextMenu`, so it opens at the pointer, traps focus while open,
+supports full keyboard navigation, and dismisses on `Escape` or an outside click. Reach for
+**DropdownMenu** instead when the actions should hang off a visible affordance (a button or
+"⋯" icon) rather than a right-click.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** — `ContextMenuTrigger`; the right-clickable region that opens the menu.
+- **Content** — `ContextMenuContent`; the portaled surface that holds the items.
+- **Group** — `ContextMenuGroup` clusters related items.
+- **Item** — `ContextMenuItem`; a single action. `variant="destructive"` marks a dangerous
+  one; `inset` aligns it with items that have a leading indicator.
+- **Checkbox / Radio item** — `ContextMenuCheckboxItem` toggles a boolean;
+  `ContextMenuRadioGroup` + `ContextMenuRadioItem` pick one value among several.
+- **Label** — `ContextMenuLabel`, a non-interactive section heading.
+- **Separator** — `ContextMenuSeparator` divides groups.
+- **Shortcut** — `ContextMenuShortcut`, a right-aligned hint for a keyboard accelerator.
+- **Submenu** — `ContextMenuSub` + `ContextMenuSubTrigger` + `ContextMenuSubContent` nest a
+  second level of actions.
+
+## When to use
+
+- Use for contextual actions tied to an element or surface, surfaced via right-click.
+- Use to mirror native desktop affordances (right-click a row, a canvas, a file).
+- Use checkbox/radio items for quick toggles that live alongside the contextual actions.
+
+## When not to use
+
+- Avoid when the actions need a visible, always-discoverable affordance — use
+  **DropdownMenu** anchored to a button or "⋯".
+- Avoid for choosing a value to submit in a form — use **Select**.
+- Avoid for rich, free-form floating content (headers, inputs) — use a **Popover**.
+- Avoid as the only way to reach an action: right-click is not discoverable on its own, and
+  is awkward on touch — provide a visible alternative too.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Playground} />
+
+### Checkbox items
+<Canvas of={Stories.WithCheckboxItems} />
+
+### Radio group
+<Canvas of={Stories.WithRadioGroup} />
+
+### Submenu
+<Canvas of={Stories.WithSubmenu} />
+
+### Inset items
+<Canvas of={Stories.WithInsetItems} />
+
+### Disabled item
+<Canvas of={Stories.WithDisabledItem} />
+
+## Props
+
+`ContextMenu` is the Radix Root and forwards its props (`onOpenChange`, `modal`, `dir`).
+Unlike `DropdownMenu` it has no `open`/`defaultOpen` — it is opened by the right-click
+gesture on the trigger, not declaratively. Item-level options live on the parts: `variant`
+and `inset` on `ContextMenuItem`, `checked`/`onCheckedChange` on `ContextMenuCheckboxItem`,
+and `value`/`onValueChange` on `ContextMenuRadioGroup`.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `context-menu.stories.tsx`:
+
+- Right-clicking the trigger opens the menu with `role="menu"` and flips the trigger's
+  `data-state` to `open` — `OpensOnRightClick`.
+- Selecting an item fires its `onSelect` and closes the menu — `SelectsItem`.
+- `Escape` closes the menu without selecting anything — `EscapeDismisses`.
+- Arrow keys move focus between items once the menu is open — `KeyboardNavigation`.
+- A checkbox item toggles its `aria-checked` state — `TogglesCheckboxItem`.
+- A radio item moves the single checked value within its group — `SelectsRadioItem`.
+- A disabled item is exposed as disabled and does not fire `onSelect` —
+  `DisabledItemDoesNotFire`.
+- A sub-trigger opens its nested submenu — `OpensSubmenu`.
+
+## Code examples
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuItem,
+  ContextMenuShortcut,
+} from 'timds'
+
+<ContextMenu>
+  <ContextMenuTrigger className="flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm">
+    Right click here
+  </ContextMenuTrigger>
+  <ContextMenuContent className="w-52">
+    <ContextMenuLabel>Actions</ContextMenuLabel>
+    <ContextMenuSeparator />
+    <ContextMenuItem onSelect={handleReload}>
+      Reload
+      <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+    </ContextMenuItem>
+    <ContextMenuItem variant="destructive" onSelect={handleDelete}>
+      Delete
+    </ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+<Source of={Stories.WithSubmenu} />
+
+## Content & UX writing
+
+- **Item label** — a short, verb-first action ("Reload", "Copy link", "Delete").
+- **Label** — a noun grouping for a section ("Actions", "Appearance"), not a sentence.
+- **Destructive items** — name the consequence ("Delete") and reserve
+  `variant="destructive"` for actions that lose data or access.
+- **Shortcuts** — show the real accelerator; don't invent one the app doesn't handle.
+
+## Accessibility
+
+- The content is a `role="menu"` with `role="menuitem"` children, opened from the trigger's
+  right-click gesture — verified by `OpensOnRightClick`.
+- Fully keyboard operable once open: arrow keys move between items, `Enter`/`Space`
+  activate, and `Escape` closes — verified by `KeyboardNavigation` and `EscapeDismisses`.
+- Checkbox and radio items expose `role="menuitemcheckbox"`/`menuitemradio` with
+  `aria-checked` — verified by `TogglesCheckboxItem` and `SelectsRadioItem`.
+- Disabled items carry `aria-disabled` and are skipped by activation — verified by
+  `DisabledItemDoesNotFire`.
+- Right-click is not a discoverable or touch-friendly gesture — always provide a visible
+  alternative (a `DropdownMenu`, a toolbar button) to reach the same actions.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do keep item labels short and action-oriented.
+- ✅ Do group related items and separate destructive actions with a `ContextMenuSeparator`.
+- ✅ Do use `variant="destructive"` only for actions that lose data or access.
+- ✅ Do offer a visible alternative to the right-click — the menu shouldn't be the only path.
+- ❌ Don't use a Context Menu to pick a form value — use **Select**.
+- ❌ Don't nest more than one level of submenu; deep menus are hard to operate.
+- ❌ Don't hide primary actions behind right-click — keep them visible.
+
+## Related components & patterns
+
+- **DropdownMenu** — for the same actions hung off a visible button or "⋯" affordance.
+- **Select** — for choosing a single value to submit within a form.
+- **Popover** — for richer floating content that isn't a list of actions.

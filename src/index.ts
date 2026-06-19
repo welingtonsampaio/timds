@@ -62,6 +62,23 @@ export {
   type CheckboxProps,
   checkboxVariants,
 } from '@/components/ui/checkbox'
+export {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuPortal,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 export { DatePicker, type DatePickerProps } from '@/components/ui/date-picker'
 export {
   Dialog,
