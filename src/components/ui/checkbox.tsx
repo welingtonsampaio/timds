@@ -3,10 +3,16 @@ import { CheckIcon, MinusIcon } from 'lucide-react'
 import { Checkbox as CheckboxPrimitive } from 'radix-ui'
 import * as React from 'react'
 
+import { ariaInvalid, disabledControl, focusRing } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
 const checkboxVariants = cva(
-  'group peer shrink-0 rounded-[4px] border border-input shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40',
+  [
+    'group peer shrink-0 rounded-[4px] border border-input shadow-xs transition-shadow outline-none dark:bg-input/30',
+    focusRing,
+    ariaInvalid,
+    disabledControl,
+  ],
   {
     variants: {
       // Cor de preenchimento quando marcado (checked/indeterminate).

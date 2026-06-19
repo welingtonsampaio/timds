@@ -3,6 +3,7 @@ import { X } from 'lucide-react'
 import { Tabs as TabsPrimitive } from 'radix-ui'
 import type * as React from 'react'
 
+import { focusRing, svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
 /** Posição do trilho de abas em relação ao conteúdo. */
@@ -123,7 +124,9 @@ function TabsTrigger({
       }}
       className={cn(
         // Base comum a todas as variantes.
-        "relative inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap font-medium text-foreground/60 transition-all group-data-[centered=true]/tabs-list:flex-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        'relative inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap font-medium text-foreground/60 transition-all group-data-[centered=true]/tabs-list:flex-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground',
+        focusRing,
+        svgIcon,
         // Tamanho: padding vertical e tipografia.
         'group-data-[size=sm]/tabs-list:py-1 group-data-[size=sm]/tabs-list:text-xs group-data-[size=default]/tabs-list:py-1.5 group-data-[size=default]/tabs-list:text-sm group-data-[size=lg]/tabs-list:py-2.5 group-data-[size=lg]/tabs-list:text-base',
         // Variante default: cápsula interna com leve elevação no item ativo.

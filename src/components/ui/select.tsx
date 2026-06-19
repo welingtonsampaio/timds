@@ -6,6 +6,7 @@ import { matchSorter } from 'match-sorter'
 import * as React from 'react'
 
 import { Spinner } from '@/components/ui/spinner'
+import { ariaInvalid, disabledControl, focusRing, svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -193,8 +194,14 @@ function SelectRoot({
 // SelectTrigger — botão que abre o popover (visual alinhado ao Input)
 // ---------------------------------------------------------------------------
 const selectTriggerVariants = cva(
-  // Base: espelha o Input (borda, sombra, foco) e dispõe valor + chevron.
-  "flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  [
+    // Base: espelha o Input (borda, sombra, foco) e dispõe valor + chevron.
+    'flex w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
+    focusRing,
+    disabledControl,
+    ariaInvalid,
+    svgIcon,
+  ],
   {
     variants: {
       size: { sm: 'h-8', default: 'h-9', lg: 'h-10' },

@@ -3,6 +3,7 @@ import { Slot } from 'radix-ui'
 import type * as React from 'react'
 
 import { Separator } from '@/components/ui/separator'
+import { svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
 const buttonGroupVariants = cva(
@@ -57,7 +58,8 @@ function ButtonGroupText({
     <Comp
       data-slot="button-group-text"
       className={cn(
-        "flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        'flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs',
+        svgIcon,
         className,
       )}
       {...props}

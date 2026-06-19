@@ -2,11 +2,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { Switch as SwitchPrimitive } from 'radix-ui'
 import type * as React from 'react'
 
+import { disabledControl, focusRing } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
 const switchVariants = cva(
-  // Padding uniforme de 2px (p-0.5) define o inset do thumb em todos os lados.
-  'peer group/switch inline-flex shrink-0 items-center overflow-hidden rounded-full p-0.5 align-middle shadow-xs transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50',
+  [
+    // Padding uniforme de 2px (p-0.5) define o inset do thumb em todos os lados.
+    'peer group/switch inline-flex shrink-0 items-center overflow-hidden rounded-full p-0.5 align-middle shadow-xs transition-colors outline-none',
+    focusRing,
+    disabledControl,
+  ],
   {
     variants: {
       // Esquema cromático do trilho (cor quando ligado / desligado).
