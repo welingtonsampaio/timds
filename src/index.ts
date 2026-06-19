@@ -63,6 +63,18 @@ export {
   checkboxVariants,
 } from '@/components/ui/checkbox'
 export { DatePicker, type DatePickerProps } from '@/components/ui/date-picker'
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 export { Input } from '@/components/ui/input'
 export {
   InputGroup,

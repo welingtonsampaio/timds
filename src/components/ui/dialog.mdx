@@ -1,0 +1,155 @@
+{/* dialog.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './dialog.stories'
+
+<Meta of={Stories} />
+
+# Dialog · `Stable`
+
+A modal overlay that focuses the user on a single task — a form, details, or a
+confirmation — before returning them to the page.
+
+## Overview
+
+Use a Dialog when content needs the user's full attention but the page underneath should
+stay in context. It is built on Radix `Dialog`: it traps focus, dims the page behind a
+backdrop, and can be dismissed by the close button, `Escape`, or a click on the overlay.
+For destructive or irreversible actions that must block until the user decides, use an
+**AlertDialog** instead — it is non-dismissible by overlay click and focuses the safe
+option.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** — `DialogTrigger` (usually `asChild` wrapping a Button) opens the dialog.
+- **Overlay** — the dimmed backdrop behind the content; clicking it dismisses the dialog.
+- **Content** — `DialogContent`; `size` is `default` or `sm`, and `showCloseButton`
+  (default `true`) toggles the corner "X".
+- **Header** — `DialogHeader` wrapping `DialogTitle` and `DialogDescription`.
+- **Footer** — `DialogFooter` holding the action buttons.
+- **Close** — `DialogClose` (often `asChild` around a Button) dismisses the dialog from
+  anywhere inside it.
+
+## When to use
+
+- Use for focused tasks the user completes without leaving the page — editing a record,
+  filling a short form, viewing details.
+- Use when the surrounding context should remain visible behind the overlay.
+- Use `size="sm"` for a single short input or a brief message.
+
+## When not to use
+
+- Avoid for destructive or irreversible confirmations — use **AlertDialog**, which blocks
+  overlay-click dismissal.
+- Avoid for non-blocking, inline feedback — use an **Alert**.
+- Avoid for large multi-step flows or full pages — a modal is the wrong frame.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Playground} />
+
+### With a form
+<Canvas of={Stories.WithForm} />
+
+### Small size
+<Canvas of={Stories.SmallSize} />
+
+### Without the close button
+<Canvas of={Stories.WithoutCloseButton} />
+
+## Props
+
+`Dialog` is the Radix Root and forwards its open-state props (`open`, `defaultOpen`,
+`onOpenChange`). The visual options live on `DialogContent`: `size` (`default` | `sm`)
+and `showCloseButton`.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `dialog.stories.tsx`:
+
+- Clicking the trigger opens the dialog with `role="dialog"`, named by its title and
+  described by its description — `OpensOnTrigger`.
+- The corner close button dismisses the dialog — `CloseButtonDismisses`.
+- `Escape` closes the dialog — `EscapeDismisses`.
+- Clicking the overlay dismisses the dialog — `OverlayClickDismisses`.
+- On open, focus moves into the dialog; on close it returns to the trigger —
+  `FocusMovesIntoDialog`.
+- `showCloseButton={false}` hides the corner "X" — `HidesCloseButton`.
+
+## Code examples
+
+```tsx
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+  Button,
+} from 'timds'
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">Edit profile</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit profile</DialogTitle>
+      <DialogDescription>Update your details.</DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button variant="outline">Cancel</Button>
+      </DialogClose>
+      <DialogClose asChild>
+        <Button onClick={handleSave}>Save changes</Button>
+      </DialogClose>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+<Source of={Stories.WithForm} />
+
+## Content & UX writing
+
+- **Title** — name the task in a few words ("Edit profile", "Add member").
+- **Description** — one line of context or instruction; keep it short.
+- **Action label** — a specific verb for the primary action ("Save changes", "Send
+  invite"), not a vague "OK".
+- **Dismiss label** — describe the neutral path ("Cancel", "Not now").
+
+## Accessibility
+
+- Exposes `role="dialog"`, named by `DialogTitle` and described by `DialogDescription`
+  (Radix wires `aria-labelledby`/`aria-describedby`) — verified by `OpensOnTrigger`.
+- Focus is trapped inside the dialog while open and returns to the trigger on close —
+  verified by `FocusMovesIntoDialog`.
+- `Escape`, the close button, and an overlay click all dismiss it — verified by
+  `EscapeDismisses`, `CloseButtonDismisses`, and `OverlayClickDismisses`.
+- The icon-only close button carries an accessible name ("Close") via an `sr-only` label.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do always provide a `DialogTitle` (and ideally a `DialogDescription`) for an
+  accessible name.
+- ✅ Do label the primary action with a specific verb.
+- ✅ Do reach for `AlertDialog` when the action is destructive or must block.
+- ❌ Don't hide the close affordances entirely — always leave at least one way out.
+- ❌ Don't pack a long, multi-step flow into a modal.
+
+## Related components & patterns
+
+- **AlertDialog** — for destructive confirmations that must block until decided.
+- **Alert** — for inline, non-interrupting feedback on the page.
+- **Button** — composes the trigger, footer actions, and close controls.
