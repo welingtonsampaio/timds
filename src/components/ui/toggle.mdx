@@ -1,0 +1,122 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks'
+import * as Stories from './toggle.stories'
+
+<Meta of={Stories} />
+
+# Toggle · `Stable`
+
+A two-state button that stays pressed once activated — for binary, on/off controls
+like a formatting mark in a toolbar.
+
+## Overview
+
+Built on Radix `Toggle`. The pressed state is reflected on `aria-pressed` and
+`data-state="on"`, so it is both accessible and easy to style. Use it for a single
+independent on/off control; for a set of related toggles use **ToggleGroup**.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Container** — the interactive `button`; carries the `variant`/`size` styling and the
+  pressed state.
+- **Content** — an icon, a text label, or both. Icon-only toggles need an `aria-label`.
+
+## When to use
+
+- Toggle a single binary mode that stays on until pressed again (bold, mute, pin).
+- Surface an option whose state should read as "currently active" rather than "checked".
+
+## When not to use
+
+- For a labeled on/off setting in a form, prefer **Switch**.
+- For mutually exclusive options, use **ToggleGroup** with `type="single"`.
+- For an action that performs an operation without a persistent state, use **Button**.
+
+## Variants & states
+
+### Variants
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+
+<Canvas of={Stories.Sizes} />
+
+### With text
+
+<Canvas of={Stories.WithText} />
+
+### Disabled
+
+<Canvas of={Stories.Disabled} />
+
+### Controlled
+
+<Canvas of={Stories.Controlled} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+- Clicking flips the pressed state and fires `onPressedChange` with the new boolean —
+  verified by `TogglesOnClick`.
+- Space (or Enter) activates the focused toggle — verified by `TogglesWithKeyboard`.
+- A disabled toggle never changes state or fires the callback — verified by
+  `DisabledDoesNotToggle`.
+
+## Code examples
+
+```tsx
+import { Toggle } from 'timds'
+import { Bold } from 'lucide-react'
+
+function BoldToggle() {
+  return (
+    <Toggle aria-label="Bold">
+      <Bold />
+    </Toggle>
+  )
+}
+```
+
+Controlled:
+
+```tsx
+const [pressed, setPressed] = useState(false)
+
+<Toggle pressed={pressed} onPressedChange={setPressed} aria-label="Bold">
+  <Bold />
+</Toggle>
+```
+
+## Content & UX writing
+
+- Icon-only toggles must set an `aria-label` describing the action, not the state
+  (`"Bold"`, not `"Toggle bold on"`).
+- When a text label is present, keep it short and verb/noun based; no trailing
+  punctuation.
+
+## Accessibility
+
+- Exposes role `button` with `aria-pressed` reflecting the state (`false` / `true`).
+- Focusable and operable by keyboard: Tab to focus, Space/Enter to activate — see
+  `TogglesWithKeyboard`.
+- Icon-only toggles require an accessible name via `aria-label`; axe runs on every
+  story and fails the build if it is missing.
+
+## Do's and Don'ts
+
+- ✅ Do give every icon-only toggle an `aria-label`.
+- ✅ Do use it for state that persists ("currently active"), not one-shot actions.
+- ❌ Don't use it where a labeled form setting is expected — use **Switch**.
+- ❌ Don't build mutually exclusive choices from loose toggles — use **ToggleGroup**.
+
+## Related components & patterns
+
+- **ToggleGroup** — groups several toggles with shared styling and single/multiple
+  selection; the natural home for a formatting toolbar.
+- **Switch** — the labeled on/off control for forms and settings.
+- **Button** — for actions that run an operation instead of holding a state.

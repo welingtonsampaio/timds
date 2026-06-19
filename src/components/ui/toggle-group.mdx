@@ -1,0 +1,137 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks'
+import * as Stories from './toggle-group.stories'
+
+<Meta of={Stories} />
+
+# ToggleGroup · `Stable`
+
+A set of **Toggle** buttons that share styling and coordinate selection — the building
+block for segmented controls and formatting toolbars.
+
+## Overview
+
+Built on Radix `ToggleGroup`. The group propagates `variant` and `size` to every item
+and governs selection through `type`: `single` behaves like a radio group (one active
+item at a time), `multiple` lets each item toggle independently. With `spacing={0}` the
+items collapse into one segmented block; a positive `spacing` separates them.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Group** (`ToggleGroup`) — the container; owns `type`, `variant`, `size`, `spacing`
+  and the selection value.
+- **Item** (`ToggleGroupItem`) — one toggle, identified by its `value`. Inherits the
+  group's styling; icon-only items need an `aria-label`.
+
+## When to use
+
+- Offer a small set of mutually exclusive options (text alignment, view mode) with
+  `type="single"`.
+- Offer independent on/off marks that combine (bold + italic) with `type="multiple"`.
+
+## When not to use
+
+- For more than ~5 options or options that need labels and descriptions, use
+  **RadioGroup** or **Select**.
+- For a single binary control, use a standalone **Toggle** or **Switch**.
+
+## Variants & states
+
+### Variants
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+
+<Canvas of={Stories.Sizes} />
+
+### Multiple selection
+
+<Canvas of={Stories.Multiple} />
+
+### Spacing
+
+<Canvas of={Stories.Spacing} />
+
+### Disabled
+
+<Canvas of={Stories.Disabled} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+- `type="single"`: clicking an item checks it, unchecks the previous one, and fires
+  `onValueChange` with the new `value` string — verified by `SelectsSingle`.
+- `type="multiple"`: items toggle independently and `onValueChange` emits the array of
+  active values — verified by `TogglesMultiple`.
+- Roving tabindex: one Tab stop enters the group; arrow keys move focus between items
+  and Space/Enter selects the focused one — verified by `KeyboardNavigation`.
+- A disabled group ignores clicks and never fires the callback — verified by
+  `DisabledDoesNotSelect`.
+
+## Code examples
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from 'timds'
+import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
+
+// Single selection (radiogroup)
+<ToggleGroup type="single" defaultValue="left" aria-label="Text alignment">
+  <ToggleGroupItem value="left" aria-label="Align left">
+    <AlignLeft />
+  </ToggleGroupItem>
+  <ToggleGroupItem value="center" aria-label="Align center">
+    <AlignCenter />
+  </ToggleGroupItem>
+  <ToggleGroupItem value="right" aria-label="Align right">
+    <AlignRight />
+  </ToggleGroupItem>
+</ToggleGroup>
+```
+
+```tsx
+// Multiple selection — onValueChange receives an array
+<ToggleGroup type="multiple" variant="outline" aria-label="Text formatting">
+  <ToggleGroupItem value="bold" aria-label="Bold">
+    <Bold />
+  </ToggleGroupItem>
+  <ToggleGroupItem value="italic" aria-label="Italic">
+    <Italic />
+  </ToggleGroupItem>
+</ToggleGroup>
+```
+
+## Content & UX writing
+
+- Give the group an `aria-label` describing the choice it represents (`"Text
+  alignment"`).
+- Keep items icon-only for compact toolbars, each with a precise `aria-label`; otherwise
+  use short text labels.
+
+## Accessibility
+
+- `type="single"` exposes the group as `radiogroup` and items as `role="radio"` with
+  `aria-checked`; `type="multiple"` exposes a `group` of `aria-pressed` buttons.
+- The group is a single Tab stop; arrow keys move between items (roving tabindex) and
+  Space/Enter selects the focused one — see `KeyboardNavigation`.
+- Provide an accessible name on the group (`aria-label`) and on every icon-only item;
+  axe runs on every story and fails the build otherwise.
+
+## Do's and Don'ts
+
+- ✅ Do label the group and each icon-only item.
+- ✅ Do use `type="single"` for mutually exclusive options and `type="multiple"` for
+  combinable ones.
+- ❌ Don't mix `variant`/`size` per item — set them once on the group so the block stays
+  consistent.
+- ❌ Don't use it for long or described option lists — use **RadioGroup** or **Select**.
+
+## Related components & patterns
+
+- **Toggle** — the single building block; ToggleGroup coordinates several of them.
+- **RadioGroup** — for labeled, mutually exclusive options in forms.
+- **Tabs** — when selecting an option also switches the visible panel of content.
