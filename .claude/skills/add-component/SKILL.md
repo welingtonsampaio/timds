@@ -136,42 +136,31 @@ export { Widget, type WidgetProps, widgetVariants } from '@/components/ui/widget
 Keep the exports alphabetically grouped under the `// Componentes` section, matching the
 existing entries.
 
-### 5. Add Storybook stories
+### 5. Add Storybook stories — **always via the `design-system-docs` skill**
 
-Create `src/components/ui/<component-name>.stories.tsx`. Stories are the **primary source
-of truth for behavior** — every `*.stories.tsx` is rendered in a real browser (chromium)
-as a smoke test, and `play` functions run as interaction tests.
+Do **not** hand-write the `*.stories.tsx` here. Stories (and their `play`-function
+behavior tests + co-located `*.mdx`) are owned by the **`design-system-docs` skill** —
+**always invoke it** to author the Storybook artifacts for the new component. This keeps a
+single source of truth for how stories, autodocs, and regression tests are written.
 
-Mirror `badge.stories.tsx` / `button.stories.tsx`:
+Invoke the skill (`Skill` tool, `design-system-docs`) targeting the component you just
+created/exported. It produces:
 
-- `title: 'UI/<ComponentName>'`, `tags: ['autodocs']`, a `docs.description.component`.
-- `argTypes` for each prop (control type, description, default summary).
-- A `Playground` story (`export const Playground: Story = {}`) for the Controls panel.
-- A `Variants` story showing every variant side by side.
-- Stories for each meaningful state (disabled, loading, with icon, etc.).
-- **`play` functions** for any interactive behavior, using `storybook/test`:
+- `src/components/ui/<component-name>.stories.tsx` — `tags: ['autodocs']`, a `Playground`
+  story, a `Variants` story, stories per meaningful state, and `play` functions that
+  double as interaction/regression tests (the primary source of truth for behavior, since
+  every story renders in a real chromium browser).
+- `src/components/ui/<component-name>.mdx` — the co-located docs page (Meta, Canvas,
+  Controls).
 
-```tsx
-import { expect, fn, userEvent, within } from 'storybook/test'
-
-export const ClickFires: Story = {
-  args: { onClick: fn() },
-  play: async ({ args, canvasElement }) => {
-    const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Ação' }))
-    await expect(args.onClick).toHaveBeenCalledOnce()
-  },
-}
-```
-
-Note: when asserting that a disabled/`pointer-events: none` element does **not** fire a
-handler, the Storybook browser runtime blocks the click — bypass it with
-`userEvent.setup({ pointerEventsCheck: 0 })` while still asserting the handler wasn't called.
+Follow whatever the `design-system-docs` skill prescribes; don't duplicate its guidance
+in this skill.
 
 ### 6. Add unit tests (when they add value)
 
-Behavior must be covered (prefer `play` functions). For logic best checked in isolation,
-add `src/components/ui/<component-name>.test.tsx` (jsdom + Testing Library), mirroring
+Behavior must be covered — `play` functions (authored in step 5 via `design-system-docs`)
+are the default. For logic best checked in isolation, add
+`src/components/ui/<component-name>.test.tsx` (jsdom + Testing Library), mirroring
 `button.test.tsx`: render/role assertions, variant/prop behavior, accessibility (ARIA,
 keyboard), and interactions via `@testing-library/user-event`.
 
@@ -195,7 +184,8 @@ src/
 ├── styles.css                     # design tokens (CSS variables) — source of truth
 └── components/ui/
     ├── <component-name>.tsx        # the component (kebab-case)
-    ├── <component-name>.stories.tsx # stories + play functions (step 5)
+    ├── <component-name>.stories.tsx # stories + play functions — via design-system-docs (step 5)
+    ├── <component-name>.mdx         # docs page — via design-system-docs (step 5)
     └── <component-name>.test.tsx    # optional jsdom unit tests (step 6)
 ```
 
@@ -206,7 +196,7 @@ src/
 - [ ] Reuse shared presets from `src/lib/styles.ts` (`focusRing`, `ariaInvalid`, `disabledControl`, `svgIcon`, …) via `cn(...)` — and extract a new preset instead of duplicating a combination already used elsewhere (ADR 0009)
 - [ ] Comments and code in **Portuguese**
 - [ ] Exported from `src/index.ts` (component + types + variants)
-- [ ] `*.stories.tsx` with Playground, Variants, states, and `play` functions
+- [ ] Stories + docs authored **via the `design-system-docs` skill** (`*.stories.tsx` with Playground, Variants, states, `play` functions, and co-located `*.mdx`)
 - [ ] Behavior tested (play functions and/or `*.test.tsx`)
 - [ ] `npm run check:fix && npm run typecheck && npm test` all green
 
