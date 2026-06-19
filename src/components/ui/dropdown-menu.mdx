@@ -1,0 +1,163 @@
+{/* dropdown-menu.mdx — docs page (prosa em English). Embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './dropdown-menu.stories'
+
+<Meta of={Stories} />
+
+# Dropdown Menu · `Stable`
+
+A menu of actions anchored to a trigger — opened on demand, dismissed once the user picks
+an action or moves away.
+
+## Overview
+
+Use a Dropdown Menu to group secondary or overflow actions tied to a specific element: a
+row "⋯" menu, an account menu, a toolbar of view options. It is built on Radix
+`DropdownMenu`, so it traps focus while open, supports full keyboard navigation, and
+dismisses on `Escape` or an outside click. Reach for **Select** instead when the user is
+choosing a single value to submit in a form.
+
+<Canvas of={Stories.Playground} />
+
+## Anatomy
+
+- **Trigger** — `DropdownMenuTrigger` (usually `asChild` wrapping a Button) opens the menu
+  and carries `aria-haspopup`/`aria-expanded`.
+- **Content** — `DropdownMenuContent`; the portaled surface that holds the items.
+- **Group** — `DropdownMenuGroup` clusters related items.
+- **Item** — `DropdownMenuItem`; a single action. `variant="destructive"` marks a
+  dangerous one; `inset` aligns it with items that have a leading indicator.
+- **Checkbox / Radio item** — `DropdownMenuCheckboxItem` toggles a boolean;
+  `DropdownMenuRadioGroup` + `DropdownMenuRadioItem` pick one value among several.
+- **Label** — `DropdownMenuLabel`, a non-interactive section heading.
+- **Separator** — `DropdownMenuSeparator` divides groups.
+- **Shortcut** — `DropdownMenuShortcut`, a right-aligned hint for a keyboard accelerator.
+- **Submenu** — `DropdownMenuSub` + `DropdownMenuSubTrigger` + `DropdownMenuSubContent`
+  nest a second level of actions.
+
+## When to use
+
+- Use for secondary or overflow actions attached to an element (a "⋯" button, an avatar).
+- Use to expose a handful of commands without spending permanent screen space.
+- Use checkbox/radio items for quick view toggles that live alongside actions.
+
+## When not to use
+
+- Avoid for choosing a value to submit in a form — use **Select**.
+- Avoid for primary actions that should always be visible — use a **Button** (or
+  **ButtonGroup**).
+- Avoid for rich, free-form floating content (headers, inputs) — use a **Popover**.
+
+## Variants & states
+
+### Default
+<Canvas of={Stories.Playground} />
+
+### Checkbox items
+<Canvas of={Stories.WithCheckboxItems} />
+
+### Radio group
+<Canvas of={Stories.WithRadioGroup} />
+
+### Submenu
+<Canvas of={Stories.WithSubmenu} />
+
+### Disabled item
+<Canvas of={Stories.WithDisabledItem} />
+
+## Props
+
+`DropdownMenu` is the Radix Root and forwards its open-state props (`open`, `defaultOpen`,
+`onOpenChange`, `modal`). Item-level options live on the parts: `variant` and `inset` on
+`DropdownMenuItem`, `checked`/`onCheckedChange` on `DropdownMenuCheckboxItem`, and
+`value`/`onValueChange` on `DropdownMenuRadioGroup`.
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `dropdown-menu.stories.tsx`:
+
+- Clicking the trigger opens the menu with `role="menu"` and flips the trigger's
+  `aria-expanded` — `OpensOnTrigger`.
+- Selecting an item fires its `onSelect` and closes the menu — `SelectsItem`.
+- `Escape` closes the menu without selecting anything — `EscapeDismisses`.
+- Focus enters the menu on open and arrow keys move between items; on close focus returns
+  to the trigger — `KeyboardNavigation`.
+- A checkbox item toggles its `aria-checked` state — `TogglesCheckboxItem`.
+- A radio item moves the single checked value within its group — `SelectsRadioItem`.
+- A disabled item is exposed as disabled and does not fire `onSelect` —
+  `DisabledItemDoesNotFire`.
+- A sub-trigger opens its nested submenu — `OpensSubmenu`.
+
+## Code examples
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  Button,
+} from 'timds'
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline">Open menu</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent className="w-48">
+    <DropdownMenuLabel>My account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem onSelect={handleProfile}>
+      Profile
+      <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+    </DropdownMenuItem>
+    <DropdownMenuItem variant="destructive" onSelect={handleSignOut}>
+      Sign out
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+<Source of={Stories.WithSubmenu} />
+
+## Content & UX writing
+
+- **Item label** — a short, verb-first action ("Edit", "Copy link", "Sign out").
+- **Label** — a noun grouping for a section ("My account", "Panels"), not a sentence.
+- **Destructive items** — name the consequence ("Delete", "Sign out") and reserve
+  `variant="destructive"` for actions that lose data or access.
+- **Shortcuts** — show the real accelerator; don't invent one the app doesn't handle.
+
+## Accessibility
+
+- The trigger exposes `aria-haspopup` and toggles `aria-expanded`; the content is a
+  `role="menu"` with `role="menuitem"` children — verified by `OpensOnTrigger`.
+- Fully keyboard operable: arrow keys move between items, `Enter`/`Space` activate, and
+  `Escape` closes; focus returns to the trigger on close — verified by
+  `KeyboardNavigation`.
+- Checkbox and radio items expose `role="menuitemcheckbox"`/`menuitemradio` with
+  `aria-checked` — verified by `TogglesCheckboxItem` and `SelectsRadioItem`.
+- Disabled items carry `aria-disabled` and are skipped by activation — verified by
+  `DisabledItemDoesNotFire`.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do keep item labels short and action-oriented.
+- ✅ Do group related items and separate destructive actions with a `DropdownMenuSeparator`.
+- ✅ Do use `variant="destructive"` only for actions that lose data or access.
+- ❌ Don't use a Dropdown Menu to pick a form value — use **Select**.
+- ❌ Don't nest more than one level of submenu; deep menus are hard to operate.
+- ❌ Don't fill the menu with primary actions that should stay visible.
+
+## Related components & patterns
+
+- **Select** — for choosing a single value to submit within a form.
+- **Popover** — for richer floating content that isn't a list of actions.
+- **Button** / **ButtonGroup** — compose the trigger and any always-visible actions.
