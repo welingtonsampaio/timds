@@ -205,6 +205,12 @@ export {
   useSidebar,
 } from '@/components/ui/sidebar'
 export { Skeleton } from '@/components/ui/skeleton'
+export {
+  rangeVariants as sliderRangeVariants,
+  Slider,
+  type SliderProps,
+  thumbVariants as sliderThumbVariants,
+} from '@/components/ui/slider'
 export { Spinner } from '@/components/ui/spinner'
 export {
   Switch,

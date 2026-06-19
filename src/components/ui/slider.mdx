@@ -1,0 +1,141 @@
+{/* slider.mdx — docs page (prosa em English). Embute as stories que carregam os
+    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './slider.stories'
+
+<Meta of={Stories} />
+
+# Slider · `Stable`
+
+An input for picking a numeric value — or a range — by dragging a thumb along a track.
+
+## Overview
+
+Use a Slider when the exact number matters less than choosing quickly within a known
+range (volume, brightness, opacity, a price band). It is built on Radix `Slider`, so it
+ships the correct `slider` role, value semantics, and keyboard behavior. For a precise
+numeric entry, prefer an **Input** of type number.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Track** — the rounded rail representing the full range; its thickness follows `size`.
+- **Range** — the filled portion from the minimum to the current value; carries the
+  chromatic `variant`.
+- **Thumb** — the draggable circle (`role="slider"`); a range renders one per bound.
+
+## When to use
+
+- Use for adjusting a value within a continuous, bounded range where speed beats
+  precision (volume, zoom, opacity).
+- Use a two-element value (`[min, max]`) to let users pick a range, like a price filter.
+- Use `step` to constrain the value to meaningful increments.
+
+## When not to use
+
+- Avoid when the exact number is critical or has many digits — use a number **Input**.
+- Avoid for choosing among unordered options — use a **Select** or **RadioGroup**.
+- Avoid for an on/off choice — use a **Switch**.
+
+## Variants & states
+
+### Variants
+Three chromatic schemes for the filled range and thumb border.
+
+<Canvas of={Stories.Variants} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Range selection
+Two thumbs select a lower and upper bound — see `RangeHasTwoThumbs`.
+
+<Canvas of={Stories.RangeSelection} />
+
+### Steps
+`step` snaps the value to discrete increments.
+
+<Canvas of={Stories.Steps} />
+
+### Disabled
+<Canvas of={Stories.Disabled} />
+
+### Vertical
+Set `orientation="vertical"` inside a fixed-height container.
+
+<Canvas of={Stories.Vertical} />
+
+### Controlled
+Value lives in the parent via `value` + `onValueChange`.
+
+<Canvas of={Stories.Controlled} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `slider.stories.tsx`:
+
+- The thumb is keyboard-focusable; arrow keys change the value and fire
+  `onValueChange` — `ChangesWithKeyboard`.
+- Arrow keys move by the configured `step` — `KeyboardRespectsStep`.
+- A range renders one `slider` thumb per bound, each reporting its own value —
+  `RangeHasTwoThumbs`.
+- A disabled slider does not change and does not fire `onValueChange` —
+  `DisabledDoesNotChange`.
+
+## Code examples
+
+```tsx
+import { Slider } from 'timds'
+
+// Single value (uncontrolled)
+<Slider defaultValue={[50]} aria-label="Volume" />
+
+// Range
+<Slider defaultValue={[20, 80]} aria-label="Price range" />
+
+// Controlled
+<Slider value={value} onValueChange={setValue} aria-label="Brightness" />
+
+// Discrete steps
+<Slider defaultValue={[40]} step={10} aria-label="Opacity" />
+```
+
+Pair it with a visible `<label>` and reflect the current value next to it:
+
+<Source of={Stories.Controlled} />
+
+## Content & UX writing
+
+- **Accessible name** — describe the quantity, not the action ("Volume", not "Slide").
+- **Show the value** — when precision matters, display the current number near the
+  slider (see the Controlled example) and keep it in sync.
+- **Units** — append the unit to the displayed value (`%`, `px`), not to the control.
+
+## Accessibility
+
+- The thumb exposes `role="slider"` with `aria-valuemin`, `aria-valuemax`, and
+  `aria-valuenow` reflecting the current value.
+- Reachable and operable by keyboard: Tab to focus, arrow keys to change, Home/End to
+  jump to the bounds — verified by `ChangesWithKeyboard`.
+- Always provide an accessible name via `aria-label` or `aria-labelledby`; the component
+  forwards it from the root to each thumb (the focusable element).
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role rules are gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do give every Slider an accessible name (`aria-label` or `aria-labelledby`).
+- ✅ Do show the selected value when the exact number matters.
+- ✅ Do use `step` to constrain values to meaningful increments.
+- ❌ Don't use a Slider when users need to type a precise number — use an Input.
+- ❌ Don't rely on color alone to convey state — pair the variant with a label.
+
+## Related components & patterns
+
+- **Input** — for precise numeric entry, or to complement a slider with a typed value.
+- **Switch** — for a binary on/off choice rather than a range.
+- **Progress** — to display (not edit) a value along a track.
