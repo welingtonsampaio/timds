@@ -182,7 +182,23 @@ export const ExposesAriaChecked: Story = {
  * next click resolves it to a fully checked box.
  */
 export const IndeterminateResolvesOnClick: Story = {
-  args: { checked: 'indeterminate', onCheckedChange: fn() },
+  args: { onCheckedChange: fn() },
+  render: (args) => {
+    // Controlado de verdade: o estado parte de `indeterminate` e o clique o
+    // resolve para `checked`. Refletir a mudança no prop `checked` é o que faz
+    // o ícone deixar de ser o "minus" (sem isso o estado ficaria preso).
+    const [checked, setChecked] = useState<boolean | 'indeterminate'>('indeterminate')
+    return (
+      <Checkbox
+        {...args}
+        checked={checked}
+        onCheckedChange={(state) => {
+          setChecked(state)
+          args.onCheckedChange?.(state)
+        }}
+      />
+    )
+  },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
     const cb = canvas.getByRole('checkbox')
@@ -192,6 +208,9 @@ export const IndeterminateResolvesOnClick: Story = {
     // A partir de indeterminate, Radix emite o próximo estado como `true`.
     await userEvent.click(cb)
     await expect(args.onCheckedChange).toHaveBeenCalledWith(true)
+    // O estado controlado acompanha: o checkbox resolve para `checked`.
+    await expect(cb).toHaveAttribute('data-state', 'checked')
+    await expect(cb).toHaveAttribute('aria-checked', 'true')
   },
 }
 
