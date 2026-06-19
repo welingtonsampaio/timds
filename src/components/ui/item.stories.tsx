@@ -448,6 +448,10 @@ export const DescriptionWithLink: Story = {
 
 /** `Item` composes inside a `DropdownMenu` as a rich menu row. */
 export const InDropdownMenu: Story = {
+  // Começa fechada: o Chromatic só veria o trigger. A cobertura visual do menu
+  // aberto fica na fixture `VisualInDropdownMenu`. (O spread em
+  // `OpensInDropdownMenu` herda este parâmetro.)
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <div className="flex min-h-64 w-full max-w-md flex-col items-center">
       <DropdownMenu>
@@ -570,4 +574,53 @@ export const OpensInDropdownMenu: Story = {
     // irmãos como aria-hidden mantendo o trigger focável (viola aria-hidden-focus).
     await userEvent.keyboard('{Escape}')
   },
+}
+
+/* --------------------------------------------------------------------------
+ * Fixture de regressão visual (Chromatic): renderiza o `DropdownMenu` ABERTO
+ * (`defaultOpen`) para capturar as linhas `Item` no portal. Oculta do
+ * sidebar/docs (`!dev`/`!autodocs`), mas segue rodando como smoke test (tag
+ * `test`) e reativa o snapshot que `InDropdownMenu`/`OpensInDropdownMenu`
+ * desligam.
+ *
+ * `modal={false}`: o menu precisa do trigger como âncora do Popper para se
+ * posicionar; no modo modal o trigger seria marcado `aria-hidden` mantendo-se
+ * focável (viola `aria-hidden-focus`). Não-modal não esconde os irmãos.
+ * -------------------------------------------------------------------------- */
+
+/** Visual capture — the dropdown open, showing each `Item` as a rich menu row. */
+export const VisualInDropdownMenu: Story = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <div className="flex min-h-80 w-full max-w-md flex-col items-center">
+      <DropdownMenu defaultOpen modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="w-fit">
+            Select <ChevronDownIcon />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-72" align="start">
+          {people.map((person) => (
+            <DropdownMenuItem key={person.username} className="p-0">
+              <Item size="sm" className="w-full p-2">
+                <ItemMedia>
+                  <Avatar className="size-8">
+                    <AvatarImage src={person.avatar} alt={person.username} />
+                    <AvatarFallback>
+                      {person.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </ItemMedia>
+                <ItemContent className="gap-0.5">
+                  <ItemTitle>{person.username}</ItemTitle>
+                  <ItemDescription>{person.email}</ItemDescription>
+                </ItemContent>
+              </Item>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  ),
 }
