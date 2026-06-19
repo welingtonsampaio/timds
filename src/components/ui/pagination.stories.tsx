@@ -377,9 +377,7 @@ export const Localized: Story = {
     const canvas = within(canvasElement)
     // Queries escopadas por landmark (há duas paginações com nomes distintos).
     const full = within(canvas.getByRole('navigation', { name: 'paginação completa' }))
-    const compact = within(
-      canvas.getByRole('navigation', { name: 'paginação compacta' }),
-    )
+    const compact = within(canvas.getByRole('navigation', { name: 'paginação compacta' }))
     // Modo full: prev/next, página numerada e o seletor de linhas por página.
     await expect(full.getByRole('button', { name: 'Anterior' })).toBeInTheDocument()
     await expect(full.getByRole('button', { name: 'Próximo' })).toBeInTheDocument()
