@@ -1,0 +1,202 @@
+{/* pagination.mdx — prosa em English; embute as stories testadas.
+    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './pagination.stories'
+
+<Meta of={Stories} />
+
+# Pagination · `Stable`
+
+Splits long content into pages and lets people move between them.
+
+## Overview
+
+Use Pagination when a list, table, or grid is too long for one view and you page through
+it. Reach for **`PaginationShort`** first — it builds the whole control from `page` and
+`total`, computing the visible page range (with ellipses) for you. The low-level
+primitives (`Pagination`, `PaginationContent`, `PaginationLink`, …) stay available when
+you need to assemble the markup by hand.
+
+<Canvas of={Stories.Full} />
+
+## Anatomy
+
+- **Container** — a `<nav aria-label="pagination">` wrapping the list of controls.
+- **Previous / Next** — step controls; disabled at the first/last page.
+- **Page items** — numbered controls; the current one carries `aria-current="page"`.
+- **Ellipsis** — a non-interactive gap that stands in for the collapsed pages.
+- **Status** (compact mode) — a "Page X of Y" label between the arrows.
+
+## When to use
+
+- Use when content is split into discrete, numbered pages a user can jump between.
+- Use **`PaginationShort`** for the common case — pass `page`, `total`, and a handler.
+- Use the primitives only when you need full control over the rendered markup.
+
+## When not to use
+
+- Avoid for continuously loaded feeds — prefer infinite scroll or a "Load more" button.
+- Avoid for a handful of items that fit in one view.
+
+## Modes
+
+`PaginationShort` ships four shapes via the `mode` prop — the several ways to use the
+short form.
+
+### Full (default)
+Previous/next plus numbered pages with ellipses.
+<Canvas of={Stories.Full} />
+
+### Numbers
+Numbered pages only, without previous/next.
+<Canvas of={Stories.Numbers} />
+
+### Simple
+Just the previous/next controls — ideal for tight spaces.
+<Canvas of={Stories.Simple} />
+
+### Compact
+Arrows around a "Page X of Y" status.
+<Canvas of={Stories.Compact} />
+
+### Sizes
+<Canvas of={Stories.Sizes} />
+
+### Rows per page
+Pass `pageSizeOptions` to render a "Rows per page" selector beside the controls —
+typical of a table footer. Combine it with any `mode`.
+<Canvas of={Stories.RowsPerPage} />
+
+### Real links (SSR)
+Pass `href` to render anchors instead of buttons.
+<Canvas of={Stories.WithLinks} />
+
+### Manual composition
+The "long" form, assembled from the primitives.
+<Canvas of={Stories.Composition} />
+
+## Props
+
+<Controls of={Stories.Playground} />
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `pagination.stories.tsx`:
+
+- Clicking a page fires `onPageChange` and moves `aria-current` — `ClicksPage`.
+- On the first page, "Previous" is disabled (and ignores clicks) while "Next" stays
+  enabled — `PreviousDisabledOnFirstPage`.
+- On the last page, "Next" is disabled (and ignores clicks) while "Previous" stays
+  enabled — `NextDisabledOnLastPage`.
+- The arrows step one page at a time — `ArrowsNavigate`.
+- Choosing a new rows-per-page value fires `onPageSizeChange` — `ChangesRowsPerPage`.
+- Every label is overridable via `labels` (i18n) — `Localized`.
+- A large `total` collapses middle pages into ellipses — `EllipsisForLargeTotal`.
+- The page-range computation (`getPaginationRange`) is unit-tested in
+  `pagination.test.tsx`.
+
+## Code examples
+
+```tsx
+import { PaginationShort } from 'timds'
+
+// SPA — controlled by state
+const [page, setPage] = useState(1)
+<PaginationShort page={page} total={20} onPageChange={setPage} />
+
+// Just previous/next
+<PaginationShort mode="simple" page={page} total={20} onPageChange={setPage} />
+
+// Arrows + "Page X of Y"
+<PaginationShort mode="compact" page={page} total={20} onPageChange={setPage} />
+
+// Real links (SSR) — renders <a> anchors
+<PaginationShort page={page} total={20} href={(n) => `/items?page=${n}`} />
+
+// Rows-per-page selector (table footer)
+<PaginationShort
+  mode="simple"
+  page={page}
+  total={20}
+  onPageChange={setPage}
+  pageSize={pageSize}
+  pageSizeOptions={[10, 25, 50, 100]}
+  onPageSizeChange={setPageSize}
+/>
+
+// i18n labels
+<PaginationShort
+  page={page}
+  total={20}
+  onPageChange={setPage}
+  labels={{ previous: 'Anterior', next: 'Próximo', page: 'Página', of: 'de' }}
+/>
+```
+
+<Source of={Stories.Full} />
+
+For full control over the markup, compose the primitives directly:
+
+```tsx
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from 'timds'
+
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="?page=1" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="?page=1" isActive>1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="?page=2" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+The `getPaginationRange({ page, total, siblingCount, boundaryCount })` helper returns the
+`(number | 'ellipsis')[]` sequence powering the `full`/`numbers` modes — useful when
+building the markup yourself.
+
+## Content & UX writing
+
+- Keep the previous/next labels short and directional ("Previous", "Next").
+- Localize labels through the `labels` prop (`previous`, `next`, `page`, `of`) rather
+  than wrapping the component.
+- In compact mode, the status reads "Page X of Y" — keep the connectors translated.
+
+## Accessibility
+
+- The container is a `<nav aria-label="pagination">` landmark.
+- The current page exposes `aria-current="page"` — verified by `ClicksPage`.
+- Previous/Next are disabled at the boundaries and do not fire — verified by
+  `PreviousDisabledOnFirstPage` and `NextDisabledOnLastPage`.
+- Numbered controls and the compact arrows carry an accessible name (`goToPage`,
+  `previous`, `next`), so icon-only controls are still announced.
+- axe runs on every story (`a11y: { test: 'error' }`), gating contrast/name/role rules.
+
+## Do's and Don'ts
+
+- ✅ Do prefer `PaginationShort` and let it compute the visible range.
+- ✅ Do pass `href` when pages are real, linkable URLs (better SSR/SEO).
+- ✅ Do localize labels via the `labels` prop.
+- ❌ Don't hand-build the page range when `PaginationShort`/`getPaginationRange` covers it.
+- ❌ Don't use Pagination for endless feeds — use infinite scroll instead.
+
+## Related components & patterns
+
+- **Button** — `PaginationShort` renders its controls as Buttons (`href` ⇒ link,
+  otherwise a `<button>`), inheriting their focus/disabled handling.
+- **Table** / **Item** — the typical paged content sitting above the Pagination.

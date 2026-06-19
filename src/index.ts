@@ -133,6 +133,22 @@ export {
   itemVariants,
 } from '@/components/ui/item'
 export {
+  getPaginationRange,
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  type PaginationMode,
+  PaginationNext,
+  PaginationPrevious,
+  type PaginationRangeItem,
+  type PaginationRangeOptions,
+  PaginationShort,
+  type PaginationShortLabels,
+  type PaginationShortProps,
+} from '@/components/ui/pagination'
+export {
   Popover,
   PopoverAnchor,
   PopoverContent,
