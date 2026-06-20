@@ -40,6 +40,6 @@ Use **Vite in library mode** (`build.lib`) as the build tool:
 
 ## Related
 
-- [0002 — Distribution directly from GitHub via `prepare`](./0002-distribuicao-via-github-prepare.md)
+- [0002 — Distribution directly from GitHub via `prepare`](./0002-distribution-via-github-prepare.md)
 - [0003 — Tailwind v4 with CSS-first tokens](./0003-tailwind-v4-tokens-css.md)
 - [0010 — Preserve module structure for tree-shaking](./0010-preserve-modules-tree-shaking.md)

@@ -5,9 +5,9 @@
 ## Setup
 
 - Install: `npm install github:welingtonsampaio/timds`
-- Styles: `import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)`
+- Styles: `import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)`
 - Import: `import { Button, Card } from 'timds'`
-- Dark mode: Adicione a classe `dark` em um ancestral (ex.: <html class="dark">). Opt-in.
+- Dark mode: Add the `dark` class to an ancestor (e.g.: <html class="dark">). Opt-in.
 
 ## Components
 

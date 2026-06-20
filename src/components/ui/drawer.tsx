@@ -27,7 +27,7 @@ function DrawerOverlay({
   className,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
-  // Mesmo backdrop dos demais overlays modais (Dialog/AlertDialog).
+  // Same backdrop as the other modal overlays (Dialog/AlertDialog).
   return (
     <DrawerPrimitive.Overlay
       data-slot="drawer-overlay"
@@ -43,7 +43,7 @@ function DrawerContent({
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Content> & {
-  // Permite ocultar o "X" quando o fechamento é controlado por outros botões.
+  // Allows hiding the "X" when closing is controlled by other buttons.
   showCloseButton?: boolean
 }) {
   return (
@@ -53,8 +53,8 @@ function DrawerContent({
         data-slot="drawer-content"
         className={cn(
           'group/drawer-content fixed z-50 flex h-auto flex-col bg-background',
-          // O posicionamento e os cantos arredondados são dirigidos pela direção
-          // do vaul (`data-vaul-drawer-direction`): top, bottom, right, left.
+          // Positioning and rounded corners are driven by the vaul direction
+          // (`data-vaul-drawer-direction`): top, bottom, right, left.
           'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b',
           'data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t',
           'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm',
@@ -63,7 +63,7 @@ function DrawerContent({
         )}
         {...props}
       >
-        {/* "Pega" de arrasto: só aparece no drawer ancorado embaixo. */}
+        {/* Drag "handle": only appears on the drawer anchored at the bottom. */}
         <div className="mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
         {children}
         {showCloseButton && (

@@ -43,9 +43,9 @@ function DialogContent({
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  // Espelha o `size` do AlertDialog para manter os dois consistentes.
+  // Mirrors the `size` of AlertDialog to keep the two consistent.
   size?: 'default' | 'sm'
-  // Permite ocultar o "X" quando o fechamento é controlado por outros botões.
+  // Allows hiding the "X" when closing is controlled by other buttons.
   showCloseButton?: boolean
 }) {
   return (
@@ -91,7 +91,7 @@ function DialogFooter({
   children,
   ...props
 }: React.ComponentProps<'div'> & {
-  // Atalho para um botão de fechar padrão no rodapé.
+  // Shortcut for a default close button in the footer.
   showCloseButton?: boolean
 }) {
   return (

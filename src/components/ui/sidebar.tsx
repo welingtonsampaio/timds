@@ -23,15 +23,15 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
 
-// Persistência do estado aberto/fechado em cookie (sobrevive a reloads) e
-// medidas-chave do layout. As larguras viram CSS custom properties no wrapper,
-// então o consumidor pode sobrescrevê-las via `style`.
+// Persists the open/closed state in a cookie (survives reloads) and key
+// layout measurements. The widths become CSS custom properties on the wrapper,
+// so the consumer can override them via `style`.
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = '16rem'
 const SIDEBAR_WIDTH_MOBILE = '18rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
-// Atalho de teclado (Cmd/Ctrl + B) para alternar a sidebar.
+// Keyboard shortcut (Cmd/Ctrl + B) to toggle the sidebar.
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 
 type SidebarContextProps = {
@@ -46,7 +46,7 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
-/** Acessa o estado da Sidebar. Lança erro se usado fora do `SidebarProvider`. */
+/** Accesses the Sidebar state. Throws an error if used outside the `SidebarProvider`. */
 function useSidebar() {
   const context = React.useContext(SidebarContext)
   if (!context) {
@@ -72,8 +72,8 @@ function SidebarProvider({
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
-  // Estado interno do desktop. Quando `open` é passado, o componente fica
-  // controlado e delega ao `onOpenChange`.
+  // Internal desktop state. When `open` is passed, the component becomes
+  // controlled and delegates to `onOpenChange`.
   const [_open, _setOpen] = React.useState(defaultOpen)
   const open = openProp ?? _open
   const setOpen = React.useCallback(
@@ -85,15 +85,15 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // Guarda a preferência para a próxima visita. Uma única escrita simples
-      // basta aqui — não justifica a Cookie Store API.
-      // biome-ignore lint/suspicious/noDocumentCookie: persistência simples de preferência
+      // Saves the preference for the next visit. A single simple write is
+      // enough here — it does not justify the Cookie Store API.
+      // biome-ignore lint/suspicious/noDocumentCookie: simple preference persistence
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
     [setOpenProp, open],
   )
 
-  // No mobile alterna o overlay (Sheet); no desktop alterna o estado fixo.
+  // On mobile it toggles the overlay (Sheet); on desktop it toggles the fixed state.
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open)
   }, [isMobile, setOpen])
@@ -110,7 +110,7 @@ function SidebarProvider({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [toggleSidebar])
 
-  // `state` alimenta os data-attributes que dirigem todas as transições CSS.
+  // `state` feeds the data-attributes that drive all the CSS transitions.
   const state = open ? 'expanded' : 'collapsed'
 
   const contextValue = React.useMemo<SidebarContextProps>(
@@ -165,7 +165,7 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
-  // `none`: sidebar estática, sem colapso nem overlay.
+  // `none`: static sidebar, no collapse or overlay.
   if (collapsible === 'none') {
     return (
       <div
@@ -181,7 +181,7 @@ function Sidebar({
     )
   }
 
-  // No mobile a sidebar vira um overlay lateral (Sheet).
+  // On mobile the sidebar becomes a side overlay (Sheet).
   if (isMobile) {
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
@@ -207,8 +207,8 @@ function Sidebar({
     )
   }
 
-  // Desktop: container fixo + "gap" que reserva o espaço no fluxo. Os
-  // data-attributes (state/collapsible/variant/side) dirigem as transições.
+  // Desktop: fixed container + a "gap" that reserves the space in the flow. The
+  // data-attributes (state/collapsible/variant/side) drive the transitions.
   return (
     <div
       className="group peer hidden text-sidebar-foreground md:block"
@@ -281,7 +281,7 @@ function SidebarTrigger({
   )
 }
 
-// Faixa fina na borda da sidebar que também alterna o estado ao clicar.
+// Thin strip on the sidebar edge that also toggles the state when clicked.
 function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   const { toggleSidebar } = useSidebar()
 
@@ -308,7 +308,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   )
 }
 
-// Área de conteúdo principal ao lado da sidebar (use junto da variante `inset`).
+// Main content area next to the sidebar (use together with the `inset` variant).
 function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   return (
     <main
@@ -429,7 +429,7 @@ function SidebarGroupAction({
       data-sidebar="group-action"
       className={cn(
         'absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
-        // Aumenta a área de toque no mobile sem alterar o layout no desktop.
+        // Increases the touch target on mobile without changing the layout on desktop.
         'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
         className,
@@ -505,7 +505,7 @@ function SidebarMenuButton({
 }: React.ComponentProps<'button'> & {
   asChild?: boolean
   isActive?: boolean
-  // Texto ou props completas do TooltipContent — exibido só quando colapsado.
+  // Text or full TooltipContent props — shown only when collapsed.
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot.Root : 'button'
@@ -552,7 +552,7 @@ function SidebarMenuAction({
   ...props
 }: React.ComponentProps<'button'> & {
   asChild?: boolean
-  // Quando `true`, a ação só aparece ao passar o mouse / focar o item.
+  // When `true`, the action only appears on hover / focus of the item.
   showOnHover?: boolean
 }) {
   const Comp = asChild ? Slot.Root : 'button'
@@ -603,8 +603,8 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean
 }) {
-  // Largura aleatória estável (memoizada) para simular labels de tamanhos
-  // variados durante o carregamento.
+  // Stable random width (memoized) to simulate labels of varying sizes
+  // during loading.
   const width = React.useMemo(() => {
     return `${Math.floor(Math.random() * 40) + 50}%`
   }, [])

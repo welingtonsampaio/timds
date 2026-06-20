@@ -46,4 +46,4 @@ Use **Tailwind CSS v4** with **CSS-first** configuration (no `tailwind.config.js
 
 ## Related
 
-- [0004 — shadcn/ui as the base](./0004-shadcn-ui-como-base.md)
+- [0004 — shadcn/ui as the base](./0004-shadcn-ui-as-base.md)

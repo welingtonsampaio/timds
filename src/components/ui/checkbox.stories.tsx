@@ -7,8 +7,8 @@ import { Checkbox, CheckboxGroup, CheckboxGroupItem } from './checkbox'
 const meta = {
   title: 'Data Entry/Checkbox',
   component: Checkbox,
-  // Sem `autodocs`: a página de docs é a MDX customizada (checkbox.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (checkbox.mdx), which
+  // embeds these stories. Having both would create duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -98,8 +98,7 @@ export const Indeterminate: Story = {
 export const WithLabel: Story = {
   render: () => (
     <label htmlFor="terms" className="flex items-center gap-2 text-sm">
-      <Checkbox id="terms" />
-      Aceito os termos e condições
+      <Checkbox id="terms" />I accept the terms and conditions
     </label>
   ),
 }
@@ -129,7 +128,7 @@ export const Controlled: Story = {
           checked={checked}
           onCheckedChange={(value) => setChecked(value === true)}
         />
-        {checked ? 'Marcado' : 'Desmarcado'}
+        {checked ? 'Checked' : 'Unchecked'}
       </label>
     )
   },
@@ -170,7 +169,7 @@ export const ExposesAriaChecked: Story = {
     const canvas = within(canvasElement)
     const cb = canvas.getByRole('checkbox')
 
-    // Estado inicial desmarcado é refletido em aria-checked.
+    // Initial unchecked state is reflected in aria-checked.
     await expect(cb).toHaveAttribute('aria-checked', 'false')
     await userEvent.click(cb)
     await expect(cb).toHaveAttribute('aria-checked', 'true')
@@ -184,9 +183,9 @@ export const ExposesAriaChecked: Story = {
 export const IndeterminateResolvesOnClick: Story = {
   args: { onCheckedChange: fn() },
   render: (args) => {
-    // Controlado de verdade: o estado parte de `indeterminate` e o clique o
-    // resolve para `checked`. Refletir a mudança no prop `checked` é o que faz
-    // o ícone deixar de ser o "minus" (sem isso o estado ficaria preso).
+    // Truly controlled: the state starts at `indeterminate` and the click
+    // resolves it to `checked`. Reflecting the change in the `checked` prop is
+    // what makes the icon stop being the "minus" (without it the state would be stuck).
     const [checked, setChecked] = useState<boolean | 'indeterminate'>('indeterminate')
     return (
       <Checkbox
@@ -205,16 +204,16 @@ export const IndeterminateResolvesOnClick: Story = {
 
     await expect(cb).toHaveAttribute('data-state', 'indeterminate')
     await expect(cb).toHaveAttribute('aria-checked', 'mixed')
-    // A partir de indeterminate, Radix emite o próximo estado como `true`.
+    // From indeterminate, Radix emits the next state as `true`.
     await userEvent.click(cb)
     await expect(args.onCheckedChange).toHaveBeenCalledWith(true)
-    // O estado controlado acompanha: o checkbox resolve para `checked`.
+    // The controlled state follows along: the checkbox resolves to `checked`.
     await expect(cb).toHaveAttribute('data-state', 'checked')
     await expect(cb).toHaveAttribute('aria-checked', 'true')
   },
 }
 
-// Lista reutilizada pelas stories de grupo.
+// List reused by the group stories.
 const FRAMEWORKS = [
   { value: 'react', label: 'React' },
   { value: 'vue', label: 'Vue' },
@@ -222,7 +221,7 @@ const FRAMEWORKS = [
   { value: 'solid', label: 'Solid' },
 ] as const
 
-// Item + rótulo associado por `id`/`htmlFor` (convenção das stories deste arquivo).
+// Item + label associated by `id`/`htmlFor` (convention of this file's stories).
 function Field({ value, label }: { value: string; label: string }) {
   const id = `fw-${value}`
   return (
@@ -234,8 +233,8 @@ function Field({ value, label }: { value: string; label: string }) {
 }
 
 /**
- * `CheckboxGroup` gerencia o conjunto de valores marcados e propaga
- * `variant`/`size`/`disabled` para cada `CheckboxGroupItem`.
+ * `CheckboxGroup` manages the set of checked values and propagates
+ * `variant`/`size`/`disabled` to each `CheckboxGroupItem`.
  */
 export const Group: Story = {
   render: () => (
@@ -247,7 +246,7 @@ export const Group: Story = {
   ),
 }
 
-/** Itens lado a lado com `orientation="horizontal"`. */
+/** Items side by side with `orientation="horizontal"`. */
 export const GroupHorizontal: Story = {
   render: () => (
     <CheckboxGroup aria-label="Frameworks" orientation="horizontal">
@@ -258,7 +257,7 @@ export const GroupHorizontal: Story = {
   ),
 }
 
-/** O grupo inteiro pode ser desabilitado de uma vez. */
+/** The entire group can be disabled at once. */
 export const GroupDisabled: Story = {
   render: () => (
     <CheckboxGroup aria-label="Frameworks" defaultValue={['react']} disabled>
@@ -270,8 +269,8 @@ export const GroupDisabled: Story = {
 }
 
 /**
- * Modo controlado com um "selecionar todos" indeterminado: o checkbox-pai
- * reflete o estado parcial e alterna todos os itens de uma vez.
+ * Controlled mode with an indeterminate "select all": the parent checkbox
+ * reflects the partial state and toggles all items at once.
  */
 export const GroupSelectAll: Story = {
   render: () => {
@@ -288,7 +287,7 @@ export const GroupSelectAll: Story = {
             checked={allChecked ? true : someChecked ? 'indeterminate' : false}
             onCheckedChange={(state) => setValue(state === true ? [...allValues] : [])}
           />
-          <label htmlFor="select-all">Selecionar todos</label>
+          <label htmlFor="select-all">Select all</label>
         </div>
         <CheckboxGroup
           aria-label="Frameworks"
@@ -305,7 +304,7 @@ export const GroupSelectAll: Story = {
   },
 }
 
-/** Marcar/desmarcar itens atualiza o conjunto de valores via `onValueChange`. */
+/** Checking/unchecking items updates the set of values via `onValueChange`. */
 export const GroupTogglesItems: Story = {
   render: () => {
     const [value, setValue] = useState<string[]>([])
@@ -332,7 +331,7 @@ export const GroupTogglesItems: Story = {
     await userEvent.click(vue)
     await expect(out).toHaveTextContent('react,vue')
 
-    // Desmarcar remove apenas o item clicado.
+    // Unchecking removes only the clicked item.
     await userEvent.click(react)
     await expect(react).toHaveAttribute('data-state', 'unchecked')
     await expect(out).toHaveTextContent('vue')
@@ -346,8 +345,8 @@ export const DisabledDoesNotToggle: Story = {
     const canvas = within(canvasElement)
     const cb = canvas.getByRole('checkbox')
 
-    // O runtime do browser bloqueia clique em pointer-events:none; ignoramos
-    // o check apenas para confirmar que o handler não dispara.
+    // The browser runtime blocks clicks on pointer-events:none; we skip
+    // the check only to confirm that the handler does not fire.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(cb)
     await expect(args.onCheckedChange).not.toHaveBeenCalled()

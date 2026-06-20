@@ -17,10 +17,10 @@ import { Separator } from '@/components/ui/separator'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 /**
- * **Pricing** — uma página de marketing. Mostra como `Card` + `Badge` + `Button`
- * compõem um comparativo de planos, com um destaque visual no plano recomendado
- * (borda e anel na cor da marca) e um seletor de período em `Tabs` que recalcula
- * os preços.
+ * **Pricing** — a marketing page. Shows how `Card` + `Badge` + `Button`
+ * compose a plan comparison, with a visual highlight on the recommended plan
+ * (border and ring in the brand color) and a period selector in `Tabs` that
+ * recomputes the prices.
  */
 const meta = {
   title: 'Examples/Pricing',
@@ -54,44 +54,39 @@ type Plan = {
 const plans: Plan[] = [
   {
     name: 'Starter',
-    description: 'Para projetos pessoais e protótipos.',
+    description: 'For personal projects and prototypes.',
     monthly: 0,
-    features: [
-      '1 projeto',
-      '5 mil eventos/mês',
-      'Dashboards básicos',
-      'Suporte por e-mail',
-    ],
-    cta: 'Começar grátis',
+    features: ['1 project', '5k events/month', 'Basic dashboards', 'Email support'],
+    cta: 'Start for free',
     variant: 'outline',
   },
   {
     name: 'Pro',
-    description: 'Para times em crescimento.',
+    description: 'For growing teams.',
     monthly: 29,
     features: [
-      'Projetos ilimitados',
-      '1 milhão de eventos/mês',
-      'Dashboards avançados',
-      'Integrações e webhooks',
-      'Suporte prioritário',
+      'Unlimited projects',
+      '1 million events/month',
+      'Advanced dashboards',
+      'Integrations and webhooks',
+      'Priority support',
     ],
-    cta: 'Assinar Pro',
+    cta: 'Subscribe to Pro',
     variant: 'default',
     featured: true,
   },
   {
     name: 'Enterprise',
-    description: 'Para organizações com escala.',
+    description: 'For organizations at scale.',
     monthly: 99,
     features: [
-      'Tudo do Pro',
-      'SSO e SAML',
-      'Limites personalizados',
-      'SLA dedicado',
-      'Gerente de conta',
+      'Everything in Pro',
+      'SSO and SAML',
+      'Custom limits',
+      'Dedicated SLA',
+      'Account manager',
     ],
-    cta: 'Falar com vendas',
+    cta: 'Talk to sales',
     variant: 'outline',
   },
 ]
@@ -104,24 +99,24 @@ function PricingTable() {
     <div className="mx-auto flex max-w-5xl flex-col gap-8 py-6">
       <header className="flex flex-col items-center gap-4 text-center">
         <Badge variant="secondary" className="gap-1">
-          <Sparkles className="size-3.5" aria-hidden="true" /> Preços simples
+          <Sparkles className="size-3.5" aria-hidden="true" /> Simple pricing
         </Badge>
         <h1 className="text-3xl font-bold tracking-tight">
-          Escolha o plano ideal para você
+          Choose the plan that's right for you
         </h1>
         <p className="max-w-xl text-muted-foreground">
-          Comece de graça e evolua conforme cresce. Sem surpresas, cancele quando quiser.
+          Start for free and grow as you scale. No surprises, cancel anytime.
         </p>
         <ToggleGroup
           type="single"
           variant="outline"
           value={period}
           onValueChange={(v) => v && setPeriod(v as 'monthly' | 'yearly')}
-          aria-label="Período de cobrança"
+          aria-label="Billing period"
         >
-          <ToggleGroupItem value="monthly">Mensal</ToggleGroupItem>
+          <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
           <ToggleGroupItem value="yearly">
-            Anual
+            Yearly
             <Badge variant="success" className="ml-2">
               -20%
             </Badge>
@@ -132,7 +127,7 @@ function PricingTable() {
       <div className="grid gap-6 md:grid-cols-3">
         {plans.map((plan) => {
           const price = yearly ? Math.round(plan.monthly * 12 * 0.8) : plan.monthly
-          const suffix = plan.monthly === 0 ? '' : yearly ? '/ano' : '/mês'
+          const suffix = plan.monthly === 0 ? '' : yearly ? '/year' : '/month'
           return (
             <Card
               key={plan.name}
@@ -143,7 +138,7 @@ function PricingTable() {
               }
             >
               {plan.featured ? (
-                <Badge className="-top-3 absolute right-6">Mais popular</Badge>
+                <Badge className="-top-3 absolute right-6">Most popular</Badge>
               ) : null}
               <CardHeader>
                 <CardTitle>{plan.name}</CardTitle>
@@ -186,9 +181,9 @@ export const Default: Story = {
   render: () => <PricingTable />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // No mensal o Pro custa R$ 29; trocar para anual aplica o desconto (12×0,8).
+    // Monthly, Pro costs R$ 29; switching to yearly applies the discount (12×0.8).
     await expect(canvas.getByText('R$ 29')).toBeInTheDocument()
-    await userEvent.click(canvas.getByText('Anual'))
+    await userEvent.click(canvas.getByText('Yearly'))
     await expect(canvas.getByText('R$ 278')).toBeInTheDocument()
   },
 }

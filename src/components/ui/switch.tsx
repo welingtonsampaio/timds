@@ -7,14 +7,14 @@ import { cn } from '@/lib/utils'
 
 const switchVariants = cva(
   [
-    // Padding uniforme de 2px (p-0.5) define o inset do thumb em todos os lados.
+    // Uniform 2px padding (p-0.5) defines the thumb inset on all sides.
     'peer group/switch inline-flex shrink-0 items-center overflow-hidden rounded-full p-0.5 align-middle shadow-xs transition-colors outline-none',
     focusRing,
     disabledControl,
   ],
   {
     variants: {
-      // Esquema cromático do trilho (cor quando ligado / desligado).
+      // Track color scheme (color when on / off).
       variant: {
         default:
           'data-[state=checked]:bg-primary data-[state=unchecked]:bg-input dark:data-[state=unchecked]:bg-input/80',
@@ -25,20 +25,20 @@ const switchVariants = cva(
         destructive:
           'data-[state=checked]:bg-destructive data-[state=unchecked]:bg-input dark:data-[state=unchecked]:bg-input/80',
       },
-      // Altura do trilho por tamanho (= thumb + 2x o padding de 2px).
+      // Track height per size (= thumb + 2x the 2px padding).
       size: {
         sm: 'h-4',
         default: 'h-5',
         lg: 'h-6',
       },
-      // Com texto, o trilho tem largura automática (estável: ver switch-text).
+      // With text, the track has automatic width (stable: see switch-text).
       withText: {
         true: 'w-auto gap-0.5',
         false: '',
       },
     },
     compoundVariants: [
-      // Sem texto: largura = 2x o thumb + padding, p/ o deslize encostar exato.
+      // Without text: width = 2x the thumb + padding, so the slide lands exactly.
       { withText: false, size: 'sm', class: 'w-7' },
       { withText: false, size: 'default', class: 'w-9' },
       { withText: false, size: 'lg', class: 'w-11' },
@@ -61,9 +61,9 @@ const thumbVariants = cva(
         lg: 'size-5',
       },
       withText: {
-        // Com texto, o thumb troca de lado via `order` (sem deslize por translate).
+        // With text, the thumb switches sides via `order` (no translate slide).
         true: 'data-[state=checked]:order-2 data-[state=unchecked]:order-1',
-        // Sem texto: área interna = 2x o thumb, então translate-x-full encosta exato.
+        // Without text: inner area = 2x the thumb, so translate-x-full lands exactly.
         false:
           'data-[state=checked]:translate-x-full data-[state=unchecked]:translate-x-0',
       },
@@ -72,14 +72,14 @@ const thumbVariants = cva(
   },
 )
 
-// Tamanho do texto interno por size do switch — discreto, só um detalhe.
+// Inner text size per switch size — subtle, just a detail.
 const textSizeClass: Record<NonNullable<SwitchProps['size']>, string> = {
   sm: 'text-[8px]',
   default: 'text-[9px]',
   lg: 'text-[10px]',
 }
 
-// Cor do texto exibido quando ligado (sobre o trilho no estado checked).
+// Color of the text shown when on (over the track in the checked state).
 const onTextColor: Record<NonNullable<SwitchProps['variant']>, string> = {
   default: 'text-primary-foreground',
   green_red: 'text-success-foreground',
@@ -87,8 +87,8 @@ const onTextColor: Record<NonNullable<SwitchProps['variant']>, string> = {
   destructive: 'text-destructive-foreground',
 }
 
-// Cor do texto exibido quando desligado (sobre o trilho no estado unchecked).
-// Sobre fundos claros usamos um tom suave; no green_red o fundo é o vermelho.
+// Color of the text shown when off (over the track in the unchecked state).
+// Over light backgrounds we use a soft tone; in green_red the background is red.
 const offTextColor: Record<NonNullable<SwitchProps['variant']>, string> = {
   default: 'text-foreground/70',
   green_red: 'text-destructive-foreground',
@@ -100,10 +100,10 @@ export interface SwitchProps
   extends React.ComponentProps<typeof SwitchPrimitive.Root>,
     Omit<VariantProps<typeof switchVariants>, 'withText'> {
   /**
-   * Rótulos opcionais exibidos dentro do trilho. Quando presentes, o switch
-   * vira um toggle com texto: o rótulo aparece do lado oposto ao thumb,
-   * alternando conforme o estado. São decorativos (`aria-hidden`) — forneça
-   * um `aria-label`/`<Label>` para a acessibilidade.
+   * Optional labels shown inside the track. When present, the switch
+   * becomes a toggle with text: the label appears on the side opposite the
+   * thumb, alternating with the state. They are decorative (`aria-hidden`) —
+   * provide an `aria-label`/`<Label>` for accessibility.
    */
   texts?: { on: React.ReactNode; off: React.ReactNode }
 }
@@ -116,7 +116,7 @@ function Switch({
   ...props
 }: SwitchProps) {
   const withText = Boolean(texts)
-  // Normaliza para indexar os mapas e o cva (VariantProps permite null).
+  // Normalize to index the maps and cva (VariantProps allows null).
   const v = variant ?? 'default'
   const s = size ?? 'default'
 
@@ -129,10 +129,10 @@ function Switch({
       {...props}
     >
       {withText && (
-        // Os dois rótulos são empilhados na MESMA célula do grid: ambos sempre
-        // ocupam espaço, então a largura é a do maior e não muda ao alternar
-        // (evita o "pulo" de largura). Só a opacidade troca (cross-fade).
-        // O bloco vai para o lado oposto ao thumb via `order`.
+        // Both labels are stacked in the SAME grid cell: both always take up
+        // space, so the width is that of the larger one and does not change when
+        // toggling (avoids the width "jump"). Only the opacity changes (cross-fade).
+        // The block goes to the side opposite the thumb via `order`.
         <span
           aria-hidden="true"
           data-slot="switch-text"

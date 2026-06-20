@@ -1,5 +1,5 @@
-{/* input.mdx — docs page (prosa em English). Embute as stories testadas.
-    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* input.mdx — docs page (prose in English). Embeds the tested stories.
+    Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './input.stories'
 
@@ -80,13 +80,13 @@ import { Input } from 'timds'
 
 // Labelled field
 <label htmlFor="email">E-mail</label>
-<Input id="email" type="email" placeholder="voce@exemplo.com" />
+<Input id="email" type="email" placeholder="you@example.com" />
 
 // Error state
 <Input aria-invalid value={email} onChange={onEmailChange} />
 
 // Disabled
-<Input disabled value="Não editável" />
+<Input disabled value="Not editable" />
 ```
 
 <Source of={Stories.Default} />
@@ -94,7 +94,7 @@ import { Input } from 'timds'
 ## Content & UX writing
 
 - **Label** — always provide one (`<label htmlFor>` or `aria-label`); describe the data, not the action.
-- **Placeholder** — an example or format hint ("voce@exemplo.com"), not the label and not a required-field marker.
+- **Placeholder** — an example or format hint ("you@example.com"), not the label and not a required-field marker.
 - **Error messages** — specific, blame-free and actionable; render them near the field, not only via styling.
 
 ## Accessibility

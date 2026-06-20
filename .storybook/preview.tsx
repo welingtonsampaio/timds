@@ -4,8 +4,8 @@ import { useEffect } from 'react'
 import '../src/styles.css'
 import { allModes } from './modes'
 
-// A fonte (Inter) não vem mais do styles.css distribuído (ver comentário lá).
-// Carregamos aqui para o Storybook (dev, Chromatic e os testes vitest-browser).
+// The font (Inter) no longer comes from the distributed styles.css (see comment there).
+// We load it here for Storybook (dev, Chromatic and the vitest-browser tests).
 if (typeof document !== 'undefined' && !document.getElementById('timds-inter-font')) {
   const link = document.createElement('link')
   link.id = 'timds-inter-font'
@@ -15,10 +15,10 @@ if (typeof document !== 'undefined' && !document.getElementById('timds-inter-fon
   document.head.appendChild(link)
 }
 
-// Sob o test runner (vitest browser), zera animações/transições. As animações
-// de entrada/saída dos overlays (Radix + tw-animate-css) deixam opacity 0 no
-// primeiro frame e mantêm o nó no DOM durante o fade-out, causando flakiness em
-// asserts de `toBeVisible`/axe. Não afeta Storybook dev nem Chromatic.
+// Under the test runner (vitest browser), zero out animations/transitions. The
+// enter/leave animations of the overlays (Radix + tw-animate-css) leave opacity 0 on
+// the first frame and keep the node in the DOM during the fade-out, causing flakiness in
+// `toBeVisible`/axe asserts. Does not affect Storybook dev or Chromatic.
 if (import.meta.env.MODE === 'test' && typeof document !== 'undefined') {
   const style = document.createElement('style')
   style.textContent = `*, *::before, *::after {
@@ -32,12 +32,12 @@ if (import.meta.env.MODE === 'test' && typeof document !== 'undefined') {
 
 const withTheme: Decorator = (Story, context) => {
   const theme = context.globals.theme ?? 'light'
-  // `layout: 'fullscreen'` (token/overview pages) precisa ocupar a área toda;
-  // as demais histórias só envolvem o componente, sem esticar o fundo escuro.
+  // `layout: 'fullscreen'` (token/overview pages) needs to occupy the whole area;
+  // the other stories only wrap the component, without stretching the dark background.
   const fullscreen = context.parameters.layout === 'fullscreen'
-  // A classe de tema também vai no <html>, para que portais (Dialog, Popover,
-  // Tooltip…) que o Radix anexa ao document.body herdem o tema — caso contrário
-  // sempre renderizariam em light, fora do wrapper abaixo.
+  // The theme class also goes on the <html>, so that portals (Dialog, Popover,
+  // Tooltip…) that Radix attaches to document.body inherit the theme — otherwise
+  // they would always render in light, outside the wrapper below.
   useEffect(() => {
     const root = document.documentElement
     root.classList.toggle('dark', theme === 'dark')
@@ -62,9 +62,9 @@ export const decorators: Decorator[] = [withTheme]
 
 export const globalTypes = {
   theme: {
-    description: 'Tema do design system',
+    description: 'Design system theme',
     toolbar: {
-      title: 'Tema',
+      title: 'Theme',
       icon: 'circlehollow',
       items: [
         { value: 'light', title: 'Light', icon: 'sun' },
@@ -81,8 +81,8 @@ export const initialGlobals = {
 
 const preview: Preview = {
   parameters: {
-    // Ordena a sidebar por categoria; o que não estiver listado vai para o fim,
-    // em ordem alfabética. As entradas internas ordenam as páginas do grupo.
+    // Sorts the sidebar by category; anything not listed goes to the end,
+    // in alphabetical order. The nested entries order the pages within the group.
     options: {
       storySort: {
         order: [
@@ -125,7 +125,7 @@ const preview: Preview = {
     a11y: {
       test: 'error',
     },
-    // Chromatic captura cada story em light e dark (um snapshot por modo).
+    // Chromatic captures each story in light and dark (one snapshot per mode).
     chromatic: {
       modes: {
         light: allModes.light,

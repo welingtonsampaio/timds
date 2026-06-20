@@ -17,14 +17,14 @@ and the consequences. We use a format based on
 
 | #    | Decision                                                                                  | Status   |
 | ---- | ----------------------------------------------------------------------------------------- | -------- |
-| 0001 | [Library mode build with Vite](./0001-build-com-vite-library-mode.md)                     | Accepted |
-| 0002 | [Distribution directly from GitHub via `prepare`](./0002-distribuicao-via-github-prepare.md) | Accepted |
+| 0001 | [Library mode build with Vite](./0001-build-with-vite-library-mode.md)                     | Accepted |
+| 0002 | [Distribution directly from GitHub via `prepare`](./0002-distribution-via-github-prepare.md) | Accepted |
 | 0003 | [Tailwind v4 with CSS-first tokens and precompiled CSS](./0003-tailwind-v4-tokens-css.md) | Accepted |
-| 0004 | [shadcn/ui as the base (copied components)](./0004-shadcn-ui-como-base.md)                 | Accepted |
-| 0005 | [Storybook for documentation and development](./0005-storybook-para-documentacao.md)      | Accepted |
+| 0004 | [shadcn/ui as the base (copied components)](./0004-shadcn-ui-as-base.md)                 | Accepted |
+| 0005 | [Storybook for documentation and development](./0005-storybook-for-documentation.md)      | Accepted |
 | 0006 | [Vitest with two projects (jsdom unit + Storybook browser)](./0006-vitest-testing-library.md) | Accepted |
 | 0007 | [Biome for lint, formatting and imports](./0007-biome-lint-format.md)                     | Accepted |
-| 0008 | [Ariakit (+ TanStack Virtual) for the advanced Select](./0008-ariakit-para-select-avancado.md) | Accepted |
+| 0008 | [Ariakit (+ TanStack Virtual) for the advanced Select](./0008-ariakit-for-advanced-select.md) | Accepted |
 | 0009 | [Shared style presets in `src/lib/styles.ts`](./0009-shared-style-presets.md)              | Accepted |
 | 0010 | [Preserve module structure for tree-shaking](./0010-preserve-modules-tree-shaking.md)      | Accepted |
 | 0011 | [AI integration: `llms.txt` + a self-contained MCP server](./0011-ai-integration-llms-txt-mcp.md) | Accepted |

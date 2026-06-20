@@ -3,8 +3,8 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// Provedor de tooltips: controla o delay padrão de abertura. Envolva a árvore
-// (ou cada Tooltip) com ele. A Sidebar já o monta internamente no Provider.
+// Tooltip provider: controls the default open delay. Wrap the tree
+// (or each Tooltip) with it. The Sidebar already mounts it internally in the Provider.
 function TooltipProvider({
   delayDuration = 0,
   ...props

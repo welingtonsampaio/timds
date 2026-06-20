@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Gera os artefatos de IA do timds a partir das fontes do repositório:
-//   - ai/manifest.json   → dados estruturados consumidos pelo servidor MCP
-//   - ai/llms.txt        → índice compacto (padrão llms.txt)
-//   - ai/llms-full.txt   → documento único com todos os componentes, tokens e exemplos
+// Generates timds' AI artifacts from the repository sources:
+//   - ai/manifest.json   → structured data consumed by the MCP server
+//   - ai/llms.txt        → compact index (llms.txt standard)
+//   - ai/llms-full.txt   → single document with all components, tokens and examples
 //
-// Fontes: src/index.ts (API pública), src/components/ui/*.{tsx,stories.tsx,mdx}
-// (variantes via cva, props via argTypes, prosa + exemplo via MDX), src/styles.css
-// (tokens) e src/design-system/examples/*.stories.tsx (composições de página).
+// Sources: src/index.ts (public API), src/components/ui/*.{tsx,stories.tsx,mdx}
+// (variants via cva, props via argTypes, prose + example via MDX), src/styles.css
+// (tokens) and src/design-system/examples/*.stories.tsx (page compositions).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
@@ -21,11 +21,11 @@ const outDir = join(root, 'ai')
 const read = (p) => (existsSync(p) ? readFileSync(p, 'utf8') : null)
 
 /* -------------------------------------------------------------------------- */
-/*  Helpers de parsing (sensíveis a chaves/aspas, sem AST)                      */
+/*  Parsing helpers (brace/quote-aware, no AST)                                 */
 /* -------------------------------------------------------------------------- */
 
-// Retorna o conteúdo entre `{` e o `}` correspondente, começando no índice da
-// abertura. Respeita strings e chaves aninhadas.
+// Returns the content between `{` and its matching `}`, starting at the opening
+// index. Respects strings and nested braces.
 function balanced(str, openIdx, open = '{', close = '}') {
   let depth = 0
   let quote = null
@@ -49,7 +49,7 @@ function balanced(str, openIdx, open = '{', close = '}') {
   return ''
 }
 
-// Acha `label: {` (ou `label: [`) e devolve o conteúdo balanceado do valor.
+// Finds `label: {` (or `label: [`) and returns the balanced content of the value.
 function objectAfter(str, label, open = '{', close = '}') {
   const re = new RegExp(`${label}\\s*:\\s*\\${open}`)
   const m = re.exec(str)
@@ -57,8 +57,8 @@ function objectAfter(str, label, open = '{', close = '}') {
   return balanced(str, m.index + m[0].length - 1, open, close)
 }
 
-// Divide o conteúdo de um objeto em entradas de topo `chave: valor`, respeitando
-// aninhamento e strings. Devolve [{ key, value }].
+// Splits an object's content into top-level `key: value` entries, respecting
+// nesting and strings. Returns [{ key, value }].
 function topLevelEntries(content) {
   const entries = []
   let depth = 0
@@ -89,14 +89,14 @@ function topLevelEntries(content) {
   return entries
 }
 
-// Extrai um array de strings literais (['a', 'b']) de um trecho.
+// Extracts an array of string literals (['a', 'b']) from a snippet.
 function parseStringArray(arrText) {
   if (!arrText) return []
   return [...arrText.matchAll(/['"`]([^'"`]+)['"`]/g)].map((m) => m[1])
 }
 
 /* -------------------------------------------------------------------------- */
-/*  1. API pública: módulo → exports                                           */
+/*  1. Public API: module → exports                                            */
 /* -------------------------------------------------------------------------- */
 
 function parsePublicApi() {
@@ -112,7 +112,7 @@ function parsePublicApi() {
       if (!raw) continue
       const isType = raw.startsWith('type ')
       let name = raw.replace(/^type\s+/, '')
-      // `X as Y` → exporta como Y
+      // `X as Y` → exported as Y
       const asM = /\bas\s+([\w$]+)$/.exec(name)
       if (asM) name = asM[1]
       else name = name.split(/\s+/)[0]
@@ -125,13 +125,13 @@ function parsePublicApi() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  2. Variantes (cva) a partir do .tsx                                         */
+/*  2. Variants (cva) from the .tsx                                             */
 /* -------------------------------------------------------------------------- */
 
 function parseCvaVariants(tsx) {
   if (!tsx) return {}
   const out = {}
-  // pode haver mais de um cva por arquivo; concatenamos os grupos
+  // there may be more than one cva per file; we concatenate the groups
   const re = /cva\s*\(/g
   for (let m = re.exec(tsx); m; m = re.exec(tsx)) {
     const callBody = balanced(tsx, m.index + m[0].length - 1, '(', ')')
@@ -148,7 +148,7 @@ function parseCvaVariants(tsx) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  3. Stories: categoria, descrição, argTypes                                  */
+/*  3. Stories: category, description, argTypes                                 */
 /* -------------------------------------------------------------------------- */
 
 function parseStories(stories) {
@@ -179,7 +179,7 @@ function parseStories(stories) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  4. MDX: status, descrição, exemplo de código                               */
+/*  4. MDX: status, description, code example                                   */
 /* -------------------------------------------------------------------------- */
 
 function parseMdx(mdx) {
@@ -191,7 +191,7 @@ function parseMdx(mdx) {
     const stM = /·\s*`([^`]+)`/.exec(raw)
     result.status = stM ? stM[1] : null
     result.displayName = raw.replace(/·.*$/, '').replace(/`/g, '').trim()
-    // primeiro parágrafo após o H1
+    // first paragraph after the H1
     const after = mdx.slice(h1.index + h1[0].length)
     const para = after
       .split(/\n\s*\n/)
@@ -201,7 +201,7 @@ function parseMdx(mdx) {
       )
     if (para) result.description = para.replace(/\s+/g, ' ').trim()
   }
-  // primeiro bloco ```tsx (preferindo o que está sob "## Code examples")
+  // first ```tsx block (preferring the one under "## Code examples")
   const codeIdx = mdx.indexOf('## Code examples')
   const region = codeIdx >= 0 ? mdx.slice(codeIdx) : mdx
   const codeM = /```(?:tsx|jsx)\n([\s\S]*?)```/.exec(region)
@@ -215,8 +215,8 @@ function parseMdx(mdx) {
 
 function parseTokens() {
   const css = read(join(root, 'src/styles.css')) || ''
-  // Localiza `<selector> {` (exige a chave de abertura para não casar com usos
-  // do seletor dentro de outras regras, ex.: `@custom-variant dark (&:is(.dark *))`).
+  // Locates `<selector> {` (requires the opening brace so it doesn't match uses
+  // of the selector inside other rules, e.g.: `@custom-variant dark (&:is(.dark *))`).
   const block = (selectorRe) => {
     const m = selectorRe.exec(css)
     if (!m) return {}
@@ -227,7 +227,7 @@ function parseTokens() {
   }
   const lightRoot = block(/:root\s*\{/)
   const darkRoot = block(/\.dark\s*\{/)
-  // utilitários de cor expostos via @theme (--color-x → utilitário `x`)
+  // color utilities exposed via @theme (--color-x → `x` utility)
   const themeBody = (() => {
     const idx = css.indexOf('@theme')
     return idx < 0 ? '' : balanced(css, css.indexOf('{', idx))
@@ -247,7 +247,7 @@ function parseTokens() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  6. Exemplos de página                                                       */
+/*  6. Page examples                                                            */
 /* -------------------------------------------------------------------------- */
 
 function parseExamples() {
@@ -260,14 +260,14 @@ function parseExamples() {
     const name = titleM
       ? titleM[1].replace(/^Examples\//, '')
       : file.replace('.stories.tsx', '')
-    // descrição: docs.description.component (string possivelmente concatenada com +)
+    // description: docs.description.component (string possibly concatenated with +)
     const descBody = objectAfter(src, 'description')
     let description = null
     if (descBody) {
       const compM = /component:\s*([\s\S]*)/.exec(descBody)
       if (compM) {
-        // strings JS (aspas) concatenadas com `+`; backticks aqui são markdown
-        // dentro do texto e devem ser preservados.
+        // JS strings (quotes) concatenated with `+`; backticks here are markdown
+        // within the text and must be preserved.
         description = [...compM[1].matchAll(/'([^']*)'|"([^"]*)"/g)]
           .map((m) => m[1] ?? m[2])
           .join('')
@@ -281,7 +281,7 @@ function parseExamples() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Montagem do manifesto                                                       */
+/*  Manifest assembly                                                           */
 /* -------------------------------------------------------------------------- */
 
 const api = parsePublicApi()
@@ -294,7 +294,7 @@ const moduleFiles = readdirSync(uiDir)
 const components = []
 for (const mod of moduleFiles) {
   const exportsEntry = api[mod]
-  if (!exportsEntry) continue // só o que é público
+  if (!exportsEntry) continue // public only
   const tsx = read(join(uiDir, `${mod}.tsx`))
   const stories = read(join(uiDir, `${mod}.stories.tsx`))
   const mdx = read(join(uiDir, `${mod}.mdx`))
@@ -303,7 +303,7 @@ for (const mod of moduleFiles) {
   const story = parseStories(stories)
   const doc = parseMdx(mdx)
 
-  // variantes: cva + options de argTypes (merge por chave)
+  // variants: cva + argTypes options (merged by key)
   const variants = { ...cva }
   for (const at of story.argTypes) {
     if (at.options?.length) {
@@ -331,10 +331,10 @@ components.sort((a, b) => a.name.localeCompare(b.name))
 
 const tokens = parseTokens()
 
-// Bridge para o Tailwind do app: mapeia os tokens timds (--primary, …) para
-// utilitários (bg-primary, text-muted-foreground, …) usáveis na marcação própria
-// do consumidor. Sem isso, os componentes ainda funcionam (CSS já compilado), mas
-// classes de token escritas à mão pelo app não geram.
+// Bridge for the app's Tailwind: maps the timds tokens (--primary, …) to
+// utilities (bg-primary, text-muted-foreground, …) usable in the consumer's own
+// markup. Without it, the components still work (CSS already compiled), but
+// token classes hand-written by the app don't get generated.
 const tailwindBridge = [
   '@import "tailwindcss";',
   '',
@@ -353,27 +353,26 @@ const manifest = {
   version: JSON.parse(read(join(root, 'package.json'))).version,
   setup: {
     install: 'npm install github:welingtonsampaio/timds',
-    // Importe via JS no entrypoint — NÃO via `@import` em CSS: o CSS compilado
-    // começa com um `@import` de fonte que, re-importado dentro de outro CSS,
-    // quebra a ordenação (`@import must precede all other statements`).
+    // Import via JS in the entrypoint — NOT via `@import` in CSS: the compiled
+    // CSS starts with a font `@import` that, re-imported inside another CSS,
+    // breaks the ordering (`@import must precede all other statements`).
     importStyles:
-      "import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)",
+      "import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)",
     importComponents: "import { Button, Card } from 'timds'",
-    darkMode:
-      'Adicione a classe `dark` em um ancestral (ex.: <html class="dark">). Opt-in.',
-    font: 'O DS usa a família Inter (`--font-sans`), mas NÃO carrega a fonte. Carregue Inter no seu app (ex.: <link> do Google Fonts ou @font-face no index.html); sem isso cai no fallback system-ui.',
+    darkMode: 'Add the `dark` class to an ancestor (e.g.: <html class="dark">). Opt-in.',
+    font: 'The DS uses the Inter family (`--font-sans`), but does NOT load the font. Load Inter in your app (e.g.: a Google Fonts <link> or @font-face in index.html); without it, it falls back to system-ui.',
     charts:
-      'Para usar Chart/ChartContainer, instale `recharts` (>=3) no app: `npm i recharts`. É peerDependency (uma única instância compartilhada entre o app e o DS); os primitivos do gráfico (AreaChart, Pie, …) vêm de `recharts`, e ChartContainer/ChartTooltip… de `timds`.',
+      'To use Chart/ChartContainer, install `recharts` (>=3) in the app: `npm i recharts`. It is a peerDependency (a single instance shared between the app and the DS); the chart primitives (AreaChart, Pie, …) come from `recharts`, and ChartContainer/ChartTooltip… from `timds`.',
     tailwindBridge,
     rules: [
-      'Importe TODOS os componentes de `timds` — nunca de subcaminhos.',
-      'Importe `timds/styles.css` via JS no entrypoint.',
-      'Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.',
-      'Para gráficos, instale `recharts` (peerDependency) — veja `setup.charts`.',
-      'Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).',
-      'Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).',
-      'Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.',
-      'Ícones via lucide-react. Botões só com ícone precisam de aria-label.',
+      'Import ALL components from `timds` — never from subpaths.',
+      'Import `timds/styles.css` via JS in the entrypoint.',
+      'Load the Inter font in your app (the DS does not load it) — see `setup.font`.',
+      'For charts, install `recharts` (peerDependency) — see `setup.charts`.',
+      'To use token utilities (bg-primary, etc.) in your own markup, add the `@theme` bridge from the `setup.tailwindBridge` field to your CSS (requires Tailwind v4 in the app).',
+      'Use only semantic color utilities (bg-primary, text-muted-foreground, etc.); never raw colors (bg-blue-500).',
+      'Vivid colors have a fill token (bg-success) and a text token (text-success-text). For text/icons use the `-text` one.',
+      'Icons via lucide-react. Icon-only buttons need an aria-label.',
     ],
   },
   categories: [...new Set(components.map((c) => c.category))].sort(),
@@ -386,7 +385,7 @@ if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true })
 writeFileSync(join(outDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
 /* -------------------------------------------------------------------------- */
-/*  llms.txt (índice compacto)                                                  */
+/*  llms.txt (compact index)                                                    */
 /* -------------------------------------------------------------------------- */
 
 const byCategory = {}
@@ -421,7 +420,7 @@ llms += `${manifest.tokens.colors.map((t) => t.name).join(', ')}.\n`
 writeFileSync(join(outDir, 'llms.txt'), llms)
 
 /* -------------------------------------------------------------------------- */
-/*  llms-full.txt (documento completo)                                          */
+/*  llms-full.txt (full document)                                               */
 /* -------------------------------------------------------------------------- */
 
 let full = `# timds — full reference for AI agents\n\n${manifest.description}\n\n`
@@ -474,6 +473,6 @@ writeFileSync(join(outDir, 'llms-full.txt'), full)
 /* -------------------------------------------------------------------------- */
 
 console.log(
-  `[ai-docs] ${components.length} componentes, ${manifest.examples.length} exemplos, ` +
-    `${manifest.tokens.colors.length} tokens de cor → ai/manifest.json, ai/llms.txt, ai/llms-full.txt`,
+  `[ai-docs] ${components.length} components, ${manifest.examples.length} examples, ` +
+    `${manifest.tokens.colors.length} color tokens → ai/manifest.json, ai/llms.txt, ai/llms-full.txt`,
 )

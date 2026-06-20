@@ -51,7 +51,7 @@ Run a single test file: `npx vitest run src/components/ui/button.test.tsx`. Run 
 - **Adding a shadcn/ui component:** `npx shadcn@latest add <component>` (config in `components.json` targets Tailwind v4, `src/styles.css`, lucide icons), then add the export to `src/index.ts`. Components are copied into `src/components/ui/`, not consumed as a dependency.
 - **Formatting (biome.json):** single quotes, double quotes in JSX, no semicolons, trailing commas, 2-space indent, 90-col width. Imports are auto-organized by Biome. Run `npm run check:fix` before committing.
 - **Shared style presets (`src/lib/styles.ts`):** repeated Tailwind utility combinations live here as constants — `focusRing`, `ariaInvalid`, `disabledControl`, `svgIcon`, `overlayClass`, `modalSurface`. When creating/editing a component, reuse them via `cn(...)` instead of recopying the combinations (this keeps tailwind-merge overrides working). Color/spacing tokens stay in `src/styles.css`. Internal module (not exported from `src/index.ts`). See ADR 0009.
-- **Comments and code are written in Portuguese** in this repo; user-facing docs (`docs/`, `README.md`, ADRs) are in English.
+- **Comments and code are written in English** in this repo; user-facing docs (`docs/`, `README.md`, ADRs) are in English too.
 - **`dev/`** is the local playground and is excluded from `dist`.
 
 ## Architecture decisions

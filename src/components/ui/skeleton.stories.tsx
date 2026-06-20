@@ -6,8 +6,8 @@ import { Skeleton } from './skeleton'
 const meta = {
   title: 'Feedback/Skeleton',
   component: Skeleton,
-  // Sem `autodocs`: a página de docs é a MDX customizada (skeleton.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (skeleton.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -57,8 +57,8 @@ export const Card: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction test — Skeleton é não-interativo; validamos apenas que monta e
- * carrega o data-slot de estilo (hook de estrutura, não de teste).
+ * Interaction test — Skeleton is non-interactive; we only validate that it
+ * mounts and carries the style data-slot (a structure hook, not a test hook).
  * -------------------------------------------------------------------------- */
 
 /** Renders a decorative placeholder element. */
@@ -70,8 +70,8 @@ export const RendersPlaceholder: Story = {
     await expect(skeleton).toBeInTheDocument()
     await expect(skeleton).toHaveAttribute('data-slot', 'skeleton')
   },
-  // `data-testid` aqui é o único handle: o Skeleton não expõe role nem texto
-  // (é decorativo), então não há query semântica possível.
+  // `data-testid` is the only handle here: the Skeleton exposes neither a role
+  // nor text (it is decorative), so there is no semantic query possible.
   decorators: [
     (Story) => (
       <div>

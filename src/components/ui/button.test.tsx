@@ -5,44 +5,44 @@ import { describe, expect, it, vi } from 'vitest'
 import { Button } from './button'
 
 describe('Button', () => {
-  it('renderiza o conteúdo e o elemento <button>', () => {
-    render(<Button>Clique</Button>)
-    const button = screen.getByRole('button', { name: 'Clique' })
+  it('renders the content and the <button> element', () => {
+    render(<Button>Click</Button>)
+    const button = screen.getByRole('button', { name: 'Click' })
     expect(button).toBeInTheDocument()
     expect(button).toHaveAttribute('data-slot', 'button')
   })
 
-  it('dispara onClick ao ser clicado', async () => {
+  it('fires onClick when clicked', async () => {
     const onClick = vi.fn()
-    render(<Button onClick={onClick}>Ação</Button>)
-    await userEvent.click(screen.getByRole('button', { name: 'Ação' }))
+    render(<Button onClick={onClick}>Action</Button>)
+    await userEvent.click(screen.getByRole('button', { name: 'Action' }))
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 
-  it('não dispara onClick quando desabilitado', async () => {
+  it('does not fire onClick when disabled', async () => {
     const onClick = vi.fn()
     render(
       <Button disabled onClick={onClick}>
-        Desabilitado
+        Disabled
       </Button>,
     )
-    await userEvent.click(screen.getByRole('button', { name: 'Desabilitado' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Disabled' }))
     expect(onClick).not.toHaveBeenCalled()
   })
 
-  it('renderiza o ícone via prop icon', () => {
-    render(<Button icon={<svg data-testid="icone" aria-hidden />}>Com ícone</Button>)
+  it('renders the icon via the icon prop', () => {
+    render(<Button icon={<svg data-testid="icone" aria-hidden />}>With icon</Button>)
     expect(screen.getByTestId('icone')).toBeInTheDocument()
   })
 
-  it('substitui o ícone pelo spinner e desabilita quando loading', async () => {
+  it('replaces the icon with the spinner and disables when loading', async () => {
     const onClick = vi.fn()
     render(
       <Button loading icon={<svg data-testid="icone" aria-hidden />} onClick={onClick}>
-        Carregando
+        Loading
       </Button>,
     )
-    const button = screen.getByRole('button', { name: /carregando/i })
+    const button = screen.getByRole('button', { name: /loading/i })
     expect(button).toBeDisabled()
     expect(button).toHaveAttribute('aria-busy', 'true')
     expect(screen.queryByTestId('icone')).not.toBeInTheDocument()
@@ -51,51 +51,51 @@ describe('Button', () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
-  it('usa type="button" por padrão e respeita htmlType', () => {
-    const { rerender } = render(<Button>Padrão</Button>)
-    expect(screen.getByRole('button', { name: 'Padrão' })).toHaveAttribute(
+  it('uses type="button" by default and respects htmlType', () => {
+    const { rerender } = render(<Button>Default</Button>)
+    expect(screen.getByRole('button', { name: 'Default' })).toHaveAttribute(
       'type',
       'button',
     )
-    rerender(<Button htmlType="submit">Enviar</Button>)
-    expect(screen.getByRole('button', { name: 'Enviar' })).toHaveAttribute(
+    rerender(<Button htmlType="submit">Submit</Button>)
+    expect(screen.getByRole('button', { name: 'Submit' })).toHaveAttribute(
       'type',
       'submit',
     )
   })
 
-  it('renderiza como link <a> quando href é fornecido', () => {
-    render(<Button href="/destino">Ir</Button>)
-    const link = screen.getByRole('link', { name: 'Ir' })
+  it('renders as an <a> link when href is provided', () => {
+    render(<Button href="/destino">Go</Button>)
+    const link = screen.getByRole('link', { name: 'Go' })
     expect(link.tagName).toBe('A')
     expect(link).toHaveAttribute('href', '/destino')
     expect(link).not.toHaveAttribute('type')
   })
 
-  it('link desabilitado remove href, marca aria-disabled e sai do tab', () => {
+  it('disabled link removes href, sets aria-disabled and leaves the tab order', () => {
     render(
       <Button href="/destino" disabled>
-        Ir
+        Go
       </Button>,
     )
-    const link = screen.getByText('Ir').closest('a') as HTMLAnchorElement
+    const link = screen.getByText('Go').closest('a') as HTMLAnchorElement
     expect(link).not.toHaveAttribute('href')
     expect(link).toHaveAttribute('aria-disabled', 'true')
     expect(link).toHaveAttribute('tabindex', '-1')
   })
 
-  it('ocupa a largura total quando block é usado', () => {
-    render(<Button block>Largo</Button>)
-    expect(screen.getByRole('button', { name: 'Largo' })).toHaveClass('w-full')
+  it('takes the full width when block is used', () => {
+    render(<Button block>Wide</Button>)
+    expect(screen.getByRole('button', { name: 'Wide' })).toHaveClass('w-full')
   })
 
-  it('renderiza como o filho quando asChild é usado', () => {
+  it('renders as the child when asChild is used', () => {
     render(
       <Button asChild>
-        <a href="/destino">Ir para o destino</a>
+        <a href="/destino">Go to destination</a>
       </Button>,
     )
-    const link = screen.getByRole('link', { name: 'Ir para o destino' })
+    const link = screen.getByRole('link', { name: 'Go to destination' })
     expect(link.tagName).toBe('A')
     expect(link).toHaveAttribute('data-slot', 'button')
   })

@@ -8,8 +8,8 @@ import { Button } from './button'
 const meta = {
   title: 'Data Entry/Button',
   component: Button,
-  // Sem `autodocs`: a página de docs é a MDX customizada (button.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (button.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -119,7 +119,7 @@ export const WithIcon: Story = {
     children: (
       <>
         <Rocket />
-        Lançar
+        Launch
       </>
     ),
   },
@@ -128,7 +128,7 @@ export const WithIcon: Story = {
 export const IconOnly: Story = {
   args: {
     size: 'icon',
-    'aria-label': 'Lançar',
+    'aria-label': 'Launch',
     children: <Rocket />,
   },
 }
@@ -154,7 +154,7 @@ export const Sizes: Story = {
 export const IconProp: Story = {
   args: {
     icon: <Rocket />,
-    children: 'Lançar',
+    children: 'Launch',
   },
 }
 
@@ -163,7 +163,7 @@ export const IconRight: Story = {
   args: {
     icon: <ArrowRight />,
     iconPlacement: 'right',
-    children: 'Avançar',
+    children: 'Next',
   },
 }
 
@@ -172,16 +172,16 @@ export const Loading: Story = {
   args: {
     icon: <Rocket />,
     loading: true,
-    children: 'Lançando',
+    children: 'Launching',
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    const button = canvas.getByRole('button', { name: /lançando/i })
+    const button = canvas.getByRole('button', { name: /launching/i })
     await expect(button).toBeDisabled()
     await expect(button).toHaveAttribute('aria-busy', 'true')
-    // Em loading o botão tem `pointer-events: none`; forçamos o clique
-    // (pointerEventsCheck: 0) para provar que, ainda assim, `onClick` não
-    // dispara — pois está `disabled`.
+    // While loading the button has `pointer-events: none`; we force the click
+    // (pointerEventsCheck: 0) to prove that, even so, `onClick` does not
+    // fire — because it is `disabled`.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(button)
     await expect(args.onClick).not.toHaveBeenCalled()
@@ -192,7 +192,7 @@ export const Loading: Story = {
 export const LoadingNoIcon: Story = {
   args: {
     loading: true,
-    children: 'Salvando',
+    children: 'Saving',
   },
 }
 
@@ -203,7 +203,7 @@ export const Rounded: Story = {
       <Button {...args} shape="rounded">
         Rounded
       </Button>
-      <Button {...args} shape="rounded" size="icon" aria-label="Lançar">
+      <Button {...args} shape="rounded" size="icon" aria-label="Launch">
         <Rocket />
       </Button>
     </div>
@@ -216,11 +216,11 @@ export const LinkButton: Story = {
     href: 'https://example.com',
     icon: <ArrowRight />,
     iconPlacement: 'right',
-    children: 'Abrir link',
+    children: 'Open link',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const link = canvas.getByRole('link', { name: 'Abrir link' })
+    const link = canvas.getByRole('link', { name: 'Open link' })
     await expect(link.tagName).toBe('A')
     await expect(link).toHaveAttribute('href', 'https://example.com')
   },
@@ -231,11 +231,11 @@ export const LinkDisabled: Story = {
   args: {
     href: 'https://example.com',
     disabled: true,
-    children: 'Link desabilitado',
+    children: 'Disabled link',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const link = canvas.getByText('Link desabilitado').closest('a')
+    const link = canvas.getByText('Disabled link').closest('a')
     await expect(link).not.toBeNull()
     await expect(link).not.toHaveAttribute('href')
     await expect(link).toHaveAttribute('aria-disabled', 'true')
@@ -245,7 +245,7 @@ export const LinkDisabled: Story = {
 
 /** `block` makes the button fill the available width. */
 export const Block: Story = {
-  args: { block: true, children: 'Largura total' },
+  args: { block: true, children: 'Full width' },
   parameters: { layout: 'fullscreen' },
   decorators: [
     (Story) => (
@@ -260,17 +260,17 @@ export const Block: Story = {
 const handleSubmit = fn((e: FormEvent) => e.preventDefault())
 
 export const SubmitInForm: Story = {
-  args: { htmlType: 'submit', children: 'Enviar' },
+  args: { htmlType: 'submit', children: 'Submit' },
   render: (args) => (
     <form className="flex flex-col items-start gap-3" onSubmit={handleSubmit}>
-      <input className="rounded-md border px-3 py-1.5 text-sm" placeholder="Seu nome" />
+      <input className="rounded-md border px-3 py-1.5 text-sm" placeholder="Your name" />
       <Button {...args} />
     </form>
   ),
   play: async ({ canvasElement }) => {
     handleSubmit.mockClear()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Enviar' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Submit' }))
     await expect(handleSubmit).toHaveBeenCalledOnce()
   },
 }
@@ -327,8 +327,8 @@ export const DisabledDoesNotFire: Story = {
     const canvas = within(canvasElement)
     const button = canvas.getByRole('button', { name: 'Button' })
     await expect(button).toBeDisabled()
-    // Em disabled o botão tem `pointer-events: none`; forçamos o clique
-    // (pointerEventsCheck: 0) para provar que `onClick` não dispara mesmo assim.
+    // When disabled the button has `pointer-events: none`; we force the click
+    // (pointerEventsCheck: 0) to prove that `onClick` does not fire even so.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(button)
     await expect(args.onClick).not.toHaveBeenCalled()
@@ -339,13 +339,13 @@ export const DisabledDoesNotFire: Story = {
 export const AsChild: Story = {
   render: (args) => (
     <Button {...args} asChild>
-      <a href="https://example.com">Ir para o destino</a>
+      <a href="https://example.com">Go to destination</a>
     </Button>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // asChild não renderiza <button>: o estilo é mesclado no <a> filho.
-    const link = canvas.getByRole('link', { name: 'Ir para o destino' })
+    // asChild does not render a <button>: the styling is merged into the child <a>.
+    const link = canvas.getByRole('link', { name: 'Go to destination' })
     await expect(link).toHaveAttribute('data-slot', 'button')
     await expect(canvas.queryByRole('button')).not.toBeInTheDocument()
   },

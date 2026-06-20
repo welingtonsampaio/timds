@@ -17,25 +17,25 @@ import {
   SelectValue,
 } from './select'
 
-// --- Dados de exemplo -------------------------------------------------------
+// --- Example data -----------------------------------------------------------
 const fruits: SelectOption[] = [
-  { value: 'apple', label: 'Maçã' },
+  { value: 'apple', label: 'Apple' },
   { value: 'banana', label: 'Banana' },
-  { value: 'orange', label: 'Laranja' },
-  { value: 'grape', label: 'Uva' },
-  { value: 'mango', label: 'Manga' },
-  { value: 'pear', label: 'Pera', disabled: true },
-  { value: 'pineapple', label: 'Abacaxi' },
-  { value: 'strawberry', label: 'Morango' },
+  { value: 'orange', label: 'Orange' },
+  { value: 'grape', label: 'Grape' },
+  { value: 'mango', label: 'Mango' },
+  { value: 'pear', label: 'Pear', disabled: true },
+  { value: 'pineapple', label: 'Pineapple' },
+  { value: 'strawberry', label: 'Strawberry' },
 ]
 
 const groupedOptions: SelectOption[] = [
-  { value: 'apple', label: 'Maçã', group: 'Frutas' },
-  { value: 'banana', label: 'Banana', group: 'Frutas' },
-  { value: 'carrot', label: 'Cenoura', group: 'Legumes' },
-  { value: 'broccoli', label: 'Brócolis', group: 'Legumes' },
-  { value: 'salmon', label: 'Salmão', group: 'Proteínas' },
-  { value: 'egg', label: 'Ovo', group: 'Proteínas' },
+  { value: 'apple', label: 'Apple', group: 'Fruits' },
+  { value: 'banana', label: 'Banana', group: 'Fruits' },
+  { value: 'carrot', label: 'Carrot', group: 'Vegetables' },
+  { value: 'broccoli', label: 'Broccoli', group: 'Vegetables' },
+  { value: 'salmon', label: 'Salmon', group: 'Proteins' },
+  { value: 'egg', label: 'Egg', group: 'Proteins' },
 ]
 
 const users: SelectOption[] = [
@@ -44,8 +44,8 @@ const users: SelectOption[] = [
   { value: 'carla', label: 'Carla Dias', email: 'carla@timds.dev', role: 'Design' },
 ]
 
-// 1k itens: suficiente para exercitar a virtualização (auto > 100) sem o custo
-// de filtrar/re-renderizar 10k a cada tecla, que tornava o play lento e flaky.
+// 1k items: enough to exercise virtualization (auto > 100) without the cost of
+// filtering/re-rendering 10k on every keystroke, which made the play slow and flaky.
 const manyOptions: SelectOption[] = Array.from({ length: 1000 }, (_, i) => ({
   value: `item-${i}`,
   label: `Item ${i}`,
@@ -54,8 +54,8 @@ const manyOptions: SelectOption[] = Array.from({ length: 1000 }, (_, i) => ({
 const meta = {
   title: 'Data Entry/Select',
   component: Select,
-  // Sem `autodocs`: a página de docs é a MDX customizada (select.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (select.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -74,54 +74,57 @@ const meta = {
           'interactive story starts closed — click the trigger to open the listbox.',
       },
     },
-    // As histórias interativas começam fechadas (só o trigger): o snapshot
-    // padrão fica desligado; a cobertura visual vem das histórias `Visual*`.
+    // The interactive stories start closed (only the trigger): the default
+    // snapshot is turned off; visual coverage comes from the `Visual*` stories.
     chromatic: { disableSnapshot: true },
   },
   args: {
     options: fruits,
-    placeholder: 'Selecione uma fruta...',
+    placeholder: 'Select a fruit...',
     size: 'default',
     searchable: false,
     disabled: false,
-    'aria-label': 'Fruta',
+    'aria-label': 'Fruit',
   },
   argTypes: {
-    options: { control: false, description: 'Lista de opções (`SelectOption[]`).' },
+    options: { control: false, description: 'List of options (`SelectOption[]`).' },
     size: {
       control: 'select',
       options: ['sm', 'default', 'lg'],
-      description: 'Altura do trigger.',
+      description: 'Trigger height.',
       table: { defaultValue: { summary: 'default' } },
     },
-    searchable: { control: 'boolean', description: 'Exibe o campo de busca.' },
-    multiple: { control: 'boolean', description: 'Multi-seleção com chips.' },
-    clearable: { control: 'boolean', description: 'Exibe o botão de limpar.' },
+    searchable: { control: 'boolean', description: 'Shows the search field.' },
+    multiple: { control: 'boolean', description: 'Multi-select with chips.' },
+    clearable: { control: 'boolean', description: 'Shows the clear button.' },
     editable: {
       control: 'boolean',
-      description: 'Gatilho editável (autocomplete no próprio campo).',
+      description: 'Editable trigger (autocomplete in the field itself).',
     },
     allowCustomValue: {
       control: 'boolean',
-      description: 'Editável: aceita texto fora da lista.',
+      description: 'Editable: accepts text outside the list.',
     },
     maxCount: {
       control: 'number',
-      description: 'Multi: nº máximo de itens (mostra "N / max").',
+      description: 'Multi: max number of items (shows "N / max").',
     },
     maxDisplayChips: {
       control: 'number',
-      description: 'Multi: chips antes de resumir em "+N".',
+      description: 'Multi: chips before summarizing as "+N".',
     },
     virtualized: {
       control: 'boolean',
-      description: 'Liga a virtualização (auto para > 100 itens).',
+      description: 'Enables virtualization (auto for > 100 items).',
     },
-    loading: { control: 'boolean', description: 'Indicador de carregamento na lista.' },
-    hasMore: { control: 'boolean', description: 'Há mais itens para o infinite scroll.' },
-    disabled: { control: 'boolean', description: 'Desabilita o trigger.' },
-    value: { control: false, description: 'Valor selecionado (controlado).' },
-    placeholder: { control: 'text', description: 'Texto quando nada está selecionado.' },
+    loading: { control: 'boolean', description: 'Loading indicator in the list.' },
+    hasMore: {
+      control: 'boolean',
+      description: 'There are more items for infinite scroll.',
+    },
+    disabled: { control: 'boolean', description: 'Disables the trigger.' },
+    value: { control: false, description: 'Selected value (controlled).' },
+    placeholder: { control: 'text', description: 'Text when nothing is selected.' },
   },
 } satisfies Meta<typeof Select>
 
@@ -153,19 +156,19 @@ export const Groups: Story = {
   args: {
     options: groupedOptions,
     searchable: true,
-    placeholder: 'Selecione um item...',
+    placeholder: 'Select an item...',
   },
   play: async ({ canvasElement }) => {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
     await userEvent.click(trigger)
     await screen.findByRole('listbox')
-    // Os rótulos de grupo são exibidos junto às opções.
-    await expect(screen.getByText('Frutas')).toBeInTheDocument()
-    await expect(screen.getByText('Legumes')).toBeInTheDocument()
-    await expect(screen.getByText('Proteínas')).toBeInTheDocument()
+    // The group labels are shown alongside the options.
+    await expect(screen.getByText('Fruits')).toBeInTheDocument()
+    await expect(screen.getByText('Vegetables')).toBeInTheDocument()
+    await expect(screen.getByText('Proteins')).toBeInTheDocument()
   },
 }
 
@@ -173,7 +176,7 @@ export const Groups: Story = {
 export const CustomItemRender: Story = {
   args: {
     options: users,
-    placeholder: 'Selecione um usuário...',
+    placeholder: 'Select a user...',
     searchable: true,
     renderItem: (o) => (
       <div className="flex items-center gap-2">
@@ -194,10 +197,10 @@ export const CustomItemRender: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
     await userEvent.click(trigger)
     await screen.findByRole('listbox')
-    // O `renderItem` é aplicado: o e-mail e o badge de papel aparecem na opção.
+    // The `renderItem` is applied: the email and the role badge appear in the option.
     await expect(screen.getByText('ana@timds.dev')).toBeInTheDocument()
     await expect(screen.getByText('Admin')).toBeInTheDocument()
   },
@@ -224,7 +227,7 @@ export const AsyncLoad: Story = {
       () =>
         Array.from({ length: 50 }, (_, i) => ({
           value: `user-${i}`,
-          label: `Usuário ${i}`,
+          label: `User ${i}`,
         })),
       [],
     )
@@ -233,7 +236,7 @@ export const AsyncLoad: Story = {
 
     const handleSearch = (q: string) => {
       setLoading(true)
-      // Simula latência de rede.
+      // Simulates network latency.
       window.setTimeout(() => {
         setOptions(
           allUsers.filter((u) => u.label.toLowerCase().includes(q.toLowerCase())),
@@ -249,12 +252,12 @@ export const AsyncLoad: Story = {
         searchable
         onSearch={handleSearch}
         loading={loading}
-        placeholder="Busque um usuário..."
+        placeholder="Search for a user..."
         messages={{
-          search: 'Digite para buscar...',
-          empty: 'Digite para buscar usuários',
+          search: 'Type to search...',
+          empty: 'Type to search users',
         }}
-        aria-label="Usuário"
+        aria-label="User"
       />
     )
   },
@@ -262,19 +265,17 @@ export const AsyncLoad: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
-    // Antes de buscar, a lista mostra a mensagem-guia (sem opções).
-    await expect(
-      await screen.findByText('Digite para buscar usuários'),
-    ).toBeInTheDocument()
+    // Before searching, the list shows the guide message (no options).
+    await expect(await screen.findByText('Type to search users')).toBeInTheDocument()
 
-    // Ao digitar, o resultado assíncrono (simulado) popula a lista.
-    const search = screen.getByRole('combobox', { name: /buscar/i })
+    // On typing, the (simulated) async result populates the list.
+    const search = screen.getByRole('combobox', { name: /search/i })
     await userEvent.type(search, '7')
     await waitFor(
-      () => expect(screen.getByRole('option', { name: 'Usuário 7' })).toBeInTheDocument(),
+      () => expect(screen.getByRole('option', { name: 'User 7' })).toBeInTheDocument(),
       { timeout: 3000 },
     )
   },
@@ -289,7 +290,7 @@ export const InfiniteScroll: Story = {
       () =>
         Array.from({ length: count }, (_, i) => ({
           value: `row-${i}`,
-          label: `Linha ${i}`,
+          label: `Row ${i}`,
         })),
       [count],
     )
@@ -310,8 +311,8 @@ export const InfiniteScroll: Story = {
         onLoadMore={loadMore}
         hasMore={count < 200}
         loading={loading}
-        placeholder="Role até o fim..."
-        aria-label="Linha"
+        placeholder="Scroll to the bottom..."
+        aria-label="Row"
       />
     )
   },
@@ -322,28 +323,28 @@ export const Virtualized: Story = {
   args: {
     options: manyOptions,
     searchable: true,
-    placeholder: 'Selecione entre 1k itens...',
-    messages: { search: 'Buscar item...' },
+    placeholder: 'Select from 1k items...',
+    messages: { search: 'Search item...' },
     onValueChange: fn(),
   },
   play: async ({ args, canvasElement }) => {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
     const listbox = await screen.findByRole('listbox')
 
-    // A lista NÃO vem vazia (regressão do foco virtual/scroll element): o
-    // primeiro item das 1k opções aparece.
+    // The list does NOT come empty (regression of the virtual focus/scroll
+    // element): the first of the 1k options appears.
     await expect(
       await screen.findByRole('option', { name: 'Item 0' }),
     ).toBeInTheDocument()
 
-    // Prova da virtualização (janela < total). O runtime de teste não aplica o
-    // CSS de layout, então a altura/scroll que limita a janela não vem do
-    // Tailwind — forçamos aqui via inline style e disparamos o recálculo.
+    // Proof of virtualization (window < total). The test runtime does not apply
+    // the layout CSS, so the height/scroll that bounds the window does not come
+    // from Tailwind — we force it here via inline style and trigger the recompute.
     listbox.style.maxHeight = '180px'
     listbox.style.overflowY = 'auto'
     listbox.dispatchEvent(new Event('scroll'))
@@ -353,8 +354,8 @@ export const Virtualized: Story = {
       expect(opts.length).toBeLessThan(100)
     })
 
-    // Buscar um item distante traz ele ao topo (renderizado) e permite selecionar.
-    const search = screen.getByRole('combobox', { name: /buscar/i })
+    // Searching for a distant item brings it to the top (rendered) and lets you select it.
+    const search = screen.getByRole('combobox', { name: /search/i })
     await userEvent.type(search, '942')
     const match = await screen.findByRole('option', { name: 'Item 942' })
     await userEvent.click(match)
@@ -369,9 +370,9 @@ export const Disabled: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
-    // Mostra o valor, mas clicar não abre a lista.
-    await expect(trigger).toHaveTextContent('Maçã')
+    if (!trigger) throw new Error('trigger not found')
+    // Shows the value, but clicking does not open the list.
+    await expect(trigger).toHaveTextContent('Apple')
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(trigger)
     await expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
@@ -383,7 +384,7 @@ export const EmptyState: Story = {
   args: {
     options: [],
     searchable: true,
-    messages: { empty: 'Nenhuma fruta encontrada' },
+    messages: { empty: 'No fruit found' },
   },
 }
 
@@ -394,18 +395,18 @@ export const Clearable: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
-    await expect(trigger).toHaveTextContent('Maçã')
+    if (!trigger) throw new Error('trigger not found')
+    await expect(trigger).toHaveTextContent('Apple')
 
     const clear = canvasElement.querySelector<HTMLElement>('[data-slot="select-clear"]')
     await expect(clear).toBeInTheDocument()
     await userEvent.click(clear as HTMLElement)
 
-    // Limpar zera o valor (some o chip do valor), some o botão e NÃO abre a lista.
+    // Clearing resets the value (the value chip disappears), hides the button and does NOT open the list.
     await waitFor(() =>
       expect(canvasElement.querySelector('[data-slot="select-clear"]')).toBeNull(),
     )
-    await expect(trigger).not.toHaveTextContent('Maçã')
+    await expect(trigger).not.toHaveTextContent('Apple')
     await expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
   },
 }
@@ -416,25 +417,25 @@ export const Multiple: Story = {
     multiple: true,
     clearable: true,
     defaultValue: ['apple', 'banana'],
-    placeholder: 'Selecione frutas...',
+    placeholder: 'Select fruits...',
     searchable: true,
-    'aria-label': 'Frutas',
+    'aria-label': 'Fruits',
   },
   play: async ({ canvasElement }) => {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
-    // Começa com dois chips.
+    if (!trigger) throw new Error('trigger not found')
+    // Starts with two chips.
     await expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2)
 
     await userEvent.click(trigger)
-    // Selecionar mais um mantém a lista aberta (multi).
-    await userEvent.click(await screen.findByRole('option', { name: 'Uva' }))
+    // Selecting one more keeps the list open (multi).
+    await userEvent.click(await screen.findByRole('option', { name: 'Grape' }))
     await expect(screen.getByRole('listbox')).toBeInTheDocument()
     await expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(3)
 
-    // Remover um chip pelo "x" volta para dois (sem reabrir/alterar a lista).
+    // Removing a chip via the "x" goes back to two (without reopening/changing the list).
     const remove = trigger.querySelector<HTMLElement>('[data-slot="select-chip-remove"]')
     await userEvent.click(remove as HTMLElement)
     await waitFor(() =>
@@ -449,18 +450,18 @@ export const MultipleSummary: Story = {
     multiple: true,
     maxDisplayChips: 2,
     defaultValue: ['apple', 'banana', 'orange', 'grape'],
-    'aria-label': 'Frutas',
+    'aria-label': 'Fruits',
   },
   play: async ({ canvasElement }) => {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
-    // 4 selecionados, mas só 2 chips visíveis + resumo "+2".
+    if (!trigger) throw new Error('trigger not found')
+    // 4 selected, but only 2 chips visible + "+2" summary.
     await expect(trigger.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2)
     await expect(trigger).toHaveTextContent('+2')
 
-    // Remover um chip atualiza o resumo para "+1".
+    // Removing a chip updates the summary to "+1".
     const remove = trigger.querySelector<HTMLElement>('[data-slot="select-chip-remove"]')
     await userEvent.click(remove as HTMLElement)
     await waitFor(() => expect(trigger).toHaveTextContent('+1'))
@@ -476,27 +477,27 @@ export const MaxCount: Story = {
     multiple: true,
     maxCount: 3,
     defaultValue: ['apple', 'banana'],
-    placeholder: 'Até 3 frutas...',
-    'aria-label': 'Frutas',
+    placeholder: 'Up to 3 fruits...',
+    'aria-label': 'Fruits',
   },
   play: async ({ canvasElement }) => {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
     await expect(trigger.querySelector('[data-slot="select-count"]')).toHaveTextContent(
       '2 / 3',
     )
 
     await userEvent.click(trigger)
-    // Ao chegar no teto (3), as demais opções ficam desabilitadas.
-    await userEvent.click(await screen.findByRole('option', { name: 'Uva' }))
+    // On reaching the cap (3), the remaining options become disabled.
+    await userEvent.click(await screen.findByRole('option', { name: 'Grape' }))
     await waitFor(() =>
       expect(trigger.querySelector('[data-slot="select-count"]')).toHaveTextContent(
         '3 / 3',
       ),
     )
-    await expect(screen.getByRole('option', { name: 'Manga' })).toHaveAttribute(
+    await expect(screen.getByRole('option', { name: 'Mango' })).toHaveAttribute(
       'aria-disabled',
       'true',
     )
@@ -508,19 +509,19 @@ export const Editable: Story = {
   args: {
     editable: true,
     clearable: true,
-    placeholder: 'Busque uma fruta...',
-    'aria-label': 'Fruta',
+    placeholder: 'Search for a fruit...',
+    'aria-label': 'Fruit',
   },
   play: async ({ canvasElement }) => {
     const input = canvasElement.querySelector<HTMLInputElement>(
       '[data-slot="select-input"]',
     )
-    if (!input) throw new Error('input não encontrado')
+    if (!input) throw new Error('input not found')
     await userEvent.click(input)
     await userEvent.type(input, 'man')
-    const match = await screen.findByRole('option', { name: 'Manga' })
+    const match = await screen.findByRole('option', { name: 'Mango' })
     await userEvent.click(match)
-    await waitFor(() => expect(input).toHaveValue('Manga'))
+    await waitFor(() => expect(input).toHaveValue('Mango'))
   },
 }
 
@@ -531,26 +532,26 @@ export const EditableMultiple: Story = {
     multiple: true,
     clearable: true,
     maxCount: 4,
-    placeholder: 'Adicione frutas...',
-    'aria-label': 'Frutas',
+    placeholder: 'Add fruits...',
+    'aria-label': 'Fruits',
   },
   play: async ({ canvasElement }) => {
     const input = canvasElement.querySelector<HTMLInputElement>(
       '[data-slot="select-input"]',
     )
-    if (!input) throw new Error('input não encontrado')
+    if (!input) throw new Error('input not found')
 
     await userEvent.click(input)
     await userEvent.type(input, 'man')
-    await userEvent.click(await screen.findByRole('option', { name: 'Manga' }))
-    // Selecionar um item no multi limpa a busca e mantém a lista aberta.
-    await userEvent.click(await screen.findByRole('option', { name: 'Laranja' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'Mango' }))
+    // Selecting an item in multi clears the search and keeps the list open.
+    await userEvent.click(await screen.findByRole('option', { name: 'Orange' }))
 
     await expect(screen.getByRole('listbox')).toBeInTheDocument()
     await waitFor(() =>
       expect(canvasElement.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(2),
     )
-    // O contador reflete a seleção contra o teto (maxCount).
+    // The counter reflects the selection against the cap (maxCount).
     await expect(
       canvasElement.querySelector('[data-slot="select-count"]'),
     ).toHaveTextContent('2 / 4')
@@ -570,7 +571,7 @@ export const Translated: Story = {
     placeholder: 'Selecione frutas...',
     messages: {
       search: 'Buscar...',
-      empty: 'Nada encontrado',
+      empty: 'Nenhum resultado',
       loading: 'Carregando...',
       clear: 'Limpar',
       remove: (label) => `Remover ${label}`,
@@ -582,19 +583,19 @@ export const Translated: Story = {
     const input = canvasElement.querySelector<HTMLInputElement>(
       '[data-slot="select-input"]',
     )
-    if (!input) throw new Error('input não encontrado')
+    if (!input) throw new Error('input not found')
 
-    // Placeholder traduzido via `messages` não é o do input; aqui validamos os
-    // textos da lista: a opção de criar e o rótulo de remover.
+    // The placeholder translated via `messages` is not the input's; here we
+    // validate the list texts: the create option and the remove label.
     await userEvent.click(input)
-    await userEvent.type(input, 'Pêssego')
+    await userEvent.type(input, 'Peach')
     await userEvent.click(
-      await screen.findByRole('option', { name: 'Adicionar “Pêssego”' }),
+      await screen.findByRole('option', { name: 'Adicionar “Peach”' }),
     )
 
-    // O chip criado expõe o rótulo de remoção traduzido.
+    // The created chip exposes the translated remove label.
     await expect(
-      await screen.findByRole('button', { name: 'Remover Pêssego' }),
+      await screen.findByRole('button', { name: 'Remover Peach' }),
     ).toBeInTheDocument()
   },
 }
@@ -605,16 +606,16 @@ export const AllowCustomValue: Story = {
     editable: true,
     multiple: true,
     allowCustomValue: true,
-    placeholder: 'Digite e crie tags...',
+    placeholder: 'Type and create tags...',
     'aria-label': 'Tags',
   },
   play: async ({ canvasElement }) => {
     const input = canvasElement.querySelector<HTMLInputElement>(
       '[data-slot="select-input"]',
     )
-    if (!input) throw new Error('input não encontrado')
+    if (!input) throw new Error('input not found')
 
-    // Cria um valor livre — vira chip.
+    // Creates a free value — becomes a chip.
     await userEvent.click(input)
     await userEvent.type(input, 'Kiwi')
     await userEvent.click(await screen.findByRole('option', { name: /Add/ }))
@@ -622,14 +623,14 @@ export const AllowCustomValue: Story = {
       expect(canvasElement.querySelectorAll('[data-slot="select-chip"]')).toHaveLength(1),
     )
 
-    // Redigitar mostra o valor como item da lista (selecionado), sem reoferecer
-    // "Add" — é um item "temporário" derivado da seleção.
+    // Retyping shows the value as a list item (selected), without offering
+    // "Add" again — it is a "temporary" item derived from the selection.
     await userEvent.type(input, 'Kiwi')
     const item = await screen.findByRole('option', { name: 'Kiwi' })
     await expect(item).toHaveAttribute('aria-selected', 'true')
     await expect(screen.queryByRole('option', { name: /Add/ })).not.toBeInTheDocument()
 
-    // Desmarcar pelo item remove-o da seleção e da lista.
+    // Deselecting via the item removes it from the selection and the list.
     await userEvent.click(item)
     await waitFor(() =>
       expect(screen.queryByRole('option', { name: 'Kiwi' })).not.toBeInTheDocument(),
@@ -659,7 +660,7 @@ export const Composition: Story = {
           : groupedOptions,
       [search],
     )
-    // Agrupa as opções visíveis pelo `group` para montar os cabeçalhos.
+    // Groups the visible options by `group` to build the headers.
     const groups = useMemo(() => {
       const map = new Map<string, SelectOption[]>()
       for (const o of visible) {
@@ -675,18 +676,18 @@ export const Composition: Story = {
       <SelectRoot
         combobox
         onSearch={setSearch}
-        // Single-select: o valor é sempre `string`.
+        // Single-select: the value is always a `string`.
         onValueChange={(v) =>
           (args.onValueChange as ((value: string) => void) | undefined)?.(v as string)
         }
       >
-        <SelectTrigger className="w-64" aria-label="Ingrediente">
-          <SelectValue placeholder="Selecione um ingrediente...">
+        <SelectTrigger className="w-64" aria-label="Ingredient">
+          <SelectValue placeholder="Select an ingredient...">
             {(v) => groupedOptions.find((o) => o.value === v)?.label ?? v}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectSearch placeholder="Buscar..." />
+          <SelectSearch placeholder="Search..." />
           <SelectList>
             {groups.length === 0 ? (
               <SelectEmpty />
@@ -710,27 +711,27 @@ export const Composition: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
     const search = await screen.findByRole('combobox', { name: /search/i })
-    await userEvent.type(search, 'cen')
+    await userEvent.type(search, 'car')
 
-    // O filtro local (includes) mantém apenas "Cenoura" — e seu grupo.
+    // The local filter (includes) keeps only "Carrot" — and its group.
     await waitFor(() => {
       const options = screen.getAllByRole('option')
       expect(options).toHaveLength(1)
-      expect(options[0]).toHaveTextContent('Cenoura')
+      expect(options[0]).toHaveTextContent('Carrot')
     })
 
-    await userEvent.click(screen.getByRole('option', { name: 'Cenoura' }))
+    await userEvent.click(screen.getByRole('option', { name: 'Carrot' }))
     await expect(args.onValueChange).toHaveBeenCalledWith('carrot')
     await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument())
-    await expect(trigger).toHaveTextContent('Cenoura')
+    await expect(trigger).toHaveTextContent('Carrot')
   },
 }
 
-// --- Testes de interação (play) --------------------------------------------
+// --- Interaction tests (play) ----------------------------------------------
 
 /** Opening the trigger reveals a `listbox`; clicking an option selects it. */
 export const SelectsOnClick: Story = {
@@ -739,17 +740,17 @@ export const SelectsOnClick: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
-    // Conteúdo num portal: busca no document.
+    // Content in a portal: query the document.
     const listbox = await screen.findByRole('listbox')
     await expect(listbox).toBeVisible()
 
     await userEvent.click(screen.getByRole('option', { name: 'Banana' }))
     await expect(args.onValueChange).toHaveBeenCalledWith('banana')
     await waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument())
-    // O valor selecionado aparece no trigger.
+    // The selected value appears in the trigger.
     await expect(trigger).toHaveTextContent('Banana')
   },
 }
@@ -761,17 +762,17 @@ export const SearchFilters: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
     const search = await screen.findByRole('combobox', { name: /search/i })
-    await userEvent.type(search, 'lar')
+    await userEvent.type(search, 'ora')
 
-    // Apenas "Laranja" deve permanecer.
+    // Only "Orange" should remain.
     await waitFor(() => {
       const options = screen.getAllByRole('option')
       expect(options).toHaveLength(1)
-      expect(options[0]).toHaveTextContent('Laranja')
+      expect(options[0]).toHaveTextContent('Orange')
     })
   },
 }
@@ -786,13 +787,13 @@ export const KeyboardSelects: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
     const search = await screen.findByRole('combobox', { name: /search/i })
     await waitFor(() => expect(search).toHaveFocus())
 
-    // Com foco virtual, a opção ativa é referenciada por aria-activedescendant.
+    // With virtual focus, the active option is referenced by aria-activedescendant.
     await userEvent.keyboard('{ArrowDown}')
     await waitFor(() => expect(search.getAttribute('aria-activedescendant')).toBeTruthy())
     await userEvent.keyboard('{Enter}')
@@ -807,12 +808,12 @@ export const DisabledOptionNotSelectable: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
     await userEvent.click(trigger)
     await screen.findByRole('listbox')
 
-    const pear = screen.getByRole('option', { name: 'Pera' })
+    const pear = screen.getByRole('option', { name: 'Pear' })
     await expect(pear).toHaveAttribute('aria-disabled', 'true')
 
     const user = userEvent.setup({ pointerEventsCheck: 0 })
@@ -822,9 +823,9 @@ export const DisabledOptionNotSelectable: Story = {
 }
 
 /**
- * a11y: o `aria-controls` do trigger deve referenciar um elemento existente
- * tanto fechado quanto aberto (o popover permanece montado/oculto). Evita a
- * violação crítica `aria-valid-attr-value` do axe.
+ * a11y: the trigger's `aria-controls` must reference an existing element both
+ * closed and open (the popover stays mounted/hidden). Avoids axe's critical
+ * `aria-valid-attr-value` violation.
  */
 export const AriaControlsValid: Story = {
   args: { searchable: true },
@@ -832,13 +833,13 @@ export const AriaControlsValid: Story = {
     const trigger = canvasElement.querySelector<HTMLElement>(
       '[data-slot="select-trigger"]',
     )
-    if (!trigger) throw new Error('trigger não encontrado')
+    if (!trigger) throw new Error('trigger not found')
 
-    // Fechado: se houver aria-controls, o alvo precisa existir no DOM.
+    // Closed: if aria-controls is present, the target must exist in the DOM.
     const closed = trigger.getAttribute('aria-controls')
     if (closed) await expect(document.getElementById(closed)).toBeInTheDocument()
 
-    // Aberto: aria-controls presente e apontando para um elemento existente.
+    // Open: aria-controls present and pointing to an existing element.
     await userEvent.click(trigger)
     await screen.findByRole('listbox')
     const open = trigger.getAttribute('aria-controls')
@@ -847,28 +848,28 @@ export const AriaControlsValid: Story = {
   },
 }
 
-// --- Histórias visuais (Chromatic) -----------------------------------------
-// Existem só para regressão visual: ficam ocultas da sidebar e dos docs
-// (`!dev`/`!autodocs`), mas seguem rodando como smoke test (tag `test`) e
-// reativam o snapshot, desligado por padrão no meta. Juntas devem cobrir TODOS
-// os comportamentos visuais do Select (ver ADR 0006). Triggers fechados são
-// agrupados em grades (um snapshot por família); estados de lista abrem um
-// popover por história (`defaultOpen`) para não sobrepor portais.
+// --- Visual stories (Chromatic) --------------------------------------------
+// They exist only for visual regression: hidden from the sidebar and the docs
+// (`!dev`/`!autodocs`), but still run as a smoke test (tag `test`) and re-enable
+// the snapshot, off by default in the meta. Together they should cover ALL of
+// the Select's visual behaviors (see ADR 0006). Closed triggers are grouped
+// into grids (one snapshot per family); list states open one popover per story
+// (`defaultOpen`) so portals don't overlap.
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Pick<Story, 'tags' | 'parameters'>
 
-// Variante para listas abertas SEM opções (vazia/carregando): um `role="listbox"`
-// sem filhos `option` dispara o axe (`aria-required-children`). A auditoria de
-// a11y da lista já é coberta pelas histórias interativas (com opções); aqui só
-// queremos o snapshot visual do estado, então desligamos o teste de a11y.
+// Variant for open lists WITHOUT options (empty/loading): a `role="listbox"`
+// with no `option` children triggers axe (`aria-required-children`). The list's
+// a11y audit is already covered by the interactive stories (with options); here
+// we only want the visual snapshot of the state, so we turn off the a11y test.
 const visualNoA11y = {
   tags: visual.tags,
   parameters: { ...visual.parameters, a11y: { test: 'off' } },
 } satisfies Pick<Story, 'tags' | 'parameters'>
 
-// Mesmo `renderItem` da história CustomItemRender, para o snapshot da lista.
+// Same `renderItem` as the CustomItemRender story, for the list snapshot.
 const renderUserItem = (o: SelectOption) => (
   <div className="flex items-center gap-2">
     <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
@@ -884,9 +885,9 @@ const renderUserItem = (o: SelectOption) => (
   </div>
 )
 
-// --- Triggers fechados (grades) --------------------------------------------
+// --- Closed triggers (grids) -----------------------------------------------
 
-/** Visual — os três tamanhos do trigger, com valor. */
+/** Visual — the three trigger sizes, with a value. */
 export const VisualSizes: Story = {
   ...visual,
   args: { defaultValue: 'apple' },
@@ -899,21 +900,17 @@ export const VisualSizes: Story = {
   ),
 }
 
-/** Visual — estados do trigger: placeholder, valor, valor customizado e desabilitado. */
+/** Visual — trigger states: placeholder, value, custom value and disabled. */
 export const VisualTriggerStates: Story = {
   ...visual,
   render: () => (
     <div className="grid w-[34rem] grid-cols-2 gap-4">
-      <Select
-        options={fruits}
-        placeholder="Selecione uma fruta..."
-        aria-label="placeholder"
-      />
-      <Select options={fruits} defaultValue="apple" aria-label="valor" />
+      <Select options={fruits} placeholder="Select a fruit..." aria-label="placeholder" />
+      <Select options={fruits} defaultValue="apple" aria-label="value" />
       <Select
         options={users}
         defaultValue="ana"
-        aria-label="valor customizado"
+        aria-label="custom value"
         renderValue={(o) => (
           <span className="flex items-center gap-2">
             <span className="size-2 rounded-full bg-success" />
@@ -921,18 +918,18 @@ export const VisualTriggerStates: Story = {
           </span>
         )}
       />
-      <Select options={fruits} defaultValue="apple" disabled aria-label="desabilitado" />
+      <Select options={fruits} defaultValue="apple" disabled aria-label="disabled" />
     </div>
   ),
 }
 
-/** Visual — trigger com botão de limpar (`clearable`). */
+/** Visual — trigger with the clear button (`clearable`). */
 export const VisualClearable: Story = {
   ...visual,
   args: { clearable: true, defaultValue: 'apple' },
 }
 
-/** Visual — triggers multi: chips, resumo "+N" e contador "N / max". */
+/** Visual — multi triggers: chips, "+N" summary and "N / max" counter. */
 export const VisualMultiTriggers: Story = {
   ...visual,
   render: () => (
@@ -949,20 +946,20 @@ export const VisualMultiTriggers: Story = {
         maxDisplayChips={2}
         options={fruits}
         defaultValue={['apple', 'banana', 'orange', 'grape']}
-        aria-label="resumo +N"
+        aria-label="+N summary"
       />
       <Select
         multiple
         maxCount={3}
         options={fruits}
         defaultValue={['apple', 'banana']}
-        aria-label="contador"
+        aria-label="counter"
       />
     </div>
   ),
 }
 
-/** Visual — triggers editáveis (autocomplete): vazio e com chips. */
+/** Visual — editable triggers (autocomplete): empty and with chips. */
 export const VisualEditable: Story = {
   ...visual,
   render: () => (
@@ -971,8 +968,8 @@ export const VisualEditable: Story = {
         editable
         clearable
         options={fruits}
-        placeholder="Busque uma fruta..."
-        aria-label="editável"
+        placeholder="Search for a fruit..."
+        aria-label="editable"
       />
       <Select
         editable
@@ -980,15 +977,15 @@ export const VisualEditable: Story = {
         clearable
         options={fruits}
         defaultValue={['apple', 'banana']}
-        aria-label="editável múltiplo"
+        aria-label="editable multiple"
       />
     </div>
   ),
 }
 
-// --- Lista aberta (um popover por história) --------------------------------
+// --- Open list (one popover per story) --------------------------------------
 
-/** Visual — lista aberta com o campo de busca. */
+/** Visual — open list with the search field. */
 export const VisualOpen: Story = {
   ...visual,
   args: { searchable: true, defaultOpen: true },
@@ -999,7 +996,7 @@ export const VisualOpen: Story = {
   ),
 }
 
-/** Visual — lista aberta com uma opção selecionada (check). */
+/** Visual — open list with a selected option (check). */
 export const VisualSelected: Story = {
   ...visual,
   args: { searchable: true, defaultOpen: true, defaultValue: 'banana' },
@@ -1010,7 +1007,7 @@ export const VisualSelected: Story = {
   ),
 }
 
-/** Visual — grupos abertos. */
+/** Visual — open groups. */
 export const VisualGroups: Story = {
   ...visual,
   args: { options: groupedOptions, defaultOpen: true },
@@ -1021,7 +1018,7 @@ export const VisualGroups: Story = {
   ),
 }
 
-/** Visual — render de item customizado (avatar + texto secundário + badge). */
+/** Visual — custom item render (avatar + secondary text + badge). */
 export const VisualCustomItem: Story = {
   ...visual,
   args: { options: users, defaultOpen: true, renderItem: renderUserItem },
@@ -1032,7 +1029,7 @@ export const VisualCustomItem: Story = {
   ),
 }
 
-/** Visual — opção desabilitada dentro da lista (Pera). */
+/** Visual — disabled option inside the list (Pear). */
 export const VisualDisabledOption: Story = {
   ...visual,
   args: { defaultOpen: true },
@@ -1043,14 +1040,14 @@ export const VisualDisabledOption: Story = {
   ),
 }
 
-/** Visual — estado vazio (nenhuma opção corresponde). */
+/** Visual — empty state (no option matches). */
 export const VisualEmpty: Story = {
   ...visualNoA11y,
   args: {
     options: [],
     searchable: true,
     defaultOpen: true,
-    messages: { empty: 'Nenhuma fruta encontrada' },
+    messages: { empty: 'No fruit found' },
   },
   render: (args) => (
     <div className="h-96">
@@ -1059,7 +1056,7 @@ export const VisualEmpty: Story = {
   ),
 }
 
-/** Visual — indicador de carregamento na lista. */
+/** Visual — loading indicator in the list. */
 export const VisualLoading: Story = {
   ...visualNoA11y,
   args: {
@@ -1067,7 +1064,7 @@ export const VisualLoading: Story = {
     searchable: true,
     defaultOpen: true,
     loading: true,
-    messages: { loading: 'Carregando...' },
+    messages: { loading: 'Loading...' },
   },
   render: (args) => (
     <div className="h-96">

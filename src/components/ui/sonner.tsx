@@ -4,37 +4,39 @@ import { Toaster as SonnerToaster, type ToasterProps } from 'sonner'
 import { cn } from '@/lib/utils'
 
 /**
- * Mapeia as CSS vars do sonner para os tokens do design system (src/styles.css).
+ * Maps sonner's CSS vars to the design system tokens (src/styles.css).
  *
- * Cada cor é derivada por `color-mix` na direção de `--popover` /
- * `--popover-foreground`, que já trocam no `.dark`. Assim fundo, borda e texto se
- * adaptam ao tema automaticamente — sem depender de `next-themes` (o dark mode
- * aqui é opt-in via classe `.dark`, não pelo tema interno do sonner).
+ * Each color is derived via `color-mix` toward `--popover` /
+ * `--popover-foreground`, which already switch under `.dark`. This way background,
+ * border and text adapt to the theme automatically — without relying on
+ * `next-themes` (dark mode here is opt-in via the `.dark` class, not through
+ * sonner's internal theme).
  *
- * Vai no `style` inline do Toaster porque estilo inline vence a especificidade do
- * CSS que o sonner injeta em runtime ([data-sonner-toaster][data-sonner-theme]).
- * As custom properties são herdadas pelos toasts filhos.
+ * It goes in the Toaster's inline `style` because inline style beats the
+ * specificity of the CSS sonner injects at runtime
+ * ([data-sonner-toaster][data-sonner-theme]). The custom properties are inherited
+ * by the child toasts.
  */
 const tokenStyle = {
   '--normal-bg': 'var(--popover)',
   '--normal-text': 'var(--popover-foreground)',
   '--normal-border': 'var(--border)',
 
-  // Escala neutra do sonner. O close button do toast neutro a usa
+  // Sonner's neutral scale. The neutral toast's close button uses it
   // (`color: var(--gray12)`, `border: var(--gray4)`, hover `--gray2`/`--gray5`).
-  // Sem isso, o X herda a escala do tema interno do sonner (light por padrão) e
-  // some sobre o nosso `--popover` escuro no dark mode. Apontando para os tokens,
-  // o botão fica visível e troca de cor com o `.dark`.
+  // Without this, the X inherits sonner's internal theme scale (light by default)
+  // and disappears over our dark `--popover` in dark mode. By pointing to the
+  // tokens, the button stays visible and changes color with `.dark`.
   '--gray2': 'var(--accent)',
   '--gray4': 'var(--border)',
   '--gray5': 'var(--border)',
   '--gray12': 'var(--popover-foreground)',
 
-  // Fundo tonal leve + texto que escurece/clareia conforme o popover-foreground.
-  // Misturamos em `oklab` (e não `oklch`) de propósito: oklab interpola em
-  // coordenadas retangulares, sem girar o matiz. Em `oklch`, misturar uma cor
-  // saturada com o popover quase neutro empurra o hue para ~0° (vermelho),
-  // tingindo o success de rosa e o info de roxo. Em oklab o matiz é preservado.
+  // Light tonal background + text that darkens/lightens along with
+  // popover-foreground. We mix in `oklab` (not `oklch`) on purpose: oklab
+  // interpolates in rectangular coordinates, without rotating the hue. In `oklch`,
+  // mixing a saturated color with the nearly neutral popover pushes the hue toward
+  // ~0° (red), tinting success pink and info purple. In oklab the hue is preserved.
   '--success-bg': 'color-mix(in oklab, var(--success) 14%, var(--popover))',
   '--success-border': 'color-mix(in oklab, var(--success) 30%, var(--border))',
   '--success-text': 'color-mix(in oklab, var(--success) 58%, var(--popover-foreground))',
@@ -54,12 +56,12 @@ const tokenStyle = {
 } as CSSProperties
 
 /**
- * Container das notificações. Renderize uma vez na raiz da aplicação; os toasts
- * são disparados em qualquer lugar pela função `toast`.
+ * Notifications container. Render it once at the application root; toasts are
+ * triggered from anywhere via the `toast` function.
  *
- * Defaults: `richColors` (cores semânticas por tipo) e posição inferior direita.
- * Tudo é sobrescrevível — inclusive `richColors`, `position`, `closeButton`,
- * `expand`, `duration`, etc. — pois os props do consumidor têm precedência.
+ * Defaults: `richColors` (semantic colors per type) and bottom-right position.
+ * Everything is overridable — including `richColors`, `position`, `closeButton`,
+ * `expand`, `duration`, etc. — since the consumer's props take precedence.
  */
 function Toaster({ className, style, ...props }: ToasterProps) {
   return (

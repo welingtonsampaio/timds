@@ -14,8 +14,8 @@ import {
 const meta = {
   title: 'Data Entry/InputGroup',
   component: InputGroup,
-  // Sem `autodocs`: a página de docs é a MDX customizada (input-group.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (input-group.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -42,7 +42,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por composição/estado visual (render-testadas + axe).
+ * Render stories — one per composition/visual state (render-tested + axe).
  * -------------------------------------------------------------------------- */
 
 /** Leading icon addon — the classic search field. */
@@ -52,7 +52,7 @@ export const Default: Story = {
       <InputGroupAddon>
         <Search />
       </InputGroupAddon>
-      <InputGroupInput placeholder="Buscar…" aria-label="Buscar" />
+      <InputGroupInput placeholder="Search…" aria-label="Search" />
     </InputGroup>
   ),
 }
@@ -64,7 +64,7 @@ export const WithText: Story = {
       <InputGroupAddon>
         <InputGroupText>https://</InputGroupText>
       </InputGroupAddon>
-      <InputGroupInput placeholder="meusite" aria-label="Domínio" />
+      <InputGroupInput placeholder="mysite" aria-label="Domain" />
       <InputGroupAddon align="inline-end">
         <InputGroupText>.com</InputGroupText>
       </InputGroupAddon>
@@ -79,9 +79,9 @@ export const WithButton: Story = {
       <InputGroupAddon>
         <CreditCard />
       </InputGroupAddon>
-      <InputGroupInput placeholder="Código do cupom" aria-label="Código do cupom" />
+      <InputGroupInput placeholder="Coupon code" aria-label="Coupon code" />
       <InputGroupAddon align="inline-end">
-        <InputGroupButton>Aplicar</InputGroupButton>
+        <InputGroupButton>Apply</InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
   ),
@@ -91,12 +91,12 @@ export const WithButton: Story = {
 export const WithTextarea: Story = {
   render: () => (
     <InputGroup className="w-80">
-      <InputGroupTextarea placeholder="Escreva um comentário…" aria-label="Comentário" />
+      <InputGroupTextarea placeholder="Write a comment…" aria-label="Comment" />
       <InputGroupAddon align="block-end">
-        <InputGroupText>Markdown suportado</InputGroupText>
+        <InputGroupText>Markdown supported</InputGroupText>
         <InputGroupButton className="ml-auto" size="sm" variant="default">
           <Send />
-          Enviar
+          Send
         </InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
@@ -110,14 +110,14 @@ export const Invalid: Story = {
       <InputGroupAddon>
         <Search />
       </InputGroupAddon>
-      <InputGroupInput aria-invalid defaultValue="termo inválido" aria-label="Buscar" />
+      <InputGroupInput aria-invalid defaultValue="invalid term" aria-label="Search" />
     </InputGroup>
   ),
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Spies de módulo: limpos manualmente no início de cada play (mesmo idioma do button).
+ * Interaction tests — play functions that ARE the regression tests.
+ * Module spies: cleared manually at the start of each play (same approach as button).
  * -------------------------------------------------------------------------- */
 
 const handleApply = fn()
@@ -130,13 +130,13 @@ export const TypesInControl: Story = {
       <InputGroupAddon>
         <Search />
       </InputGroupAddon>
-      <InputGroupInput aria-label="Buscar" onChange={handleChange} />
+      <InputGroupInput aria-label="Search" onChange={handleChange} />
     </InputGroup>
   ),
   play: async ({ canvasElement }) => {
     handleChange.mockClear()
     const canvas = within(canvasElement)
-    const input = canvas.getByRole('textbox', { name: 'Buscar' })
+    const input = canvas.getByRole('textbox', { name: 'Search' })
     await userEvent.type(input, 'timds')
     await expect(input).toHaveValue('timds')
     await expect(handleChange).toHaveBeenCalled()
@@ -147,16 +147,16 @@ export const TypesInControl: Story = {
 export const ButtonClicks: Story = {
   render: () => (
     <InputGroup className="w-80">
-      <InputGroupInput placeholder="Cupom" aria-label="Cupom" />
+      <InputGroupInput placeholder="Coupon" aria-label="Coupon" />
       <InputGroupAddon align="inline-end">
-        <InputGroupButton onClick={handleApply}>Aplicar</InputGroupButton>
+        <InputGroupButton onClick={handleApply}>Apply</InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
   ),
   play: async ({ canvasElement }) => {
     handleApply.mockClear()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Aplicar' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Apply' }))
     await expect(handleApply).toHaveBeenCalledOnce()
   },
 }
@@ -168,15 +168,15 @@ export const AddonFocusesInput: Story = {
       <InputGroupAddon data-testid="search-addon">
         <Search />
       </InputGroupAddon>
-      <InputGroupInput placeholder="Buscar…" aria-label="Buscar" />
+      <InputGroupInput placeholder="Search…" aria-label="Search" />
     </InputGroup>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O addon é decorativo (sem role acionável), então consultamos por testId.
+    // The addon is decorative (no actionable role), so we query by testId.
     const addon = canvas.getByTestId('search-addon')
     await userEvent.click(addon)
-    await expect(canvas.getByRole('textbox', { name: 'Buscar' })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus()
   },
 }
 
@@ -184,17 +184,17 @@ export const AddonFocusesInput: Story = {
 export const FocusOrder: Story = {
   render: () => (
     <InputGroup className="w-80">
-      <InputGroupInput placeholder="Cupom" aria-label="Cupom" />
+      <InputGroupInput placeholder="Coupon" aria-label="Coupon" />
       <InputGroupAddon align="inline-end">
-        <InputGroupButton>Aplicar</InputGroupButton>
+        <InputGroupButton>Apply</InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Cupom' })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: 'Coupon' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Aplicar' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Apply' })).toHaveFocus()
   },
 }

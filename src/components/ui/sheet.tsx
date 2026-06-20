@@ -5,10 +5,10 @@ import type * as React from 'react'
 import { overlayClass, svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
-// Painel deslizante ancorado a uma borda da viewport, construído sobre o
-// `Dialog` do Radix. É um primitivo INTERNO do design system: hoje serve apenas
-// ao modo mobile da Sidebar (overlay lateral) e por isso não é exportado em
-// `src/index.ts`. O Drawer (vaul) cobre o caso de gaveta arrastável.
+// Sliding panel anchored to a viewport edge, built on top of Radix's
+// `Dialog`. It is an INTERNAL design system primitive: today it only serves
+// the Sidebar's mobile mode (side overlay) and is therefore not exported in
+// `src/index.ts`. The Drawer (vaul) covers the draggable drawer case.
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
@@ -47,7 +47,7 @@ function SheetContent({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left'
-  // Permite ocultar o "X" quando o fechamento é controlado externamente.
+  // Allows hiding the "X" when closing is controlled externally.
   showCloseButton?: boolean
 }) {
   return (

@@ -17,8 +17,8 @@ import {
 const meta = {
   title: 'Layout/Card',
   component: Card,
-  // Sem `autodocs`: a página de docs é a MDX customizada (card.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (card.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     layout: 'centered',
     docs: {
@@ -45,8 +45,8 @@ type PlaygroundArgs = {
 }
 
 /* --------------------------------------------------------------------------
- * Render stories — composições do Card.
- * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * Render stories — Card compositions.
+ * Each one mounts without errors and passes axe automatically.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — edit the card copy from the **Controls** panel. */
@@ -176,13 +176,13 @@ export const KpiGrid: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Card é composição (sem callbacks próprios): asseguramos que cada slot
- * renderiza, que o CardAction marca o header como tendo ação, e que controles
- * dentro do footer/action seguem interativos. Sempre `await` em userEvent/expect.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Card is a composition (no callbacks of its own): we ensure each slot
+ * renders, that CardAction marks the header as having an action, and that controls
+ * inside the footer/action stay interactive. Always `await` on userEvent/expect.
  * -------------------------------------------------------------------------- */
 
-/** Cada parte composta renderiza com seu `data-slot`. */
+/** Each composed part renders with its `data-slot`. */
 export const RendersAllSlots: Story = {
   render: () => (
     <Card className="w-80">
@@ -198,7 +198,7 @@ export const RendersAllSlots: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Os data-slots são hooks de estrutura; aqui validamos a composição completa.
+    // The data-slots are structure hooks; here we validate the full composition.
     const card = canvas.getByText('Total revenue').closest('[data-slot="card"]')
     await expect(card).toBeInTheDocument()
     await expect(canvas.getByText('Total revenue')).toBeInTheDocument()
@@ -208,12 +208,12 @@ export const RendersAllSlots: Story = {
   },
 }
 
-/** O `CardAction` marca o header (selector `has-data-[slot=card-action]`). */
+/** The `CardAction` marks the header (selector `has-data-[slot=card-action]`). */
 export const ActionDocksInHeader: Story = {
   render: () => (
-    // Header sem `CardDescription`: colapsamos o grid para uma única linha
-    // (`grid-rows-[auto]`) — senão a 2ª linha vazia some, mas o `gap-2` sobra
-    // como espaço extra embaixo. Título e ação ficam centralizados na linha.
+    // Header without `CardDescription`: we collapse the grid to a single row
+    // (`grid-rows-[auto]`) — otherwise the empty 2nd row disappears, but the `gap-2`
+    // remains as extra space below. Title and action are centered in the row.
     <Card className="w-80">
       <CardHeader data-testid="header" className="grid-rows-[auto] items-center">
         <CardTitle>Project Apollo</CardTitle>
@@ -228,17 +228,17 @@ export const ActionDocksInHeader: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const header = canvas.getByTestId('header')
-    // O header contém um filho com data-slot=card-action: é o gancho que o
-    // CSS usa para ativar o grid de duas colunas.
+    // The header contains a child with data-slot=card-action: it is the hook that
+    // the CSS uses to activate the two-column grid.
     await expect(header.querySelector('[data-slot="card-action"]')).toBeInTheDocument()
   },
 }
 
-// Spy dedicado ao botão do footer: `args.onClick` do Card é tipado para `div`,
-// incompatível com o handler de `button`.
+// Dedicated spy for the footer button: the Card's `args.onClick` is typed for `div`,
+// incompatible with the `button` handler.
 const handleViewReport = fn()
 
-/** Controles dentro do Card (footer/action) permanecem interativos. */
+/** Controls inside the Card (footer/action) stay interactive. */
 export const FooterButtonClicks: Story = {
   render: () => (
     <Card className="w-80">

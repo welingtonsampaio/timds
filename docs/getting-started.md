@@ -22,7 +22,7 @@ npm install github:<org>/timds#<commit-sha>
 > When installing from GitHub, the `prepare` script builds the `dist/` folder
 > automatically (JavaScript, `.d.ts` types and the design system CSS).
 > Nothing needs to be published to a registry. See
-> [ADR 0002](./adr/0002-distribuicao-via-github-prepare.md).
+> [ADR 0002](./adr/0002-distribution-via-github-prepare.md).
 
 ### Peer dependencies
 
@@ -154,7 +154,7 @@ Then:
 2. Create a `*.stories.tsx` next to it.
 3. Create a `*.test.tsx` covering the main behavior.
 
-See [ADR 0004](./adr/0004-shadcn-ui-como-base.md) on why we copy the
+See [ADR 0004](./adr/0004-shadcn-ui-as-base.md) on why we copy the
 components instead of depending on the package.
 
 ---

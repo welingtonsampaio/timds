@@ -7,8 +7,8 @@ import { Switch } from './switch'
 const meta = {
   title: 'Data Entry/Switch',
   component: Switch,
-  // Sem `autodocs`: a página de docs é a MDX customizada (switch.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (switch.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -107,7 +107,7 @@ export const TextSizes: Story = {
         <Switch
           key={size}
           size={size}
-          texts={{ on: 'Sim', off: 'Não' }}
+          texts={{ on: 'Yes', off: 'No' }}
           defaultChecked
           aria-label={size}
         />
@@ -120,7 +120,7 @@ export const TextSizes: Story = {
 export const StatusToggle: Story = {
   args: {
     variant: 'green_red',
-    texts: { on: 'Ativo', off: 'Inativo' },
+    texts: { on: 'Active', off: 'Inactive' },
   },
 }
 
@@ -145,7 +145,7 @@ export const Controlled: Story = {
           onCheckedChange={setChecked}
           texts={{ on: 'ON', off: 'OFF' }}
         />
-        <span className="text-sm">{checked ? 'Ligado' : 'Desligado'}</span>
+        <span className="text-sm">{checked ? 'On' : 'Off'}</span>
       </label>
     )
   },
@@ -186,8 +186,8 @@ export const DisabledDoesNotToggle: Story = {
     const canvas = within(canvasElement)
     const sw = canvas.getByRole('switch')
 
-    // O runtime do browser bloqueia clique em pointer-events:none; ignoramos
-    // o check apenas para confirmar que o handler não dispara.
+    // The browser runtime blocks clicks on pointer-events:none; we skip
+    // the check just to confirm that the handler does not fire.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(sw)
     await expect(args.onCheckedChange).not.toHaveBeenCalled()

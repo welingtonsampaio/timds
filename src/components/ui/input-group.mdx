@@ -1,5 +1,5 @@
-{/* input-group.mdx — docs page (prosa em English). Embute as stories testadas.
-    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* input-group.mdx — docs page (prose in English). Embeds the tested stories.
+    Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './input-group.stories'
 
@@ -13,7 +13,7 @@ single border, focus ring and error state.
 ## Overview
 
 Use an InputGroup when a field needs a prefix, suffix or inline action: a search icon, a
-`https://` prefix, a `.com` suffix, an "Aplicar" button. The group owns one border; focus
+`https://` prefix, a `.com` suffix, an "Apply" button. The group owns one border; focus
 and `aria-invalid` propagate from the inner control to the whole frame, so it reads as a
 single field. Compose it from `InputGroupInput`/`InputGroupTextarea` (the control) plus
 `InputGroupAddon`s; addons can sit inline (`inline-start` / `inline-end`) or stack
@@ -87,14 +87,14 @@ import { Search } from 'lucide-react'
   <InputGroupAddon>
     <Search />
   </InputGroupAddon>
-  <InputGroupInput placeholder="Buscar…" aria-label="Buscar" />
+  <InputGroupInput placeholder="Search…" aria-label="Search" />
 </InputGroup>
 
 // Field with a trailing action button
 <InputGroup>
-  <InputGroupInput aria-label="Cupom" />
+  <InputGroupInput aria-label="Coupon" />
   <InputGroupAddon align="inline-end">
-    <InputGroupButton onClick={apply}>Aplicar</InputGroupButton>
+    <InputGroupButton onClick={apply}>Apply</InputGroupButton>
   </InputGroupAddon>
 </InputGroup>
 ```
@@ -105,7 +105,7 @@ import { Search } from 'lucide-react'
 
 - **Inner control** — still needs an accessible name (`aria-label` or an associated label); addons are not labels.
 - **Addon text** — keep prefixes/suffixes terse (`https://`, `.com`, a unit).
-- **Addon button** — verb-first, one or two words ("Aplicar", "Enviar"); no terminal punctuation.
+- **Addon button** — verb-first, one or two words ("Apply", "Submit"); no terminal punctuation.
 
 ## Accessibility
 

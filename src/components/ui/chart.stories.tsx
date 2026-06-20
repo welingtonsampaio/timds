@@ -45,8 +45,8 @@ import {
 const meta = {
   title: 'Data Display/Chart',
   component: ChartContainer,
-  // Sem `autodocs`: a página de docs é a MDX customizada (chart.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (chart.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     layout: 'centered',
     docs: {
@@ -87,26 +87,26 @@ export default meta
 type Story = StoryObj<typeof ChartContainer>
 
 /* -------------------------------------------------------------------------- */
-/*  Dados e configurações compartilhadas                                       */
+/*  Shared data and configurations                                             */
 /* -------------------------------------------------------------------------- */
 
-// Série temporal com duas categorias (desktop x mobile).
+// Time series with two categories (desktop x mobile).
 const monthlyData = [
-  { month: 'Janeiro', desktop: 186, mobile: 80 },
-  { month: 'Fevereiro', desktop: 305, mobile: 200 },
-  { month: 'Março', desktop: 237, mobile: 120 },
-  { month: 'Abril', desktop: 173, mobile: 190 },
-  { month: 'Maio', desktop: 209, mobile: 130 },
-  { month: 'Junho', desktop: 264, mobile: 140 },
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 173, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 264, mobile: 140 },
 ]
 
-// O `color` vira a variável CSS `--color-desktop` / `--color-mobile`.
+// The `color` becomes the CSS variable `--color-desktop` / `--color-mobile`.
 const seriesConfig = {
   desktop: { label: 'Desktop', color: 'var(--chart-1)' },
   mobile: { label: 'Mobile', color: 'var(--chart-2)' },
 } satisfies ChartConfig
 
-// Dados categóricos para Pie/Radial: cada item carrega o próprio `fill`.
+// Categorical data for Pie/Radial: each item carries its own `fill`.
 const browserData = [
   { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
   { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
@@ -116,26 +116,26 @@ const browserData = [
 ]
 
 const browserConfig = {
-  visitors: { label: 'Visitantes' },
+  visitors: { label: 'Visitors' },
   chrome: { label: 'Chrome', color: 'var(--chart-1)' },
   safari: { label: 'Safari', color: 'var(--chart-2)' },
   firefox: { label: 'Firefox', color: 'var(--chart-3)' },
   edge: { label: 'Edge', color: 'var(--chart-4)' },
-  other: { label: 'Outros', color: 'var(--chart-5)' },
+  other: { label: 'Other', color: 'var(--chart-5)' },
 } satisfies ChartConfig
 
-// Dados para o radar (uma única série com vários eixos).
+// Data for the radar (a single series with multiple axes).
 const radarData = [
   { metric: 'Performance', value: 186 },
-  { metric: 'Acessibilidade', value: 305 },
+  { metric: 'Accessibility', value: 305 },
   { metric: 'SEO', value: 237 },
   { metric: 'PWA', value: 273 },
-  { metric: 'Boas práticas', value: 209 },
-  { metric: 'Segurança', value: 214 },
+  { metric: 'Best practices', value: 209 },
+  { metric: 'Security', value: 214 },
 ]
 
 const radarConfig = {
-  value: { label: 'Pontuação', color: 'var(--chart-1)' },
+  value: { label: 'Score', color: 'var(--chart-1)' },
 } satisfies ChartConfig
 
 /* -------------------------------------------------------------------------- */
@@ -143,8 +143,8 @@ const radarConfig = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Composição mínima: um `AreaChart` do Recharts dentro de `ChartContainer`.
- * Comece por aqui — copie e troque os dados, o `config` e os eixos.
+ * Minimal composition: a Recharts `AreaChart` inside `ChartContainer`.
+ * Start here — copy it and swap the data, the `config` and the axes.
  */
 export const Playground: Story = {
   render: () => (
@@ -170,7 +170,7 @@ export const Playground: Story = {
     </ChartContainer>
   ),
   play: async ({ canvasElement }) => {
-    // Smoke test: o ChartContainer monta e expõe seu slot.
+    // Smoke test: the ChartContainer mounts and exposes its slot.
     const chart = canvasElement.querySelector('[data-slot="chart"]')
     await expect(chart).toBeTruthy()
   },
@@ -180,13 +180,13 @@ export const Playground: Story = {
 /*  Area Charts                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/** Área simples com uma única série e tooltip. */
+/** Simple area with a single series and tooltip. */
 export const AreaBasic: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Visitas — Área</CardTitle>
-        <CardDescription>Janeiro a Junho de 2026</CardDescription>
+        <CardTitle>Visits — Area</CardTitle>
+        <CardDescription>January to June 2026</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -219,18 +219,18 @@ export const AreaBasic: Story = {
 }
 
 /**
- * Área empilhada com gradiente. Duas `<Area>` com `stackId` igual se somam, e
- * o `<defs>` define um degradê por série reaproveitando `--color-*`.
+ * Stacked area with gradient. Two `<Area>` with the same `stackId` add up, and
+ * the `<defs>` defines a gradient per series reusing `--color-*`.
  */
 export const AreaStacked: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
         <CardTitle>Desktop + Mobile</CardTitle>
-        <CardDescription>Área empilhada com gradiente</CardDescription>
+        <CardDescription>Stacked area with gradient</CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Dimensões inline garantem render no ambiente de teste (sem Tailwind). */}
+        {/* Inline dimensions ensure render in the test environment (no Tailwind). */}
         <ChartContainer
           config={seriesConfig}
           className="h-[240px] w-full"
@@ -284,7 +284,7 @@ export const AreaStacked: Story = {
     </Card>
   ),
   play: async ({ canvasElement }) => {
-    // A legenda renderiza os labels do config.
+    // The legend renders the labels from the config.
     const canvas = within(canvasElement)
     await expect(canvas.getByText('Desktop')).toBeInTheDocument()
     await expect(canvas.getByText('Mobile')).toBeInTheDocument()
@@ -295,13 +295,13 @@ export const AreaStacked: Story = {
 /*  Bar Charts                                                                  */
 /* -------------------------------------------------------------------------- */
 
-/** Barras verticais com cantos arredondados. */
+/** Vertical bars with rounded corners. */
 export const BarBasic: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Visitas — Barras</CardTitle>
-        <CardDescription>Janeiro a Junho de 2026</CardDescription>
+        <CardTitle>Visits — Bars</CardTitle>
+        <CardDescription>January to June 2026</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -323,13 +323,13 @@ export const BarBasic: Story = {
   ),
 }
 
-/** Múltiplas séries lado a lado e legenda. */
+/** Multiple series side by side and a legend. */
 export const BarMultiple: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
         <CardTitle>Desktop x Mobile</CardTitle>
-        <CardDescription>Barras agrupadas</CardDescription>
+        <CardDescription>Grouped bars</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -356,13 +356,13 @@ export const BarMultiple: Story = {
   ),
 }
 
-/** Barras empilhadas: mesmo `stackId` soma as séries em cada categoria. */
+/** Stacked bars: the same `stackId` sums the series in each category. */
 export const BarStacked: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Composição mensal</CardTitle>
-        <CardDescription>Barras empilhadas</CardDescription>
+        <CardTitle>Monthly composition</CardTitle>
+        <CardDescription>Stacked bars</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -396,12 +396,12 @@ export const BarStacked: Story = {
   ),
 }
 
-/** Barras horizontais: use `layout="vertical"` e o `YAxis` como categoria. */
+/** Horizontal bars: use `layout="vertical"` and the `YAxis` as category. */
 export const BarHorizontal: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Ranking horizontal</CardTitle>
+        <CardTitle>Horizontal ranking</CardTitle>
         <CardDescription>`layout="vertical"`</CardDescription>
       </CardHeader>
       <CardContent>
@@ -431,13 +431,13 @@ export const BarHorizontal: Story = {
   ),
 }
 
-/** Rótulos sobre as barras com `<LabelList>`. */
+/** Labels over the bars with `<LabelList>`. */
 export const BarLabel: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Barras com rótulos</CardTitle>
-        <CardDescription>`LabelList` posicionado no topo</CardDescription>
+        <CardTitle>Bars with labels</CardTitle>
+        <CardDescription>`LabelList` positioned at the top</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -470,13 +470,13 @@ export const BarLabel: Story = {
 /*  Line Charts                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/** Linha simples sem pontos. */
+/** Simple line without dots. */
 export const LineBasic: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Visitas — Linha</CardTitle>
-        <CardDescription>Janeiro a Junho de 2026</CardDescription>
+        <CardTitle>Visits — Line</CardTitle>
+        <CardDescription>January to June 2026</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -508,13 +508,13 @@ export const LineBasic: Story = {
   ),
 }
 
-/** Duas linhas com pontos e legenda. */
+/** Two lines with dots and a legend. */
 export const LineMultiple: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
         <CardTitle>Desktop x Mobile</CardTitle>
-        <CardDescription>Linhas múltiplas com pontos</CardDescription>
+        <CardDescription>Multiple lines with dots</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={seriesConfig} className="h-[240px] w-full">
@@ -558,13 +558,13 @@ export const LineMultiple: Story = {
 /*  Pie Charts                                                                  */
 /* -------------------------------------------------------------------------- */
 
-/** Pizza com fatias coloridas pelo `fill` de cada item e legenda. */
+/** Pie with slices colored by each item's `fill` and a legend. */
 export const PieBasic: Story = {
   render: () => (
     <Card className="w-[360px]">
       <CardHeader className="items-center text-center">
-        <CardTitle>Navegadores</CardTitle>
-        <CardDescription>Distribuição de visitantes</CardDescription>
+        <CardTitle>Browsers</CardTitle>
+        <CardDescription>Visitor distribution</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -587,15 +587,15 @@ export const PieBasic: Story = {
   ),
 }
 
-/** Donut: `innerRadius` abre o miolo e um `<Label>` central exibe o total. */
+/** Donut: `innerRadius` opens the center and a central `<Label>` shows the total. */
 export const PieDonut: Story = {
   render: () => {
     const total = browserData.reduce((acc, item) => acc + item.visitors, 0)
     return (
       <Card className="w-[360px]">
         <CardHeader className="items-center text-center">
-          <CardTitle>Navegadores</CardTitle>
-          <CardDescription>Donut com total no centro</CardDescription>
+          <CardTitle>Browsers</CardTitle>
+          <CardDescription>Donut with total in the center</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer
@@ -635,7 +635,7 @@ export const PieDonut: Story = {
                             y={(viewBox.cy ?? 0) + 24}
                             className="fill-muted-foreground"
                           >
-                            Visitantes
+                            Visitors
                           </tspan>
                         </text>
                       )
@@ -647,7 +647,7 @@ export const PieDonut: Story = {
           </ChartContainer>
         </CardContent>
         <CardFooter className="justify-center gap-2 text-sm text-muted-foreground">
-          <TrendingUp className="size-4" /> +5,2% no mês
+          <TrendingUp className="size-4" /> +5.2% this month
         </CardFooter>
       </Card>
     )
@@ -658,13 +658,13 @@ export const PieDonut: Story = {
 /*  Radar Chart                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/** Radar com uma série, grade polar e área preenchida. */
+/** Radar with one series, polar grid and filled area. */
 export const RadarBasic: Story = {
   render: () => (
     <Card className="w-[360px]">
       <CardHeader className="items-center text-center">
-        <CardTitle>Auditoria Lighthouse</CardTitle>
-        <CardDescription>Pontuação por categoria</CardDescription>
+        <CardTitle>Lighthouse Audit</CardTitle>
+        <CardDescription>Score by category</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -692,13 +692,13 @@ export const RadarBasic: Story = {
 /*  Radial Charts                                                               */
 /* -------------------------------------------------------------------------- */
 
-/** Barras radiais com trilho de fundo e legenda. */
+/** Radial bars with background track and legend. */
 export const RadialBasic: Story = {
   render: () => (
     <Card className="w-[360px]">
       <CardHeader className="items-center text-center">
-        <CardTitle>Navegadores</CardTitle>
-        <CardDescription>Barras radiais</CardDescription>
+        <CardTitle>Browsers</CardTitle>
+        <CardDescription>Radial bars</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -722,15 +722,15 @@ export const RadialBasic: Story = {
   ),
 }
 
-/** Radial com texto central, usando `PolarRadiusAxis` para ancorar o `<Label>`. */
+/** Radial with central text, using `PolarRadiusAxis` to anchor the `<Label>`. */
 export const RadialText: Story = {
   render: () => {
     const total = browserData.reduce((acc, item) => acc + item.visitors, 0)
     return (
       <Card className="w-[360px]">
         <CardHeader className="items-center text-center">
-          <CardTitle>Total de visitantes</CardTitle>
-          <CardDescription>Radial com texto no centro</CardDescription>
+          <CardTitle>Total visitors</CardTitle>
+          <CardDescription>Radial with text in the center</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer
@@ -767,7 +767,7 @@ export const RadialText: Story = {
                             y={(viewBox.cy ?? 0) + 4}
                             className="fill-muted-foreground"
                           >
-                            Visitantes
+                            Visitors
                           </tspan>
                         </text>
                       )
@@ -802,19 +802,19 @@ export const RadialText: Story = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * O `ChartTooltipContent` aceita três indicadores (`dot` | `line` | `dashed`),
- * além de `hideLabel`, `hideIndicator`, `nameKey`/`labelKey` e `formatter`.
- * Aqui estão os formatos lado a lado — passe o cursor sobre cada gráfico.
+ * `ChartTooltipContent` accepts three indicators (`dot` | `line` | `dashed`),
+ * plus `hideLabel`, `hideIndicator`, `nameKey`/`labelKey` and `formatter`.
+ * Here are the formats side by side — hover over each chart.
  */
 export const Tooltips: Story = {
   render: () => {
     const variants = [
-      { title: 'Dot (padrão)', content: <ChartTooltipContent /> },
+      { title: 'Dot (default)', content: <ChartTooltipContent /> },
       { title: 'Line', content: <ChartTooltipContent indicator="line" /> },
       { title: 'Dashed', content: <ChartTooltipContent indicator="dashed" /> },
-      { title: 'Sem label', content: <ChartTooltipContent hideLabel /> },
+      { title: 'No label', content: <ChartTooltipContent hideLabel /> },
       {
-        title: 'Formatter customizado',
+        title: 'Custom formatter',
         content: (
           <ChartTooltipContent
             formatter={(value, name) => (
@@ -866,27 +866,27 @@ export const Tooltips: Story = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * **Sincronização entre gráficos.** Dê o mesmo `syncId` a vários gráficos que
- * compartilham o eixo (aqui, `month`): ao passar o cursor sobre um deles, o
- * Recharts ativa o **mesmo ponto** em todos — cursor, tooltip e o **label**
- * (o mês em foco) ficam sincronizados. Por padrão o casamento é por índice
- * (`syncMethod="index"`); use `syncMethod="value"` quando os eixos tiverem
- * categorias iguais mas em ordem/quantidade diferentes. O `ChartConfig` também
- * é compartilhado, então as séries herdam as mesmas cores e labels.
+ * **Synchronization across charts.** Give the same `syncId` to several charts
+ * that share the axis (here, `month`): when you hover over one of them, Recharts
+ * activates the **same point** on all of them — cursor, tooltip and the **label**
+ * (the focused month) stay synchronized. By default the match is by index
+ * (`syncMethod="index"`); use `syncMethod="value"` when the axes have the same
+ * categories but in a different order/quantity. The `ChartConfig` is also
+ * shared, so the series inherit the same colors and labels.
  *
- * Passe o cursor sobre a área para ver as barras destacarem o mesmo mês.
+ * Hover over the area to see the bars highlight the same month.
  */
 export const Synchronized: Story = {
   render: () => (
     <Card className="w-[460px]">
       <CardHeader>
-        <CardTitle>Visão combinada</CardTitle>
+        <CardTitle>Combined view</CardTitle>
         <CardDescription>
-          Mesmo <code>syncId</code> — o hover sincroniza o mês em ambos os gráficos
+          Same <code>syncId</code> — hover synchronizes the month across both charts
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {/* Gráfico de área (Desktop) */}
+        {/* Area chart (Desktop) */}
         <ChartContainer
           config={seriesConfig}
           className="h-[160px] w-full"
@@ -917,7 +917,7 @@ export const Synchronized: Story = {
           </AreaChart>
         </ChartContainer>
 
-        {/* Gráfico de barras (Mobile) — mesmo syncId e mesmo eixo `month` */}
+        {/* Bar chart (Mobile) — same syncId and same `month` axis */}
         <ChartContainer
           config={seriesConfig}
           className="h-[160px] w-full"
@@ -940,7 +940,7 @@ export const Synchronized: Story = {
     </Card>
   ),
   play: async ({ canvasElement }) => {
-    // Ambos os gráficos montam e compartilham o config (mesmas séries/cores).
+    // Both charts mount and share the config (same series/colors).
     const charts = canvasElement.querySelectorAll('[data-slot="chart"]')
     await expect(charts.length).toBe(2)
   },

@@ -10,8 +10,8 @@ import { Calendar } from './calendar'
 import { DatePicker } from './date-picker'
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from './popover'
 
-// Mês/dia fixos para tornar render e testes determinísticos (sem depender da
-// data atual). Junho/2025 sempre exibe os dias 1..30 do mês.
+// Fixed month/day to make render and tests deterministic (without depending on
+// the current date). June/2025 always shows days 1..30 of the month.
 const FIXED_MONTH = new Date(2025, 5, 1)
 const FIXED_DAY = new Date(2025, 5, 15)
 const FIXED_RANGE: DateRange = {
@@ -20,28 +20,28 @@ const FIXED_RANGE: DateRange = {
 }
 
 // ---------------------------------------------------------------------------
-// Padrões de intervalo (range) — compostos a partir dos primitivos públicos
+// Range patterns — composed from the public primitives
 // ---------------------------------------------------------------------------
-// O `DatePicker` é single-date por design. Para intervalos, compõe-se `Popover`
-// + `Calendar` (mode="range") + `Button`, exatamente como o `DatePicker` faz
-// internamente. Estes dois helpers servem de referência copiável e são a base
-// das stories/regressões de range.
+// `DatePicker` is single-date by design. For ranges, compose `Popover`
+// + `Calendar` (mode="range") + `Button`, exactly like `DatePicker` does
+// internally. These two helpers serve as copyable references and are the basis
+// of the range stories/regressions.
 
-/** Formata um `DateRange` para o rótulo do gatilho. */
+/** Formats a `DateRange` for the trigger label. */
 function formatRange(range?: DateRange) {
   if (!range?.from) return null
   if (!range.to) return format(range.from, 'LLL d, y')
   return `${format(range.from, 'LLL d')} – ${format(range.to, 'LLL d, y')}`
 }
 
-// Seleção de intervalo controlada manualmente a partir do dia clicado (o rdp
-// entrega esse dia no 2º argumento do `onSelect`). Regras pedidas:
-//   • escolher uma data NÃO fecha o calendário;
-//   • com um range completo, o clique reinicia o `startDate`. Se o novo início
-//     for anterior ao `endDate` atual, o `endDate` é mantido; só então o
-//     próximo clique troca o `endDate`. Se o novo início for ≥ `endDate`, o
-//     intervalo recomeça do zero.
-// Uma fase 'start' | 'end' modela "qual ponta o próximo clique define".
+// Range selection controlled manually from the clicked day (rdp delivers that
+// day in the 2nd argument of `onSelect`). Required rules:
+//   • picking a date does NOT close the calendar;
+//   • with a complete range, the click restarts the `startDate`. If the new
+//     start is before the current `endDate`, the `endDate` is kept; only then
+//     does the next click swap the `endDate`. If the new start is ≥ `endDate`,
+//     the range starts over from scratch.
+// A 'start' | 'end' phase models "which end the next click sets".
 type RangePhase = 'start' | 'end'
 
 function nextRangeState(
@@ -50,13 +50,13 @@ function nextRangeState(
   day: Date,
 ): { range: DateRange; phase: RangePhase } {
   if (phase === 'start') {
-    // O clique vira o novo início; mantém o fim atual se ele ficar depois.
+    // The click becomes the new start; keeps the current end if it stays after.
     if (range?.to && day.getTime() < range.to.getTime()) {
       return { range: { from: day, to: range.to }, phase: 'end' }
     }
     return { range: { from: day, to: undefined }, phase: 'end' }
   }
-  // phase 'end': o clique define o fim (se ≥ início); senão reinicia o início.
+  // phase 'end': the click sets the end (if ≥ start); otherwise restarts the start.
   if (range?.from && day.getTime() >= range.from.getTime()) {
     return { range: { from: range.from, to: day }, phase: 'start' }
   }
@@ -72,7 +72,7 @@ function useRangeSelection(initial?: DateRange) {
   return { range: state.range, onDayClick }
 }
 
-/** Range em um único gatilho: abre um calendário de 2 meses em popover. */
+/** Range in a single trigger: opens a 2-month calendar in a popover. */
 function DateRangePicker({
   defaultOpen = false,
   initialRange,
@@ -101,7 +101,7 @@ function DateRangePicker({
           numberOfMonths={2}
           defaultMonth={FIXED_MONTH}
           selected={range}
-          // Usa o dia clicado (2º arg) e aplica a regra custom; não fecha.
+          // Uses the clicked day (2nd arg) and applies the custom rule; does not close.
           onSelect={(_next, day) => onDayClick(day)}
           autoFocus
         />
@@ -110,7 +110,7 @@ function DateRangePicker({
   )
 }
 
-/** Range em dois campos (início/fim) que partilham o mesmo calendário. */
+/** Range in two fields (start/end) that share the same calendar. */
 function DateRangeDualField({ initialRange }: { initialRange?: DateRange }) {
   const { range, onDayClick } = useRangeSelection(initialRange)
   const [open, setOpen] = useState(false)
@@ -164,7 +164,7 @@ function DateRangeDualField({ initialRange }: { initialRange?: DateRange }) {
 const meta = {
   title: 'Data Entry/DatePicker',
   component: DatePicker,
-  // Sem `autodocs`: a página de docs é a MDX customizada (date-picker.mdx).
+  // No `autodocs`: the docs page is the custom MDX (date-picker.mdx).
   parameters: {
     layout: 'centered',
     docs: {
@@ -177,9 +177,9 @@ const meta = {
           'the inner `Calendar` (disabled dates, `defaultMonth`, caption layout, …).',
       },
     },
-    // O calendário só aparece aberto: as demonstrações começam fechadas, então o
-    // Chromatic só veria o trigger. A cobertura visual fica nas histórias
-    // `Visual*` (matriz de triggers + calendário aberto via `defaultOpen`).
+    // The calendar only appears when open: the demos start closed, so Chromatic
+    // would only see the trigger. Visual coverage lives in the `Visual*` stories
+    // (matrix of triggers + open calendar via `defaultOpen`).
     chromatic: { disableSnapshot: true },
   },
   args: {
@@ -275,7 +275,7 @@ export const Controlled: Story = {
           calendarProps={{ defaultMonth: FIXED_MONTH }}
         />
         <span className="text-muted-foreground text-sm">
-          {date ? date.toISOString().slice(0, 10) : 'Nenhuma data'}
+          {date ? date.toISOString().slice(0, 10) : 'No date'}
         </span>
       </div>
     )
@@ -283,7 +283,7 @@ export const Controlled: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Padrões de intervalo (range) — compostos, não props do DatePicker.
+ * Range patterns — composed, not DatePicker props.
  * -------------------------------------------------------------------------- */
 
 /**
@@ -303,8 +303,8 @@ export const RangeDualField: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * O calendário é portado para document.body: busque-o via `screen`, não `canvas`.
+ * Interaction tests — play functions that ARE the regression tests.
+ * The calendar is portaled to document.body: query it via `screen`, not `canvas`.
  * -------------------------------------------------------------------------- */
 
 /** Clicking the trigger opens the calendar; picking a day selects it and closes. */
@@ -315,18 +315,18 @@ export const OpensAndSelects: Story = {
     const trigger = canvas.getByRole('button', { name: /pick a date/i })
 
     await userEvent.click(trigger)
-    // O calendário é renderizado em portal (fora do canvasElement).
+    // The calendar is rendered in a portal (outside the canvasElement).
     await expect(await screen.findByRole('grid')).toBeVisible()
 
     await userEvent.click(screen.getByText('15'))
 
-    // Disparou com a data correta e fechou o popover.
+    // Fired with the correct date and closed the popover.
     await expect(args.onValueChange).toHaveBeenCalledOnce()
     const picked = (args.onValueChange as ReturnType<typeof fn>).mock.calls[0][0] as Date
     await expect(picked.getDate()).toBe(15)
     await waitFor(() => expect(screen.queryByRole('grid')).not.toBeInTheDocument())
 
-    // O rótulo do gatilho passa a refletir a data escolhida.
+    // The trigger label now reflects the chosen date.
     await expect(canvas.getByRole('button')).toHaveTextContent('15')
   },
 }
@@ -341,7 +341,7 @@ export const OpensWithKeyboard: Story = {
     await userEvent.keyboard('{Enter}')
 
     await expect(await screen.findByRole('grid')).toBeVisible()
-    // Fecha para a story não terminar com o portal aberto.
+    // Close so the story does not end with the portal open.
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('grid')).not.toBeInTheDocument())
   },
@@ -354,7 +354,7 @@ export const DisabledDoesNotOpen: Story = {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button', { name: /pick a date/i })
 
-    // pointer-events:none bloqueia o clique; forçamos para provar o no-op.
+    // pointer-events:none blocks the click; we force it to prove the no-op.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(trigger)
 
@@ -371,18 +371,18 @@ export const RangeSelectsInterval: Story = {
     const trigger = canvas.getByRole('button', { name: /pick a date range/i })
     await userEvent.click(trigger)
 
-    // 2 meses → busca os dias pelo nome acessível (aria-label = data por extenso).
+    // 2 months → find the days by accessible name (aria-label = full date).
     await screen.findByRole('grid', { name: /June 2025/i })
     await userEvent.click(screen.getByRole('button', { name: /June 9th, 2025/i }))
     await userEvent.click(screen.getByRole('button', { name: /June 15th, 2025/i }))
 
-    // Escolher uma data NÃO fecha o calendário.
+    // Picking a date does NOT close the calendar.
     await expect(screen.getByRole('grid', { name: /June 2025/i })).toBeInTheDocument()
-    // O gatilho reflete o intervalo ao vivo.
+    // The trigger reflects the range live.
     await expect(trigger).toHaveTextContent('Jun 9')
     await expect(trigger).toHaveTextContent('Jun 15')
 
-    // Fecha por Escape (não por seleção).
+    // Closes via Escape (not via selection).
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('grid')).not.toBeInTheDocument())
   },
@@ -400,18 +400,18 @@ export const RangeRestartKeepsEnd: Story = {
     await userEvent.click(trigger)
     await screen.findByRole('grid', { name: /June 2025/i })
 
-    // Monta um intervalo {9, 20}.
+    // Builds a range {9, 20}.
     await userEvent.click(screen.getByRole('button', { name: /June 9th, 2025/i }))
     await userEvent.click(screen.getByRole('button', { name: /June 20th, 2025/i }))
     await expect(trigger).toHaveTextContent('Jun 9')
     await expect(trigger).toHaveTextContent('Jun 20')
 
-    // Clicar 15 (< 20) reinicia o início e mantém o fim → {15, 20}.
+    // Clicking 15 (< 20) restarts the start and keeps the end → {15, 20}.
     await userEvent.click(screen.getByRole('button', { name: /June 15th, 2025/i }))
     await expect(trigger).toHaveTextContent('Jun 15')
     await expect(trigger).toHaveTextContent('Jun 20')
 
-    // O clique seguinte troca o fim → {15, 25}.
+    // The next click swaps the end → {15, 25}.
     await userEvent.click(screen.getByRole('button', { name: /June 25th, 2025/i }))
     await expect(trigger).toHaveTextContent('Jun 15')
     await expect(trigger).toHaveTextContent('Jun 25')
@@ -426,14 +426,14 @@ export const RangeDualFieldFillsBothFields: Story = {
   render: () => <DateRangeDualField />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Qualquer um dos campos abre o mesmo calendário compartilhado.
+    // Either field opens the same shared calendar.
     await userEvent.click(canvas.getByRole('button', { name: /start date/i }))
 
     await screen.findByRole('grid', { name: /June 2025/i })
     await userEvent.click(screen.getByRole('button', { name: /June 9th, 2025/i }))
     await userEvent.click(screen.getByRole('button', { name: /June 15th, 2025/i }))
 
-    // Ambos os campos refletem o intervalo, com o calendário ainda aberto.
+    // Both fields reflect the range, with the calendar still open.
     await expect(canvas.getByRole('button', { name: /Jun 9, 2025/i })).toBeInTheDocument()
     await expect(
       canvas.getByRole('button', { name: /Jun 15, 2025/i }),
@@ -445,16 +445,16 @@ export const RangeDualFieldFillsBothFields: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Fixtures de regressão visual (Chromatic). Ocultas do sidebar/docs
- * (`!dev`/`!autodocs`), mas seguem rodando como smoke test (tag `test`) e
- * reativam o snapshot que o meta desliga.
+ * Visual regression fixtures (Chromatic). Hidden from the sidebar/docs
+ * (`!dev`/`!autodocs`), but keep running as a smoke test (tag `test`) and
+ * re-enable the snapshot that the meta turns off.
  * -------------------------------------------------------------------------- */
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Partial<Story>
 
-/** Captura visual — triggers fechados: placeholder, com valor, tamanhos e desabilitado. */
+/** Visual capture — closed triggers: placeholder, with value, sizes and disabled. */
 export const VisualTriggers: Story = {
   ...visual,
   render: () => (
@@ -471,7 +471,7 @@ export const VisualTriggers: Story = {
   ),
 }
 
-/** Captura visual — calendário aberto (`defaultOpen`) com a data selecionada. */
+/** Visual capture — open calendar (`defaultOpen`) with the selected date. */
 export const VisualOpen: Story = {
   ...visual,
   render: () => (
@@ -485,7 +485,7 @@ export const VisualOpen: Story = {
   ),
 }
 
-/** Captura visual — range em campo único, calendário aberto com o intervalo. */
+/** Visual capture — single-field range, open calendar with the range. */
 export const VisualRange: Story = {
   ...visual,
   render: () => (
@@ -495,7 +495,7 @@ export const VisualRange: Story = {
   ),
 }
 
-/** Captura visual — range dual field (campos Start/End preenchidos). */
+/** Visual capture — dual-field range (Start/End fields filled). */
 export const VisualRangeDualField: Story = {
   ...visual,
   render: () => <DateRangeDualField initialRange={FIXED_RANGE} />,

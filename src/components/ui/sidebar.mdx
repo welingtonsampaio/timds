@@ -1,5 +1,5 @@
-{/* sidebar.mdx — docs page (prosa em English). Embute as stories testadas.
-    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* sidebar.mdx — docs page (prose in English). Embeds the tested stories.
+    Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './sidebar.stories'
 
@@ -34,12 +34,12 @@ The pieces nest as shown below — `SidebarProvider` wraps everything; `Sidebar`
     width="100%"
     style={{ maxWidth: 720, fontFamily: 'ui-sans-serif, system-ui, sans-serif' }}
   >
-    {/* SidebarProvider — frame externo */}
+    {/* SidebarProvider — outer frame */}
     <rect x="4" y="4" width="712" height="462" rx="12" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="6 5" />
     <rect x="20" y="-6" width="132" height="22" rx="6" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
     <text x="30" y="9" fontSize="12" fontWeight="600" fill="#334155">SidebarProvider</text>
 
-    {/* Sidebar — coluna esquerda */}
+    {/* Sidebar — left column */}
     <rect x="24" y="40" width="250" height="410" rx="10" fill="#faf5ff" stroke="#c4b5fd" strokeWidth="1.5" />
     <rect x="36" y="30" width="62" height="20" rx="6" fill="#ffffff" stroke="#c4b5fd" strokeWidth="1" />
     <text x="45" y="44" fontSize="11" fontWeight="600" fill="#6d28d9">Sidebar</text>
@@ -55,14 +55,14 @@ The pieces nest as shown below — `SidebarProvider` wraps everything; `Sidebar`
     <text x="48" y="127" fontSize="9" fill="#94a3b8">SidebarContent · SidebarGroup</text>
     <text x="48" y="147" fontSize="10" fontWeight="600" fill="#64748b">SidebarGroupLabel</text>
 
-    {/* SidebarMenu — item ativo com badge */}
+    {/* SidebarMenu — active item with badge */}
     <rect x="48" y="156" width="196" height="30" rx="6" fill="#ede9fe" stroke="#c4b5fd" />
     <rect x="56" y="164" width="14" height="14" rx="3" fill="#7c3aed" />
     <text x="78" y="175" fontSize="11" fontWeight="600" fill="#5b21b6">Home</text>
     <circle cx="232" cy="171" r="9" fill="#7c3aed" />
     <text x="232" y="174" fontSize="9" fontWeight="700" fill="#ffffff" textAnchor="middle">3</text>
 
-    {/* SidebarMenuItem comuns */}
+    {/* common SidebarMenuItems */}
     <rect x="48" y="190" width="196" height="28" rx="6" fill="#f8fafc" stroke="#e2e8f0" />
     <rect x="56" y="197" width="14" height="14" rx="3" fill="#cbd5e1" />
     <text x="78" y="208" fontSize="11" fill="#475569">Inbox</text>
@@ -90,7 +90,7 @@ The pieces nest as shown below — `SidebarProvider` wraps everything; `Sidebar`
     <text x="304" y="236" fontSize="9" fill="#64748b">SidebarRail</text>
     <text x="304" y="248" fontSize="8" fill="#94a3b8">(drag/toggle)</text>
 
-    {/* SidebarInset — coluna direita */}
+    {/* SidebarInset — right column */}
     <rect x="290" y="40" width="410" height="410" rx="10" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1.5" />
     <rect x="290" y="40" width="410" height="44" rx="10" fill="#f8fafc" stroke="#e2e8f0" />
     <rect x="306" y="54" width="22" height="18" rx="4" fill="#ffffff" stroke="#cbd5e1" />

@@ -8,17 +8,17 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
-// DatePicker — seleção de uma única data
+// DatePicker — single date selection
 // ---------------------------------------------------------------------------
-// Composição de alto nível sobre `Popover` + `Calendar` (+ `Button` como
-// gatilho). Cobre o caso comum de escolher uma data: o gatilho exibe a data
-// formatada (ou o placeholder) e abre um calendário em popover. Para seleção de
-// intervalo/múltiplas datas use o `Calendar` diretamente com `mode`.
+// High-level composition over `Popover` + `Calendar` (+ `Button` as the
+// trigger). Covers the common case of picking a date: the trigger shows the
+// formatted date (or the placeholder) and opens a calendar in a popover. For
+// range/multiple date selection use `Calendar` directly with `mode`.
 //
-// Valor e abertura são controlados ou não controlados (cada par tem `value`/
-// `defaultValue` e `open`/`defaultOpen`). Ao selecionar uma data o popover
-// fecha automaticamente. Quando `name` é informado, um input oculto carrega a
-// data em ISO (yyyy-MM-dd) para submissão em formulários.
+// Value and open state are controlled or uncontrolled (each pair has `value`/
+// `defaultValue` and `open`/`defaultOpen`). Selecting a date closes the popover
+// automatically. When `name` is provided, a hidden input carries the date in
+// ISO (yyyy-MM-dd) for form submission.
 
 type CalendarPassThroughProps = Omit<
   React.ComponentProps<typeof Calendar>,
@@ -26,48 +26,48 @@ type CalendarPassThroughProps = Omit<
 >
 
 export interface DatePickerProps {
-  /** Data selecionada (controlado). */
+  /** Selected date (controlled). */
   value?: Date
-  /** Data inicial (não controlado). */
+  /** Initial date (uncontrolled). */
   defaultValue?: Date
-  /** Disparado ao selecionar/limpar a data. */
+  /** Fired when the date is selected/cleared. */
   onValueChange?: (date: Date | undefined) => void
-  /** Abertura do popover (controlado). */
+  /** Popover open state (controlled). */
   open?: boolean
-  /** Abertura inicial (não controlado). */
+  /** Initial open state (uncontrolled). */
   defaultOpen?: boolean
-  /** Disparado quando o popover abre/fecha. */
+  /** Fired when the popover opens/closes. */
   onOpenChange?: (open: boolean) => void
-  /** Texto exibido no gatilho enquanto não há data. */
+  /** Text shown in the trigger while there is no date. */
   placeholder?: React.ReactNode
-  /** Desabilita o gatilho. */
+  /** Disables the trigger. */
   disabled?: boolean
   /**
-   * String de formatação do `date-fns` para o rótulo do gatilho.
+   * `date-fns` format string for the trigger label.
    * @default 'PPP'
    */
   formatStr?: string
-  /** Locale do `date-fns` aplicado à formatação do rótulo. */
+  /** `date-fns` locale applied to the label formatting. */
   locale?: Locale
-  /** Formatação custom da data (prevalece sobre `formatStr`/`locale`). */
+  /** Custom date formatting (takes precedence over `formatStr`/`locale`). */
   formatDate?: (date: Date) => string
-  /** Tamanho do gatilho. */
+  /** Trigger size. */
   size?: 'sm' | 'default' | 'lg'
-  /** Lado do popover em relação ao gatilho. */
+  /** Popover side relative to the trigger. */
   side?: 'top' | 'right' | 'bottom' | 'left'
-  /** Alinhamento do popover em relação ao gatilho. */
+  /** Popover alignment relative to the trigger. */
   align?: 'start' | 'center' | 'end'
-  /** Faz o gatilho ocupar toda a largura do contêiner. */
+  /** Makes the trigger span the full width of the container. */
   block?: boolean
-  /** Nome do campo: renderiza um input oculto (data em ISO) para formulários. */
+  /** Field name: renders a hidden input (ISO date) for forms. */
   name?: string
-  /** Id aplicado ao gatilho. */
+  /** Id applied to the trigger. */
   id?: string
-  /** Classe aplicada ao gatilho. */
+  /** Class applied to the trigger. */
   className?: string
-  /** Rótulo acessível do gatilho (quando não há `<label>` associado). */
+  /** Accessible label for the trigger (when there is no associated `<label>`). */
   'aria-label'?: string
-  /** Props extras repassadas ao `Calendar` interno. */
+  /** Extra props forwarded to the internal `Calendar`. */
   calendarProps?: CalendarPassThroughProps
 }
 
@@ -93,12 +93,12 @@ function DatePicker({
   'aria-label': ariaLabel,
   calendarProps,
 }: DatePickerProps) {
-  // Valor: controlado quando `value` é fornecido; senão estado interno.
+  // Value: controlled when `value` is provided; otherwise internal state.
   const isControlled = value !== undefined
   const [internalValue, setInternalValue] = React.useState<Date | undefined>(defaultValue)
   const selected = isControlled ? value : internalValue
 
-  // Abertura: controlada quando `open` é fornecido; senão estado interno.
+  // Open state: controlled when `open` is provided; otherwise internal state.
   const isOpenControlled = open !== undefined
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false)
   const isOpen = isOpenControlled ? open : internalOpen
@@ -114,7 +114,7 @@ function DatePicker({
   const handleSelect = (date: Date | undefined) => {
     if (!isControlled) setInternalValue(date)
     onValueChange?.(date)
-    // Fecha o popover ao escolher uma data (não ao limpar a seleção).
+    // Close the popover when a date is picked (not when clearing the selection).
     if (date) setOpen(false)
   }
 
@@ -150,8 +150,8 @@ function DatePicker({
         className="w-auto p-0"
         align={align}
         side={side}
-        // O Popover.Content do Radix expõe role="dialog": precisa de nome
-        // acessível. Reusa o `aria-label` do gatilho ou um rótulo neutro.
+        // Radix's Popover.Content exposes role="dialog": it needs an accessible
+        // name. Reuses the trigger's `aria-label` or a neutral label.
         aria-label={ariaLabel ?? 'Choose date'}
         data-slot="date-picker-content"
       >

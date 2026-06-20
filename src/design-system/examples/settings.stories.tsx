@@ -20,10 +20,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 
 /**
- * **Settings** — uma tela densa de configurações organizada por `Tabs`. Mostra o
- * casamento de `Card` para seccionar, `Switch` com rótulos acessíveis para
- * preferências, `Input`/`Textarea` para campos e uma "zona de perigo" usando o
- * token `destructive`.
+ * **Settings** — a dense settings screen organized by `Tabs`. It shows the
+ * pairing of `Card` for sectioning, `Switch` with accessible labels for
+ * preferences, `Input`/`Textarea` for fields and a "danger zone" using the
+ * `destructive` token.
  */
 const meta = {
   title: 'Examples/Settings',
@@ -44,7 +44,7 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-// Linha de preferência: título + descrição à esquerda, Switch à direita.
+// Preference row: title + description on the left, Switch on the right.
 function ToggleRow({
   id,
   title,
@@ -92,31 +92,31 @@ export const Default: Story = {
   render: () => (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 py-2">
       <header className="flex flex-col gap-1">
-        <h1 className="font-bold text-2xl tracking-tight">Configurações</h1>
+        <h1 className="font-bold text-2xl tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
-          Gerencie sua conta, preferências e segurança.
+          Manage your account, preferences and security.
         </p>
       </header>
 
       <Tabs defaultValue="account">
         <TabsList>
           <TabsTrigger value="account">
-            <User className="size-4" aria-hidden="true" /> Conta
+            <User className="size-4" aria-hidden="true" /> Account
           </TabsTrigger>
           <TabsTrigger value="notifications">
-            <Bell className="size-4" aria-hidden="true" /> Notificações
+            <Bell className="size-4" aria-hidden="true" /> Notifications
           </TabsTrigger>
           <TabsTrigger value="security">
-            <Shield className="size-4" aria-hidden="true" /> Segurança
+            <Shield className="size-4" aria-hidden="true" /> Security
           </TabsTrigger>
         </TabsList>
 
-        {/* Conta */}
+        {/* Account */}
         <TabsContent value="account" className="pt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Perfil</CardTitle>
-              <CardDescription>Estas informações aparecem publicamente.</CardDescription>
+              <CardTitle>Profile</CardTitle>
+              <CardDescription>This information is shown publicly.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               <div className="flex items-center gap-4">
@@ -126,107 +126,107 @@ export const Default: Story = {
                 </Avatar>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
-                    Trocar foto
+                    Change photo
                   </Button>
                   <Button variant="ghost" size="sm">
-                    Remover
+                    Remove
                   </Button>
                 </div>
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
-                <Field id="set-name" label="Nome">
+                <Field id="set-name" label="Name">
                   <Input id="set-name" defaultValue="Ana Souza" />
                 </Field>
-                <Field id="set-username" label="Usuário">
+                <Field id="set-username" label="Username">
                   <Input id="set-username" defaultValue="anasouza" />
                 </Field>
               </div>
-              <Field id="set-email" label="E-mail">
+              <Field id="set-email" label="Email">
                 <Input id="set-email" type="email" defaultValue="ana@timds.dev" />
               </Field>
               <Field id="set-bio" label="Bio">
                 <Textarea
                   id="set-bio"
                   rows={3}
-                  defaultValue="Design Engineer construindo design systems acessíveis."
+                  defaultValue="Design Engineer building accessible design systems."
                 />
               </Field>
             </CardContent>
             <CardFooter className="justify-end gap-2">
-              <Button variant="ghost">Cancelar</Button>
-              <Button>Salvar alterações</Button>
+              <Button variant="ghost">Cancel</Button>
+              <Button>Save changes</Button>
             </CardFooter>
           </Card>
         </TabsContent>
 
-        {/* Notificações */}
+        {/* Notifications */}
         <TabsContent value="notifications" className="pt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Notificações</CardTitle>
-              <CardDescription>Escolha o que deseja receber.</CardDescription>
+              <CardTitle>Notifications</CardTitle>
+              <CardDescription>Choose what you want to receive.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               <ToggleRow
                 id="notif-product"
-                title="Novidades do produto"
-                description="Lançamentos, melhorias e dicas."
+                title="Product news"
+                description="Releases, improvements and tips."
                 defaultChecked
               />
               <Separator />
               <ToggleRow
                 id="notif-security"
-                title="Alertas de segurança"
-                description="Acessos e mudanças sensíveis na conta."
+                title="Security alerts"
+                description="Sign-ins and sensitive account changes."
                 defaultChecked
               />
               <Separator />
               <ToggleRow
                 id="notif-marketing"
-                title="E-mails de marketing"
-                description="Promoções e conteúdos ocasionais."
+                title="Marketing emails"
+                description="Occasional promotions and content."
               />
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Segurança */}
+        {/* Security */}
         <TabsContent value="security" className="flex flex-col gap-6 pt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Senha</CardTitle>
+              <CardTitle>Password</CardTitle>
               <CardDescription>
-                Use uma senha forte e única para esta conta.
+                Use a strong, unique password for this account.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
-              <Field id="sec-current" label="Senha atual">
+              <Field id="sec-current" label="Current password">
                 <Input id="sec-current" type="password" autoComplete="current-password" />
               </Field>
-              <Field id="sec-new" label="Nova senha">
+              <Field id="sec-new" label="New password">
                 <Input id="sec-new" type="password" autoComplete="new-password" />
               </Field>
               <ToggleRow
                 id="sec-2fa"
-                title="Autenticação em dois fatores"
-                description="Exige um código além da senha ao entrar."
+                title="Two-factor authentication"
+                description="Requires a code in addition to your password when signing in."
                 defaultChecked
               />
             </CardContent>
             <CardFooter className="justify-end">
-              <Button>Atualizar senha</Button>
+              <Button>Update password</Button>
             </CardFooter>
           </Card>
 
           <Card className="border-destructive/40">
             <CardHeader>
-              <CardTitle className="text-destructive-text">Zona de perigo</CardTitle>
+              <CardTitle className="text-destructive-text">Danger zone</CardTitle>
               <CardDescription>
-                Excluir a conta é permanente e não pode ser desfeito.
+                Deleting your account is permanent and cannot be undone.
               </CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button variant="destructive">Excluir conta</Button>
+              <Button variant="destructive">Delete account</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -235,9 +235,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Navega até a aba de notificações e alterna uma preferência desligada.
-    await userEvent.click(canvas.getByRole('tab', { name: /Notificações/ }))
-    const marketing = canvas.getByRole('switch', { name: 'E-mails de marketing' })
+    // Navigate to the notifications tab and toggle a disabled preference.
+    await userEvent.click(canvas.getByRole('tab', { name: /Notifications/ }))
+    const marketing = canvas.getByRole('switch', { name: 'Marketing emails' })
     await expect(marketing).toHaveAttribute('aria-checked', 'false')
     await userEvent.click(marketing)
     await expect(marketing).toHaveAttribute('aria-checked', 'true')

@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest'
 
 import { getPaginationRange } from './pagination'
 
-// `getPaginationRange` é lógica pura (sem DOM): cobrimos os ramos de reticências
-// aqui em jsdom; o comportamento de UI fica nas stories (ADR 0006).
+// `getPaginationRange` is pure logic (no DOM): we cover the ellipsis branches
+// here in jsdom; UI behavior lives in the stories (ADR 0006).
 describe('getPaginationRange', () => {
-  it('lista todas as páginas quando cabem sem reticências', () => {
+  it('lists all pages when they fit without ellipsis', () => {
     expect(getPaginationRange({ page: 1, total: 5 })).toEqual([1, 2, 3, 4, 5])
   })
 
-  it('coloca reticências à direita perto do início', () => {
+  it('places ellipsis on the right near the start', () => {
     expect(getPaginationRange({ page: 1, total: 10 })).toEqual([
       1,
       2,
@@ -21,7 +21,7 @@ describe('getPaginationRange', () => {
     ])
   })
 
-  it('coloca reticências à esquerda perto do fim', () => {
+  it('places ellipsis on the left near the end', () => {
     expect(getPaginationRange({ page: 10, total: 10 })).toEqual([
       1,
       'ellipsis',
@@ -33,7 +33,7 @@ describe('getPaginationRange', () => {
     ])
   })
 
-  it('coloca reticências dos dois lados no meio', () => {
+  it('places ellipsis on both sides in the middle', () => {
     expect(getPaginationRange({ page: 6, total: 10 })).toEqual([
       1,
       'ellipsis',
@@ -45,7 +45,7 @@ describe('getPaginationRange', () => {
     ])
   })
 
-  it('respeita siblingCount maior', () => {
+  it('respects a larger siblingCount', () => {
     expect(getPaginationRange({ page: 6, total: 12, siblingCount: 2 })).toEqual([
       1,
       'ellipsis',
@@ -59,7 +59,7 @@ describe('getPaginationRange', () => {
     ])
   })
 
-  it('respeita boundaryCount maior', () => {
+  it('respects a larger boundaryCount', () => {
     expect(getPaginationRange({ page: 6, total: 12, boundaryCount: 2 })).toEqual([
       1,
       2,
@@ -73,9 +73,9 @@ describe('getPaginationRange', () => {
     ])
   })
 
-  it('substitui a reticência por uma página solta quando ela esconderia só 1', () => {
-    // total=8, page=7: do lado direito sobraria apenas a página 7 entre o bloco e
-    // a borda, então mostramos a própria página em vez de uma reticência.
+  it('replaces the ellipsis with a single page when it would hide only 1', () => {
+    // total=8, page=7: on the right side only page 7 would remain between the block
+    // and the edge, so we show the page itself instead of an ellipsis.
     expect(getPaginationRange({ page: 7, total: 8 })).toEqual([
       1,
       'ellipsis',
@@ -87,7 +87,7 @@ describe('getPaginationRange', () => {
     ])
   })
 
-  it('lida com total de 1 página', () => {
+  it('handles a total of 1 page', () => {
     expect(getPaginationRange({ page: 1, total: 1 })).toEqual([1])
   })
 })

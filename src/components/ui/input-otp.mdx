@@ -1,5 +1,5 @@
-{/* input-otp.mdx — docs page (prosa em English). Embute as stories testadas.
-    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* input-otp.mdx — docs page (prose in English). Embeds the tested stories.
+    Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './input-otp.stories'
 
@@ -103,8 +103,8 @@ import { REGEXP_ONLY_DIGITS } from 'input-otp'
 
 ## Content & UX writing
 
-- **Accessible name** — give the root an `aria-label` (e.g. "Código de verificação") since the slots carry no text label.
-- **Helper text** — state where the code came from ("Enviamos um código por SMS") near the field, not inside the slots.
+- **Accessible name** — give the root an `aria-label` (e.g. "Verification code") since the slots carry no text label.
+- **Helper text** — state where the code came from ("We sent a code via SMS") near the field, not inside the slots.
 - **Errors** — on a wrong code, show a specific, blame-free message and let the user re-enter without clearing context.
 
 ## Accessibility
@@ -125,4 +125,4 @@ import { REGEXP_ONLY_DIGITS } from 'input-otp'
 ## Related components & patterns
 
 - **Input** — for free-form, single-line text of any length.
-- **InputGroup** — to add an inline action (e.g. a "Reenviar" button) beside a related field.
+- **InputGroup** — to add an inline action (e.g. a "Resend" button) beside a related field.

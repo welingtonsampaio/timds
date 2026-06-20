@@ -19,19 +19,21 @@ const badgeVariants = cva(
         destructive:
           'bg-destructive text-white focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40 [a&]:hover:bg-destructive/90',
 
-        /* === Semânticas (estilo soft/tonal) ===
-           Fundo translúcido claro + texto da matiz. No light o texto usa o
-           foreground escuro do token; no dark inverte para a cor clara. Passa
-           AA com folga nos dois temas, evitando o contraste fraco do sólido. */
+        /* === Semantic (soft/tonal style) ===
+           Light translucent background + hue-colored text. In light mode the
+           text uses the token's dark foreground; in dark mode it flips to the
+           light color. Passes AA comfortably in both themes, avoiding the weak
+           contrast of the solid style. */
         success:
           'border-success/20 bg-success/15 text-success-foreground dark:text-success focus-visible:ring-success/40 [a&]:hover:bg-success/25',
         warning:
           'border-warning/20 bg-warning/15 text-warning-foreground dark:text-warning focus-visible:ring-warning/40 [a&]:hover:bg-warning/25',
         info: 'border-info/20 bg-info/15 text-info-foreground dark:text-info focus-visible:ring-info/40 [a&]:hover:bg-info/25',
 
-        /* === Decorativas (paleta de charts, estilo soft/tonal) ===
-           Para categorização/decoração. Texto neutro garante contraste em
-           qualquer matiz; a identidade vem do fundo tonal e do ícone colorido. */
+        /* === Decorative (charts palette, soft/tonal style) ===
+           For categorization/decoration. Neutral text ensures contrast across
+           any hue; the identity comes from the tonal background and the colored
+           icon. */
         'chart-1':
           'border-chart-1/20 bg-chart-1/15 text-foreground focus-visible:ring-chart-1/40 [&>svg]:text-chart-1 [a&]:hover:bg-chart-1/25',
         'chart-2':

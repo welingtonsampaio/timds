@@ -2,10 +2,10 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// Fornece a quantidade de colunas da tabela para descendentes que precisam
-// ocupar a largura inteira (ex.: `TableGroupRow`), evitando contar à mão. Fica
-// `undefined` quando o consumidor não informa `columnCount` — nesse caso o
-// `colSpan` deve vir por prop (ver `TableGroupRow`).
+// Provides the table's column count to descendants that need to span the full
+// width (e.g. `TableGroupRow`), avoiding manual counting. It stays `undefined`
+// when the consumer doesn't provide `columnCount` — in that case the `colSpan`
+// must come via prop (see `TableGroupRow`).
 const TableColumnCountContext = React.createContext<number | undefined>(undefined)
 
 function Table({
@@ -14,22 +14,22 @@ function Table({
   columnCount,
   ...props
 }: React.ComponentProps<'table'> & {
-  /** Número de colunas da tabela; propaga o `colSpan` para `TableGroupRow`. */
+  /** Number of table columns; propagates the `colSpan` to `TableGroupRow`. */
   columnCount?: number
   /**
-   * Classes para o container de scroll (o `<div>` que envolve a `<table>`).
-   * É aqui que se limita a altura para habilitar scroll vertical — necessário
-   * para `TableGroupRow sticky`, cujo `top-0` se ancora neste container.
+   * Classes for the scroll container (the `<div>` that wraps the `<table>`).
+   * This is where the height is constrained to enable vertical scroll — required
+   * for `TableGroupRow sticky`, whose `top-0` anchors to this container.
    */
   containerClassName?: string
 }) {
   return (
     <TableColumnCountContext.Provider value={columnCount}>
-      {/* tabIndex={0} torna a região de scroll acessível por teclado: como o
-          container é sempre `overflow-x-auto` (e pode ter scroll vertical via
-          containerClassName), o axe exige que seja focável (scrollable-region-
+      {/* tabIndex={0} makes the scroll region keyboard accessible: since the
+          container is always `overflow-x-auto` (and may have vertical scroll via
+          containerClassName), axe requires it to be focusable (scrollable-region-
           focusable). */}
-      {/* biome-ignore-start lint/a11y/noNoninteractiveTabindex: a região de scroll precisa ser focável por teclado (axe scrollable-region-focusable) */}
+      {/* biome-ignore-start lint/a11y/noNoninteractiveTabindex: the scroll region must be keyboard focusable (axe scrollable-region-focusable) */}
       <div
         data-slot="table-container"
         tabIndex={0}
@@ -44,7 +44,7 @@ function Table({
           {...props}
         />
       </div>
-      {/* biome-ignore-end lint/a11y/noNoninteractiveTabindex: fim da exceção do container de scroll */}
+      {/* biome-ignore-end lint/a11y/noNoninteractiveTabindex: end of the scroll container exception */}
     </TableColumnCountContext.Provider>
   )
 }
@@ -126,27 +126,27 @@ function TableGroupRow({
   sticky = false,
   ...props
 }: React.ComponentProps<'th'> & {
-  /** Contagem do grupo, exibida como `(n)` ao lado do rótulo. */
+  /** Group count, displayed as `(n)` next to the label. */
   count?: number
-  /** Sobrescreve o `colSpan`; por padrão usa `columnCount` da `Table`. */
+  /** Overrides the `colSpan`; defaults to the `Table`'s `columnCount`. */
   colSpan?: number
-  /** Fixa o cabeçalho do grupo no topo durante o scroll. */
+  /** Pins the group header to the top during scroll. */
   sticky?: boolean
 }) {
-  // Híbrido: usa o `colSpan` informado por prop; senão, o `columnCount` da Table.
+  // Hybrid: uses the `colSpan` provided via prop; otherwise the Table's `columnCount`.
   const columnCount = React.useContext(TableColumnCountContext)
   const colSpan = colSpanProp ?? columnCount
 
   return (
     <tr data-slot="table-group-row">
       <th
-        // `rowgroup` é o escopo correto para um cabeçalho que rotula um grupo de
-        // linhas (não `colgroup`). Tabela estática: sem ARIA explícito.
+        // `rowgroup` is the correct scope for a header that labels a group of
+        // rows (not `colgroup`). Static table: no explicit ARIA.
         scope="rowgroup"
         colSpan={colSpan}
         data-sticky={sticky || undefined}
         className={cn(
-          // `bg-muted` (sólido) também garante o fundo opaco exigido pelo sticky.
+          // `bg-muted` (solid) also ensures the opaque background required by sticky.
           'border-t border-b bg-muted px-2 py-1.5 text-left align-middle text-sm font-medium text-foreground',
           sticky && 'sticky top-0 z-10',
           className,

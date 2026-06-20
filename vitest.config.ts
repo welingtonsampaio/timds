@@ -10,7 +10,7 @@ const alias = { '@': resolve(__dirname, 'src') }
 export default defineConfig({
   resolve: { alias },
   test: {
-    // Cobertura agregada de ambos os projects.
+    // Aggregated coverage across both projects.
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
@@ -23,7 +23,7 @@ export default defineConfig({
       ],
     },
     projects: [
-      // 1) Testes unitários clássicos (Testing Library + jsdom).
+      // 1) Classic unit tests (Testing Library + jsdom).
       {
         plugins: [react(), tailwindcss()],
         resolve: { alias },
@@ -35,14 +35,14 @@ export default defineConfig({
           css: true,
         },
       },
-      // 2) Histórias do Storybook executadas como testes em browser real
-      //    (smoke render de todas + play functions). Única fonte da verdade.
+      // 2) Storybook stories run as tests in a real browser
+      //    (smoke render of all + play functions). Single source of truth.
       {
-        // tailwindcss() é necessário aqui: o storybookTest não herda os plugins
-        // do vite.config.ts raiz, então sem ele as classes utilitárias não geram
-        // CSS no browser de teste e o addon-a11y validava contraste sobre um DOM
-        // sem estilo (falsos resultados). Com o plugin, o axe avalia as cores
-        // reais de cada story.
+        // tailwindcss() is required here: storybookTest does not inherit the plugins
+        // from the root vite.config.ts, so without it the utility classes generate no
+        // CSS in the test browser and addon-a11y validated contrast over an unstyled
+        // DOM (false results). With the plugin, axe evaluates the real colors of each
+        // story.
         plugins: [
           tailwindcss(),
           storybookTest({ configDir: resolve(__dirname, '.storybook') }),

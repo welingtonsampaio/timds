@@ -1,8 +1,8 @@
-// button.stories.tsx — exemplo trabalhado para a skill design-system-docs.
-// As stories funcionam como testes de interação (regressão) via play functions.
-// Espelha as convenções reais do timds: title por categoria semântica (ex.: 'Data
-// Entry/Button', nunca 'UI/*'), tags autodocs, utilitários
-// de `storybook/test`, idioma `canvasElement` + `within`, comentários em pt-BR.
+// button.stories.tsx — worked example for the design-system-docs skill.
+// The stories double as interaction (regression) tests via play functions.
+// Mirrors the real timds conventions: title by semantic category (e.g. 'Data
+// Entry/Button', never 'UI/*'), autodocs tags, `storybook/test` utilities,
+// `canvasElement` + `within` idiom, comments in pt-BR.
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Rocket } from 'lucide-react'
@@ -13,8 +13,8 @@ import { Button } from './button'
 const meta = {
   title: 'Data Entry/Button',
   component: Button,
-  // Sem `autodocs`: a página de docs é a MDX customizada (button.mdx). Ter os
-  // dois geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (button.mdx). Having both
+  // would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -28,7 +28,7 @@ const meta = {
   },
   args: {
     children: 'Button',
-    onClick: fn(), // spy compartilhado por todas as stories; auto-reset entre elas
+    onClick: fn(), // spy shared by all stories; auto-reset between them
   },
   argTypes: {
     variant: {
@@ -85,12 +85,12 @@ export const Sizes: Story = {
 
 /** Icon-only buttons must carry an accessible name via `aria-label`. */
 export const IconOnly: Story = {
-  args: { size: 'icon', 'aria-label': 'Lançar', children: <Rocket /> },
+  args: { size: 'icon', 'aria-label': 'Launch', children: <Rocket /> },
 }
 
 /** `loading` swaps the icon for a spinner and disables the button. */
 export const Loading: Story = {
-  args: { icon: <Rocket />, loading: true, children: 'Lançando' },
+  args: { icon: <Rocket />, loading: true, children: 'Launching' },
 }
 
 /* ----- Interaction tests (regression checks) ----- */
@@ -106,14 +106,14 @@ export const ClicksOnce: Story = {
 
 /** While loading, the button is disabled, exposes `aria-busy` and ignores clicks. */
 export const LoadingBlocksClicks: Story = {
-  args: { icon: <Rocket />, loading: true, children: 'Lançando' },
+  args: { icon: <Rocket />, loading: true, children: 'Launching' },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    const button = canvas.getByRole('button', { name: /lançando/i })
+    const button = canvas.getByRole('button', { name: /launching/i })
     await expect(button).toBeDisabled()
     await expect(button).toHaveAttribute('aria-busy', 'true')
-    // Em loading o botão tem pointer-events:none; forçamos o clique
-    // (pointerEventsCheck: 0) para provar que onClick não dispara mesmo assim.
+    // While loading the button has pointer-events:none; we force the click
+    // (pointerEventsCheck: 0) to prove that onClick still does not fire.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(button)
     await expect(args.onClick).not.toHaveBeenCalled()

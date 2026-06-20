@@ -10,14 +10,14 @@ existing files):
 - **Docs prose is English** — the `meta.parameters.docs.description.component`, JSDoc
   story descriptions, and the `.mdx` page are all written in **English**. Every existing
   component does this.
-- **In-code comments are Portuguese** — explanatory comments inside `.stories.tsx` /
-  `.tsx` are written in **pt-BR** (e.g. `// Em loading o botão tem pointer-events:none`).
+- **In-code comments are English** — explanatory comments inside `.stories.tsx` /
+  `.tsx` are written in **English** (e.g. `// In loading, the button has pointer-events:none`).
 - **Code identifiers are English** — component names, prop names, story IDs (PascalCase:
   `Default`, `Loading`, `ClicksOnce`, `FocusesWithKeyboard`). Story names appear in the
   sidebar and CI output.
-- **Visible content/labels** may be Portuguese where it reads naturally (the existing
-  stories use `'Lançar'`, `'Avançar'`, `'Enviar'`). Keep accessible names consistent
-  with the label you query in the play function.
+- **Visible content/labels** are English (the existing stories use `'Launch'`,
+  `'Next'`, `'Submit'`). Keep accessible names consistent with the label you query
+  in the play function.
 
 Do not "translate" docs prose to match the chat language — in this repo docs are English
 regardless of the conversation language.

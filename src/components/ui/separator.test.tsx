@@ -4,14 +4,14 @@ import { describe, expect, it } from 'vitest'
 import { Separator } from './separator'
 
 describe('Separator', () => {
-  it('renderiza com o data-slot e orientação horizontal por padrão', () => {
+  it('renders with the data-slot and horizontal orientation by default', () => {
     const { container } = render(<Separator />)
     const separator = container.querySelector('[data-slot="separator"]')
     expect(separator).toBeInTheDocument()
     expect(separator).toHaveAttribute('data-orientation', 'horizontal')
   })
 
-  it('respeita a orientação vertical', () => {
+  it('respects the vertical orientation', () => {
     const { container } = render(<Separator orientation="vertical" />)
     expect(container.querySelector('[data-slot="separator"]')).toHaveAttribute(
       'data-orientation',
@@ -19,27 +19,27 @@ describe('Separator', () => {
     )
   })
 
-  it('é decorativo por padrão (sem papel semântico)', () => {
+  it('is decorative by default (no semantic role)', () => {
     const { container } = render(<Separator />)
     const separator = container.querySelector('[data-slot="separator"]')
-    // Decorativo: o Radix usa role="none", removendo-o da árvore de acessibilidade.
+    // Decorative: Radix uses role="none", removing it from the accessibility tree.
     expect(separator).toHaveAttribute('role', 'none')
     expect(screen.queryByRole('separator')).not.toBeInTheDocument()
   })
 
-  it('expõe o papel separator quando não decorativo', () => {
+  it('exposes the separator role when not decorative', () => {
     render(<Separator decorative={false} />)
-    // Horizontal é o default do papel separator, então o Radix omite aria-orientation.
+    // Horizontal is the default for the separator role, so Radix omits aria-orientation.
     expect(screen.getByRole('separator')).toBeInTheDocument()
   })
 
-  it('anuncia a orientação vertical via aria quando não decorativo', () => {
+  it('announces the vertical orientation via aria when not decorative', () => {
     render(<Separator decorative={false} orientation="vertical" />)
     expect(screen.getByRole('separator')).toHaveAttribute('aria-orientation', 'vertical')
   })
 
-  it('mescla classes do consumidor', () => {
-    const { container } = render(<Separator className="minha-classe" />)
-    expect(container.querySelector('[data-slot="separator"]')).toHaveClass('minha-classe')
+  it('merges consumer classes', () => {
+    const { container } = render(<Separator className="my-class" />)
+    expect(container.querySelector('[data-slot="separator"]')).toHaveClass('my-class')
   })
 })

@@ -15,7 +15,7 @@ const checkboxVariants = cva(
   ],
   {
     variants: {
-      // Cor de preenchimento quando marcado (checked/indeterminate).
+      // Fill color when checked (checked/indeterminate).
       variant: {
         default:
           'text-primary-foreground data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary dark:data-[state=checked]:bg-primary',
@@ -24,7 +24,7 @@ const checkboxVariants = cva(
         destructive:
           'text-white data-[state=checked]:border-destructive data-[state=checked]:bg-destructive data-[state=indeterminate]:border-destructive data-[state=indeterminate]:bg-destructive focus-visible:ring-destructive/40 dark:data-[state=checked]:bg-destructive',
       },
-      // Lado da caixa por tamanho (o ícone interno acompanha via iconSizeClass).
+      // Box side length per size (the inner icon follows via iconSizeClass).
       size: {
         sm: 'size-3.5',
         default: 'size-4',
@@ -38,7 +38,7 @@ const checkboxVariants = cva(
   },
 )
 
-// Tamanho do ícone (check/minus) por size da caixa.
+// Icon size (check/minus) per box size.
 const iconSizeClass: Record<NonNullable<CheckboxProps['size']>, string> = {
   sm: 'size-3',
   default: 'size-3.5',
@@ -55,7 +55,7 @@ function Checkbox({
   size = 'default',
   ...props
 }: CheckboxProps) {
-  // Normaliza para indexar o mapa de ícone (VariantProps permite null).
+  // Normalize to index the icon map (VariantProps allows null).
   const s = size ?? 'default'
 
   return (
@@ -70,8 +70,8 @@ function Checkbox({
         data-slot="checkbox-indicator"
         className="grid place-content-center text-current transition-none"
       >
-        {/* Radix monta o Indicator em checked e indeterminate; trocamos o ícone
-            conforme o estado do grupo (Root tem a classe `group`). */}
+        {/* Radix mounts the Indicator on checked and indeterminate; we swap the
+            icon according to the group state (Root has the `group` class). */}
         <CheckIcon
           className={cn(iconSizeClass[s], 'group-data-[state=indeterminate]:hidden')}
         />
@@ -89,11 +89,11 @@ function Checkbox({
 // ----------------------------------------------------------------------------
 // CheckboxGroup
 //
-// O Radix não tem um primitivo de grupo: o padrão é gerenciar o conjunto de
-// valores marcados (array de strings) via Context. O `CheckboxGroup` controla o
-// estado (controlado por `value` ou não-controlado por `defaultValue`) e
-// propaga `variant`/`size`/`disabled` para os itens; cada `CheckboxGroupItem`
-// se liga ao grupo pelo seu `value`.
+// Radix has no group primitive: the pattern is to manage the set of checked
+// values (array of strings) via Context. `CheckboxGroup` controls the state
+// (controlled via `value` or uncontrolled via `defaultValue`) and propagates
+// `variant`/`size`/`disabled` to the items; each `CheckboxGroupItem` binds to
+// the group through its `value`.
 // ----------------------------------------------------------------------------
 
 interface CheckboxGroupContextValue {
@@ -110,7 +110,7 @@ const CheckboxGroupContext = React.createContext<CheckboxGroupContextValue | nul
 function useCheckboxGroup() {
   const ctx = React.useContext(CheckboxGroupContext)
   if (!ctx) {
-    throw new Error('CheckboxGroupItem deve ser usado dentro de um CheckboxGroup.')
+    throw new Error('CheckboxGroupItem must be used within a CheckboxGroup.')
   }
   return ctx
 }
@@ -118,17 +118,17 @@ function useCheckboxGroup() {
 export interface CheckboxGroupProps
   extends Omit<React.ComponentProps<'div'>, 'defaultValue' | 'onChange'>,
     Pick<CheckboxProps, 'variant' | 'size'> {
-  /** Valores marcados (modo controlado). */
+  /** Checked values (controlled mode). */
   value?: string[]
-  /** Valores marcados iniciais (modo não-controlado). */
+  /** Initial checked values (uncontrolled mode). */
   defaultValue?: string[]
-  /** Disparado a cada mudança no conjunto de valores marcados. */
+  /** Fired on every change to the set of checked values. */
   onValueChange?: (value: string[]) => void
-  /** `name` aplicado aos inputs ocultos de cada item (envio em formulários). */
+  /** `name` applied to each item's hidden inputs (form submission). */
   name?: string
-  /** Desabilita todos os itens do grupo. */
+  /** Disables all items in the group. */
   disabled?: boolean
-  /** Direção de empilhamento dos itens. */
+  /** Stacking direction of the items. */
   orientation?: 'horizontal' | 'vertical'
 }
 
@@ -167,9 +167,9 @@ function CheckboxGroup({
 
   return (
     <CheckboxGroupContext.Provider value={ctx}>
-      {/* role="group" é o semântico adequado para um conjunto de checkboxes
-          relacionados; o consumidor deve associar um rótulo via aria-labelledby. */}
-      {/** biome-ignore lint/a11y/useSemanticElements: ver acima */}
+      {/* role="group" is the proper semantics for a set of related checkboxes;
+          the consumer should associate a label via aria-labelledby. */}
+      {/** biome-ignore lint/a11y/useSemanticElements: see above */}
       <div
         role="group"
         data-slot="checkbox-group"
@@ -186,7 +186,7 @@ function CheckboxGroup({
 
 export interface CheckboxGroupItemProps
   extends Omit<CheckboxProps, 'checked' | 'defaultChecked' | 'value'> {
-  /** Identifica este item no conjunto de valores do grupo. */
+  /** Identifies this item within the group's set of values. */
   value: string
 }
 
@@ -207,7 +207,7 @@ function CheckboxGroupItem({
         group.toggle(value, state === true)
         onCheckedChange?.(state)
       }}
-      // Props locais têm prioridade sobre as herdadas do grupo.
+      // Local props take priority over those inherited from the group.
       variant={variant ?? group.variant}
       size={size ?? group.size}
       disabled={disabled ?? group.disabled}

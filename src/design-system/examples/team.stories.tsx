@@ -29,10 +29,10 @@ import {
 } from '@/components/ui/table'
 
 /**
- * **Team** — uma tela de gestão orientada a dados. Reúne busca (`InputGroup`),
- * filtro (`Select`), seleção de linhas (`Checkbox` + `data-state="selected"`),
- * status com `Badge`, ações por linha em `DropdownMenu` e `PaginationShort`,
- * tudo dentro de um `Card`.
+ * **Team** — a data-driven management screen. It brings together search (`InputGroup`),
+ * filtering (`Select`), row selection (`Checkbox` + `data-state="selected"`),
+ * status with `Badge`, per-row actions in `DropdownMenu` and `PaginationShort`,
+ * all inside a `Card`.
  */
 const meta = {
   title: 'Examples/Team',
@@ -53,7 +53,7 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-type Status = 'Ativo' | 'Convidado' | 'Inativo'
+type Status = 'Active' | 'Invited' | 'Inactive'
 
 type Member = {
   id: string
@@ -70,7 +70,7 @@ const members: Member[] = [
     name: 'Ana Souza',
     email: 'ana@timds.dev',
     role: 'Admin',
-    status: 'Ativo',
+    status: 'Active',
     img: 47,
   },
   {
@@ -78,7 +78,7 @@ const members: Member[] = [
     name: 'Bruno Lima',
     email: 'bruno@timds.dev',
     role: 'Dev',
-    status: 'Ativo',
+    status: 'Active',
     img: 12,
   },
   {
@@ -86,7 +86,7 @@ const members: Member[] = [
     name: 'Carla Dias',
     email: 'carla@timds.dev',
     role: 'Design',
-    status: 'Convidado',
+    status: 'Invited',
     img: 5,
   },
   {
@@ -94,15 +94,15 @@ const members: Member[] = [
     name: 'Diego Reis',
     email: 'diego@timds.dev',
     role: 'Dev',
-    status: 'Ativo',
+    status: 'Active',
     img: 33,
   },
   {
     id: '5',
     name: 'Elena Prado',
     email: 'elena@timds.dev',
-    role: 'Produto',
-    status: 'Inativo',
+    role: 'Product',
+    status: 'Inactive',
     img: 24,
   },
   {
@@ -110,7 +110,7 @@ const members: Member[] = [
     name: 'Felipe Nunes',
     email: 'felipe@timds.dev',
     role: 'Dev',
-    status: 'Ativo',
+    status: 'Active',
     img: 8,
   },
   {
@@ -118,31 +118,31 @@ const members: Member[] = [
     name: 'Gabi Rocha',
     email: 'gabi@timds.dev',
     role: 'Design',
-    status: 'Convidado',
+    status: 'Invited',
     img: 16,
   },
   {
     id: '8',
     name: 'Hugo Mello',
     email: 'hugo@timds.dev',
-    role: 'Produto',
-    status: 'Ativo',
+    role: 'Product',
+    status: 'Active',
     img: 51,
   },
 ]
 
 const statusVariant: Record<Status, 'success' | 'warning' | 'secondary'> = {
-  Ativo: 'success',
-  Convidado: 'warning',
-  Inativo: 'secondary',
+  Active: 'success',
+  Invited: 'warning',
+  Inactive: 'secondary',
 }
 
 const roleOptions = [
-  { value: 'all', label: 'Todas as funções' },
+  { value: 'all', label: 'All roles' },
   { value: 'Admin', label: 'Admin' },
   { value: 'Dev', label: 'Dev' },
   { value: 'Design', label: 'Design' },
-  { value: 'Produto', label: 'Produto' },
+  { value: 'Product', label: 'Product' },
 ]
 
 const PAGE_SIZE = 5
@@ -198,14 +198,14 @@ function TeamTable() {
     <div className="mx-auto flex max-w-4xl flex-col gap-4 py-2">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <h1 className="font-bold text-2xl tracking-tight">Equipe</h1>
+          <h1 className="font-bold text-2xl tracking-tight">Team</h1>
           <p className="text-muted-foreground">
-            {filtered.length} {filtered.length === 1 ? 'membro' : 'membros'}
-            {selected.size > 0 ? ` · ${selected.size} selecionado(s)` : ''}
+            {filtered.length} {filtered.length === 1 ? 'member' : 'members'}
+            {selected.size > 0 ? ` · ${selected.size} selected` : ''}
           </p>
         </div>
         <Button>
-          <UserPlus className="size-4" aria-hidden="true" /> Convidar
+          <UserPlus className="size-4" aria-hidden="true" /> Invite
         </Button>
       </div>
 
@@ -216,8 +216,8 @@ function TeamTable() {
               <Search className="size-4" aria-hidden="true" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Buscar por nome ou e-mail..."
-              aria-label="Buscar membros"
+              placeholder="Search by name or email..."
+              aria-label="Search members"
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value)
@@ -228,7 +228,7 @@ function TeamTable() {
           <Select
             options={roleOptions}
             defaultValue="all"
-            aria-label="Filtrar por função"
+            aria-label="Filter by role"
             onValueChange={(v) => {
               setRole(v as string)
               setPage(1)
@@ -243,16 +243,16 @@ function TeamTable() {
               <TableRow>
                 <TableHead className="w-10">
                   <Checkbox
-                    aria-label="Selecionar todos nesta página"
+                    aria-label="Select all on this page"
                     checked={allOnPageSelected}
                     onCheckedChange={toggleAllOnPage}
                   />
                 </TableHead>
-                <TableHead>Membro</TableHead>
-                <TableHead>Função</TableHead>
+                <TableHead>Member</TableHead>
+                <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-10 text-right">
-                  <span className="sr-only">Ações</span>
+                  <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -264,7 +264,7 @@ function TeamTable() {
                 >
                   <TableCell>
                     <Checkbox
-                      aria-label={`Selecionar ${m.name}`}
+                      aria-label={`Select ${m.name}`}
                       checked={selected.has(m.id)}
                       onCheckedChange={() => toggle(m.id)}
                     />
@@ -301,18 +301,18 @@ function TeamTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          aria-label={`Ações de ${m.name}`}
+                          aria-label={`Actions for ${m.name}`}
                         >
                           <MoreHorizontal className="size-4" aria-hidden="true" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-                        <DropdownMenuItem>Editar função</DropdownMenuItem>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View profile</DropdownMenuItem>
+                        <DropdownMenuItem>Edit role</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem variant="destructive">
-                          Remover da equipe
+                          Remove from team
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -325,7 +325,7 @@ function TeamTable() {
                     colSpan={5}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Nenhum membro encontrado.
+                    No members found.
                   </TableCell>
                 </TableRow>
               ) : null}
@@ -345,12 +345,12 @@ export const Default: Story = {
   render: () => <TeamTable />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Buscar reduz a lista a um único membro.
-    await userEvent.type(canvas.getByLabelText('Buscar membros'), 'bruno')
+    // Searching narrows the list down to a single member.
+    await userEvent.type(canvas.getByLabelText('Search members'), 'bruno')
     await expect(canvas.getByText('Bruno Lima')).toBeInTheDocument()
     await expect(canvas.queryByText('Ana Souza')).not.toBeInTheDocument()
-    // Selecionar a linha marca o estado "selected".
-    await userEvent.click(canvas.getByRole('checkbox', { name: 'Selecionar Bruno Lima' }))
-    await expect(canvas.getByText(/1 selecionado/)).toBeInTheDocument()
+    // Selecting the row marks the "selected" state.
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Bruno Lima' }))
+    await expect(canvas.getByText(/1 selected/)).toBeInTheDocument()
   },
 }

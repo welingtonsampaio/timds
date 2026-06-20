@@ -3,10 +3,10 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { SidebarMenuButton, useSidebar } from './sidebar'
 
-// Caminho de erro (throw): testado em jsdom porque, numa play function, um
-// render que lança quebra a story antes da asserção (ver ADR 0006).
+// Error path (throw): tested in jsdom because, in a play function, a
+// render that throws breaks the story before the assertion (see ADR 0006).
 describe('useSidebar', () => {
-  it('lança erro quando usado fora do SidebarProvider', () => {
+  it('throws an error when used outside the SidebarProvider', () => {
     function Consumer() {
       useSidebar()
       return null
@@ -17,7 +17,7 @@ describe('useSidebar', () => {
     spy.mockRestore()
   })
 
-  it('SidebarMenuButton também depende do provider', () => {
+  it('SidebarMenuButton also depends on the provider', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() =>
       render(

@@ -1,7 +1,7 @@
-// table.stories.tsx — documentação + testes de interação (regressão) via play functions.
-// Table é um primitivo COMPOSITIVO (Table + Header/Body/Footer/Row/Head/Cell/Caption),
-// sem variantes `cva` nem callbacks: os testes asseguram estrutura/ARIA semântica
-// (roles nativas de tabela) e o fluxo de seleção de linha (`data-state="selected"`).
+// table.stories.tsx — documentation + interaction (regression) tests via play functions.
+// Table is a COMPOSITIONAL primitive (Table + Header/Body/Footer/Row/Head/Cell/Caption),
+// with no `cva` variants nor callbacks: the tests assert the semantic structure/ARIA
+// (native table roles) and the row selection flow (`data-state="selected"`).
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import * as React from 'react'
@@ -20,19 +20,19 @@ import {
   TableRow,
 } from './table'
 
-// Dados de exemplo reutilizados pelas stories (lista de faturas).
+// Sample data reused across the stories (list of invoices).
 const invoices = [
-  { invoice: 'INV001', status: 'Pago', method: 'Cartão de crédito', amount: 'R$ 250,00' },
-  { invoice: 'INV002', status: 'Pendente', method: 'PayPal', amount: 'R$ 150,00' },
-  { invoice: 'INV003', status: 'Em aberto', method: 'Boleto', amount: 'R$ 350,00' },
-  { invoice: 'INV004', status: 'Pago', method: 'Cartão de crédito', amount: 'R$ 450,00' },
+  { invoice: 'INV001', status: 'Paid', method: 'Credit card', amount: '$250.00' },
+  { invoice: 'INV002', status: 'Pending', method: 'PayPal', amount: '$150.00' },
+  { invoice: 'INV003', status: 'Unpaid', method: 'Bank slip', amount: '$350.00' },
+  { invoice: 'INV004', status: 'Paid', method: 'Credit card', amount: '$450.00' },
 ]
 
 const meta = {
   title: 'Data Display/Table',
   component: Table,
-  // Sem `autodocs`: a página de docs é a MDX customizada (table.mdx). Ter os dois
-  // geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (table.mdx). Having both
+  // would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -57,18 +57,18 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/* ----- Estados (render-tested + axe) ----- */
+/* ----- States (render-tested + axe) ----- */
 
-/** Tabela base composta de cabeçalho e corpo. */
+/** Base table composed of header and body. */
 export const Default: Story = {
   render: (args) => (
     <Table {...args}>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[120px]">Fatura</TableHead>
+          <TableHead className="w-[120px]">Invoice</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Método</TableHead>
-          <TableHead className="text-right">Valor</TableHead>
+          <TableHead>Method</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -85,19 +85,19 @@ export const Default: Story = {
   ),
 }
 
-/** Igual à Default — ponto de entrada para o painel **Controls**. */
+/** Same as Default — entry point for the **Controls** panel. */
 export const Playground: Story = { ...Default }
 
-/** `TableCaption` rotula a tabela (renderizado como `<caption>`). */
+/** `TableCaption` labels the table (rendered as `<caption>`). */
 export const WithCaption: Story = {
   render: (args) => (
     <Table {...args}>
-      <TableCaption>Lista das suas faturas recentes.</TableCaption>
+      <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[120px]">Fatura</TableHead>
+          <TableHead className="w-[120px]">Invoice</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead className="text-right">Valor</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -113,15 +113,15 @@ export const WithCaption: Story = {
   ),
 }
 
-/** `TableFooter` fecha a tabela com uma linha de totais. */
+/** `TableFooter` closes the table with a totals row. */
 export const WithFooter: Story = {
   render: (args) => (
     <Table {...args}>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[120px]">Fatura</TableHead>
+          <TableHead className="w-[120px]">Invoice</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead className="text-right">Valor</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -136,28 +136,28 @@ export const WithFooter: Story = {
       <TableFooter>
         <TableRow>
           <TableCell colSpan={2}>Total</TableCell>
-          <TableCell className="text-right">R$ 1.200,00</TableCell>
+          <TableCell className="text-right">$1,200.00</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
   ),
 }
 
-/** Estado vazio: uma única célula que ocupa todas as colunas. */
+/** Empty state: a single cell that spans all columns. */
 export const Empty: Story = {
   render: (args) => (
     <Table {...args}>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[120px]">Fatura</TableHead>
+          <TableHead className="w-[120px]">Invoice</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead className="text-right">Valor</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow>
           <TableCell colSpan={3} className="h-24 text-center">
-            Nenhum resultado.
+            No results.
           </TableCell>
         </TableRow>
       </TableBody>
@@ -165,8 +165,8 @@ export const Empty: Story = {
   ),
 }
 
-// Tabela com seleção controlada por linha: cada checkbox marca a linha com
-// `data-state="selected"` (o mesmo gancho de estilo usado pelo data-table).
+// Table with controlled per-row selection: each checkbox marks the row with
+// `data-state="selected"` (the same style hook used by the data-table).
 function SelectableTable() {
   const [selected, setSelected] = React.useState<Record<string, boolean>>({})
   const allChecked = invoices.every((row) => selected[row.invoice])
@@ -177,7 +177,7 @@ function SelectableTable() {
         <TableRow>
           <TableHead className="w-10">
             <Checkbox
-              aria-label="Selecionar todas as linhas"
+              aria-label="Select all rows"
               checked={allChecked}
               onCheckedChange={(value) =>
                 setSelected(
@@ -186,8 +186,8 @@ function SelectableTable() {
               }
             />
           </TableHead>
-          <TableHead>Fatura</TableHead>
-          <TableHead className="text-right">Valor</TableHead>
+          <TableHead>Invoice</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -198,7 +198,7 @@ function SelectableTable() {
           >
             <TableCell>
               <Checkbox
-                aria-label={`Selecionar ${row.invoice}`}
+                aria-label={`Select ${row.invoice}`}
                 checked={!!selected[row.invoice]}
                 onCheckedChange={(value) =>
                   setSelected((prev) => ({ ...prev, [row.invoice]: !!value }))
@@ -214,28 +214,28 @@ function SelectableTable() {
   )
 }
 
-/** Seleção de linha por checkbox; a linha marcada recebe `data-state="selected"`. */
+/** Row selection by checkbox; the selected row gets `data-state="selected"`. */
 export const SelectableRows: Story = {
   render: () => <SelectableTable />,
 }
 
-// Contas agrupadas por status (caso financeiro/CRM): cada grupo é rotulado por
-// uma `TableGroupRow` que ocupa a largura toda.
+// Accounts grouped by status (finance/CRM case): each group is labeled by
+// a `TableGroupRow` that spans the full width.
 const accounts = {
-  Vencidas: [
-    { id: 'CT-001', cliente: 'ACME', amount: 'R$ 1.200,00' },
-    { id: 'CT-002', cliente: 'Globex', amount: 'R$ 800,00' },
+  Overdue: [
+    { id: 'CT-001', cliente: 'ACME', amount: '$1,200.00' },
+    { id: 'CT-002', cliente: 'Globex', amount: '$800.00' },
   ],
-  'A pagar': [{ id: 'CT-101', cliente: 'Initech', amount: 'R$ 500,00' }],
-  Pagas: [
-    { id: 'CT-201', cliente: 'Umbrella', amount: 'R$ 2.000,00' },
-    { id: 'CT-202', cliente: 'Soylent', amount: 'R$ 300,00' },
+  'To pay': [{ id: 'CT-101', cliente: 'Initech', amount: '$500.00' }],
+  Paid: [
+    { id: 'CT-201', cliente: 'Umbrella', amount: '$2,000.00' },
+    { id: 'CT-202', cliente: 'Soylent', amount: '$300.00' },
   ],
 }
 
-// Tabela de contas agrupadas reutilizada pelas stories de grupo. `columnCount`
-// vs. `colSpan` cobre os dois lados do modelo híbrido; `containerClassName`
-// limita a altura no container correto para o `sticky` ancorar.
+// Grouped accounts table reused by the group stories. `columnCount`
+// vs. `colSpan` covers both sides of the hybrid model; `containerClassName`
+// limits the height on the correct container for `sticky` to anchor to.
 function GroupedAccountsTable({
   columnCount,
   colSpan,
@@ -251,9 +251,9 @@ function GroupedAccountsTable({
     <Table columnCount={columnCount} containerClassName={containerClassName}>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[120px]">Conta</TableHead>
-          <TableHead>Cliente</TableHead>
-          <TableHead className="text-right">Valor</TableHead>
+          <TableHead className="w-[120px]">Account</TableHead>
+          <TableHead>Customer</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -277,25 +277,25 @@ function GroupedAccountsTable({
 }
 
 /**
- * Linhas agrupadas por status. `Table` informa `columnCount`, então cada
- * `TableGroupRow` resolve o `colSpan` automaticamente (via context).
+ * Rows grouped by status. `Table` provides `columnCount`, so each
+ * `TableGroupRow` resolves its `colSpan` automatically (via context).
  */
 export const GroupedRows: Story = {
   render: () => <GroupedAccountsTable columnCount={3} />,
 }
 
 /**
- * Sem `columnCount` na `Table`, o `colSpan` vem por prop em cada `TableGroupRow`
- * (fallback do modelo híbrido).
+ * Without `columnCount` on `Table`, the `colSpan` comes via a prop on each
+ * `TableGroupRow` (hybrid model fallback).
  */
 export const GroupColSpanFallback: Story = {
   render: () => <GroupedAccountsTable colSpan={3} />,
 }
 
 /**
- * Cabeçalhos de grupo fixos no scroll. O scroll vertical mora no container da
- * própria `Table` (`containerClassName` com altura limitada) — é nele que o
- * `top-0` do `sticky` se ancora; um wrapper externo não funcionaria.
+ * Group headers pinned on scroll. The vertical scroll lives on `Table`'s own
+ * container (`containerClassName` with a limited height) — that is where the
+ * `sticky` `top-0` anchors; an external wrapper would not work.
  */
 export const StickyGroupHeaders: Story = {
   render: () => (
@@ -307,62 +307,60 @@ export const StickyGroupHeaders: Story = {
   ),
 }
 
-/* ----- Testes de interação (regressão) ----- */
+/* ----- Interaction tests (regression) ----- */
 
-/** A composição expõe a semântica nativa de tabela (roles e contagem). */
+/** The composition exposes the native table semantics (roles and counts). */
 export const RendersTableSemantics: Story = {
   ...Default,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('table')).toBeInTheDocument()
-    // 4 colunas no cabeçalho.
+    // 4 columns in the header.
     await expect(canvas.getAllByRole('columnheader')).toHaveLength(4)
-    // 1 linha de cabeçalho + 4 de corpo.
+    // 1 header row + 4 body rows.
     await expect(canvas.getAllByRole('row')).toHaveLength(invoices.length + 1)
-    // Células de dados: 4 colunas × 4 linhas.
+    // Data cells: 4 columns × 4 rows.
     await expect(canvas.getAllByRole('cell')).toHaveLength(invoices.length * 4)
   },
 }
 
-/** `TableCaption` é renderizado como `<caption>` e rotula a tabela. */
+/** `TableCaption` is rendered as `<caption>` and labels the table. */
 export const CaptionLabelsTable: Story = {
   ...WithCaption,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const caption = canvas.getByText('Lista das suas faturas recentes.')
+    const caption = canvas.getByText('A list of your recent invoices.')
     await expect(caption.tagName).toBe('CAPTION')
     await expect(canvas.getByRole('table')).toContainElement(caption)
   },
 }
 
-/** Marcar o checkbox de uma linha aplica `data-state="selected"` a ela. */
+/** Checking a row's checkbox applies `data-state="selected"` to it. */
 export const SelectsRow: Story = {
   render: () => <SelectableTable />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const rowCheckbox = canvas.getByRole('checkbox', { name: 'Selecionar INV001' })
+    const rowCheckbox = canvas.getByRole('checkbox', { name: 'Select INV001' })
     await expect(rowCheckbox).not.toBeChecked()
 
     await userEvent.click(rowCheckbox)
 
     await expect(rowCheckbox).toBeChecked()
     await expect(rowCheckbox.closest('tr')).toHaveAttribute('data-state', 'selected')
-    // As demais linhas seguem sem seleção.
-    const otherCheckbox = canvas.getByRole('checkbox', { name: 'Selecionar INV002' })
+    // The other rows remain unselected.
+    const otherCheckbox = canvas.getByRole('checkbox', { name: 'Select INV002' })
     await expect(otherCheckbox.closest('tr')).not.toHaveAttribute('data-state')
   },
 }
 
-/** O "selecionar todas" marca todas as linhas de uma vez. */
+/** The "select all" checks all rows at once. */
 export const SelectsAllRows: Story = {
   render: () => <SelectableTable />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(
-      canvas.getByRole('checkbox', { name: 'Selecionar todas as linhas' }),
-    )
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Select all rows' }))
 
-    const rowCheckboxes = canvas.getAllByRole('checkbox', { name: /Selecionar INV/ })
+    const rowCheckboxes = canvas.getAllByRole('checkbox', { name: /Select INV/ })
     for (const checkbox of rowCheckboxes) {
       await expect(checkbox).toBeChecked()
       await expect(checkbox.closest('tr')).toHaveAttribute('data-state', 'selected')
@@ -370,50 +368,50 @@ export const SelectsAllRows: Story = {
   },
 }
 
-/** Estado vazio: uma única célula informa a ausência de resultados. */
+/** Empty state: a single cell reports the absence of results. */
 export const RendersEmptyState: Story = {
   ...Empty,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByText('Nenhum resultado.')).toBeInTheDocument()
-    // Apenas a linha de cabeçalho + a linha de "vazio".
+    await expect(canvas.getByText('No results.')).toBeInTheDocument()
+    // Only the header row + the "empty" row.
     await expect(canvas.getAllByRole('row')).toHaveLength(2)
   },
 }
 
-/** A `TableGroupRow` vira um `<th scope="rowgroup">` com `colSpan` vindo do context. */
+/** The `TableGroupRow` becomes a `<th scope="rowgroup">` with `colSpan` from the context. */
 export const GroupHeaderSpansColumns: Story = {
   ...GroupedRows,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const vencidas = canvas.getByText('Vencidas')
-    // Cabeçalho de grupo: <th>, escopo rowgroup, colSpan herdado de columnCount=3.
-    await expect(vencidas.tagName).toBe('TH')
-    await expect(vencidas).toHaveAttribute('scope', 'rowgroup')
-    await expect(vencidas).toHaveAttribute('colspan', '3')
-    // A contagem aparece como "(n)" ao lado do rótulo.
-    await expect(within(vencidas).getByText('(2)')).toBeInTheDocument()
-    // Há um cabeçalho por grupo.
-    await expect(canvas.getByText('A pagar')).toBeInTheDocument()
-    await expect(canvas.getByText('Pagas')).toBeInTheDocument()
+    const overdue = canvas.getByText('Overdue')
+    // Group header: <th>, rowgroup scope, colSpan inherited from columnCount=3.
+    await expect(overdue.tagName).toBe('TH')
+    await expect(overdue).toHaveAttribute('scope', 'rowgroup')
+    await expect(overdue).toHaveAttribute('colspan', '3')
+    // The count appears as "(n)" next to the label.
+    await expect(within(overdue).getByText('(2)')).toBeInTheDocument()
+    // There is one header per group.
+    await expect(canvas.getByText('To pay')).toBeInTheDocument()
+    await expect(canvas.getByText('Paid')).toBeInTheDocument()
   },
 }
 
-/** Sem context, o `colSpan` vem da prop (fallback do modelo híbrido). */
+/** Without context, the `colSpan` comes from the prop (hybrid model fallback). */
 export const GroupHeaderColSpanFallback: Story = {
   ...GroupColSpanFallback,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // A Table não informa columnCount, então o colSpan veio da prop.
-    await expect(canvas.getByText('Vencidas')).toHaveAttribute('colspan', '3')
+    // The Table does not provide columnCount, so the colSpan came from the prop.
+    await expect(canvas.getByText('Overdue')).toHaveAttribute('colspan', '3')
   },
 }
 
-/** `sticky` marca a célula com `data-sticky` (o efeito visual é coberto pelo Chromatic). */
+/** `sticky` marks the cell with `data-sticky` (the visual effect is covered by Chromatic). */
 export const GroupHeaderIsSticky: Story = {
   ...StickyGroupHeaders,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByText('Vencidas')).toHaveAttribute('data-sticky', 'true')
+    await expect(canvas.getByText('Overdue')).toHaveAttribute('data-sticky', 'true')
   },
 }

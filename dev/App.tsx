@@ -13,7 +13,7 @@ export function App() {
           <header className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">timds</h1>
-              <p className="text-muted-foreground text-sm">Playground do design system</p>
+              <p className="text-muted-foreground text-sm">Design system playground</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setDark((v) => !v)}>
               {dark ? 'Light' : 'Dark'}
@@ -33,12 +33,12 @@ export function App() {
             <Button size="sm">Small</Button>
             <Button size="default">Default</Button>
             <Button size="lg">Large</Button>
-            <Button size="icon" aria-label="Lançar">
+            <Button size="icon" aria-label="Launch">
               <Rocket />
             </Button>
             <Button>
               <Rocket />
-              Com ícone
+              With icon
             </Button>
           </section>
         </div>

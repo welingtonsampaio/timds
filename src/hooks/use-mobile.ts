@@ -1,11 +1,11 @@
 import * as React from 'react'
 
-// Breakpoint abaixo do qual tratamos a viewport como "mobile" (alinhado ao
-// `md` do Tailwind: 768px). A Sidebar usa isto para alternar entre o layout
-// fixo (desktop) e o overlay em Sheet (mobile).
+// Breakpoint below which we treat the viewport as "mobile" (aligned with
+// Tailwind's `md`: 768px). The Sidebar uses this to switch between the fixed
+// layout (desktop) and the Sheet overlay (mobile).
 const MOBILE_BREAKPOINT = 768
 
-/** Retorna `true` quando a largura da janela está abaixo do breakpoint mobile. */
+/** Returns `true` when the window width is below the mobile breakpoint. */
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 

@@ -8,8 +8,8 @@ import { Toggle } from './toggle'
 const meta = {
   title: 'Data Entry/Toggle',
   component: Toggle,
-  // Sem `autodocs`: a página de docs é a MDX customizada (toggle.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (toggle.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -130,7 +130,7 @@ export const Controlled: Story = {
         <Toggle pressed={pressed} onPressedChange={setPressed} aria-label="Bold">
           <Bold />
         </Toggle>
-        <span className="text-sm">{pressed ? 'Ativo' : 'Inativo'}</span>
+        <span className="text-sm">{pressed ? 'On' : 'Off'}</span>
       </div>
     )
   },
@@ -172,8 +172,8 @@ export const DisabledDoesNotToggle: Story = {
     const canvas = within(canvasElement)
     const toggle = canvas.getByRole('button', { name: 'Toggle italic' })
 
-    // O runtime do browser bloqueia clique em pointer-events:none; ignoramos
-    // o check apenas para confirmar que o handler não dispara.
+    // The browser runtime blocks clicks on pointer-events:none; we skip
+    // the check just to confirm the handler does not fire.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(toggle)
     await expect(args.onPressedChange).not.toHaveBeenCalled()

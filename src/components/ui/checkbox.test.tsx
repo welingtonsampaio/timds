@@ -5,18 +5,18 @@ import { describe, expect, it, vi } from 'vitest'
 import { Checkbox, CheckboxGroup, CheckboxGroupItem } from './checkbox'
 
 describe('Checkbox', () => {
-  it('normaliza variant/size nulos para o padrão', () => {
+  it('normalizes null variant/size to the default', () => {
     const { container } = render(
-      <Checkbox variant={null} size={null} aria-label="aceitar" />,
+      <Checkbox variant={null} size={null} aria-label="accept" />,
     )
     const box = container.querySelector('[data-slot="checkbox"]')
     expect(box).toHaveAttribute('data-variant', 'default')
     expect(box).toHaveAttribute('data-size', 'default')
   })
 
-  it('reflete o estado indeterminate', () => {
+  it('reflects the indeterminate state', () => {
     const { container } = render(
-      <Checkbox checked="indeterminate" aria-label="parcial" />,
+      <Checkbox checked="indeterminate" aria-label="partial" />,
     )
     expect(container.querySelector('[data-slot="checkbox"]')).toHaveAttribute(
       'data-state',
@@ -26,13 +26,13 @@ describe('Checkbox', () => {
 })
 
 describe('CheckboxGroup', () => {
-  it('lança erro quando o item é usado fora de um CheckboxGroup', () => {
+  it('throws an error when the item is used outside a CheckboxGroup', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() => render(<CheckboxGroupItem value="a" />)).toThrow(/CheckboxGroup/)
     spy.mockRestore()
   })
 
-  it('alterna valores no modo não-controlado e dispara onValueChange', async () => {
+  it('toggles values in uncontrolled mode and fires onValueChange', async () => {
     const onValueChange = vi.fn()
     render(
       <CheckboxGroup defaultValue={['a']} onValueChange={onValueChange} name="g">
@@ -48,12 +48,12 @@ describe('CheckboxGroup', () => {
     expect(onValueChange).toHaveBeenLastCalledWith(['a', 'b'])
     expect(b).toBeChecked()
 
-    // Desmarcar remove do conjunto.
+    // Unchecking removes it from the set.
     await userEvent.click(a)
     expect(onValueChange).toHaveBeenLastCalledWith(['b'])
   })
 
-  it('respeita o modo controlado (value não muda sem o pai atualizar)', async () => {
+  it('respects controlled mode (value does not change without the parent updating)', async () => {
     const onValueChange = vi.fn()
     render(
       <CheckboxGroup value={['a']} onValueChange={onValueChange}>
@@ -65,13 +65,13 @@ describe('CheckboxGroup', () => {
     expect(a).toBeChecked()
 
     await userEvent.click(b)
-    // Notifica a mudança...
+    // Notifies the change...
     expect(onValueChange).toHaveBeenLastCalledWith(['a', 'b'])
-    // ...mas, controlado, o estado segue o `value` do pai.
+    // ...but, controlled, the state follows the parent's `value`.
     expect(b).not.toBeChecked()
   })
 
-  it('propaga variant/size/disabled e prioriza props locais do item', () => {
+  it('propagates variant/size/disabled and prioritizes the item local props', () => {
     const { container } = render(
       <CheckboxGroup variant="success" size="lg" disabled>
         <CheckboxGroupItem value="a" aria-label="A" />
@@ -87,12 +87,12 @@ describe('CheckboxGroup', () => {
     expect(boxes[0]).toHaveAttribute('data-variant', 'success')
     expect(boxes[0]).toHaveAttribute('data-size', 'lg')
     expect(boxes[0]).toBeDisabled()
-    // Item B sobrescreve variant e disabled herdados do grupo.
+    // Item B overrides variant and disabled inherited from the group.
     expect(boxes[1]).toHaveAttribute('data-variant', 'destructive')
     expect(boxes[1]).not.toBeDisabled()
   })
 
-  it('aplica a orientação horizontal no container', () => {
+  it('applies horizontal orientation on the container', () => {
     const { container } = render(
       <CheckboxGroup orientation="horizontal">
         <CheckboxGroupItem value="a" aria-label="A" />

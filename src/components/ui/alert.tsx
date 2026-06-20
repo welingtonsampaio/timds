@@ -11,10 +11,10 @@ const alertVariants = cva(
         default: 'bg-card text-card-foreground',
         destructive:
           'bg-card text-destructive-text *:data-[slot=alert-description]:text-destructive-text/90 [&>svg]:text-current',
-        // Variantes "soft": fundo levemente tingido na matiz, borda na cor e
-        // ícone colorido. O texto fica em foreground/muted-foreground para
-        // manter contraste AA em light e dark (os tokens semânticos são
-        // vívidos demais para texto pequeno).
+        // "soft" variants: background lightly tinted with the hue, border in
+        // the color and a colored icon. Text stays in foreground/muted-foreground
+        // to keep AA contrast in light and dark (the semantic tokens are too
+        // vivid for small text).
         success:
           'border-success/30 bg-success/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-success-text',
         warning:

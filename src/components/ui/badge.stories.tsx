@@ -7,8 +7,8 @@ import { Badge } from './badge'
 const meta = {
   title: 'Data Display/Badge',
   component: Badge,
-  // Sem `autodocs`: a página de docs é a MDX customizada (badge.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (badge.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -62,8 +62,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por variante / estado visual.
- * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * Render stories — one per variant / visual state.
+ * Each one mounts without error and passes axe automatically.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak every prop from the **Controls** panel. */
@@ -145,9 +145,9 @@ export const AsLink: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Badge é um `<span>` decorativo: sem role próprio. Quando vira link via
- * `asChild`, é navegável e clicável. Sempre `await` em userEvent/expect.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Badge is a decorative `<span>`: no role of its own. When it becomes a link via
+ * `asChild`, it is navigable and clickable. Always `await` on userEvent/expect.
  * -------------------------------------------------------------------------- */
 
 /** Renders the content and carries the variant/size data-attributes. */
@@ -157,7 +157,7 @@ export const RendersContent: Story = {
     const canvas = within(canvasElement)
     const badge = canvas.getByText('Active')
     await expect(badge).toBeInTheDocument()
-    // data-attributes refletem variant/size (hooks de estrutura, não de teste).
+    // data-attributes reflect variant/size (structure hooks, not test hooks).
     await expect(badge).toHaveAttribute('data-slot', 'badge')
     await expect(badge).toHaveAttribute('data-variant', 'success')
     await expect(badge).toHaveAttribute('data-size', 'lg')
@@ -172,9 +172,9 @@ export const AsLinkIsNavigable: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Com asChild o elemento renderizado é um <a>, exposto com role `link`.
-    // Não clicamos: a navegação real do <a> fecharia a página do browser de teste;
-    // basta validar que o link carrega o href e o data-slot herdado do Badge.
+    // With asChild the rendered element is an <a>, exposed with role `link`.
+    // We don't click: the real <a> navigation would close the test browser page;
+    // it's enough to validate that the link carries the href and the data-slot inherited from Badge.
     const link = canvas.getByRole('link', { name: 'Filters' })
     await expect(link).toHaveAttribute('href', '#filters')
     await expect(link).toHaveAttribute('data-slot', 'badge')

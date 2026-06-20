@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 
 function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    // biome-ignore lint/a11y/useSemanticElements: role="group" mantém o wrapper como <div> flexível, sem o layout/estilo de <fieldset>
+    // biome-ignore lint/a11y/useSemanticElements: role="group" keeps the wrapper as a flexible <div>, without the layout/style of <fieldset>
     <div
       data-slot="input-group"
       role="group"
@@ -17,16 +17,16 @@ function InputGroup({ className, ...props }: React.ComponentProps<'div'>) {
         'group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
         'h-9 min-w-0 has-[>textarea]:h-auto',
 
-        // Variações conforme o alinhamento do addon.
+        // Variations according to the addon alignment.
         'has-[>[data-align=inline-start]]:[&>input]:pl-2',
         'has-[>[data-align=inline-end]]:[&>input]:pr-2',
         'has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3',
         'has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3',
 
-        // Estado de foco.
+        // Focus state.
         'has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
 
-        // Estado de erro.
+        // Error state.
         'has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40',
 
         className,
@@ -63,9 +63,9 @@ function InputGroupAddon({
   ...props
 }: React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) {
   return (
-    // O clique no addon apenas foca o input (atalho de mouse); o controle já é acessível via teclado.
-    // biome-ignore lint/a11y/useKeyWithClickEvents: atalho de mouse opcional, sem equivalente de teclado necessário
-    // biome-ignore lint/a11y/useSemanticElements: role="group" agrupa os addons sem impor um elemento semântico
+    // Clicking the addon only focuses the input (mouse shortcut); the control is already accessible via keyboard.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: optional mouse shortcut, no keyboard equivalent needed
+    // biome-ignore lint/a11y/useSemanticElements: role="group" groups the addons without imposing a semantic element
     <div
       role="group"
       data-slot="input-group-addon"

@@ -22,8 +22,8 @@ import {
 const meta = {
   title: 'Overlays/ContextMenu',
   component: ContextMenu,
-  // Sem `autodocs`: a página de docs é a MDX customizada (context-menu.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (context-menu.mdx), which
+  // embeds these stories. Having both would create duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -40,9 +40,9 @@ const meta = {
           'or "⋯" affordance, prefer `DropdownMenu`.',
       },
     },
-    // As histórias de demonstração/interação começam fechadas: o Chromatic só
-    // veria o trigger, então não vale snapshot. A cobertura visual fica nas
-    // histórias `Visual*` (abertas via play), que reativam o snapshot.
+    // The demo/interaction stories start closed: Chromatic would only see the
+    // trigger, so a snapshot is not worthwhile. Visual coverage lives in the
+    // `Visual*` stories (opened via play), which re-enable the snapshot.
     chromatic: { disableSnapshot: true },
   },
 } satisfies Meta<typeof ContextMenu>
@@ -53,18 +53,18 @@ type Story = StoryObj<typeof meta>
 
 const onSelect = fn()
 
-// O ContextMenu não tem `defaultOpen` (Radix abre apenas pelo evento contextmenu):
-// o clique direito é simulado com `userEvent.pointer` usando o botão direito do
-// mouse, que dispara o `contextmenu` posicionando o menu no alvo.
+// ContextMenu has no `defaultOpen` (Radix only opens via the contextmenu event):
+// the right-click is simulated with `userEvent.pointer` using the right mouse
+// button, which fires `contextmenu` positioning the menu on the target.
 const openMenu = (trigger: Element) =>
   userEvent.pointer({ keys: '[MouseRight]', target: trigger })
 
-// Área padrão de gatilho usada nas stories (clique direito dentro dela abre o menu).
+// Default trigger area used in the stories (right-clicking inside it opens the menu).
 const triggerLabel = 'Right click here'
 
 /* --------------------------------------------------------------------------
- * Render stories (começam fechadas) — uma por composição.
- * O conteúdo é portado para document.body: nas play functions use `screen`.
+ * Render stories (start closed) — one per composition.
+ * The content is portaled to document.body: in play functions use `screen`.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — right-click the area and pick an action. */
@@ -111,7 +111,7 @@ export const WithCheckboxItems: Story = {
           <ContextMenuSeparator />
           <ContextMenuCheckboxItem
             checked={showBookmarks}
-            // preventDefault mantém o menu aberto a cada toggle (padrão comum).
+            // preventDefault keeps the menu open on each toggle (common pattern).
             onSelect={(e) => e.preventDefault()}
             onCheckedChange={setShowBookmarks}
           >
@@ -221,8 +221,8 @@ export const WithDisabledItem: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Conteúdo portado: busque o menu e os itens via `screen`, não `canvas`.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Portaled content: query the menu and items via `screen`, not `canvas`.
  * -------------------------------------------------------------------------- */
 
 /** Right-clicking the trigger opens the menu and exposes `role="menu"`. */
@@ -230,7 +230,7 @@ export const OpensOnRightClick: Story = {
   render: Playground.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O menu começa fechado: nada portado ainda.
+    // The menu starts closed: nothing portaled yet.
     await expect(screen.queryByRole('menu')).not.toBeInTheDocument()
     const trigger = canvas.getByText(triggerLabel)
     await expect(trigger).toHaveAttribute('data-state', 'closed')
@@ -238,7 +238,7 @@ export const OpensOnRightClick: Story = {
     const menu = await screen.findByRole('menu')
     await expect(menu).toBeVisible()
     await expect(trigger).toHaveAttribute('data-state', 'open')
-    // Fecha para a story não terminar aberta.
+    // Close so the story does not end open.
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
   },
@@ -252,10 +252,10 @@ export const SelectsItem: Story = {
     onSelect.mockClear()
     await openMenu(canvas.getByText(triggerLabel))
     await screen.findByRole('menu')
-    // O nome acessível inclui o atalho (ex.: "Reload ⌘R") — casamos por regex.
+    // The accessible name includes the shortcut (e.g. "Reload ⌘R") — match by regex.
     await userEvent.click(screen.getByRole('menuitem', { name: /Reload/ }))
     await expect(onSelect).toHaveBeenCalledOnce()
-    // Selecionar um item fecha o menu.
+    // Selecting an item closes the menu.
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
   },
 }
@@ -281,10 +281,10 @@ export const KeyboardNavigation: Story = {
     const canvas = within(canvasElement)
     await openMenu(canvas.getByText(triggerLabel))
     await screen.findByRole('menu')
-    // A seta para baixo foca o primeiro item (o nome inclui o atalho).
+    // Arrow down focuses the first item (the name includes the shortcut).
     await userEvent.keyboard('{ArrowDown}')
     await expect(screen.getByRole('menuitem', { name: /Back/ })).toHaveFocus()
-    // A próxima seta avança para o item seguinte.
+    // The next arrow advances to the following item.
     await userEvent.keyboard('{ArrowDown}')
     await expect(screen.getByRole('menuitem', { name: /Reload/ })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
@@ -302,8 +302,8 @@ export const TogglesCheckboxItem: Story = {
     const urls = screen.getByRole('menuitemcheckbox', { name: 'Full URLs' })
     await expect(urls).toHaveAttribute('aria-checked', 'false')
     await userEvent.click(urls)
-    // Como o item faz preventDefault no select, o menu permanece aberto e o
-    // estado alterna para marcado.
+    // Since the item calls preventDefault on select, the menu stays open and the
+    // state toggles to checked.
     await waitFor(() =>
       expect(screen.getByRole('menuitemcheckbox', { name: 'Full URLs' })).toHaveAttribute(
         'aria-checked',
@@ -322,7 +322,7 @@ export const SelectsRadioItem: Story = {
     const canvas = within(canvasElement)
     await openMenu(canvas.getByText(triggerLabel))
     await screen.findByRole('menu')
-    // "Pedro Duarte" começa marcado.
+    // "Pedro Duarte" starts checked.
     await expect(
       screen.getByRole('menuitemradio', { name: 'Pedro Duarte' }),
     ).toHaveAttribute('aria-checked', 'true')
@@ -333,7 +333,7 @@ export const SelectsRadioItem: Story = {
         'true',
       ),
     )
-    // O valor anterior deixa de estar marcado (seleção única).
+    // The previous value is no longer checked (single selection).
     await expect(
       screen.getByRole('menuitemradio', { name: 'Pedro Duarte' }),
     ).toHaveAttribute('aria-checked', 'false')
@@ -352,8 +352,8 @@ export const DisabledItemDoesNotFire: Story = {
     await screen.findByRole('menu')
     const disabled = screen.getByRole('menuitem', { name: 'Duplicate' })
     await expect(disabled).toHaveAttribute('aria-disabled', 'true')
-    // Em disabled o item tem pointer-events:none; forçamos o clique para provar
-    // que onSelect não dispara mesmo assim.
+    // When disabled the item has pointer-events:none; we force the click to prove
+    // onSelect does not fire even so.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(disabled)
     await expect(onSelect).not.toHaveBeenCalled()
@@ -372,7 +372,7 @@ export const OpensSubmenu: Story = {
     const subTrigger = screen.getByRole('menuitem', { name: 'Share' })
     await expect(subTrigger).toHaveAttribute('aria-haspopup', 'menu')
     await userEvent.click(subTrigger)
-    // O submenu abre com seus próprios itens.
+    // The submenu opens with its own items.
     await waitFor(() =>
       expect(screen.getByRole('menuitem', { name: 'Copy link' })).toBeVisible(),
     )
@@ -383,18 +383,18 @@ export const OpensSubmenu: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Fixtures de regressão visual (Chromatic). O ContextMenu não tem `defaultOpen`,
- * então abrimos o menu na play function (clique direito). Usam `modal={false}`
- * para não esconder os irmãos enquanto o snapshot é capturado aberto. Ocultas do
- * sidebar/docs (`!dev`/`!autodocs`), mas seguem como smoke test (tag `test`) e
- * reativam o snapshot que o meta desliga.
+ * Visual regression fixtures (Chromatic). ContextMenu has no `defaultOpen`,
+ * so we open the menu in the play function (right-click). They use `modal={false}`
+ * to avoid hiding the siblings while the snapshot is captured open. Hidden from
+ * the sidebar/docs (`!dev`/`!autodocs`), but kept as a smoke test (tag `test`) and
+ * re-enable the snapshot that the meta turns off.
  * -------------------------------------------------------------------------- */
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Partial<Story>
 
-/** Captura visual — menu padrão aberto (label, grupos, atalhos, destrutivo). */
+/** Visual capture — default menu open (label, groups, shortcuts, destructive). */
 export const VisualDefault: Story = {
   ...visual,
   render: (args) => (
@@ -425,7 +425,7 @@ export const VisualDefault: Story = {
   },
 }
 
-/** Captura visual — itens checkbox e radio (com indicadores marcados). */
+/** Visual capture — checkbox and radio items (with checked indicators). */
 export const VisualSelectionItems: Story = {
   ...visual,
   render: (args) => (
@@ -453,7 +453,7 @@ export const VisualSelectionItems: Story = {
   },
 }
 
-/** Captura visual — item desabilitado, inset e variante destrutiva. */
+/** Visual capture — disabled item, inset, and destructive variant. */
 export const VisualStates: Story = {
   ...visual,
   render: (args) => (

@@ -134,4 +134,4 @@ the trigger. For those:
 
 ## Related
 
-- [0005 — Storybook for documentation](./0005-storybook-para-documentacao.md)
+- [0005 — Storybook for documentation](./0005-storybook-for-documentation.md)

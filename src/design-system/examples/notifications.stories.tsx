@@ -24,9 +24,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 /**
- * **Notifications** — um feed de atividades filtrável. Mostra `Tabs` como filtro,
- * `Item` como linha rica (ícone, título, descrição e ações) e o uso de um ponto
- * de "não lida" + `Badge` de contagem que reagem ao estado local.
+ * **Notifications** — a filterable activity feed. Shows `Tabs` as a filter,
+ * `Item` as a rich row (icon, title, description and actions) and the use of an
+ * "unread" dot + a count `Badge` that react to local state.
  */
 const meta = {
   title: 'Examples/Notifications',
@@ -69,41 +69,41 @@ const initial: Note[] = [
   {
     id: '1',
     kind: 'mention',
-    title: 'Bruno Lima mencionou você',
-    description: '“@ana pode revisar os tokens de contraste?” em #design-system',
-    when: 'há 5 min',
+    title: 'Bruno Lima mentioned you',
+    description: '“@ana can you review the contrast tokens?” in #design-system',
+    when: '5 min ago',
     read: false,
   },
   {
     id: '2',
     kind: 'pr',
-    title: 'PR #128 aguardando revisão',
-    description: 'feat(table): agrupamento de linhas com header fixo',
-    when: 'há 1 hora',
+    title: 'PR #128 awaiting review',
+    description: 'feat(table): row grouping with sticky header',
+    when: '1 hour ago',
     read: false,
   },
   {
     id: '3',
     kind: 'comment',
-    title: 'Carla Dias comentou',
-    description: 'Adorei o novo Donut chart no dashboard!',
-    when: 'há 3 horas',
+    title: 'Carla Dias commented',
+    description: 'I love the new Donut chart on the dashboard!',
+    when: '3 hours ago',
     read: false,
   },
   {
     id: '4',
     kind: 'like',
-    title: 'Diego Reis curtiu sua atualização',
-    description: 'Release v0.4 — novos tokens de texto acessíveis',
-    when: 'ontem',
+    title: 'Diego Reis liked your update',
+    description: 'Release v0.4 — new accessible text tokens',
+    when: 'yesterday',
     read: true,
   },
   {
     id: '5',
     kind: 'mention',
-    title: 'Elena Prado mencionou você',
-    description: '“@ana fechamos a sprint amanhã” em #produto',
-    when: 'ontem',
+    title: 'Elena Prado mentioned you',
+    description: '“@ana we close the sprint tomorrow” in #product',
+    when: 'yesterday',
     read: true,
   },
 ]
@@ -133,7 +133,7 @@ function NotificationsFeed() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
           <CardTitle className="flex items-center gap-2">
-            Notificações
+            Notifications
             {unreadCount > 0 ? <Badge>{unreadCount}</Badge> : null}
           </CardTitle>
           <Button
@@ -142,7 +142,7 @@ function NotificationsFeed() {
             onClick={markAll}
             disabled={unreadCount === 0}
           >
-            <CheckCheck className="size-4" aria-hidden="true" /> Marcar todas
+            <CheckCheck className="size-4" aria-hidden="true" /> Mark all
           </Button>
         </CardHeader>
 
@@ -150,13 +150,13 @@ function NotificationsFeed() {
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList className="w-full">
               <TabsTrigger value="all" className="flex-1">
-                Todas
+                All
               </TabsTrigger>
               <TabsTrigger value="unread" className="flex-1">
-                Não lidas
+                Unread
               </TabsTrigger>
               <TabsTrigger value="mentions" className="flex-1">
-                Menções
+                Mentions
               </TabsTrigger>
             </TabsList>
 
@@ -178,7 +178,7 @@ function NotificationsFeed() {
                                 className="size-2 rounded-full bg-primary"
                                 aria-hidden="true"
                               />
-                              <span className="sr-only">Não lida</span>
+                              <span className="sr-only">Unread</span>
                             </>
                           ) : null}
                         </ItemTitle>
@@ -192,7 +192,7 @@ function NotificationsFeed() {
                             size="sm"
                             onClick={() => markRead(note.id)}
                           >
-                            Marcar lida
+                            Mark read
                           </Button>
                         ) : null}
                       </ItemActions>
@@ -201,7 +201,7 @@ function NotificationsFeed() {
                 })}
                 {visible.length === 0 ? (
                   <p className="py-10 text-center text-muted-foreground text-sm">
-                    Tudo em dia. Nenhuma notificação por aqui.
+                    All caught up. No notifications here.
                   </p>
                 ) : null}
               </div>
@@ -217,15 +217,15 @@ export const Default: Story = {
   render: () => <NotificationsFeed />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Começa com 3 não lidas; o filtro "Não lidas" mostra exatamente essas.
+    // Starts with 3 unread; the "Unread" filter shows exactly those.
     await expect(canvas.getByText('3')).toBeInTheDocument()
-    await userEvent.click(canvas.getByRole('tab', { name: 'Não lidas' }))
-    const markButtons = canvas.getAllByRole('button', { name: 'Marcar lida' })
+    await userEvent.click(canvas.getByRole('tab', { name: 'Unread' }))
+    const markButtons = canvas.getAllByRole('button', { name: 'Mark read' })
     await expect(markButtons).toHaveLength(3)
-    // Marcar todas zera o contador e desabilita o botão.
-    await userEvent.click(canvas.getByRole('button', { name: /Marcar todas/ }))
+    // Marking all resets the counter and disables the button.
+    await userEvent.click(canvas.getByRole('button', { name: /Mark all/ }))
     await expect(
-      canvas.queryByRole('button', { name: 'Marcar lida' }),
+      canvas.queryByRole('button', { name: 'Mark read' }),
     ).not.toBeInTheDocument()
   },
 }

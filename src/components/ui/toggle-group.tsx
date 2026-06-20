@@ -5,8 +5,8 @@ import * as React from 'react'
 import { toggleVariants } from '@/components/ui/toggle'
 import { cn } from '@/lib/utils'
 
-// Contexto: o grupo propaga `variant`/`size`/`spacing` para cada item, mantendo
-// a aparência consistente sem repetir as props em cada `ToggleGroupItem`.
+// Context: the group propagates `variant`/`size`/`spacing` to each item, keeping
+// a consistent appearance without repeating the props on every `ToggleGroupItem`.
 const ToggleGroupContext = React.createContext<
   VariantProps<typeof toggleVariants> & {
     spacing?: number
@@ -26,7 +26,7 @@ function ToggleGroup({
   ...props
 }: React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
   VariantProps<typeof toggleVariants> & {
-    /** Espaço (em unidades do tema) entre os itens. `0` os une num bloco. */
+    /** Space (in theme units) between the items. `0` joins them into a single block. */
     spacing?: number
   }) {
   return (
@@ -37,8 +37,8 @@ function ToggleGroup({
       data-spacing={spacing}
       style={{ '--gap': spacing } as React.CSSProperties}
       className={cn(
-        // Quando `spacing=0` os itens viram um bloco único; no `outline` a sombra
-        // fica no grupo (os itens perdem a própria) para não duplicar a borda.
+        // When `spacing=0` the items become a single block; in `outline` the shadow
+        // stays on the group (the items lose their own) to avoid duplicating the border.
         'group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-md data-[spacing=0]:data-[variant=outline]:shadow-xs',
         className,
       )}
@@ -73,8 +73,8 @@ function ToggleGroupItem({
           size: context.size || size,
         }),
         'w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10',
-        // Itens unidos (`spacing=0`): cantos quadrados, só as pontas arredondam e
-        // as bordas internas do `outline` colapsam para não ficarem dobradas.
+        // Joined items (`spacing=0`): square corners, only the ends round off and
+        // the inner `outline` borders collapse so they don't end up doubled.
         'data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none data-[spacing=0]:first:rounded-l-md data-[spacing=0]:last:rounded-r-md data-[spacing=0]:data-[variant=outline]:border-l-0 data-[spacing=0]:data-[variant=outline]:first:border-l',
         className,
       )}

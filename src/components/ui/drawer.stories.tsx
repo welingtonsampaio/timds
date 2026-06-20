@@ -17,8 +17,8 @@ import { Input } from './input'
 const meta = {
   title: 'Overlays/Drawer',
   component: Drawer,
-  // Sem `autodocs`: a página de docs é a MDX customizada (drawer.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // Without `autodocs`: the docs page is the custom MDX (drawer.mdx), which
+  // embeds these stories. Having both would create duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -33,9 +33,9 @@ const meta = {
           'closed — click the trigger to open the drawer.',
       },
     },
-    // As histórias de demonstração/interação começam fechadas: o Chromatic só
-    // veria o trigger, então não vale snapshot. A cobertura visual fica nas
-    // histórias `Visual*` (abertas), que reativam o snapshot individualmente.
+    // The demo/interaction stories start closed: Chromatic would only see the
+    // trigger, so a snapshot isn't worth it. Visual coverage lives in the
+    // `Visual*` stories (open), which re-enable the snapshot individually.
     chromatic: { disableSnapshot: true },
   },
 } satisfies Meta<typeof Drawer>
@@ -47,8 +47,8 @@ type Story = StoryObj<typeof meta>
 const onSave = fn()
 
 /* --------------------------------------------------------------------------
- * Render stories (começam fechadas) — uma por composição.
- * O conteúdo é portado para document.body: nas play functions use `screen`.
+ * Render stories (start closed) — one per composition.
+ * The content is portaled to document.body: in play functions use `screen`.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — open the drawer from the bottom edge, edit and confirm or dismiss. */
@@ -188,8 +188,8 @@ export const WithoutCloseButton: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Conteúdo portado: busque o drawer e os botões via `screen`, não `canvas`.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Portaled content: query the drawer and buttons via `screen`, not `canvas`.
  * -------------------------------------------------------------------------- */
 
 /** Clicking the trigger opens the drawer and exposes `role="dialog"`. */
@@ -209,15 +209,15 @@ export const OpensOnTrigger: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O drawer começa fechado: nada portado ainda.
+    // The drawer starts closed: nothing portaled yet.
     await expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     await userEvent.click(canvas.getByRole('button', { name: 'Edit profile' }))
     const drawer = await screen.findByRole('dialog')
     await expect(drawer).toBeVisible()
-    // O drawer é nomeado pelo título e descrito pela descrição (vaul/Radix faz o wiring).
+    // The drawer is named by the title and described by the description (vaul/Radix does the wiring).
     await expect(drawer).toHaveAccessibleName('Edit profile')
     await expect(drawer).toHaveAccessibleDescription('Update your details.')
-    // Fecha para a story não terminar aberta (evita aria-hidden-focus com o trigger).
+    // Close so the story doesn't end open (avoids aria-hidden-focus with the trigger).
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   },
@@ -242,7 +242,7 @@ export const CloseButtonDismisses: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Edit profile' }))
     await screen.findByRole('dialog')
-    // O "X" expõe o nome acessível "Close" (via sr-only).
+    // The "X" exposes the accessible name "Close" (via sr-only).
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   },
@@ -301,12 +301,12 @@ export const FocusIsTrappedAndReturns: Story = {
     const trigger = canvas.getByRole('button', { name: 'Edit profile' })
     await userEvent.click(trigger)
     const drawer = await screen.findByRole('dialog')
-    // Tab move o foco para dentro do drawer e o trap o mantém lá.
+    // Tab moves focus into the drawer and the trap keeps it there.
     await userEvent.tab()
     await waitFor(() =>
       expect(drawer).toContainElement(document.activeElement as HTMLElement),
     )
-    // Ao fechar, o foco retorna ao trigger.
+    // On close, focus returns to the trigger.
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     await waitFor(() => expect(trigger).toHaveFocus())
@@ -337,26 +337,26 @@ export const HidesCloseButton: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Subscribe' }))
     await screen.findByRole('dialog')
-    // Sem o "X": não há botão "Close" no conteúdo.
+    // Without the "X": there is no "Close" button in the content.
     await expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
-    // A ação do rodapé ainda fecha o drawer.
+    // The footer action still closes the drawer.
     await userEvent.click(screen.getByRole('button', { name: 'Subscribe' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   },
 }
 
 /* --------------------------------------------------------------------------
- * Fixtures de regressão visual (Chromatic): renderizam o drawer aberto
- * (`defaultOpen`, sem trigger — evita a violação `aria-hidden-focus` e a
- * poluição da docs). Ocultas do sidebar/docs (`!dev`/`!autodocs`), mas seguem
- * rodando como smoke test (tag `test`) e reativam o snapshot que o meta desliga.
+ * Visual regression fixtures (Chromatic): render the drawer open
+ * (`defaultOpen`, no trigger — avoids the `aria-hidden-focus` violation and
+ * polluting the docs). Hidden from the sidebar/docs (`!dev`/`!autodocs`), but they
+ * keep running as a smoke test (tag `test`) and re-enable the snapshot the meta disables.
  * -------------------------------------------------------------------------- */
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Partial<Story>
 
-/** Captura visual — drawer padrão (ancorado embaixo) aberto. */
+/** Visual capture — default drawer (anchored at the bottom) open. */
 export const VisualBottom: Story = {
   ...visual,
   render: (args) => (
@@ -384,7 +384,7 @@ export const VisualBottom: Story = {
   ),
 }
 
-/** Captura visual — drawer ancorado à direita (painel lateral). */
+/** Visual capture — drawer anchored to the right (side panel). */
 export const VisualRight: Story = {
   ...visual,
   render: (args) => (
@@ -408,7 +408,7 @@ export const VisualRight: Story = {
   ),
 }
 
-/** Captura visual — sem o botão de fechar ("X" oculto). */
+/** Visual capture — without the close button ("X" hidden). */
 export const VisualWithoutCloseButton: Story = {
   ...visual,
   render: (args) => (

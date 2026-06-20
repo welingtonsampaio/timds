@@ -6,8 +6,8 @@ import { Textarea } from './textarea'
 const meta = {
   title: 'Data Entry/Textarea',
   component: Textarea,
-  // Sem `autodocs`: a página de docs é a MDX customizada (textarea.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (textarea.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -19,7 +19,7 @@ const meta = {
     },
   },
   args: {
-    placeholder: 'Escreva sua mensagem…',
+    placeholder: 'Write your message…',
     onChange: fn(),
   },
   argTypes: {
@@ -38,17 +38,17 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por estado.
- * Cada uma é render-testada (monta sem erro) e passa pelo axe automaticamente.
+ * Render stories — one per state.
+ * Each is render-tested (mounts without error) and automatically passes axe.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak every prop from the **Controls** panel. */
 export const Playground: Story = {
-  render: (args) => <Textarea {...args} aria-label="Mensagem" className="w-80" />,
+  render: (args) => <Textarea {...args} aria-label="Message" className="w-80" />,
 }
 
 export const Default: Story = {
-  render: (args) => <Textarea {...args} aria-label="Mensagem" className="w-80" />,
+  render: (args) => <Textarea {...args} aria-label="Message" className="w-80" />,
 }
 
 /** Paired with an associated `<label>` for an accessible name. */
@@ -64,55 +64,55 @@ export const WithLabel: Story = {
 }
 
 export const Disabled: Story = {
-  args: { disabled: true, value: 'Não editável', 'aria-label': 'Mensagem' },
+  args: { disabled: true, value: 'Not editable', 'aria-label': 'Message' },
   render: (args) => <Textarea {...args} className="w-80" />,
 }
 
 /** `aria-invalid` switches the field to the destructive error styling. */
 export const Invalid: Story = {
-  args: { 'aria-invalid': true, value: 'Texto inválido', 'aria-label': 'Mensagem' },
+  args: { 'aria-invalid': true, value: 'Invalid text', 'aria-label': 'Message' },
   render: (args) => <Textarea {...args} className="w-80" />,
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Query por role 'textbox'; sempre `await` em userEvent/expect.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Query by role 'textbox'; always `await` on userEvent/expect.
  * -------------------------------------------------------------------------- */
 
 /** Typing fires `onChange` and preserves line breaks. */
 export const TypesText: Story = {
-  args: { 'aria-label': 'Mensagem' },
+  args: { 'aria-label': 'Message' },
   render: (args) => <Textarea {...args} className="w-80" />,
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    const textarea = canvas.getByRole('textbox', { name: 'Mensagem' })
-    await userEvent.type(textarea, 'linha 1{enter}linha 2')
-    await expect(textarea).toHaveValue('linha 1\nlinha 2')
+    const textarea = canvas.getByRole('textbox', { name: 'Message' })
+    await userEvent.type(textarea, 'line 1{enter}line 2')
+    await expect(textarea).toHaveValue('line 1\nline 2')
     await expect(args.onChange).toHaveBeenCalled()
   },
 }
 
 /** Keyboard focus reaches the field via Tab. */
 export const FocusesWithKeyboard: Story = {
-  args: { 'aria-label': 'Mensagem' },
+  args: { 'aria-label': 'Message' },
   render: (args) => <Textarea {...args} className="w-80" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Mensagem' })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: 'Message' })).toHaveFocus()
   },
 }
 
 /** A disabled field is not editable and does not fire `onChange`. */
 export const DisabledDoesNotType: Story = {
-  args: { disabled: true, 'aria-label': 'Mensagem' },
+  args: { disabled: true, 'aria-label': 'Message' },
   render: (args) => <Textarea {...args} className="w-80" />,
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    const textarea = canvas.getByRole('textbox', { name: 'Mensagem' })
+    const textarea = canvas.getByRole('textbox', { name: 'Message' })
     await expect(textarea).toBeDisabled()
-    // userEvent.type num campo disabled não digita; confirmamos o no-op.
-    await userEvent.type(textarea, 'algo')
+    // userEvent.type on a disabled field doesn't type; we confirm the no-op.
+    await userEvent.type(textarea, 'something')
     await expect(textarea).toHaveValue('')
     await expect(args.onChange).not.toHaveBeenCalled()
   },
@@ -120,11 +120,11 @@ export const DisabledDoesNotType: Story = {
 
 /** The invalid state exposes `aria-invalid="true"` to assistive tech. */
 export const InvalidExposesAria: Story = {
-  args: { 'aria-invalid': true, 'aria-label': 'Mensagem' },
+  args: { 'aria-invalid': true, 'aria-label': 'Message' },
   render: (args) => <Textarea {...args} className="w-80" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const textarea = canvas.getByRole('textbox', { name: 'Mensagem' })
+    const textarea = canvas.getByRole('textbox', { name: 'Message' })
     await expect(textarea).toHaveAttribute('aria-invalid', 'true')
   },
 }

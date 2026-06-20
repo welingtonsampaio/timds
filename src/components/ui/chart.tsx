@@ -4,7 +4,7 @@ import * as RechartsPrimitive from 'recharts'
 
 import { cn } from '@/lib/utils'
 
-// Formato: { NOME_DO_TEMA: SELETOR_CSS }
+// Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
 
 const INITIAL_DIMENSION = { width: 320, height: 200 } as const
@@ -31,7 +31,7 @@ function useChart() {
   const context = React.useContext(ChartContext)
 
   if (!context) {
-    throw new Error('useChart deve ser usado dentro de um <ChartContainer />')
+    throw new Error('useChart must be used within a <ChartContainer />')
   }
 
   return context
@@ -86,7 +86,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 
   return (
     <style
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: injeta as variáveis CSS --color-* por tema; conteúdo derivado apenas do config, sem entrada do usuário
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: injects the --color-* CSS variables per theme; content derived only from config, no user input
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
@@ -189,7 +189,7 @@ function ChartTooltipContent({
 
             return (
               <div
-                // biome-ignore lint/suspicious/noArrayIndexKey: payload do Recharts é estático durante o hover; índice é estável aqui
+                // biome-ignore lint/suspicious/noArrayIndexKey: Recharts payload is static during hover; index is stable here
                 key={index}
                 className={cn(
                   'flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground',
@@ -288,7 +288,7 @@ function ChartLegendContent({
 
           return (
             <div
-              // biome-ignore lint/suspicious/noArrayIndexKey: payload da legenda do Recharts é estático; índice é estável aqui
+              // biome-ignore lint/suspicious/noArrayIndexKey: Recharts legend payload is static; index is stable here
               key={index}
               className={cn(
                 'flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground',
@@ -312,7 +312,7 @@ function ChartLegendContent({
   )
 }
 
-// Utilitário para extrair a configuração de um item a partir do payload.
+// Utility to extract an item's configuration from the payload.
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
   if (typeof payload !== 'object' || payload === null) {
     return undefined

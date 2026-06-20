@@ -63,4 +63,4 @@ re-exported from `src/index.ts`. Color/spacing tokens stay in `src/styles.css`.
 ## Related
 
 - [0003 — Tailwind v4 with CSS-first tokens](./0003-tailwind-v4-tokens-css.md)
-- [0004 — shadcn/ui as the base](./0004-shadcn-ui-como-base.md)
+- [0004 — shadcn/ui as the base](./0004-shadcn-ui-as-base.md)

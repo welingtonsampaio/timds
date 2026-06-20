@@ -13,13 +13,13 @@ import {
   PopoverTrigger,
 } from './popover'
 
-// `component` aponta para `PopoverContent`: é nele que vivem as props
-// documentáveis (`align`, `side`, `sideOffset`) — o `Popover` (Root do Radix)
-// não tem props visíveis. Assim o `<Controls>` da MDX renderiza uma tabela útil.
+// `component` points to `PopoverContent`: that's where the documentable props
+// live (`align`, `side`, `sideOffset`) — the `Popover` (Radix Root) has no
+// visible props. This way the MDX `<Controls>` renders a useful table.
 const meta = {
   title: 'Overlays/Popover',
   component: PopoverContent,
-  // Sem `autodocs`: a página de docs é a MDX customizada (popover.mdx).
+  // No `autodocs`: the docs page is the custom MDX (popover.mdx).
   parameters: {
     layout: 'centered',
     docs: {
@@ -33,8 +33,8 @@ const meta = {
           'outside or press Escape to dismiss. Each story starts closed — click the trigger.',
       },
     },
-    // Demonstrações começam fechadas: o Chromatic só veria o trigger. A
-    // cobertura visual fica nas histórias `Visual*` (abertas via `defaultOpen`).
+    // Demos start closed: Chromatic would only see the trigger. Visual
+    // coverage lives in the `Visual*` stories (opened via `defaultOpen`).
     chromatic: { disableSnapshot: true },
   },
   args: {
@@ -107,8 +107,8 @@ export const PlainContent: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * O conteúdo é portado para document.body: busque-o via `screen`, não `canvas`.
+ * Interaction tests — play functions that ARE the regression tests.
+ * The content is portaled into document.body: query it via `screen`, not `canvas`.
  * -------------------------------------------------------------------------- */
 
 /** Clicking the trigger opens the panel; Escape closes it and restores focus. */
@@ -130,16 +130,16 @@ export const OpensAndCloses: Story = {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button', { name: 'Open popover' })
 
-    // Começa fechado: nada portado ainda.
+    // Starts closed: nothing portaled yet.
     await expect(screen.queryByText('Dimensions')).not.toBeInTheDocument()
 
     await userEvent.click(trigger)
-    // findByText espera o portal montar; waitFor cobre a animação de entrada
-    // (animate-in/fade-in deixa opacity 0 no primeiro frame → toBeVisible falha).
+    // findByText waits for the portal to mount; waitFor covers the entrance
+    // animation (animate-in/fade-in leaves opacity 0 on the first frame → toBeVisible fails).
     await screen.findByText('Dimensions')
     await waitFor(() => expect(screen.getByText('Dimensions')).toBeVisible())
 
-    // Escape fecha e devolve o foco ao gatilho (popover não-modal).
+    // Escape closes and returns focus to the trigger (non-modal popover).
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByText('Dimensions')).not.toBeInTheDocument())
     await expect(trigger).toHaveFocus()
@@ -163,7 +163,7 @@ export const ClosesOnOutsideClick: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Open popover' }))
     await screen.findByText('Dimensions')
 
-    // Pointerdown fora do conteúdo fecha o popover.
+    // Pointerdown outside the content closes the popover.
     await userEvent.click(document.body)
     await waitFor(() => expect(screen.queryByText('Dimensions')).not.toBeInTheDocument())
   },
@@ -187,7 +187,7 @@ export const MovesFocusIntoContent: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Open popover' }))
     await screen.findByText('Dimensions')
 
-    // O foco entra no painel; o primeiro campo focável recebe o foco.
+    // Focus moves into the panel; the first focusable field receives focus.
     await waitFor(() =>
       expect(screen.getByRole('textbox', { name: 'Width' })).toHaveFocus(),
     )
@@ -195,16 +195,16 @@ export const MovesFocusIntoContent: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Fixtures de regressão visual (Chromatic): renderizam o popover aberto
- * (`defaultOpen`). Ocultas do sidebar/docs (`!dev`/`!autodocs`), mas seguem
- * rodando como smoke test (tag `test`) e reativam o snapshot que o meta desliga.
+ * Visual regression fixtures (Chromatic): render the popover open
+ * (`defaultOpen`). Hidden from the sidebar/docs (`!dev`/`!autodocs`), but still
+ * run as a smoke test (tag `test`) and re-enable the snapshot the meta disables.
  * -------------------------------------------------------------------------- */
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Partial<Story>
 
-/** Captura visual — painel com header, título, descrição e campos. */
+/** Visual capture — panel with header, title, description and fields. */
 export const VisualWithHeader: Story = {
   ...visual,
   render: () => (
@@ -228,7 +228,7 @@ export const VisualWithHeader: Story = {
   ),
 }
 
-/** Captura visual — painel só com texto. */
+/** Visual capture — text-only panel. */
 export const VisualPlain: Story = {
   ...visual,
   render: () => (

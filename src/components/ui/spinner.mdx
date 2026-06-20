@@ -1,5 +1,5 @@
-{/* spinner.mdx — docs page (prosa em English). Embute as stories que carregam os
-    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* spinner.mdx — docs page (prose in English). Embeds the stories that carry the
+    interaction tests. Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './spinner.stories'
 
@@ -61,7 +61,7 @@ The Spinner is non-interactive — it renders no events and runs a continuous CS
 animation. Its behavioral surface is its accessibility contract, guarded by interaction
 tests in `spinner.stories.tsx`:
 
-- It exposes `role="status"` with the default `aria-label` `Carregando` —
+- It exposes `role="status"` with the default `aria-label` `Loading` —
   `ExposesStatusRole`.
 - A custom `aria-label` overrides the announced name — `CustomLabelIsAnnounced`.
 
@@ -70,16 +70,16 @@ tests in `spinner.stories.tsx`:
 ```tsx
 import { Spinner } from 'timds'
 
-// Tamanho e cor herdados do contexto
+// Size and color inherited from the context
 <span className="text-primary">
   <Spinner className="size-6" />
 </span>
 
-// Dentro de um Button, via a prop `loading`
-<Button loading>Salvando</Button>
+// Inside a Button, via the `loading` prop
+<Button loading>Saving</Button>
 
-// Nome acessível customizado
-<Spinner aria-label="Salvando alterações" />
+// Custom accessible name
+<Spinner aria-label="Saving changes" />
 ```
 
 <Source of={Stories.Default} />
@@ -87,13 +87,13 @@ import { Spinner } from 'timds'
 ## Content & UX writing
 
 - **Accessible name** — describe what is loading when context helps ("Saving changes"),
-  otherwise the default `Carregando` is fine.
+  otherwise the default `Loading` is fine.
 - Pair a Spinner with brief nearby text ("Loading…") when the wait may be long, so the
   state is clear to sighted users too.
 
 ## Accessibility
 
-- Exposes `role="status"` with an `aria-label` (default `Carregando`) so the loading
+- Exposes `role="status"` with an `aria-label` (default `Loading`) so the loading
   state is announced — verified by `ExposesStatusRole`.
 - A custom `aria-label` is reflected on the status node — verified by
   `CustomLabelIsAnnounced`.

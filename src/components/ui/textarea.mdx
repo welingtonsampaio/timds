@@ -1,5 +1,5 @@
-{/* textarea.mdx — docs page (prosa em English). Embute as stories testadas.
-    Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* textarea.mdx — docs page (prose in English). Embeds the tested stories.
+    Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './textarea.stories'
 
@@ -71,14 +71,14 @@ These behaviors are guarded by interaction tests in `textarea.stories.tsx`:
 ```tsx
 import { Textarea } from 'timds'
 
-// Com label associado (nome acessível)
+// With an associated label (accessible name)
 <label htmlFor="bio">Bio</label>
 <Textarea id="bio" placeholder="Tell us about yourself…" />
 
-// Estado de erro
+// Error state
 <Textarea aria-invalid aria-describedby="bio-error" />
 
-// Desabilitado
+// Disabled
 <Textarea disabled value="Read-only" />
 ```
 

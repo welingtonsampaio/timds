@@ -6,8 +6,8 @@ import { Progress } from './progress'
 const meta = {
   title: 'Feedback/Progress',
   component: Progress,
-  // Sem `autodocs`: a página de docs é a MDX customizada (progress.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (progress.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -20,7 +20,7 @@ const meta = {
       },
     },
   },
-  // Todas as stories herdam um nome acessível para o progressbar (axe é enforced).
+  // All stories inherit an accessible name for the progressbar (axe is enforced).
   args: { value: 60, 'aria-label': 'Uploading files' },
   argTypes: {
     variant: {
@@ -40,7 +40,7 @@ const meta = {
       description: 'Current progress (0–100). Omit it for the indeterminate state.',
     },
   },
-  // Largura fixa para o trilho (w-full) ter referência nas stories e no Chromatic.
+  // Fixed width so the track (w-full) has a reference in the stories and Chromatic.
   decorators: [
     (Story) => (
       <div className="w-80 max-w-full">
@@ -55,8 +55,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por variante / estado visual.
- * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * Render stories — one per variant / visual state.
+ * Each mounts without errors and passes axe automatically.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak every prop from the **Controls** panel. */
@@ -110,10 +110,10 @@ export const Complete: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Progress é não-interativo: validamos a semântica ARIA do progressbar
- * (role, aria-value*, data-state) e os data-attributes de estilo.
- * Sempre `await` em expect.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Progress is non-interactive: we validate the progressbar's ARIA semantics
+ * (role, aria-value*, data-state) and the styling data-attributes.
+ * Always `await` on expect.
  * -------------------------------------------------------------------------- */
 
 /** Exposes the `progressbar` role with the ARIA value range. */
@@ -126,11 +126,11 @@ export const HasProgressbarSemantics: Story = {
     await expect(bar).toHaveAttribute('aria-valuenow', '60')
     await expect(bar).toHaveAttribute('aria-valuemin', '0')
     await expect(bar).toHaveAttribute('aria-valuemax', '100')
-    // data-attributes refletem variant/size (hooks de estrutura, não de teste).
+    // data-attributes reflect variant/size (structural hooks, not test hooks).
     await expect(bar).toHaveAttribute('data-slot', 'progress')
     await expect(bar).toHaveAttribute('data-variant', 'success')
     await expect(bar).toHaveAttribute('data-size', 'lg')
-    // Radix marca o estado de carregamento no progressbar.
+    // Radix marks the loading state on the progressbar.
     await expect(bar).toHaveAttribute('data-state', 'loading')
   },
 }

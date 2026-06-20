@@ -54,17 +54,17 @@ export interface ButtonProps
   extends Omit<React.ComponentProps<'button'>, 'type'>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  /** Ícone exibido junto ao conteúdo. Substituído pelo spinner em `loading`. */
+  /** Icon displayed alongside the content. Replaced by the spinner when `loading`. */
   icon?: React.ReactNode
-  /** Lado em que o ícone (ou o spinner) é renderizado. */
+  /** Side on which the icon (or the spinner) is rendered. */
   iconPlacement?: 'left' | 'right'
-  /** Exibe o spinner no lugar do ícone e desabilita o botão. */
+  /** Shows the spinner in place of the icon and disables the button. */
   loading?: boolean
-  /** Tipo nativo do `<button>`. Ignorado quando o botão vira link (`href`). */
+  /** Native `<button>` type. Ignored when the button becomes a link (`href`). */
   htmlType?: 'submit' | 'reset' | 'button'
-  /** Renderiza o botão como link (`<a>`) apontando para esta URL. */
+  /** Renders the button as a link (`<a>`) pointing to this URL. */
   href?: string
-  /** Faz o botão ocupar toda a largura do contêiner. */
+  /** Makes the button take the full width of the container. */
   block?: boolean
 }
 
@@ -85,17 +85,17 @@ function Button({
   ...props
 }: ButtonProps) {
   const isDisabled = disabled || loading
-  // `href` (sem asChild) transforma o botão num link; asChild tem prioridade.
+  // `href` (without asChild) turns the button into a link; asChild takes priority.
   const asLink = href !== undefined && !asChild
   const Comp: React.ElementType = asChild ? Slot : asLink ? 'a' : 'button'
 
-  // Em loading o spinner ocupa a posição do ícone (substituindo-o se existir).
+  // When loading, the spinner takes the icon's position (replacing it if present).
   const adornment = loading ? <Spinner /> : icon
 
-  // Atributos específicos do elemento renderizado.
+  // Attributes specific to the rendered element.
   let elementProps: Record<string, unknown> = {}
   if (Comp === 'a') {
-    // Link desabilitado não navega, sai da ordem de tabulação e é anunciado.
+    // A disabled link does not navigate, leaves the tab order, and is announced.
     elementProps = {
       href: isDisabled ? undefined : href,
       'aria-disabled': isDisabled || undefined,

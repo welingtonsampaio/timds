@@ -7,8 +7,8 @@ import { svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
 const buttonGroupVariants = cva(
-  // Une os filhos num bloco contínuo: zera bordas/cantos internos e eleva o
-  // item focado (z-index) para o anel de foco não ficar cortado pelos vizinhos.
+  // Joins the children into a continuous block: resets inner borders/corners and
+  // raises the focused item (z-index) so the focus ring isn't clipped by neighbors.
   "flex w-fit items-stretch has-[>[data-slot=button-group]]:gap-2 [&>*]:focus-visible:relative [&>*]:focus-visible:z-10 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
   {
     variants: {
@@ -31,9 +31,9 @@ function ButtonGroup({
   ...props
 }: React.ComponentProps<'div'> & VariantProps<typeof buttonGroupVariants>) {
   return (
-    // É uma barra de botões, não um grupo de campos: `role="group"` num div é o
-    // semântico adequado aqui (um <fieldset> traria semântica de formulário).
-    // biome-ignore lint/a11y/useSemanticElements: ver acima
+    // It's a button bar, not a field group: `role="group"` on a div is the
+    // appropriate semantics here (a <fieldset> would bring form semantics).
+    // biome-ignore lint/a11y/useSemanticElements: see above
     <div
       role="group"
       data-slot="button-group"
@@ -44,7 +44,7 @@ function ButtonGroup({
   )
 }
 
-// Rótulo/segmento estático dentro do grupo (ex.: prefixo de input ou label).
+// Static label/segment inside the group (e.g. input prefix or label).
 function ButtonGroupText({
   className,
   asChild = false,
@@ -67,7 +67,7 @@ function ButtonGroupText({
   )
 }
 
-// Divisor entre itens do grupo; usa a cor `input` para combinar com as bordas.
+// Divider between group items; uses the `input` color to match the borders.
 function ButtonGroupSeparator({
   className,
   orientation = 'vertical',

@@ -7,8 +7,8 @@ import { RadioGroup, RadioGroupItem } from './radio-group'
 const meta = {
   title: 'Data Entry/RadioGroup',
   component: RadioGroup,
-  // Sem `autodocs`: a página de docs é a MDX customizada (radio-group.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (radio-group.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -51,7 +51,7 @@ const OPTIONS = [
   { value: 'lifetime', label: 'Lifetime', hint: 'One-time payment' },
 ]
 
-// Cartão de opção reutilizado: rótulo associado por `id`/`htmlFor` ao item.
+// Reusable option card: label associated to the item via `id`/`htmlFor`.
 function PlanCard({
   value,
   label,
@@ -84,7 +84,7 @@ export const Playground: Story = {
     defaultValue: { control: 'select', options: OPTIONS.map((o) => o.value) },
   },
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" className="gap-3">
+    <RadioGroup {...args} aria-label="Plan" className="gap-3">
       {OPTIONS.map((opt) => (
         <PlanCard key={opt.value} {...opt} />
       ))}
@@ -94,7 +94,7 @@ export const Playground: Story = {
 
 export const Default: Story = {
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" defaultValue="yearly" className="gap-3">
+    <RadioGroup {...args} aria-label="Plan" defaultValue="yearly" className="gap-3">
       {OPTIONS.map((opt) => (
         <PlanCard key={opt.value} {...opt} />
       ))}
@@ -102,12 +102,12 @@ export const Default: Story = {
   ),
 }
 
-/** Itens lado a lado com `orientation="horizontal"`. */
+/** Items side by side with `orientation="horizontal"`. */
 export const Horizontal: Story = {
   render: (args) => (
     <RadioGroup
       {...args}
-      aria-label="Plano"
+      aria-label="Plan"
       defaultValue="monthly"
       orientation="horizontal"
       className="grid-flow-col"
@@ -126,12 +126,12 @@ export const Horizontal: Story = {
   ),
 }
 
-/** O grupo inteiro pode ser desabilitado de uma vez. */
+/** The entire group can be disabled at once. */
 export const Disabled: Story = {
   render: (args) => (
     <RadioGroup
       {...args}
-      aria-label="Plano"
+      aria-label="Plan"
       defaultValue="monthly"
       disabled
       className="gap-2"
@@ -146,15 +146,15 @@ export const Disabled: Story = {
   ),
 }
 
-/** Um único item pode ser desabilitado, mantendo o resto navegável. */
+/** A single item can be disabled while the rest stays navigable. */
 export const ItemDisabled: Story = {
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" defaultValue="monthly" className="gap-2">
+    <RadioGroup {...args} aria-label="Plan" defaultValue="monthly" className="gap-2">
       <label htmlFor="id-a" className="flex items-center gap-2 text-sm">
         <RadioGroupItem value="monthly" id="id-a" /> Monthly
       </label>
       <label htmlFor="id-b" className="flex items-center gap-2 text-sm opacity-50">
-        <RadioGroupItem value="yearly" id="id-b" disabled /> Yearly (indisponível)
+        <RadioGroupItem value="yearly" id="id-b" disabled /> Yearly (unavailable)
       </label>
       <label htmlFor="id-c" className="flex items-center gap-2 text-sm">
         <RadioGroupItem value="lifetime" id="id-c" /> Lifetime
@@ -163,14 +163,14 @@ export const ItemDisabled: Story = {
   ),
 }
 
-/** Modo controlado: o valor vive no pai e reflete num texto auxiliar. */
+/** Controlled mode: the value lives in the parent and is reflected in a helper text. */
 export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState('monthly')
     return (
       <div className="flex flex-col gap-3">
         <RadioGroup
-          aria-label="Plano"
+          aria-label="Plan"
           value={value}
           onValueChange={setValue}
           className="gap-2"
@@ -186,7 +186,7 @@ export const Controlled: Story = {
             </label>
           ))}
         </RadioGroup>
-        <output className="text-sm text-muted-foreground">Selecionado: {value}</output>
+        <output className="text-sm text-muted-foreground">Selected: {value}</output>
       </div>
     )
   },
@@ -197,7 +197,7 @@ export const Controlled: Story = {
 /** Selecting an item fires `onValueChange` with its value and flips `aria-checked`. */
 export const SelectsOnClick: Story = {
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" className="gap-2">
+    <RadioGroup {...args} aria-label="Plan" className="gap-2">
       {OPTIONS.map((opt) => (
         <label
           key={opt.value}
@@ -225,7 +225,7 @@ export const SelectsOnClick: Story = {
 /** Only one radio is selected at a time — choosing another clears the previous. */
 export const SelectsOnlyOne: Story = {
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" defaultValue="monthly" className="gap-2">
+    <RadioGroup {...args} aria-label="Plan" defaultValue="monthly" className="gap-2">
       {OPTIONS.map((opt) => (
         <label
           key={opt.value}
@@ -246,7 +246,7 @@ export const SelectsOnlyOne: Story = {
     await expect(monthly).toHaveAttribute('aria-checked', 'true')
     await userEvent.click(lifetime)
     await expect(lifetime).toHaveAttribute('aria-checked', 'true')
-    // A seleção anterior é limpa — só um item fica marcado.
+    // The previous selection is cleared — only one item stays checked.
     await expect(monthly).toHaveAttribute('aria-checked', 'false')
   },
 }
@@ -254,7 +254,7 @@ export const SelectsOnlyOne: Story = {
 /** Arrow keys move the selection along the group (roving focus). */
 export const NavigatesWithArrows: Story = {
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" defaultValue="monthly" className="gap-2">
+    <RadioGroup {...args} aria-label="Plan" defaultValue="monthly" className="gap-2">
       {OPTIONS.map((opt) => (
         <label
           key={opt.value}
@@ -271,14 +271,14 @@ export const NavigatesWithArrows: Story = {
     const canvas = within(canvasElement)
     const monthly = canvas.getByRole('radio', { name: 'Monthly' })
 
-    // Tab leva o foco ao item selecionado (roving tabindex do Radix).
+    // Tab moves focus to the selected item (Radix roving tabindex).
     await userEvent.tab()
     await expect(monthly).toHaveFocus()
 
-    // Seta move o foco (roving) e seleciona o item focado. Mantemos a tecla
-    // pressionada (`{ArrowDown>}`) durante o assert: o Radix só dispara o
-    // onCheck no onFocus enquanto a seta está abaixada (isArrowKeyPressedRef),
-    // e o keyup do userEvent zeraria essa flag antes do foco assentar.
+    // Arrow moves focus (roving) and selects the focused item. We keep the key
+    // held down (`{ArrowDown>}`) during the assert: Radix only fires the
+    // onCheck on onFocus while the arrow is held (isArrowKeyPressedRef), and
+    // userEvent's keyup would reset that flag before focus settles.
     await userEvent.keyboard('{ArrowDown>}')
     const yearly = canvas.getByRole('radio', { name: 'Yearly' })
     await expect(yearly).toHaveFocus()
@@ -292,7 +292,7 @@ export const NavigatesWithArrows: Story = {
 export const DisabledDoesNotSelect: Story = {
   args: { disabled: true },
   render: (args) => (
-    <RadioGroup {...args} aria-label="Plano" className="gap-2">
+    <RadioGroup {...args} aria-label="Plan" className="gap-2">
       <label htmlFor="d-a" className="flex items-center gap-2 text-sm">
         <RadioGroupItem value="monthly" id="d-a" /> Monthly
       </label>
@@ -305,8 +305,8 @@ export const DisabledDoesNotSelect: Story = {
     const canvas = within(canvasElement)
     const monthly = canvas.getByRole('radio', { name: 'Monthly' })
 
-    // O runtime do browser bloqueia clique em pointer-events:none; ignoramos o
-    // check apenas para confirmar que nada é selecionado nem notificado.
+    // The browser runtime blocks clicks on pointer-events:none; we skip the
+    // check only to confirm that nothing gets selected or notified.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(monthly)
     await expect(args.onValueChange).not.toHaveBeenCalled()

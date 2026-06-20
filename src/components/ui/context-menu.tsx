@@ -5,10 +5,10 @@ import type * as React from 'react'
 import { svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
-// Context Menu construído sobre o Radix `ContextMenu`. Abre um menu flutuante na
-// posição do cursor a partir do clique direito (ou toque longo) sobre o gatilho,
-// em portal, com foco/teclado e colisão gerenciados. Suporta itens simples,
-// checkbox, radio, rótulos, separadores, atalhos e submenus aninhados.
+// Context Menu built on top of Radix `ContextMenu`. Opens a floating menu at the
+// cursor position from a right-click (or long press) on the trigger, in a portal,
+// with focus/keyboard and collision handled. Supports plain items, checkbox, radio,
+// labels, separators, shortcuts and nested submenus.
 
 function ContextMenu({
   ...props
@@ -122,7 +122,7 @@ function ContextMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        // Ícones embutidos ganham o tom mutado por padrão (e destrutivo na variante).
+        // Embedded icons get the muted tone by default (and destructive in that variant).
         "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 data-[variant=destructive]:text-destructive-text data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive-text dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive-text!",
         svgIcon,
         className,

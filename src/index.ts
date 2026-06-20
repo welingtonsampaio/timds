@@ -1,8 +1,8 @@
-// Estilos compilados do design system (tokens + utilitários usados pelos componentes).
-// Disponíveis também via import "timds/styles.css".
+// Compiled design system styles (tokens + utilities used by the components).
+// Also available via import "timds/styles.css".
 import './styles.css'
 
-// Componentes
+// Components
 export { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 export {
   AlertDialog,
@@ -262,5 +262,5 @@ export {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-// Utilitários
+// Utilities
 export { cn } from '@/lib/utils'

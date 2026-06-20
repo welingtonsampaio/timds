@@ -23,8 +23,8 @@ import {
 const meta = {
   title: 'Overlays/DropdownMenu',
   component: DropdownMenu,
-  // Sem `autodocs`: a página de docs é a MDX customizada (dropdown-menu.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (dropdown-menu.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -40,9 +40,9 @@ const meta = {
           'single-value selection inside a form, prefer `Select`.',
       },
     },
-    // As histórias de demonstração/interação começam fechadas: o Chromatic só
-    // veria o trigger, então não vale snapshot. A cobertura visual fica nas
-    // histórias `Visual*` (abertas), que reativam o snapshot individualmente.
+    // The demo/interaction stories start closed: Chromatic would only see the
+    // trigger, so a snapshot isn't worth it. Visual coverage lives in the
+    // `Visual*` stories (open), which re-enable the snapshot individually.
     chromatic: { disableSnapshot: true },
   },
 } satisfies Meta<typeof DropdownMenu>
@@ -54,8 +54,8 @@ type Story = StoryObj<typeof meta>
 const onSelect = fn()
 
 /* --------------------------------------------------------------------------
- * Render stories (começam fechadas) — uma por composição.
- * O conteúdo é portado para document.body: nas play functions use `screen`.
+ * Render stories (start closed) — one per composition.
+ * The content is portaled into document.body: in play functions use `screen`.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — open the menu and pick an action. */
@@ -102,7 +102,7 @@ export const WithCheckboxItems: Story = {
           <DropdownMenuSeparator />
           <DropdownMenuCheckboxItem
             checked={showStatus}
-            // preventDefault mantém o menu aberto a cada toggle (padrão comum).
+            // preventDefault keeps the menu open on each toggle (common pattern).
             onSelect={(e) => e.preventDefault()}
             onCheckedChange={setShowStatus}
           >
@@ -194,8 +194,8 @@ export const WithDisabledItem: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Conteúdo portado: busque o menu e os itens via `screen`, não `canvas`.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Portaled content: query the menu and items via `screen`, not `canvas`.
  * -------------------------------------------------------------------------- */
 
 /** Clicking the trigger opens the menu and exposes `role="menu"`. */
@@ -203,7 +203,7 @@ export const OpensOnTrigger: Story = {
   render: Playground.render,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O menu começa fechado: nada portado ainda.
+    // The menu starts closed: nothing portaled yet.
     await expect(screen.queryByRole('menu')).not.toBeInTheDocument()
     const trigger = canvas.getByRole('button', { name: 'Open menu' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -211,7 +211,7 @@ export const OpensOnTrigger: Story = {
     const menu = await screen.findByRole('menu')
     await expect(menu).toBeVisible()
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-    // Fecha para a story não terminar aberta.
+    // Close so the story doesn't end open.
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
   },
@@ -225,10 +225,10 @@ export const SelectsItem: Story = {
     onSelect.mockClear()
     await userEvent.click(canvas.getByRole('button', { name: 'Open menu' }))
     await screen.findByRole('menu')
-    // O nome acessível inclui o atalho (ex.: "Profile ⇧⌘P") — casamos por regex.
+    // The accessible name includes the shortcut (e.g. "Profile ⇧⌘P") — match by regex.
     await userEvent.click(screen.getByRole('menuitem', { name: /Profile/ }))
     await expect(onSelect).toHaveBeenCalledOnce()
-    // Selecionar um item fecha o menu.
+    // Selecting an item closes the menu.
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
   },
 }
@@ -255,15 +255,15 @@ export const KeyboardNavigation: Story = {
     const trigger = canvas.getByRole('button', { name: 'Open menu' })
     await userEvent.click(trigger)
     await screen.findByRole('menu')
-    // A seta para baixo foca o primeiro item (o nome inclui o atalho).
+    // Arrow down focuses the first item (the name includes the shortcut).
     await userEvent.keyboard('{ArrowDown}')
     await expect(screen.getByRole('menuitem', { name: /Profile/ })).toHaveFocus()
-    // A próxima seta avança para o item seguinte.
+    // The next arrow advances to the following item.
     await userEvent.keyboard('{ArrowDown}')
     await expect(screen.getByRole('menuitem', { name: /Settings/ })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
-    // Ao fechar, o foco retorna ao trigger.
+    // On close, focus returns to the trigger.
     await waitFor(() => expect(trigger).toHaveFocus())
   },
 }
@@ -278,8 +278,8 @@ export const TogglesCheckboxItem: Story = {
     const activity = screen.getByRole('menuitemcheckbox', { name: 'Activity bar' })
     await expect(activity).toHaveAttribute('aria-checked', 'false')
     await userEvent.click(activity)
-    // Como o item faz preventDefault no select, o menu permanece aberto e o
-    // estado alterna para marcado.
+    // Since the item calls preventDefault on select, the menu stays open and the
+    // state toggles to checked.
     await waitFor(() =>
       expect(
         screen.getByRole('menuitemcheckbox', { name: 'Activity bar' }),
@@ -297,7 +297,7 @@ export const SelectsRadioItem: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Panel position' }))
     await screen.findByRole('menu')
-    // "Bottom" começa marcado.
+    // "Bottom" starts checked.
     await expect(screen.getByRole('menuitemradio', { name: 'Bottom' })).toHaveAttribute(
       'aria-checked',
       'true',
@@ -309,7 +309,7 @@ export const SelectsRadioItem: Story = {
         'true',
       ),
     )
-    // O valor anterior deixa de estar marcado (seleção única).
+    // The previous value is no longer checked (single selection).
     await expect(screen.getByRole('menuitemradio', { name: 'Bottom' })).toHaveAttribute(
       'aria-checked',
       'false',
@@ -329,8 +329,8 @@ export const DisabledItemDoesNotFire: Story = {
     await screen.findByRole('menu')
     const disabled = screen.getByRole('menuitem', { name: 'Duplicate' })
     await expect(disabled).toHaveAttribute('aria-disabled', 'true')
-    // Em disabled o item tem pointer-events:none; forçamos o clique para provar
-    // que onSelect não dispara mesmo assim.
+    // When disabled the item has pointer-events:none; we force the click to prove
+    // that onSelect doesn't fire anyway.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(disabled)
     await expect(onSelect).not.toHaveBeenCalled()
@@ -349,7 +349,7 @@ export const OpensSubmenu: Story = {
     const subTrigger = screen.getByRole('menuitem', { name: 'Share' })
     await expect(subTrigger).toHaveAttribute('aria-haspopup', 'menu')
     await userEvent.click(subTrigger)
-    // O submenu abre como um segundo `menu` com seus próprios itens.
+    // The submenu opens as a second `menu` with its own items.
     await waitFor(() =>
       expect(screen.getByRole('menuitem', { name: 'Copy link' })).toBeVisible(),
     )
@@ -360,21 +360,21 @@ export const OpensSubmenu: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Fixtures de regressão visual (Chromatic): renderizam o menu aberto
- * (`defaultOpen`). Ocultas do sidebar/docs (`!dev`/`!autodocs`), mas seguem
- * rodando como smoke test (tag `test`) e reativam o snapshot que o meta desliga.
+ * Visual regression fixtures (Chromatic): render the menu open
+ * (`defaultOpen`). Hidden from the sidebar/docs (`!dev`/`!autodocs`), but they
+ * keep running as a smoke test (tag `test`) and re-enable the snapshot the meta turns off.
  * -------------------------------------------------------------------------- */
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Partial<Story>
 
-// Fixtures usam `modal={false}`: o menu precisa do trigger como âncora do Popper
-// para se posicionar (sem ele o conteúdo não aparece). No modo modal o trigger
-// seria marcado `aria-hidden` mantendo-se focável (viola `aria-hidden-focus`);
-// não-modal não esconde os irmãos, então o trigger ancora o menu sem violação.
+// Fixtures use `modal={false}`: the menu needs the trigger as the Popper anchor
+// to position itself (without it the content doesn't appear). In modal mode the
+// trigger would be marked `aria-hidden` while staying focusable (violates `aria-hidden-focus`);
+// non-modal doesn't hide the siblings, so the trigger anchors the menu without a violation.
 
-/** Captura visual — menu padrão aberto (label, grupos, atalhos, destrutivo). */
+/** Visual capture — default menu open (label, groups, shortcuts, destructive). */
 export const VisualDefault: Story = {
   ...visual,
   render: (args) => (
@@ -400,7 +400,7 @@ export const VisualDefault: Story = {
   ),
 }
 
-/** Captura visual — itens checkbox e radio (com indicadores marcados). */
+/** Visual capture — checkbox and radio items (with checked indicators). */
 export const VisualSelectionItems: Story = {
   ...visual,
   render: (args) => (
@@ -423,7 +423,7 @@ export const VisualSelectionItems: Story = {
   ),
 }
 
-/** Captura visual — item desabilitado e variante destrutiva. */
+/** Visual capture — disabled item and destructive variant. */
 export const VisualStates: Story = {
   ...visual,
   render: (args) => (

@@ -1,20 +1,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* A fonte (Inter) NÃO é carregada aqui: `--font-sans` apenas declara a família
-   preferida + fallbacks. Isto mantém o CSS distribuído sem `@import` remoto — um
-   `@import` no topo do CSS compilado quebra a ordenação quando o consumidor o
-   re-importa via CSS ("@import must precede all other statements"). Cada app
-   carrega Inter como preferir (link/@font-face). No nosso Storybook/playground a
-   fonte é carregada via index.html e .storybook/preview.tsx. */
+/* The font (Inter) is NOT loaded here: `--font-sans` only declares the preferred
+   family + fallbacks. This keeps the distributed CSS free of a remote `@import` — an
+   `@import` at the top of the compiled CSS breaks ordering when the consumer
+   re-imports it via CSS ("@import must precede all other statements"). Each app
+   loads Inter however it prefers (link/@font-face). In our Storybook/playground the
+   font is loaded via index.html and .storybook/preview.tsx. */
 
 @custom-variant dark (&:is(.dark *));
 
 /* ==========================================================================
    timds design tokens
-   Extraído da referência (dashboard analytics dark): primária violeta,
-   acento ciano, superfícies índigo profundas. Dark é fiel à referência;
-   light é uma variação harmônica da mesma violeta.
+   Extracted from the reference (dark analytics dashboard): violet primary,
+   cyan accent, deep indigo surfaces. Dark is faithful to the reference;
+   light is a harmonic variation of the same violet.
    ========================================================================== */
 
 :root {
@@ -36,11 +36,11 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.202 0.02 289.1);
 
-  /* === PRIMARY (violeta da marca) === */
+  /* === PRIMARY (brand violet) === */
   --primary: oklch(0.549 0.233 300.8);
   --primary-foreground: oklch(0.99 0 0);
-  /* Violeta escurecido para uso como TEXTO/link sobre superfícies claras
-     (o --primary é fill; como texto fica abaixo de AA). 5.5:1 sobre branco. */
+  /* Darkened violet for use as TEXT/link on light surfaces
+     (--primary is fill; as text it falls below AA). 5.5:1 on white. */
   --primary-text: oklch(0.52 0.22 300.8);
 
   /* === SECONDARY === */
@@ -56,26 +56,26 @@
   --accent-foreground: oklch(0.286 0.047 290.1);
 
   /* === DESTRUCTIVE ===
-     L 0.586 -> 0.564 para o texto branco passar com folga (>= 4.5:1, AA). */
+     L 0.586 -> 0.564 so white text passes comfortably (>= 4.5:1, AA). */
   --destructive: oklch(0.564 0.222 17.6);
   --destructive-foreground: oklch(0.99 0 0);
-  /* Vermelho para uso como TEXTO/ícone (item destrutivo em menus, título de
-     alert destructive) sobre superfícies claras. 5.1:1 sobre branco. */
+  /* Red for use as TEXT/icon (destructive item in menus, destructive
+     alert title) on light surfaces. 5.1:1 on white. */
   --destructive-text: oklch(0.54 0.2 17.6);
 
   /* === BORDERS & INPUTS ===
-     L reduzida (0.925 -> 0.90 / input 0.87) para a borda ficar perceptível
-     sobre o branco; a antiga (1.25:1) era quase invisível. */
+     L reduced (0.925 -> 0.90 / input 0.87) so the border is perceptible
+     on white; the old one (1.25:1) was almost invisible. */
   --border: oklch(0.9 0.018 297.5);
   --input: oklch(0.87 0.02 297.5);
   --ring: oklch(0.549 0.233 300.8);
 
   /* === CHART === */
-  --chart-1: oklch(0.549 0.233 300.8); /* violeta */
-  --chart-2: oklch(0.656 0.132 238.2); /* ciano */
-  --chart-3: oklch(0.46 0.161 271.4); /* azul */
-  --chart-4: oklch(0.614 0.195 352.8); /* rosa */
-  --chart-5: oklch(0.631 0.134 162.7); /* verde */
+  --chart-1: oklch(0.549 0.233 300.8); /* violet */
+  --chart-2: oklch(0.656 0.132 238.2); /* cyan */
+  --chart-3: oklch(0.46 0.161 271.4); /* blue */
+  --chart-4: oklch(0.614 0.195 352.8); /* pink */
+  --chart-5: oklch(0.631 0.134 162.7); /* green */
 
   /* === SIDEBAR === */
   --sidebar: oklch(0.984 0.005 297.7);
@@ -87,10 +87,10 @@
   --sidebar-border: oklch(0.925 0.016 297.5);
   --sidebar-ring: oklch(0.549 0.233 300.8);
 
-  /* === SEMÂNTICAS CUSTOMIZADAS ===
-     Fundos vívidos ficam na "zona do meio" (L~0.63-0.69), onde texto branco
-     não atinge 4.5:1. Mantemos o fundo e usamos texto escuro da mesma matiz
-     (contraste >= 4.5:1, WCAG AA) — mesma estratégia do dark. */
+  /* === CUSTOM SEMANTICS ===
+     Vivid backgrounds sit in the "middle zone" (L~0.63-0.69), where white text
+     does not reach 4.5:1. We keep the background and use dark text of the same hue
+     (contrast >= 4.5:1, WCAG AA) — same strategy as dark. */
   --success: oklch(0.627 0.17 149.2);
   --success-foreground: oklch(0.22 0.05 149.2);
   --warning: oklch(0.666 0.157 58.3);
@@ -98,19 +98,19 @@
   --info: oklch(0.685 0.148 237.3);
   --info-foreground: oklch(0.22 0.05 237.3);
 
-  /* === SEMÂNTICAS — TEXTO/ÍCONE ===
-     Os tokens acima são vívidos para FUNDOS preenchidos (com texto escuro por
-     cima). Como cor de ÍCONE/TEXTO sobre superfície clara eles ficam fracos
-     (info 2.77:1, warning 3.18:1, success 3.30:1). Estes tokens escuros são
-     para esse papel e passam AA (>= 4.5:1) sobre o branco. No dark, a cor
-     vívida já contrasta com o fundo escuro, então apontam para o token base. */
+  /* === SEMANTICS — TEXT/ICON ===
+     The tokens above are vivid for filled BACKGROUNDS (with dark text on
+     top). As ICON/TEXT color on a light surface they are weak
+     (info 2.77:1, warning 3.18:1, success 3.30:1). These dark tokens are
+     for that role and pass AA (>= 4.5:1) on white. In dark mode, the vivid
+     color already contrasts with the dark background, so they point to the base token. */
   --success-text: oklch(0.52 0.15 149.2);
   --warning-text: oklch(0.52 0.13 58.3);
   --info-text: oklch(0.52 0.15 237.3);
 }
 
 .dark {
-  /* === BASE (fiel à referência) === */
+  /* === BASE (faithful to the reference) === */
   --background: oklch(0.159 0.023 279.4);
   --foreground: oklch(0.939 0.015 281.9);
 
@@ -122,14 +122,14 @@
   --popover: oklch(0.231 0.044 284.4);
   --popover-foreground: oklch(0.939 0.015 281.9);
 
-  /* === PRIMARY (violeta) ===
-     L reduzida de 0.622 -> 0.56 para garantir contraste >= 4.5:1 (WCAG AA)
-     do texto branco sobre o fundo violeta (ex.: Button). Ring/chart mantêm
-     o violeta mais vívido (0.622), pois não carregam texto por cima. */
+  /* === PRIMARY (violet) ===
+     L reduced from 0.622 -> 0.56 to ensure contrast >= 4.5:1 (WCAG AA)
+     of white text on the violet background (e.g.: Button). Ring/chart keep
+     the more vivid violet (0.622), since they carry no text on top. */
   --primary: oklch(0.56 0.217 302.6);
   --primary-foreground: oklch(0.99 0 0);
-  /* No dark o --primary (fill) fica abaixo de AA como texto sobre o fundo
-     escuro; clareamos para 5.5:1 (pior caso sobre accent). */
+  /* In dark mode --primary (fill) falls below AA as text on the dark
+     background; we lighten it to 5.5:1 (worst case on accent). */
   --primary-text: oklch(0.74 0.18 302.6);
 
   /* === SECONDARY === */
@@ -145,26 +145,26 @@
   --accent-foreground: oklch(0.939 0.015 281.9);
 
   /* === DESTRUCTIVE ===
-     L 0.692 -> 0.56 para o texto branco atingir >= 4.5:1 (AA) com folga,
-     mantendo o vermelho de erro. */
+     L 0.692 -> 0.56 so white text reaches >= 4.5:1 (AA) comfortably,
+     keeping the error red. */
   --destructive: oklch(0.56 0.193 12.7);
   --destructive-foreground: oklch(0.99 0 0);
-  /* Clareado para servir de texto/ícone sobre superfícies escuras (5.1:1). */
+  /* Lightened to serve as text/icon on dark surfaces (5.1:1). */
   --destructive-text: oklch(0.72 0.17 12.7);
 
   /* === BORDERS & INPUTS ===
-     L elevada (0.303 -> 0.34 / input 0.39) para a borda destacar do fundo
-     escuro; a antiga (1.42:1) era quase imperceptível. */
+     L raised (0.303 -> 0.34 / input 0.39) so the border stands out from the dark
+     background; the old one (1.42:1) was almost imperceptible. */
   --border: oklch(0.34 0.05 285.7);
   --input: oklch(0.39 0.05 285.3);
   --ring: oklch(0.622 0.217 302.6);
 
   /* === CHART === */
-  --chart-1: oklch(0.622 0.217 302.6); /* violeta */
-  --chart-2: oklch(0.757 0.122 237.7); /* ciano */
-  --chart-3: oklch(0.533 0.147 266.5); /* azul */
-  --chart-4: oklch(0.672 0.189 352.4); /* rosa */
-  --chart-5: oklch(0.773 0.153 163.2); /* verde */
+  --chart-1: oklch(0.622 0.217 302.6); /* violet */
+  --chart-2: oklch(0.757 0.122 237.7); /* cyan */
+  --chart-3: oklch(0.533 0.147 266.5); /* blue */
+  --chart-4: oklch(0.672 0.189 352.4); /* pink */
+  --chart-5: oklch(0.773 0.153 163.2); /* green */
 
   /* === SIDEBAR === */
   --sidebar: oklch(0.172 0.031 282.7);
@@ -176,7 +176,7 @@
   --sidebar-border: oklch(0.303 0.064 285.7);
   --sidebar-ring: oklch(0.622 0.217 302.6);
 
-  /* === SEMÂNTICAS CUSTOMIZADAS === */
+  /* === CUSTOM SEMANTICS === */
   --success: oklch(0.773 0.153 163.2);
   --success-foreground: oklch(0.18 0.03 165);
   --warning: oklch(0.837 0.164 84.4);
@@ -184,10 +184,10 @@
   --info: oklch(0.757 0.122 237.7);
   --info-foreground: oklch(0.18 0.03 240);
 
-  /* === SEMÂNTICAS — TEXTO/ÍCONE ===
-     No dark a cor vívida já contrasta com o fundo escuro (success 9.3:1,
-     warning 10.7:1, info 8.4:1 sobre o card), então o token de texto reusa
-     o vívido. */
+  /* === SEMANTICS — TEXT/ICON ===
+     In dark mode the vivid color already contrasts with the dark background (success 9.3:1,
+     warning 10.7:1, info 8.4:1 on the card), so the text token reuses
+     the vivid one. */
   --success-text: oklch(0.773 0.153 163.2);
   --warning-text: oklch(0.837 0.164 84.4);
   --info-text: oklch(0.757 0.122 237.7);

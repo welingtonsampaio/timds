@@ -5,12 +5,13 @@ import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test'
 import { Button } from './button'
 import { Toaster, type ToasterProps, toast } from './sonner'
 
-// Spy de módulo para a ação dos toasts (action/cancel). É limpo no início de
-// cada play porque vive fora de `meta.args` (que reseta sozinho entre stories).
+// Module-level spy for the toast actions (action/cancel). It's cleared at the
+// start of each play because it lives outside `meta.args` (which resets itself
+// between stories).
 const onAction = fn()
 
-// Envólucro comum das demos: os gatilhos + um único Toaster por story (evita
-// montar dois Toasters, o que duplicaria cada notificação).
+// Common wrapper for the demos: the triggers + a single Toaster per story (avoids
+// mounting two Toasters, which would duplicate every notification).
 function Demo({ children, toaster }: { children: ReactNode; toaster?: ToasterProps }) {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -23,8 +24,8 @@ function Demo({ children, toaster }: { children: ReactNode; toaster?: ToasterPro
 const meta = {
   title: 'Feedback/Toaster',
   component: Toaster,
-  // Sem `autodocs`: a página de docs é a MDX customizada (sonner.mdx). Ter os
-  // dois geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (sonner.mdx). Having both
+  // would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -38,9 +39,9 @@ const meta = {
           'light/dark automatically — without `next-themes`.',
       },
     },
-    // Toasts são imperativos e animados: os snapshots determinísticos viriam de
-    // dentro de um `play` (portal + animação de entrada = flaky). A cobertura de
-    // regressão aqui é comportamental (play functions); o visual fica de fora.
+    // Toasts are imperative and animated: deterministic snapshots would have to
+    // come from inside a `play` (portal + entry animation = flaky). The regression
+    // coverage here is behavioral (play functions); the visual is left out.
     chromatic: { disableSnapshot: true },
   },
   args: {
@@ -105,11 +106,9 @@ export const Playground: Story = {
   render: (args) => (
     <Demo toaster={args}>
       <Button
-        onClick={() =>
-          toast('Evento criado', { description: 'Sexta, 23 de maio às 19h' })
-        }
+        onClick={() => toast('Event created', { description: 'Friday, May 23 at 7pm' })}
       >
-        Mostrar toast
+        Show toast
       </Button>
     </Demo>
   ),
@@ -119,19 +118,19 @@ export const Playground: Story = {
 export const Colors: Story = {
   render: (args) => (
     <Demo toaster={args}>
-      <Button variant="outline" onClick={() => toast('Notificação neutra')}>
+      <Button variant="outline" onClick={() => toast('Neutral notification')}>
         Default
       </Button>
-      <Button variant="outline" onClick={() => toast.success('Alterações salvas')}>
+      <Button variant="outline" onClick={() => toast.success('Changes saved')}>
         Success
       </Button>
-      <Button variant="outline" onClick={() => toast.error('Falha ao salvar')}>
+      <Button variant="outline" onClick={() => toast.error('Failed to save')}>
         Error
       </Button>
-      <Button variant="outline" onClick={() => toast.warning('Cota quase no limite')}>
+      <Button variant="outline" onClick={() => toast.warning('Quota almost reached')}>
         Warning
       </Button>
-      <Button variant="outline" onClick={() => toast.info('Nova versão disponível')}>
+      <Button variant="outline" onClick={() => toast.info('New version available')}>
         Info
       </Button>
     </Demo>
@@ -144,24 +143,24 @@ export const WithAction: Story = {
     <Demo toaster={args}>
       <Button
         onClick={() =>
-          toast('Arquivo movido para a lixeira', {
-            action: { label: 'Desfazer', onClick: () => onAction() },
+          toast('File moved to trash', {
+            action: { label: 'Undo', onClick: () => onAction() },
           })
         }
       >
-        Com ação
+        With action
       </Button>
       <Button
         variant="outline"
         onClick={() =>
-          toast('Excluir definitivamente?', {
-            action: { label: 'Excluir', onClick: () => onAction() },
-            cancel: { label: 'Cancelar', onClick: () => onAction() },
+          toast('Delete permanently?', {
+            action: { label: 'Delete', onClick: () => onAction() },
+            cancel: { label: 'Cancel', onClick: () => onAction() },
             duration: Number.POSITIVE_INFINITY,
           })
         }
       >
-        Ação + cancelar
+        Action + cancel
       </Button>
     </Demo>
   ),
@@ -171,11 +170,17 @@ export const WithAction: Story = {
 export const Durations: Story = {
   render: (args) => (
     <Demo toaster={args}>
-      <Button variant="outline" onClick={() => toast('Some em 1s', { duration: 1000 })}>
-        Curto (1s)
+      <Button
+        variant="outline"
+        onClick={() => toast('Dismisses in 1s', { duration: 1000 })}
+      >
+        Short (1s)
       </Button>
-      <Button variant="outline" onClick={() => toast('Some em 10s', { duration: 10000 })}>
-        Longo (10s)
+      <Button
+        variant="outline"
+        onClick={() => toast('Dismisses in 10s', { duration: 10000 })}
+      >
+        Long (10s)
       </Button>
     </Demo>
   ),
@@ -188,13 +193,13 @@ export const Persistent: Story = {
     <Demo toaster={args}>
       <Button
         onClick={() =>
-          toast('Conexão perdida', {
-            description: 'Tentando reconectar…',
+          toast('Connection lost', {
+            description: 'Trying to reconnect…',
             duration: Number.POSITIVE_INFINITY,
           })
         }
       >
-        Toast fixo
+        Persistent toast
       </Button>
     </Demo>
   ),
@@ -207,33 +212,33 @@ export const PromiseToast: Story = {
       <Button
         onClick={() =>
           toast.promise(new Promise<void>((resolve) => setTimeout(resolve, 800)), {
-            loading: 'Salvando…',
-            success: 'Tudo salvo!',
-            error: 'Não foi possível salvar',
+            loading: 'Saving…',
+            success: 'All saved!',
+            error: 'Could not save',
           })
         }
       >
-        Salvar
+        Save
       </Button>
     </Demo>
   ),
 }
 
-/* ----- Interaction tests (regression checks) — toasts vão ao document.body,
-   então consultamos com `screen`. Cada play limpa toasts pendentes no início. -- */
+/* ----- Interaction tests (regression checks) — toasts go to document.body,
+   so we query with `screen`. Each play clears pending toasts at the start. -- */
 
 /** Clicking the trigger renders a toast with the given message. */
 export const FiresToast: Story = {
   render: (args) => (
     <Demo toaster={args}>
-      <Button onClick={() => toast('Evento criado')}>Mostrar toast</Button>
+      <Button onClick={() => toast('Event created')}>Show toast</Button>
     </Demo>
   ),
   play: async ({ canvasElement }) => {
     toast.dismiss()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Mostrar toast' }))
-    await expect(await screen.findByText('Evento criado')).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Show toast' }))
+    await expect(await screen.findByText('Event created')).toBeInTheDocument()
   },
 }
 
@@ -244,8 +249,8 @@ export const SemanticType: Story = {
     toast.dismiss()
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Success' }))
-    await screen.findByText('Alterações salvas')
-    // data-type é um atributo estrutural do sonner (não dependemos de CSS).
+    await screen.findByText('Changes saved')
+    // data-type is a structural attribute of sonner (we don't depend on CSS).
     await waitFor(() =>
       expect(
         document.querySelector('[data-sonner-toast][data-type="success"]'),
@@ -261,9 +266,9 @@ export const ActionRunsCallback: Story = {
     toast.dismiss()
     onAction.mockClear()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Com ação' }))
-    await screen.findByText('Arquivo movido para a lixeira')
-    await userEvent.click(screen.getByRole('button', { name: 'Desfazer' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'With action' }))
+    await screen.findByText('File moved to trash')
+    await userEvent.click(screen.getByRole('button', { name: 'Undo' }))
     await expect(onAction).toHaveBeenCalledOnce()
   },
 }
@@ -274,10 +279,10 @@ export const ShortDurationAutoDismisses: Story = {
   play: async ({ canvasElement }) => {
     toast.dismiss()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Curto (1s)' }))
-    await expect(await screen.findByText('Some em 1s')).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Short (1s)' }))
+    await expect(await screen.findByText('Dismisses in 1s')).toBeInTheDocument()
     await waitFor(
-      () => expect(screen.queryByText('Some em 1s')).not.toBeInTheDocument(),
+      () => expect(screen.queryByText('Dismisses in 1s')).not.toBeInTheDocument(),
       { timeout: 4000 },
     )
   },
@@ -290,12 +295,12 @@ export const CloseButtonDismisses: Story = {
   play: async ({ canvasElement }) => {
     toast.dismiss()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Toast fixo' }))
-    await expect(await screen.findByText('Conexão perdida')).toBeInTheDocument()
-    // O botão de fechar do sonner expõe aria-label "Close toast".
+    await userEvent.click(canvas.getByRole('button', { name: 'Persistent toast' }))
+    await expect(await screen.findByText('Connection lost')).toBeInTheDocument()
+    // Sonner's close button exposes aria-label "Close toast".
     await userEvent.click(screen.getByRole('button', { name: 'Close toast' }))
     await waitFor(() =>
-      expect(screen.queryByText('Conexão perdida')).not.toBeInTheDocument(),
+      expect(screen.queryByText('Connection lost')).not.toBeInTheDocument(),
     )
   },
 }
@@ -306,10 +311,10 @@ export const PromiseResolves: Story = {
   play: async ({ canvasElement }) => {
     toast.dismiss()
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Salvar' }))
-    await expect(await screen.findByText('Salvando…')).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Save' }))
+    await expect(await screen.findByText('Saving…')).toBeInTheDocument()
     await expect(
-      await screen.findByText('Tudo salvo!', {}, { timeout: 4000 }),
+      await screen.findByText('All saved!', {}, { timeout: 4000 }),
     ).toBeInTheDocument()
   },
 }

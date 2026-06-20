@@ -7,8 +7,8 @@ import { Slider } from './slider'
 const meta = {
   title: 'Data Entry/Slider',
   component: Slider,
-  // Sem `autodocs`: a página de docs é a MDX customizada (slider.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (slider.mdx), which
+  // embeds these stories. Having both would produce duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -214,14 +214,14 @@ export const DisabledDoesNotChange: Story = {
     const canvas = within(canvasElement)
     const thumb = canvas.getByRole('slider')
 
-    // Estado desabilitado vem do Radix via `data-disabled` (o Thumb é um span).
+    // Disabled state comes from Radix via `data-disabled` (the Thumb is a span).
     await expect(thumb).toHaveAttribute('data-disabled')
 
-    // Não é alcançável por teclado: o Tab não pousa nele.
+    // Not reachable by keyboard: Tab does not land on it.
     await userEvent.tab()
     await expect(thumb).not.toHaveFocus()
 
-    // E mesmo com foco programático, as teclas não alteram o valor.
+    // And even with programmatic focus, the keys do not change the value.
     thumb.focus()
     await userEvent.keyboard('{ArrowRight}')
     await expect(args.onValueChange).not.toHaveBeenCalled()

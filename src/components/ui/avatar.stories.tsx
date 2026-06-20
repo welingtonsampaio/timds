@@ -10,19 +10,19 @@ import {
   AvatarImage,
 } from './avatar'
 
-// Imagem estável usada nas histórias visuais.
+// Stable image used in the visual stories.
 const SRC = 'https://github.com/shadcn.png'
 
-// PNG 1x1 transparente embutido (data URI): carrega localmente, sem rede, então o
-// teste que depende do load da imagem é determinístico no browser de teste.
+// Inlined 1x1 transparent PNG (data URI): loads locally, no network, so the
+// test that depends on the image load is deterministic in the test browser.
 const SRC_INLINE =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC'
 
 const meta = {
   title: 'Data Display/Avatar',
   component: Avatar,
-  // Sem `autodocs`: a página de docs é a MDX customizada (avatar.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (avatar.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -57,16 +57,16 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por variante / composição visual.
- * Cada uma monta sem erro e passa pelo axe automaticamente.
+ * Render stories — one per variant / visual composition.
+ * Each one mounts without error and passes axe automatically.
  * -------------------------------------------------------------------------- */
 
-/** Totalmente interativo — ajuste cada prop pelo painel **Controls**. */
+/** Fully interactive — tweak each prop via the **Controls** panel. */
 export const Playground: Story = {}
 
 export const Default: Story = {}
 
-/** Os três tamanhos lado a lado. */
+/** The three sizes side by side. */
 export const Sizes: Story = {
   render: () => (
     <div className="flex items-center gap-4">
@@ -86,7 +86,7 @@ export const Sizes: Story = {
   ),
 }
 
-/** Sem imagem válida, o fallback (iniciais) é exibido. */
+/** Without a valid image, the fallback (initials) is shown. */
 export const Fallback: Story = {
   render: () => (
     <Avatar>
@@ -95,7 +95,7 @@ export const Fallback: Story = {
   ),
 }
 
-/** Indicador de status sobreposto via `AvatarBadge`. */
+/** Status indicator overlaid via `AvatarBadge`. */
 export const WithBadge: Story = {
   render: () => (
     <div className="flex items-center gap-4">
@@ -118,7 +118,7 @@ export const WithBadge: Story = {
   ),
 }
 
-/** Pilha de avatares com contador final. */
+/** Stack of avatars with a trailing count. */
 export const Group: Story = {
   render: () => (
     <AvatarGroup>
@@ -138,13 +138,13 @@ export const Group: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Avatar não é interativo (sem callbacks/foco): asseguramos a composição
- * estrutural (image alt, fallback, data-slots, contagem do grupo).
- * Sempre `await` em expect.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Avatar is not interactive (no callbacks/focus): we assert the structural
+ * composition (image alt, fallback, data-slots, group count).
+ * Always `await` on expect.
  * -------------------------------------------------------------------------- */
 
-/** O fallback (iniciais) é renderizado quando não há imagem. */
+/** The fallback (initials) is rendered when there is no image. */
 export const FallbackRenders: Story = {
   render: () => (
     <Avatar>
@@ -157,24 +157,24 @@ export const FallbackRenders: Story = {
   },
 }
 
-/** A imagem carregada expõe seu texto alternativo (`alt`). */
+/** The loaded image exposes its alternative text (`alt`). */
 export const ImageHasAltText: Story = {
   render: () => (
     <Avatar>
-      {/* data URI local: o load é determinístico (sem rede) no browser de teste. */}
+      {/* local data URI: the load is deterministic (no network) in the test browser. */}
       <AvatarImage src={SRC_INLINE} alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O Radix só monta a <img> após o load; aguardamos a imagem com role `img`.
+    // Radix only mounts the <img> after the load; we wait for the image with role `img`.
     const img = await waitFor(() => canvas.getByRole('img', { name: '@shadcn' }))
     await expect(img).toHaveAttribute('alt', '@shadcn')
   },
 }
 
-/** O `size` do root propaga para os subcomponentes via `data-size`. */
+/** The root `size` propagates to subcomponents via `data-size`. */
 export const SizePropagates: Story = {
   args: { size: 'lg' },
   render: (args) => (
@@ -190,7 +190,7 @@ export const SizePropagates: Story = {
   },
 }
 
-/** O grupo empilha os avatares e fecha com o contador (ex.: "+3"). */
+/** The group stacks the avatars and closes with the count (e.g.: "+3"). */
 export const GroupRendersCount: Story = {
   render: () => (
     <AvatarGroup>

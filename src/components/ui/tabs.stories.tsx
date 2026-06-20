@@ -9,8 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs'
 const meta = {
   title: 'Navigation/Tabs',
   component: Tabs,
-  // Sem `autodocs`: a página de docs é a MDX customizada (tabs.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (tabs.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -51,14 +51,14 @@ export const Playground: Story = {
         <TabsTrigger value="products">Products</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
 }
 
-/** Pílula arredondada com item ativo preenchido — espelha o mock de referência. */
+/** Rounded pill with a filled active item — mirrors the reference mock. */
 export const Pill: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-fit">
@@ -67,14 +67,14 @@ export const Pill: Story = {
         <TabsTrigger value="products">Products</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
 }
 
-/** As quatro variantes lado a lado. */
+/** The four variants side by side. */
 export const Variants: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
@@ -85,16 +85,16 @@ export const Variants: Story = {
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
-          <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-          <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-          <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+          <TabsContent value="home">Home tab content.</TabsContent>
+          <TabsContent value="products">Products tab content.</TabsContent>
+          <TabsContent value="contact">Contact tab content.</TabsContent>
         </Tabs>
       ))}
     </div>
   ),
 }
 
-/** Trilho posicionado à esquerda (`tabPlacement="start"`). */
+/** Tab bar positioned on the left (`tabPlacement="start"`). */
 export const Vertical: Story = {
   render: () => (
     <Tabs defaultValue="home" tabPlacement="start" className="w-fit">
@@ -103,14 +103,14 @@ export const Vertical: Story = {
         <TabsTrigger value="products">Products</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
 }
 
-/** Uma aba desabilitada não pode ser selecionada. */
+/** A disabled tab cannot be selected. */
 export const Disabled: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-fit">
@@ -121,14 +121,14 @@ export const Disabled: Story = {
         </TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
 }
 
-/** Clicar numa aba troca o painel ativo. */
+/** Clicking a tab switches the active panel. */
 export const SwitchesTab: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-[420px]">
@@ -137,9 +137,9 @@ export const SwitchesTab: Story = {
         <TabsTrigger value="products">Products</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
   play: async ({ canvasElement }) => {
@@ -147,19 +147,19 @@ export const SwitchesTab: Story = {
 
     const home = canvas.getByRole('tab', { name: 'Home' })
     await expect(home).toHaveAttribute('data-state', 'active')
-    await expect(canvas.getByText('Conteúdo da aba Home.')).toBeVisible()
+    await expect(canvas.getByText('Home tab content.')).toBeVisible()
 
     await userEvent.click(canvas.getByRole('tab', { name: 'Products' }))
     await expect(canvas.getByRole('tab', { name: 'Products' })).toHaveAttribute(
       'data-state',
       'active',
     )
-    await expect(canvas.getByText('Conteúdo da aba Products.')).toBeVisible()
+    await expect(canvas.getByText('Products tab content.')).toBeVisible()
     await expect(home).toHaveAttribute('data-state', 'inactive')
   },
 }
 
-/** Setas do teclado movem o foco/seleção entre as abas (padrão WAI-ARIA). */
+/** Keyboard arrows move focus/selection between tabs (WAI-ARIA pattern). */
 export const NavigatesWithArrows: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-[420px]">
@@ -168,25 +168,25 @@ export const NavigatesWithArrows: Story = {
         <TabsTrigger value="products">Products</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const home = canvas.getByRole('tab', { name: 'Home' })
 
-    // Tab leva o foco à aba ativa (roving tabindex).
+    // Tab moves focus to the active tab (roving tabindex).
     await userEvent.tab()
     await expect(home).toHaveFocus()
 
-    // Seta para a direita move foco e ativa a próxima aba.
+    // Right arrow moves focus and activates the next tab.
     await userEvent.keyboard('{ArrowRight}')
     const products = canvas.getByRole('tab', { name: 'Products' })
     await expect(products).toHaveFocus()
     await expect(products).toHaveAttribute('aria-selected', 'true')
-    await expect(canvas.getByText('Conteúdo da aba Products.')).toBeVisible()
+    await expect(canvas.getByText('Products tab content.')).toBeVisible()
   },
 }
 
@@ -198,8 +198,8 @@ export const ExposesTabRoles: Story = {
         <TabsTrigger value="home">Home</TabsTrigger>
         <TabsTrigger value="products">Products</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
     </Tabs>
   ),
   play: async ({ canvasElement }) => {
@@ -207,7 +207,7 @@ export const ExposesTabRoles: Story = {
 
     await expect(canvas.getByRole('tablist')).toBeInTheDocument()
     await expect(canvas.getAllByRole('tab')).toHaveLength(2)
-    // Apenas a aba ativa expõe aria-selected="true" e há um único tabpanel.
+    // Only the active tab exposes aria-selected="true" and there is a single tabpanel.
     await expect(canvas.getByRole('tab', { name: 'Home' })).toHaveAttribute(
       'aria-selected',
       'true',
@@ -216,11 +216,11 @@ export const ExposesTabRoles: Story = {
       'aria-selected',
       'false',
     )
-    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Conteúdo da aba Home.')
+    await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Home tab content.')
   },
 }
 
-/** A aba desabilitada não recebe seleção mesmo ao ser clicada. */
+/** A disabled tab does not get selected even when clicked. */
 export const DisabledNotSelectable: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-fit">
@@ -230,8 +230,8 @@ export const DisabledNotSelectable: Story = {
           Products
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
     </Tabs>
   ),
   play: async ({ canvasElement }) => {
@@ -250,7 +250,7 @@ export const DisabledNotSelectable: Story = {
   },
 }
 
-/** Abas centralizadas ocupando toda a largura. */
+/** Centered tabs spanning the full width. */
 export const Centered: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-[480px]">
@@ -259,14 +259,14 @@ export const Centered: Story = {
         <TabsTrigger value="products">Products</TabsTrigger>
         <TabsTrigger value="contact">Contact</TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
 }
 
-/** Os três tamanhos predefinidos do trilho. */
+/** The three preset tab bar sizes. */
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-col gap-6">
@@ -277,16 +277,16 @@ export const Sizes: Story = {
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
-          <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-          <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-          <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+          <TabsContent value="home">Home tab content.</TabsContent>
+          <TabsContent value="products">Products tab content.</TabsContent>
+          <TabsContent value="contact">Contact tab content.</TabsContent>
         </Tabs>
       ))}
     </div>
   ),
 }
 
-/** As quatro posições possíveis do trilho. */
+/** The four possible tab bar positions. */
 export const Placement: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-10">
@@ -302,14 +302,14 @@ export const Placement: Story = {
             <TabsTrigger value="products">Products</TabsTrigger>
           </TabsList>
           <TabsContent value="home">tabPlacement="{placement}"</TabsContent>
-          <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
+          <TabsContent value="products">Products tab content.</TabsContent>
         </Tabs>
       ))}
     </div>
   ),
 }
 
-/** Abas com botão de fechar (`closable`). */
+/** Tabs with a close button (`closable`). */
 export const Closable: Story = {
   render: () => (
     <Tabs defaultValue="home" className="w-fit">
@@ -324,14 +324,14 @@ export const Closable: Story = {
           Contact
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="home">Conteúdo da aba Home.</TabsContent>
-      <TabsContent value="products">Conteúdo da aba Products.</TabsContent>
-      <TabsContent value="contact">Conteúdo da aba Contact.</TabsContent>
+      <TabsContent value="home">Home tab content.</TabsContent>
+      <TabsContent value="products">Products tab content.</TabsContent>
+      <TabsContent value="contact">Contact tab content.</TabsContent>
     </Tabs>
   ),
 }
 
-/** Componente controlado que adiciona e remove abas dinamicamente. */
+/** Controlled component that adds and removes tabs dynamically. */
 function EditableTabsDemo() {
   const [tabs, setTabs] = React.useState([
     { key: '1', label: 'Tab 1', content: 'Content of Tab Pane 1' },
@@ -388,8 +388,8 @@ function EditableTabsDemo() {
 }
 
 /**
- * Abas editáveis no estilo "card": o botão **ADD** insere uma nova aba e cada
- * aba pode ser fechada pelo ícone (x).
+ * Editable "card"-style tabs: the **ADD** button inserts a new tab and each
+ * tab can be closed via the (x) icon.
  */
 export const Editable: Story = {
   render: () => <EditableTabsDemo />,
@@ -398,12 +398,12 @@ export const Editable: Story = {
 
     await expect(canvas.getAllByRole('tab')).toHaveLength(2)
 
-    // Adiciona uma nova aba e ela fica ativa.
+    // Adds a new tab and it becomes active.
     await userEvent.click(canvas.getByRole('button', { name: 'ADD' }))
     await expect(canvas.getAllByRole('tab')).toHaveLength(3)
     await expect(canvas.getByText('Content of Tab Pane 3')).toBeVisible()
 
-    // Fecha a aba recém-criada pelo X (mouse).
+    // Closes the newly created tab via the X (mouse).
     const tab3 = canvas.getByRole('tab', { name: 'Tab 3' })
     const close = tab3.querySelector<HTMLElement>('[data-slot="tabs-trigger-close"]')
     await expect(close).not.toBeNull()
@@ -411,7 +411,7 @@ export const Editable: Story = {
     await expect(canvas.getAllByRole('tab')).toHaveLength(2)
     await expect(canvas.getByText('Content of Tab Pane 2')).toBeVisible()
 
-    // Fecha a aba focada pelo teclado (Delete) — padrão WAI-ARIA.
+    // Closes the focused tab via the keyboard (Delete) — WAI-ARIA pattern.
     await userEvent.click(canvas.getByRole('tab', { name: 'Tab 1' }))
     await userEvent.keyboard('{Delete}')
     await expect(canvas.getAllByRole('tab')).toHaveLength(1)

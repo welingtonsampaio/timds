@@ -8,8 +8,8 @@ import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from './button-gro
 const meta = {
   title: 'Data Entry/ButtonGroup',
   component: ButtonGroup,
-  // Sem `autodocs`: a página de docs é a MDX customizada (button-group.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (button-group.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -129,7 +129,7 @@ export const Nested: Story = {
   ),
 }
 
-// Spies de módulo: a `render` é estática, então limpamos no início do play.
+// Module-level spies: `render` is static, so we clear them at the start of play.
 const onFirst = fn()
 const onSecond = fn()
 
@@ -150,11 +150,11 @@ export const ClicksFire: Story = {
     onSecond.mockClear()
     const canvas = within(canvasElement)
 
-    // O wrapper expõe `role="group"` e reflete a orientação em `data-orientation`.
+    // The wrapper exposes `role="group"` and reflects the orientation in `data-orientation`.
     const group = canvas.getByRole('group')
     await expect(group).toHaveAttribute('data-orientation', 'horizontal')
 
-    // Cada filho continua sendo um `button` independente com seu próprio handler.
+    // Each child remains an independent `button` with its own handler.
     const one = canvas.getByRole('button', { name: 'One' })
     await userEvent.click(one)
     await expect(onFirst).toHaveBeenCalledOnce()
@@ -193,7 +193,7 @@ export const TextIsNotAButton: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O segmento de texto é estático: só os dois ícones são botões.
+    // The text segment is static: only the two icons are buttons.
     await expect(canvas.getAllByRole('button')).toHaveLength(2)
     await expect(canvas.getByText('12')).toBeInTheDocument()
   },

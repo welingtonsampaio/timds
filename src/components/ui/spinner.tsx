@@ -3,15 +3,15 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// Indicador de carregamento. Por padrão usa o ícone Loader2 do lucide com
-// `animate-spin`. Herda a cor do texto (`currentColor`) e o tamanho do
-// contexto (ex.: dentro do Button), podendo ser ajustado via `className`.
+// Loading indicator. By default uses lucide's Loader2 icon with
+// `animate-spin`. Inherits the text color (`currentColor`) and the size from
+// the context (e.g.: inside the Button), and can be adjusted via `className`.
 function Spinner({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <Loader2
       data-slot="spinner"
       role="status"
-      aria-label="Carregando"
+      aria-label="Loading"
       className={cn('size-4 animate-spin', className)}
       {...props}
     />

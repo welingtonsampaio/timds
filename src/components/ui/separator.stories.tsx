@@ -6,8 +6,8 @@ import { Separator } from './separator'
 const meta = {
   title: 'Layout/Separator',
   component: Separator,
-  // Sem `autodocs`: a página de docs é a MDX customizada (separator.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (separator.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -109,7 +109,7 @@ export const Semantic: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Sem `decorative`, o divisor passa a expor o papel `separator`.
+    // Without `decorative`, the divider exposes the `separator` role.
     await expect(canvas.getByRole('separator')).toBeInTheDocument()
   },
 }
@@ -125,7 +125,7 @@ export const Decorative: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Decorativo é o default: o Radix usa role="none" e o `separator` some da árvore.
+    // Decorative is the default: Radix uses role="none" and the `separator` disappears from the tree.
     await expect(canvas.queryByRole('separator')).not.toBeInTheDocument()
   },
 }
@@ -142,7 +142,7 @@ export const SemanticVertical: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Orientação não-default é anunciada por aria-orientation.
+    // Non-default orientation is announced via aria-orientation.
     await expect(canvas.getByRole('separator')).toHaveAttribute(
       'aria-orientation',
       'vertical',

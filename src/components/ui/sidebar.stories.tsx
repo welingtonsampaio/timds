@@ -35,7 +35,7 @@ import {
   SidebarTrigger,
 } from './sidebar'
 
-// Dados de exemplo para os menus das histórias.
+// Example data for the story menus.
 const nav = [
   { title: 'Home', icon: Home },
   { title: 'Inbox', icon: Inbox },
@@ -44,8 +44,8 @@ const nav = [
   { title: 'Settings', icon: Settings },
 ]
 
-// Cabeçalho do conteúdo principal: só o gatilho e um título. Reutilizado pelas
-// histórias para mostrar onde fica o `SidebarTrigger`.
+// Main content header: just the trigger and a title. Reused by the stories to
+// show where the `SidebarTrigger` lives.
 function InsetHeader({ title = 'Dashboard' }: { title?: string }) {
   return (
     <header className="flex h-12 items-center gap-2 border-b px-4">
@@ -58,17 +58,17 @@ function InsetHeader({ title = 'Dashboard' }: { title?: string }) {
 const meta = {
   title: 'Navigation/Sidebar',
   component: Sidebar,
-  // Sem `autodocs`: a página de docs é a MDX customizada (sidebar.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (sidebar.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
-    // O layout ocupa todo o iframe da história; o `fixed` da sidebar se ancora
-    // nele, então a sidebar e o conteúdo (`SidebarInset`) ficam lado a lado.
+    // The layout fills the entire story iframe; the sidebar's `fixed` anchors to
+    // it, so the sidebar and the content (`SidebarInset`) sit side by side.
     layout: 'fullscreen',
     docs: {
-      // A Sidebar usa `min-h-svh` + posição `fixed`: renderizada inline na
-      // página de Docs, cada `<Canvas>` ocuparia a viewport inteira. Renderizar
-      // em iframe de altura fixa mantém os blocos compactos (a `min-h-svh`
-      // passa a valer contra o iframe de 480px).
+      // The Sidebar uses `min-h-svh` + `fixed` positioning: rendered inline on
+      // the Docs page, each `<Canvas>` would take up the entire viewport.
+      // Rendering it in a fixed-height iframe keeps the blocks compact (the
+      // `min-h-svh` now applies against the 480px iframe).
       story: { inline: false, height: '480px' },
       description: {
         component:
@@ -110,7 +110,7 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-// Render padrão: provider + sidebar (recebe os args) + conteúdo no inset.
+// Default render: provider + sidebar (receives the args) + content in the inset.
 function AppLayout(args: React.ComponentProps<typeof Sidebar>) {
   return (
     <SidebarProvider>
@@ -165,7 +165,7 @@ function AppLayout(args: React.ComponentProps<typeof Sidebar>) {
 }
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por variante / estado visual.
+ * Render stories — one per variant / visual state.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak `side`, `variant` and `collapsible` from Controls. */
@@ -313,8 +313,8 @@ export const WithSubmenu: Story = {
 
 /** While the menu loads, render skeleton rows in place of items. */
 export const Loading: Story = {
-  // O `SidebarMenuSkeleton` usa largura aleatória (memoizada) por linha — o
-  // snapshot do Chromatic ficaria instável, então desabilitamos aqui.
+  // The `SidebarMenuSkeleton` uses a random (memoized) width per row — the
+  // Chromatic snapshot would be unstable, so we disable it here.
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <SidebarProvider>
@@ -325,7 +325,7 @@ export const Loading: Story = {
             <SidebarGroupContent>
               <SidebarMenu>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: lista estática de placeholders
+                  // biome-ignore lint/suspicious/noArrayIndexKey: static list of placeholders
                   <SidebarMenuItem key={i}>
                     <SidebarMenuSkeleton showIcon />
                   </SidebarMenuItem>
@@ -399,8 +399,8 @@ export const Anatomy: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — sem Tailwind no projeto de teste; asseguramos via role,
- * data-attributes e foco (nunca dimensões/estilos computados).
+ * Interaction tests — no Tailwind in the test project; we assert via role,
+ * data-attributes and focus (never computed dimensions/styles).
  * -------------------------------------------------------------------------- */
 
 /** Navigation items are exposed as buttons (and submenu items as links). */
@@ -410,7 +410,7 @@ export const RendersNavigation: Story = {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('button', { name: 'Home' })).toBeInTheDocument()
     await expect(canvas.getByRole('button', { name: 'Inbox' })).toBeInTheDocument()
-    // O item ativo marca `data-active` (hook de estado, não de teste).
+    // The active item sets `data-active` (state hook, not a test hook).
     await expect(canvas.getByRole('button', { name: 'Home' })).toHaveAttribute(
       'data-active',
       'true',
@@ -422,16 +422,16 @@ export const RendersNavigation: Story = {
 export const TogglesViaTrigger: Story = {
   render: () => <AppLayout />,
   play: async ({ canvasElement }) => {
-    // Container desktop da sidebar (carrega o data-state que dirige o layout).
+    // Desktop sidebar container (carries the data-state that drives the layout).
     const sidebar = canvasElement.querySelector('[data-slot="sidebar"]')
     await expect(sidebar).toHaveAttribute('data-state', 'expanded')
 
-    // `SidebarTrigger` e `SidebarRail` compartilham o nome "Toggle Sidebar"
-    // (ambos alternam a sidebar); aqui acionamos o gatilho do cabeçalho.
+    // `SidebarTrigger` and `SidebarRail` share the name "Toggle Sidebar"
+    // (both toggle the sidebar); here we trigger the one in the header.
     const trigger = canvasElement.querySelector<HTMLButtonElement>(
       '[data-slot="sidebar-trigger"]',
     )
-    if (!trigger) throw new Error('SidebarTrigger não encontrado')
+    if (!trigger) throw new Error('SidebarTrigger not found')
 
     await userEvent.click(trigger)
     await expect(sidebar).toHaveAttribute('data-state', 'collapsed')
@@ -455,8 +455,8 @@ export const TogglesViaKeyboardShortcut: Story = {
 /** Collapsed to icons, a menu button reveals its label as a tooltip on hover. */
 export const CollapsedShowsTooltip: Story = {
   render: () => (
-    // `defaultOpen={false}` parte do estado colapsado; `icon` mantém o rail
-    // visível para que os botões (e seus tooltips) existam.
+    // `defaultOpen={false}` starts from the collapsed state; `icon` keeps the
+    // rail visible so the buttons (and their tooltips) exist.
     <SidebarProvider defaultOpen={false}>
       <Sidebar collapsible="icon">
         <SidebarContent>
@@ -482,7 +482,7 @@ export const CollapsedShowsTooltip: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.hover(canvas.getByRole('button', { name: 'Home' }))
-    // O tooltip é portado para o body; com `delayDuration={0}` aparece direto.
+    // The tooltip is portaled to the body; with `delayDuration={0}` it appears immediately.
     const tips = await screen.findAllByRole('tooltip')
     await expect(tips.some((t) => t.textContent?.includes('Home'))).toBe(true)
   },

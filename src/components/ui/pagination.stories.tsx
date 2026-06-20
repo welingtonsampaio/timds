@@ -1,6 +1,6 @@
-// pagination.stories.tsx — stories + testes de interação (regressão) via play.
-// Idioma `canvasElement` + `within`, utilitários de `storybook/test`, prosa/labels
-// em English, comentários em pt-BR. A página de docs é a MDX (sem `autodocs` aqui).
+// pagination.stories.tsx — stories + interaction (regression) tests via play.
+// `canvasElement` + `within`, `storybook/test` utilities, prose/labels
+// in English. The docs page is the MDX (no `autodocs` here).
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useEffect, useState } from 'react'
@@ -18,12 +18,12 @@ import {
   type PaginationShortProps,
 } from './pagination'
 
-// Render controlado: mantém página e tamanho de página em estado local (como num
-// app real) e ainda repassa as trocas para os spies, permitindo asserções.
+// Controlled render: keeps page and page size in local state (as in a real
+// app) while still forwarding changes to the spies, enabling assertions.
 function Controlled(args: PaginationShortProps) {
   const [page, setPage] = useState(args.page)
   const [pageSize, setPageSize] = useState(args.pageSize)
-  // Mantém o estado em sincronia quando alterado pelos Controls.
+  // Keeps state in sync when changed via the Controls.
   useEffect(() => setPage(args.page), [args.page])
   useEffect(() => setPageSize(args.pageSize), [args.pageSize])
   return (
@@ -46,7 +46,7 @@ function Controlled(args: PaginationShortProps) {
 const meta = {
   title: 'Navigation/Pagination',
   component: PaginationShort,
-  // Sem `autodocs`: a página de docs é a MDX customizada (pagination.mdx).
+  // No `autodocs`: the docs page is the custom MDX (pagination.mdx).
   parameters: {
     docs: {
       description: {
@@ -64,7 +64,7 @@ const meta = {
   args: {
     total: 10,
     page: 1,
-    onPageChange: fn(), // spies compartilhados; auto-reset entre stories
+    onPageChange: fn(), // shared spies; auto-reset between stories
     onPageSizeChange: fn(),
   },
   argTypes: {
@@ -124,7 +124,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/* ----- Modos (render-tested + axe) ----- */
+/* ----- Modes (render-tested + axe) ----- */
 
 /** Fully interactive — tweak `mode`, `size`, `page`, `total` and the rows-per-page
  *  selector from **Controls**. */
@@ -168,9 +168,9 @@ export const Compact: Story = {
  */
 export const Variants: Story = {
   args: { total: 12 },
-  // Cada instância recebe um aria-label único: vários landmarks <nav> com o mesmo
-  // nome violariam a regra landmark-unique do axe (irrelevante num app real, onde
-  // há uma só paginação por página).
+  // Each instance gets a unique aria-label: multiple <nav> landmarks with the same
+  // name would violate axe's landmark-unique rule (irrelevant in a real app, where
+  // there is a single pagination per page).
   render: (args) => {
     const modes = [
       { mode: 'full' as const, page: 4 },
@@ -206,7 +206,7 @@ export const Variants: Story = {
 /** Three sizes (`sm`, `default`, `lg`). */
 export const Sizes: Story = {
   args: { total: 12, page: 3 },
-  // aria-label único por instância (ver nota em Variants sobre landmark-unique).
+  // unique aria-label per instance (see the note in Variants about landmark-unique).
   render: (args) => (
     <div className="flex flex-col gap-6">
       <Controlled {...args} size="sm" aria-label="pagination sm" />
@@ -266,7 +266,7 @@ export const Composition: Story = {
   ),
 }
 
-/* ----- Testes de interação (regressão) ----- */
+/* ----- Interaction (regression) tests ----- */
 
 /** Clicking a page number fires `onPageChange` and moves `aria-current`. */
 export const ClicksPage: Story = {
@@ -276,7 +276,7 @@ export const ClicksPage: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Go to page 3' }))
     await expect(args.onPageChange).toHaveBeenCalledWith(3)
-    // Após a troca de estado, a página 3 passa a ser a atual (aria-current).
+    // After the state change, page 3 becomes the current one (aria-current).
     await expect(canvas.getByRole('button', { name: 'Go to page 3' })).toHaveAttribute(
       'aria-current',
       'page',
@@ -294,8 +294,8 @@ export const PreviousDisabledOnFirstPage: Story = {
     const next = canvas.getByRole('button', { name: 'Next' })
     await expect(previous).toBeDisabled()
     await expect(next).toBeEnabled()
-    // Elemento desabilitado tem pointer-events:none; forçamos o clique para
-    // provar que onPageChange não dispara mesmo assim.
+    // A disabled element has pointer-events:none; we force the click to
+    // prove that onPageChange does not fire anyway.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(previous)
     await expect(args.onPageChange).not.toHaveBeenCalled()
@@ -343,9 +343,9 @@ export const ChangesRowsPerPage: Story = {
   render: (args) => <Controlled {...args} />,
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    // Abre o seletor pelo nome acessível e escolhe a opção "50".
+    // Open the selector by its accessible name and choose the "50" option.
     await userEvent.click(canvas.getByRole('combobox', { name: 'Rows per page' }))
-    // A listbox do Select é portada para o body → consulta via `screen`.
+    // The Select's listbox is portaled to the body → query via `screen`.
     await userEvent.click(await screen.findByRole('option', { name: '50' }))
     await expect(args.onPageSizeChange).toHaveBeenCalledWith(50)
   },
@@ -375,10 +375,10 @@ export const Localized: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Queries escopadas por landmark (há duas paginações com nomes distintos).
+    // Queries scoped by landmark (there are two paginations with distinct names).
     const full = within(canvas.getByRole('navigation', { name: 'paginação completa' }))
     const compact = within(canvas.getByRole('navigation', { name: 'paginação compacta' }))
-    // Modo full: prev/next, página numerada e o seletor de linhas por página.
+    // Full mode: prev/next, numbered page and the rows-per-page selector.
     await expect(full.getByRole('button', { name: 'Anterior' })).toBeInTheDocument()
     await expect(full.getByRole('button', { name: 'Próximo' })).toBeInTheDocument()
     await expect(
@@ -387,7 +387,7 @@ export const Localized: Story = {
     await expect(
       full.getByRole('combobox', { name: 'Linhas por página' }),
     ).toBeInTheDocument()
-    // Modo compact: o status "{page} {current} {of} {total}" também é traduzido.
+    // Compact mode: the "{page} {current} {of} {total}" status is also translated.
     await expect(compact.getByText('Página 3 de 12')).toBeInTheDocument()
   },
 }
@@ -397,9 +397,9 @@ export const EllipsisForLargeTotal: Story = {
   args: { page: 10, total: 20 },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Reticências em ambos os lados (cada uma expõe "More pages" em sr-only).
+    // Ellipses on both sides (each exposes "More pages" in sr-only).
     await expect(canvas.getAllByText('More pages')).toHaveLength(2)
-    // As páginas das extremidades continuam acessíveis.
+    // The edge pages remain accessible.
     await expect(canvas.getByRole('button', { name: 'Go to page 1' })).toBeInTheDocument()
     await expect(
       canvas.getByRole('button', { name: 'Go to page 20' }),

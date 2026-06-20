@@ -5,16 +5,16 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 import { Calendar } from './calendar'
 
-// Mês/dia fixos para tornar render e testes determinísticos (sem depender da
-// data atual). Junho/2025 começa num domingo, então a grade exibe 1..30 sem
-// dias "de fora" no início e com Jul 1..5 ao final.
+// Fixed month/day to make rendering and tests deterministic (without depending on
+// the current date). June 2025 starts on a Sunday, so the grid shows 1..30 with no
+// "outside" days at the start and with Jul 1..5 at the end.
 const FIXED_MONTH = new Date(2025, 5, 1)
 const FIXED_DAY = new Date(2025, 5, 15)
 
 const meta = {
   title: 'Data Entry/Calendar',
   component: Calendar,
-  // Sem `autodocs`: a página de docs é a MDX customizada (calendar.mdx).
+  // No `autodocs`: the docs page is the custom MDX (calendar.mdx).
   parameters: {
     layout: 'centered',
     docs: {
@@ -192,14 +192,14 @@ export const DisabledDays: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * O nome acessível de cada dia é o aria-label do rdp (formato "PPPP"), com
- * ", selected" anexado quando selecionado; o texto visível é o número do dia.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Each day's accessible name is the rdp aria-label (format "PPPP"), with
+ * ", selected" appended when selected; the visible text is the day number.
  * -------------------------------------------------------------------------- */
 
-// Spies de módulo: o tipo de `Calendar` é uma união discriminada por `mode`,
-// então `onSelect`/`onMonthChange` não podem viver em `meta.args` (não existem
-// no topo da união). Usamos spies locais e limpamos no início de cada play.
+// Module spies: the `Calendar` type is a union discriminated by `mode`,
+// so `onSelect`/`onMonthChange` cannot live in `meta.args` (they don't exist
+// at the top of the union). We use local spies and clear them at the start of each play.
 const onSelect = fn()
 const onMonthChange = fn()
 
@@ -222,13 +222,13 @@ export const SelectsADay: Story = {
   play: async ({ canvasElement }) => {
     onSelect.mockClear()
     const canvas = within(canvasElement)
-    // O dia 15 é único na grade (não há dia "de fora" 15 em jun/2025).
+    // Day 15 is unique in the grid (there's no "outside" day 15 in Jun 2025).
     await userEvent.click(canvas.getByText('15'))
 
     await expect(onSelect).toHaveBeenCalledOnce()
     const picked = onSelect.mock.calls[0][0] as Date
     await expect(picked.getDate()).toBe(15)
-    // O rdp anexa ", selected" ao aria-label do dia escolhido.
+    // The rdp appends ", selected" to the aria-label of the chosen day.
     await expect(
       canvas.getByRole('button', { name: /June 15.*selected/i }),
     ).toBeInTheDocument()
@@ -243,7 +243,7 @@ export const NavigatesMonths: Story = {
   play: async ({ canvasElement }) => {
     onMonthChange.mockClear()
     const canvas = within(canvasElement)
-    // A grade é nomeada pelo mês visível (aria-label = "June 2025").
+    // The grid is named by the visible month (aria-label = "June 2025").
     await expect(canvas.getByRole('grid', { name: /June 2025/i })).toBeInTheDocument()
 
     await userEvent.click(canvas.getByRole('button', { name: /next month/i }))
@@ -267,11 +267,11 @@ export const DisabledDayDoesNotSelect: Story = {
   play: async ({ canvasElement }) => {
     onSelect.mockClear()
     const canvas = within(canvasElement)
-    // 14/jun/2025 é sábado → desabilitado.
+    // Jun 14, 2025 is a Saturday → disabled.
     const saturday = canvas.getByRole('button', { name: /June 14/i })
     await expect(saturday).toBeDisabled()
 
-    // pointer-events:none bloqueia o clique; forçamos para provar o no-op.
+    // pointer-events:none blocks the click; we force it to prove the no-op.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(saturday)
     await expect(onSelect).not.toHaveBeenCalled()

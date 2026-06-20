@@ -3,9 +3,9 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// Popover construído sobre o Radix `Popover`. Exibe conteúdo flutuante ancorado
-// num gatilho, em portal, com posicionamento/colisão e foco gerenciados. Serve
-// de base para composições como o `DatePicker`.
+// Popover built on top of Radix `Popover`. Displays floating content anchored
+// to a trigger, in a portal, with managed positioning/collision and focus. Serves
+// as the base for compositions such as the `DatePicker`.
 
 function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />

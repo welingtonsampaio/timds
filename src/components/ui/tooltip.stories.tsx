@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tool
 const meta = {
   title: 'Overlays/Tooltip',
   component: Tooltip,
-  // Sem `autodocs`: a página de docs é a MDX customizada (tooltip.mdx).
+  // No `autodocs`: the docs page is the custom MDX (tooltip.mdx).
   parameters: {
     docs: {
       description: {
@@ -19,11 +19,11 @@ const meta = {
           'essential information, since touch users never see it.',
       },
     },
-    // As histórias começam fechadas: o Chromatic só veria o trigger. A cobertura
-    // visual fica na história `VisualOpen` (aberta), que reativa o snapshot.
+    // Stories start closed: Chromatic would only see the trigger. Visual
+    // coverage lives in the `VisualOpen` story (open), which re-enables the snapshot.
     chromatic: { disableSnapshot: true },
   },
-  // Todo tooltip precisa de um Provider em volta.
+  // Every tooltip needs a Provider around it.
   decorators: [
     (Story) => (
       <TooltipProvider>
@@ -66,7 +66,7 @@ export const Sides: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — o conteúdo é portado para document.body: use `screen`.
+ * Interaction tests — the content is portaled to document.body: use `screen`.
  * -------------------------------------------------------------------------- */
 
 /** Hovering the trigger shows the tooltip; unhovering hides it. */
@@ -82,7 +82,7 @@ export const ShowsOnHover: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.hover(canvas.getByRole('button', { name: 'Hover me' }))
-    // Radix porta o conteúdo para o body; o role do tooltip é `tooltip`.
+    // Radix portals the content to the body; the tooltip role is `tooltip`.
     const tip = await screen.findByRole('tooltip')
     await expect(tip).toHaveTextContent('Add to library')
   },
@@ -108,7 +108,7 @@ export const ShowsOnFocus: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Visual regression — fixture aberta e determinística para o Chromatic.
+ * Visual regression — open, deterministic fixture for Chromatic.
  * -------------------------------------------------------------------------- */
 
 /** Deterministic open state for the visual snapshot. */

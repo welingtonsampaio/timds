@@ -34,8 +34,8 @@ import {
 const meta = {
   title: 'Data Display/Item',
   component: Item,
-  // Sem `autodocs`: a página de docs é a MDX customizada (item.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (item.mdx), which embeds
+  // these stories. Having both would produce duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -355,8 +355,8 @@ const songs = [
 /** A real-world list: linked rows with cover art and a trailing duration. */
 export const MusicList: Story = {
   render: () => (
-    // Lista de linhas-link: um <a> não pode receber role="listitem", então
-    // usamos um wrapper simples em vez de ItemGroup (role="list").
+    // List of link rows: an <a> cannot take role="listitem", so we use a
+    // simple wrapper instead of ItemGroup (role="list").
     <div className="flex w-full max-w-md flex-col gap-4">
       {songs.map((song) => (
         <Item key={song.title} variant="outline" asChild>
@@ -448,9 +448,9 @@ export const DescriptionWithLink: Story = {
 
 /** `Item` composes inside a `DropdownMenu` as a rich menu row. */
 export const InDropdownMenu: Story = {
-  // Começa fechada: o Chromatic só veria o trigger. A cobertura visual do menu
-  // aberto fica na fixture `VisualInDropdownMenu`. (O spread em
-  // `OpensInDropdownMenu` herda este parâmetro.)
+  // Starts closed: Chromatic would only see the trigger. Visual coverage of the
+  // open menu lives in the `VisualInDropdownMenu` fixture. (The spread in
+  // `OpensInDropdownMenu` inherits this parameter.)
   parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <div className="flex min-h-64 w-full max-w-md flex-col items-center">
@@ -485,7 +485,7 @@ export const InDropdownMenu: Story = {
   ),
 }
 
-// --- Testes de interação (regressão) ---
+// --- Interaction tests (regression) ---
 
 /** `asChild` makes the row an `<a>`, so it is exposed as a link, not a generic div. */
 export const RendersAsLink: Story = {
@@ -501,7 +501,7 @@ export const RendersAsLink: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Com `asChild`, o root vira o próprio <a>: deve ter role link e o href.
+    // With `asChild`, the root becomes the <a> itself: it must have the link role and href.
     const link = canvas.getByRole('link', { name: /Visit our documentation/ })
     await expect(link).toHaveAttribute('href', '#docs')
     await expect(link).toHaveAttribute('data-slot', 'item')
@@ -565,30 +565,30 @@ export const OpensInDropdownMenu: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: /Select/ }))
-    // O conteúdo do menu é portado para document.body → consultar via screen.
+    // The menu content is portaled to document.body → query via screen.
     const menu = await screen.findByRole('menu')
     const items = within(menu).getAllByRole('menuitem')
     await expect(items).toHaveLength(people.length)
     await expect(within(menu).getByText('shadcn')).toBeInTheDocument()
-    // Fecha o menu antes do axe rodar (no afterEach): aberto, o modal marca os
-    // irmãos como aria-hidden mantendo o trigger focável (viola aria-hidden-focus).
-    // Aguarda a animação de saída concluir e o menu sair do DOM, senão o axe
-    // ainda enxerga o fundo aria-hidden durante o fade-out.
+    // Close the menu before axe runs (in afterEach): while open, the modal marks
+    // siblings as aria-hidden while keeping the trigger focusable (violates aria-hidden-focus).
+    // Wait for the exit animation to finish and the menu to leave the DOM, otherwise axe
+    // still sees the aria-hidden background during the fade-out.
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
   },
 }
 
 /* --------------------------------------------------------------------------
- * Fixture de regressão visual (Chromatic): renderiza o `DropdownMenu` ABERTO
- * (`defaultOpen`) para capturar as linhas `Item` no portal. Oculta do
- * sidebar/docs (`!dev`/`!autodocs`), mas segue rodando como smoke test (tag
- * `test`) e reativa o snapshot que `InDropdownMenu`/`OpensInDropdownMenu`
- * desligam.
+ * Visual regression fixture (Chromatic): renders the `DropdownMenu` OPEN
+ * (`defaultOpen`) to capture the `Item` rows in the portal. Hidden from the
+ * sidebar/docs (`!dev`/`!autodocs`), but still runs as a smoke test (tag
+ * `test`) and re-enables the snapshot that `InDropdownMenu`/`OpensInDropdownMenu`
+ * turn off.
  *
- * `modal={false}`: o menu precisa do trigger como âncora do Popper para se
- * posicionar; no modo modal o trigger seria marcado `aria-hidden` mantendo-se
- * focável (viola `aria-hidden-focus`). Não-modal não esconde os irmãos.
+ * `modal={false}`: the menu needs the trigger as the Popper anchor to position
+ * itself; in modal mode the trigger would be marked `aria-hidden` while staying
+ * focusable (violates `aria-hidden-focus`). Non-modal does not hide the siblings.
  * -------------------------------------------------------------------------- */
 
 /** Visual capture — the dropdown open, showing each `Item` as a rich menu row. */

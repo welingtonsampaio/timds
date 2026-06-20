@@ -6,11 +6,11 @@ import { Select } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 /* ============================================================================
- * Primitivas (forma composicional / "long")
+ * Primitives (compositional / "long" form)
  *
- * Montam a paginação peça a peça. Use quando precisar de controle total sobre
- * quais páginas/itens renderizar (ex.: SSR com links reais). Para a maioria dos
- * casos, prefira `PaginationShort` (mais abaixo).
+ * Build the pagination piece by piece. Use when you need full control over
+ * which pages/items to render (e.g.: SSR with real links). For most cases,
+ * prefer `PaginationShort` (further below).
  * ==========================================================================*/
 
 function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
@@ -43,8 +43,8 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, 'size'> &
   React.ComponentProps<'a'>
 
-// Link de página: reusa o visual do botão (outline quando ativo, ghost caso
-// contrário) mantendo a semântica de âncora para navegação real.
+// Page link: reuses the button visuals (outline when active, ghost otherwise)
+// while keeping the anchor semantics for real navigation.
 function PaginationLink({
   className,
   isActive,
@@ -114,20 +114,20 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'
 }
 
 /* ============================================================================
- * Cálculo do intervalo de páginas (algoritmo estilo MUI usePagination)
+ * Page range computation (MUI usePagination style algorithm)
  * ==========================================================================*/
 
-/** Item do intervalo: um número de página ou uma reticência (`ellipsis`). */
+/** Range item: a page number or an ellipsis (`ellipsis`). */
 export type PaginationRangeItem = number | 'ellipsis'
 
 export interface PaginationRangeOptions {
-  /** Página atual (1-based). */
+  /** Current page (1-based). */
   page: number
-  /** Total de páginas. */
+  /** Total number of pages. */
   total: number
-  /** Quantas páginas vizinhas à atual exibir de cada lado. Padrão: 1. */
+  /** How many sibling pages to show on each side of the current one. Default: 1. */
   siblingCount?: number
-  /** Quantas páginas fixas exibir em cada extremidade. Padrão: 1. */
+  /** How many fixed pages to show at each boundary. Default: 1. */
   boundaryCount?: number
 }
 
@@ -136,9 +136,9 @@ function range(start: number, end: number): number[] {
 }
 
 /**
- * Calcula a sequência de páginas/reticências a renderizar. Útil para montar a
- * paginação manualmente com as primitivas, ou para testes. `PaginationShort`
- * usa esta função internamente nos modos `full`/`numbers`.
+ * Computes the sequence of pages/ellipses to render. Useful for building the
+ * pagination manually with the primitives, or for tests. `PaginationShort`
+ * uses this function internally in the `full`/`numbers` modes.
  */
 export function getPaginationRange({
   page,
@@ -160,14 +160,14 @@ export function getPaginationRange({
 
   return [
     ...startPages,
-    // Reticência inicial (ou a página solta que ela substituiria).
+    // Leading ellipsis (or the lone page it would replace).
     ...(siblingsStart > boundaryCount + 2
       ? (['ellipsis'] as const)
       : boundaryCount + 1 < total - boundaryCount
         ? [boundaryCount + 1]
         : []),
     ...range(siblingsStart, siblingsEnd),
-    // Reticência final (ou a página solta que ela substituiria).
+    // Trailing ellipsis (or the lone page it would replace).
     ...(siblingsEnd < total - boundaryCount - 1
       ? (['ellipsis'] as const)
       : total - boundaryCount > boundaryCount
@@ -178,35 +178,35 @@ export function getPaginationRange({
 }
 
 /* ============================================================================
- * PaginationShort (forma pronta / vários modos)
+ * PaginationShort (ready-to-use form / multiple modes)
  * ==========================================================================*/
 
-/** Modos de renderização do `PaginationShort`. */
+/** Rendering modes of `PaginationShort`. */
 export type PaginationMode = 'full' | 'numbers' | 'simple' | 'compact'
 
 type PaginationShortSize = 'sm' | 'default' | 'lg'
 
-// Tamanho quadrado dos botões numerados por `size` (sobrescreve o `size-9` do
-// `size="icon"` do Button via tailwind-merge).
+// Square size of the numbered buttons by `size` (overrides the Button's `size-9`
+// from `size="icon"` via tailwind-merge).
 const SQUARE_SIZE: Record<PaginationShortSize, string> = {
   sm: 'size-8',
   default: 'size-9',
   lg: 'size-10',
 }
 
-/** Rótulos personalizáveis (i18n) do `PaginationShort`. */
+/** Customizable labels (i18n) of `PaginationShort`. */
 export interface PaginationShortLabels {
-  /** Texto do controle "anterior" (também vira `aria-label` no modo compact). */
+  /** Text of the "previous" control (also becomes `aria-label` in compact mode). */
   previous?: React.ReactNode
-  /** Texto do controle "próximo" (também vira `aria-label` no modo compact). */
+  /** Text of the "next" control (also becomes `aria-label` in compact mode). */
   next?: React.ReactNode
-  /** Prefixo do status no modo compact: "{page} {current} {of} {total}". */
+  /** Status prefix in compact mode: "{page} {current} {of} {total}". */
   page?: string
-  /** Conectivo do status no modo compact. */
+  /** Status connector in compact mode. */
   of?: string
-  /** Gera o `aria-label` de cada página numerada. */
+  /** Generates the `aria-label` of each numbered page. */
   goToPage?: (page: number) => string
-  /** Rótulo do seletor de tamanho de página (`pageSizeOptions`). */
+  /** Label of the page size selector (`pageSizeOptions`). */
   rowsPerPage?: string
 }
 
@@ -221,42 +221,42 @@ const DEFAULT_LABELS: Required<PaginationShortLabels> = {
 
 export interface PaginationShortProps
   extends Omit<React.ComponentProps<'nav'>, 'onChange'> {
-  /** Página atual (1-based). */
+  /** Current page (1-based). */
   page: number
-  /** Total de páginas. */
+  /** Total number of pages. */
   total: number
-  /** Disparado ao escolher uma página (modo "controlado por estado"/SPA). */
+  /** Fired when choosing a page (state-controlled/SPA mode). */
   onPageChange?: (page: number) => void
-  /** Gera o `href` de cada página (modo "links reais"/SSR). Tem prioridade
-   *  sobre `onPageChange` para a navegação. */
+  /** Generates the `href` of each page (real-links/SSR mode). Takes priority
+   *  over `onPageChange` for navigation. */
   href?: (page: number) => string
   /**
-   * Forma de exibição:
-   * - `full` (padrão): anterior/próximo + números com reticências.
-   * - `numbers`: apenas os números (sem anterior/próximo).
-   * - `simple`: apenas os botões anterior/próximo.
-   * - `compact`: setas + status "Page X of Y".
+   * Display form:
+   * - `full` (default): previous/next + numbers with ellipses.
+   * - `numbers`: only the numbers (no previous/next).
+   * - `simple`: only the previous/next buttons.
+   * - `compact`: arrows + "Page X of Y" status.
    */
   mode?: PaginationMode
-  /** Tamanho dos controles. Padrão: `default`. */
+  /** Size of the controls. Default: `default`. */
   size?: PaginationShortSize
-  /** Páginas vizinhas à atual (modos `full`/`numbers`). Padrão: 1. */
+  /** Sibling pages around the current one (`full`/`numbers` modes). Default: 1. */
   siblingCount?: number
-  /** Páginas fixas nas extremidades (modos `full`/`numbers`). Padrão: 1. */
+  /** Fixed pages at the boundaries (`full`/`numbers` modes). Default: 1. */
   boundaryCount?: number
-  /** Tamanho de página atual ("rows per page"). Use junto de `pageSizeOptions`. */
+  /** Current page size ("rows per page"). Use together with `pageSizeOptions`. */
   pageSize?: number
-  /** Opções de tamanho de página; quando informado, exibe o seletor à esquerda. */
+  /** Page size options; when provided, shows the selector on the left. */
   pageSizeOptions?: number[]
-  /** Disparado ao trocar o tamanho de página. */
+  /** Fired when changing the page size. */
   onPageSizeChange?: (pageSize: number) => void
-  /** Rótulos personalizáveis (i18n). */
+  /** Customizable labels (i18n). */
   labels?: PaginationShortLabels
 }
 
-// Botão interno: vira `<a href>` quando `href` é informado (navegação real) ou
-// `<button onClick>` caso contrário (estado/SPA). Reaproveita o Button do DS,
-// que já trata disabled/aria-disabled/foco para ambos os elementos.
+// Internal button: becomes `<a href>` when `href` is provided (real navigation)
+// or `<button onClick>` otherwise (state/SPA). Reuses the DS Button, which
+// already handles disabled/aria-disabled/focus for both elements.
 function PaginationShortButton({
   targetPage,
   isActive,
@@ -306,17 +306,17 @@ function PaginationShortButton({
 }
 
 /**
- * Paginação pronta para uso. Controle `page`/`total` e reaja via `onPageChange`
- * (SPA) ou `href` (links reais). Escolha a aparência por `mode`.
+ * Ready-to-use pagination. Control `page`/`total` and react via `onPageChange`
+ * (SPA) or `href` (real links). Choose the appearance via `mode`.
  *
  * @example
- * // SPA, completo
+ * // SPA, full
  * <PaginationShort page={p} total={20} onPageChange={setP} />
- * // Apenas anterior/próximo
+ * // Only previous/next
  * <PaginationShort mode="simple" page={p} total={20} onPageChange={setP} />
- * // Setas + "Page X of Y"
+ * // Arrows + "Page X of Y"
  * <PaginationShort mode="compact" page={p} total={20} onPageChange={setP} />
- * // Links reais (SSR)
+ * // Real links (SSR)
  * <PaginationShort page={p} total={20} href={(n) => `/itens?page=${n}`} />
  */
 function PaginationShort({
@@ -428,7 +428,7 @@ function PaginationShort({
       boundaryCount,
     }).map((item, index) =>
       item === 'ellipsis' ? (
-        // biome-ignore lint/suspicious/noArrayIndexKey: posição da reticência é estável o bastante
+        // biome-ignore lint/suspicious/noArrayIndexKey: the ellipsis position is stable enough
         <PaginationItem key={`ellipsis-${index}`}>
           <PaginationEllipsis />
         </PaginationItem>
@@ -488,8 +488,8 @@ function PaginationShort({
     )
   }
 
-  // Seletor de "rows per page": só aparece quando há opções; fica à esquerda e
-  // empurra os controles de página para a direita (layout justify-between).
+  // "rows per page" selector: only appears when there are options; sits on the
+  // left and pushes the page controls to the right (justify-between layout).
   const showPageSize = pageSizeOptions !== undefined && pageSizeOptions.length > 0
   const rowsPerPageLabel =
     typeof l.rowsPerPage === 'string' ? l.rowsPerPage : 'Rows per page'

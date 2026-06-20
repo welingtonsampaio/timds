@@ -139,7 +139,7 @@ Query variants:
 
 Use `getBy` when present; `findBy` (awaited) when it appears asynchronously; `queryBy`
 only to assert something is **not** there
-(`expect(canvas.queryByText('Erro')).not.toBeInTheDocument()`).
+(`expect(canvas.queryByText('Error')).not.toBeInTheDocument()`).
 
 <a id="querying-portals"></a>
 ## Querying portals (overlays)
@@ -174,8 +174,8 @@ avoid flaky races). Common methods: `click`, `dblClick`, `hover`, `unhover`, `ta
 `type`, `keyboard`, `selectOptions`, `clear`.
 
 ```tsx
-await userEvent.click(canvas.getByRole('button', { name: 'Enviar' }))
-await userEvent.type(canvas.getByLabelText('Nome'), 'Ada Lovelace')
+await userEvent.click(canvas.getByRole('button', { name: 'Submit' }))
+await userEvent.type(canvas.getByLabelText('Name'), 'Ada Lovelace')
 await userEvent.keyboard('{Enter}')
 await userEvent.tab()
 ```
@@ -184,8 +184,8 @@ await userEvent.tab()
 pointer-events guard so the click is delivered, then assert the handler did not fire:
 
 ```tsx
-// Em loading/disabled o elemento tem pointer-events:none; forçamos o clique
-// (pointerEventsCheck: 0) para provar que onClick não dispara mesmo assim.
+// In loading/disabled the element has pointer-events:none; we force the click
+// (pointerEventsCheck: 0) to prove that onClick does not fire even so.
 const user = userEvent.setup({ pointerEventsCheck: 0 })
 await user.click(button)
 await expect(args.onClick).not.toHaveBeenCalled()
@@ -215,7 +215,7 @@ them and they auto-reset between stories:
 
 ```tsx
 const meta = {
-  title: 'Data Entry/Button',       // categoria semântica, nunca 'UI/*'
+  title: 'Data Entry/Button',       // semantic category, never 'UI/*'
   component: Button,
   tags: ['autodocs'],
   args: { onClick: fn() },          // 👈 spy shared by all stories, auto-reset
@@ -254,8 +254,8 @@ overlays, focus trap in dialogs, and `aria-*` state flips (`aria-expanded`,
 `aria-required-children`). Disable axe for that single story and document why:
 
 ```tsx
-// a11y da lista já é coberta pelas histórias interativas (com opções); aqui só
-// queremos o snapshot visual do estado vazio, então desligamos o teste de a11y.
+// the list's a11y is already covered by the interactive stories (with options); here we
+// only want the visual snapshot of the empty state, so we turn off the a11y test.
 parameters: { a11y: { test: 'off' } },
 ```
 
@@ -314,8 +314,8 @@ trigger. For those:
 A small helper keeps the fixtures terse (from `select.stories.tsx`):
 
 ```tsx
-// Fixtures de regressão visual: ocultas do sidebar/autodocs (`!dev`/`!autodocs`),
-// mas seguem rodando como smoke test (tag `test`) e capturadas pelo Chromatic.
+// Visual regression fixtures: hidden from sidebar/autodocs (`!dev`/`!autodocs`),
+// but still run as a smoke test (tag `test`) and captured by Chromatic.
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -323,7 +323,7 @@ const visual = {
 
 export const VisualSizes: Story = {
   ...visual,
-  render: () => (/* grid de triggers nos três tamanhos */),
+  render: () => (/* grid of triggers in the three sizes */),
 }
 ```
 

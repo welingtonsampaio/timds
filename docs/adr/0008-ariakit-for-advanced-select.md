@@ -11,7 +11,7 @@ render, async option loading, infinite scroll, list virtualization, groups and
 full keyboard/ARIA accessibility — without using the native `<select>`**.
 
 Radix `Select` (the primitive used elsewhere in this library, see
-[0004](./0004-shadcn-ui-como-base.md)) is a static list: it has no search, no
+[0004](./0004-shadcn-ui-as-base.md)) is a static list: it has no search, no
 async loading and no virtualization. The crucial blocker is virtualization: when
 only a window of options is mounted in the DOM, a primitive that moves **DOM
 focus** between options (roving tabindex) cannot focus an option that is not
@@ -76,5 +76,5 @@ virtualized list renders flat); this is an accepted limitation.
 
 ## Related
 
-- [0004 — shadcn/ui as the base (copied components)](./0004-shadcn-ui-como-base.md)
+- [0004 — shadcn/ui as the base (copied components)](./0004-shadcn-ui-as-base.md)
 - [0003 — Tailwind v4 with CSS-first tokens](./0003-tailwind-v4-tokens-css.md)

@@ -19,8 +19,8 @@ import { Button } from './button'
 const meta = {
   title: 'Overlays/AlertDialog',
   component: AlertDialog,
-  // Sem `autodocs`: a página de docs é a MDX customizada (alert-dialog.mdx), que
-  // embute estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // No `autodocs`: the docs page is the custom MDX (alert-dialog.mdx), which
+  // embeds these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -35,9 +35,9 @@ const meta = {
           'starts closed — click the trigger to open the dialog.',
       },
     },
-    // As histórias de demonstração/interação começam fechadas: o Chromatic só
-    // veria o trigger, então não vale snapshot. A cobertura visual fica nas
-    // histórias `Visual*` (abertas), que reativam o snapshot individualmente.
+    // The demo/interaction stories start closed: Chromatic would only see the
+    // trigger, so a snapshot is not worth it. Visual coverage lives in the
+    // `Visual*` stories (open), which re-enable the snapshot individually.
     chromatic: { disableSnapshot: true },
   },
 } satisfies Meta<typeof AlertDialog>
@@ -50,8 +50,8 @@ const onConfirm = fn()
 const onCancel = fn()
 
 /* --------------------------------------------------------------------------
- * Render stories (começam fechadas) — uma por composição.
- * O conteúdo é portado para document.body: nas play functions use `screen`.
+ * Render stories (start closed) — one per composition.
+ * The content is portaled to document.body: in play functions use `screen`.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — open the dialog and pick an action. */
@@ -149,8 +149,8 @@ export const WithMedia: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Conteúdo portado: busque o diálogo e os botões via `screen`, não `canvas`.
+ * Interaction tests — play functions that ARE the regression tests.
+ * Portaled content: query the dialog and buttons via `screen`, not `canvas`.
  * -------------------------------------------------------------------------- */
 
 /** Clicking the trigger opens the dialog and exposes `role="alertdialog"`. */
@@ -174,15 +174,15 @@ export const OpensOnTrigger: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O diálogo começa fechado: nada portado ainda.
+    // The dialog starts closed: nothing portaled yet.
     await expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
     await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
     const dialog = await screen.findByRole('alertdialog')
-    // waitFor cobre a animação de entrada (opacity 0 no primeiro frame).
+    // waitFor covers the enter animation (opacity 0 on the first frame).
     await waitFor(() => expect(dialog).toBeVisible())
-    // O diálogo é nomeado pelo título e descrito pela descrição (Radix faz o wiring).
+    // The dialog is named by the title and described by the description (Radix wires it up).
     await expect(dialog).toHaveAccessibleName('Are you absolutely sure?')
-    // Fecha para a story não terminar aberta (evita aria-hidden-focus com o trigger).
+    // Close it so the story does not end open (avoids aria-hidden-focus with the trigger).
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
   },
@@ -211,13 +211,13 @@ export const ConfirmFlow: Story = {
     onConfirm.mockClear()
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
-    // O conteúdo é renderizado num portal, fora do canvas — busca no document.
+    // The content is rendered in a portal, outside the canvas — query the document.
     const dialog = await screen.findByRole('alertdialog')
-    // waitFor cobre a animação de entrada (opacity 0 no primeiro frame).
+    // waitFor covers the enter animation (opacity 0 on the first frame).
     await waitFor(() => expect(dialog).toBeVisible())
     await userEvent.click(screen.getByRole('button', { name: 'Continue' }))
     await expect(onConfirm).toHaveBeenCalledOnce()
-    // Confirmar fecha o diálogo.
+    // Confirming closes the dialog.
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
   },
 }
@@ -280,16 +280,16 @@ export const EscapeDismisses: Story = {
     await screen.findByRole('alertdialog')
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
-    // Escape resolve via Cancel: a ação destrutiva nunca é executada.
+    // Escape resolves via Cancel: the destructive action is never executed.
     await expect(onConfirm).not.toHaveBeenCalled()
   },
 }
 
 /**
- * Ao abrir, o foco vai para o **Cancel**, não para a action. É o padrão de
- * segurança do WAI-ARIA Alert Dialog — o caminho rápido (Enter) cancela em vez
- * de executar a ação destrutiva. Trava também a ordem dos botões (Cancel antes
- * de Action), evitando regressões.
+ * On open, focus goes to **Cancel**, not to the action. This is the WAI-ARIA
+ * Alert Dialog safety pattern — the fast path (Enter) cancels instead of
+ * executing the destructive action. It also locks the button order (Cancel
+ * before Action), preventing regressions.
  */
 export const FocusStartsOnCancel: Story = {
   render: (args) => (
@@ -313,29 +313,29 @@ export const FocusStartsOnCancel: Story = {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
     await screen.findByRole('alertdialog')
-    // O foco inicial deve repousar no Cancel, não na action de confirmação.
+    // Initial focus should rest on Cancel, not on the confirmation action.
     const cancel = screen.getByRole('button', { name: 'Cancel' })
     await waitFor(() => expect(cancel).toHaveFocus())
     await expect(screen.getByRole('button', { name: 'Continue' })).not.toHaveFocus()
-    // Fecha o diálogo (Escape) para a story não terminar aberta — evita a
-    // violação `aria-hidden-focus` com o trigger fora do diálogo.
+    // Close the dialog (Escape) so the story does not end open — avoids the
+    // `aria-hidden-focus` violation with the trigger outside the dialog.
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument())
   },
 }
 
 /* --------------------------------------------------------------------------
- * Fixtures de regressão visual (Chromatic): renderizam o diálogo aberto
- * (`defaultOpen`, sem trigger — evita a violação `aria-hidden-focus` e a
- * poluição da docs). Ocultas do sidebar/docs (`!dev`/`!autodocs`), mas seguem
- * rodando como smoke test (tag `test`) e reativam o snapshot que o meta desliga.
+ * Visual regression fixtures (Chromatic): render the dialog open
+ * (`defaultOpen`, no trigger — avoids the `aria-hidden-focus` violation and
+ * docs clutter). Hidden from the sidebar/docs (`!dev`/`!autodocs`), but still
+ * run as a smoke test (tag `test`) and re-enable the snapshot the meta disables.
  * -------------------------------------------------------------------------- */
 const visual = {
   tags: ['!dev', '!autodocs'],
   parameters: { chromatic: { disableSnapshot: false } },
 } satisfies Partial<Story>
 
-/** Captura visual — diálogo padrão aberto. */
+/** Visual capture — default dialog open. */
 export const VisualDefault: Story = {
   ...visual,
   render: (args) => (
@@ -357,7 +357,7 @@ export const VisualDefault: Story = {
   ),
 }
 
-/** Captura visual — action destrutiva. */
+/** Visual capture — destructive action. */
 export const VisualDestructive: Story = {
   ...visual,
   render: (args) => (
@@ -378,7 +378,7 @@ export const VisualDestructive: Story = {
   ),
 }
 
-/** Captura visual — `size="sm"` (compacto, rodapé em duas colunas). */
+/** Visual capture — `size="sm"` (compact, two-column footer). */
 export const VisualSmall: Story = {
   ...visual,
   render: (args) => (
@@ -397,7 +397,7 @@ export const VisualSmall: Story = {
   ),
 }
 
-/** Captura visual — com `AlertDialogMedia`. */
+/** Visual capture — with `AlertDialogMedia`. */
 export const VisualMedia: Story = {
   ...visual,
   render: (args) => (

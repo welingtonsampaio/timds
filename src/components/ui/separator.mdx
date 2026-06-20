@@ -1,5 +1,5 @@
-{/* separator.mdx — docs page (prosa em English). Embute as stories que carregam os
-    testes de interação. Doc Blocks de @storybook/addon-docs/blocks (Storybook 10). */}
+{/* separator.mdx — docs page (prose in English). Embeds the stories that carry the
+    interaction tests. Doc Blocks from @storybook/addon-docs/blocks (Storybook 10). */}
 import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
 import * as Stories from './separator.stories'
 
@@ -75,17 +75,17 @@ its accessibility role, guarded by interaction tests in `separator.stories.tsx`:
 ```tsx
 import { Separator } from 'timds'
 
-// Divisor horizontal (decorativo)
+// Horizontal divider (decorative)
 <Separator className="my-4" />
 
-// Divisor inline vertical, dentro de um contêiner com altura
+// Inline vertical divider, inside a container with height
 <div className="flex h-5 items-center gap-4">
   <span>Docs</span>
   <Separator orientation="vertical" />
   <span>Source</span>
 </div>
 
-// Semântico: exposto para tecnologias assistivas
+// Semantic: exposed to assistive technologies
 <Separator decorative={false} />
 ```
 

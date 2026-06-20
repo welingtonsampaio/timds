@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// Cor do trilho preenchido (Range) por variante semântica.
+// Filled track color (Range) by semantic variant.
 const rangeVariants = cva(
   'absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full',
   {
@@ -19,7 +19,7 @@ const rangeVariants = cva(
   },
 )
 
-// Espessura do trilho por tamanho (horizontal usa altura; vertical, largura).
+// Track thickness by size (horizontal uses height; vertical, width).
 const trackVariants = cva('relative grow overflow-hidden rounded-full bg-muted', {
   variants: {
     size: {
@@ -31,18 +31,18 @@ const trackVariants = cva('relative grow overflow-hidden rounded-full bg-muted',
   defaultVariants: { size: 'default' },
 })
 
-// Marcador (Thumb): borda na cor da variante e diâmetro pelo tamanho.
-// O Thumb é um <span>: o estado desabilitado vem do Radix via `data-disabled`
-// (não do atributo `disabled`), então neutralizamos hover/foco por aí — caso
-// contrário o anel continuaria aparecendo no slider desabilitado.
+// Marker (Thumb): border in the variant color and diameter by size.
+// The Thumb is a <span>: the disabled state comes from Radix via `data-disabled`
+// (not the `disabled` attribute), so we neutralize hover/focus through it —
+// otherwise the ring would keep showing on the disabled slider.
 const thumbVariants = cva(
-  // Miolo sólido na cor da variante com uma borda na cor do fundo, que separa
-  // a bolinha da barra preenchida (mesma cor). O anel (halo) aparece no
-  // hover/foco e some no estado desabilitado.
+  // Solid core in the variant color with a border in the background color, which
+  // separates the dot from the filled bar (same color). The ring (halo) appears on
+  // hover/focus and disappears in the disabled state.
   'block shrink-0 rounded-full border-2 border-background shadow-sm ring-ring/50 transition-[color,box-shadow] outline-hidden hover:ring-4 focus-visible:ring-4 data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:hover:ring-0',
   {
     variants: {
-      // Preenchimento na cor da variante: a bolinha acompanha a barra preenchida.
+      // Fill in the variant color: the dot matches the filled bar.
       variant: {
         default: 'bg-primary',
         success: 'bg-success',
@@ -74,12 +74,12 @@ function Slider({
   'aria-labelledby': ariaLabelledby,
   ...props
 }: SliderProps) {
-  // Normaliza para indexar o cva (VariantProps permite null).
+  // Normalize to index the cva (VariantProps allows null).
   const v = variant ?? 'default'
   const s = size ?? 'default'
 
-  // Quantidade de thumbs: deriva do array controlado/inicial; sem array,
-  // assume um intervalo (min, max) com dois marcadores.
+  // Number of thumbs: derived from the controlled/initial array; without an array,
+  // it assumes a range (min, max) with two markers.
   const _values = React.useMemo(
     () =>
       Array.isArray(value)
@@ -117,11 +117,11 @@ function Slider({
       {Array.from({ length: _values.length }, (_, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
-          // biome-ignore lint/suspicious/noArrayIndexKey: thumbs são posicionais e sem identidade própria
+          // biome-ignore lint/suspicious/noArrayIndexKey: thumbs are positional and have no identity of their own
           key={index}
-          // O elemento focável com role="slider" é o Thumb — é nele que mora o
-          // nome acessível. Encaminhamos `aria-label`/`aria-labelledby` do Root
-          // para cada Thumb (o Radix não os propaga sozinho).
+          // The focusable element with role="slider" is the Thumb — that's where the
+          // accessible name lives. We forward `aria-label`/`aria-labelledby` from the Root
+          // to each Thumb (Radix does not propagate them on its own).
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledby}
           className={cn(thumbVariants({ variant: v, size: s }))}

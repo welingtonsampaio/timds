@@ -1,8 +1,8 @@
 /**
- * Modos do Chromatic: cada modo define os globals que controla. Aqui só o
- * `theme`, lido pelo decorator em `preview.tsx`. Aplicados em
- * `parameters.chromatic.modes`, fazem o Chromatic snapshotar cada story duas
- * vezes (light e dark), com baselines independentes.
+ * Chromatic modes: each mode defines the globals it controls. Here only the
+ * `theme`, read by the decorator in `preview.tsx`. Applied in
+ * `parameters.chromatic.modes`, they make Chromatic snapshot each story twice
+ * (light and dark), with independent baselines.
  */
 export const allModes = {
   light: { theme: 'light' },

@@ -6,10 +6,10 @@ import { Separator } from '@/components/ui/separator'
 import { focusRing } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
-// Container de uma lista de Items, com `role="list"` para acessibilidade.
+// Container for a list of Items, with `role="list"` for accessibility.
 function ItemGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    // biome-ignore lint/a11y/useSemanticElements: contêiner genérico de Items; o conteúdo nem sempre é uma lista <ul>/<ol> semântica.
+    // biome-ignore lint/a11y/useSemanticElements: generic Items container; the content is not always a semantic <ul>/<ol> list.
     <div
       role="list"
       data-slot="item-group"
@@ -19,7 +19,7 @@ function ItemGroup({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-// Separador entre Items dentro de um ItemGroup (reaproveita o Separator do DS).
+// Separator between Items inside an ItemGroup (reuses the DS Separator).
 function ItemSeparator({ className, ...props }: React.ComponentProps<typeof Separator>) {
   return (
     <Separator
@@ -34,7 +34,7 @@ function ItemSeparator({ className, ...props }: React.ComponentProps<typeof Sepa
 const itemVariants = cva(
   cn(
     'group/item flex flex-wrap items-center rounded-md border border-transparent text-sm transition-colors duration-100 outline-none [a]:transition-colors [a]:hover:bg-accent/50',
-    // Anel de foco padrão do DS (ADR 0009).
+    // Default DS focus ring (ADR 0009).
     focusRing,
   ),
   {
@@ -93,7 +93,7 @@ const itemMediaVariants = cva(
   },
 )
 
-// Mídia à esquerda do conteúdo: ícone, imagem ou avatar.
+// Media to the left of the content: icon, image, or avatar.
 function ItemMedia({
   className,
   variant = 'default',
@@ -109,7 +109,7 @@ function ItemMedia({
   )
 }
 
-// Bloco central de texto; cresce para ocupar o espaço disponível.
+// Central text block; grows to fill the available space.
 function ItemContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -150,7 +150,7 @@ function ItemDescription({ className, ...props }: React.ComponentProps<'p'>) {
   )
 }
 
-// Ações à direita (botões, ícones de navegação, etc.).
+// Actions to the right (buttons, navigation icons, etc.).
 function ItemActions({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -161,7 +161,7 @@ function ItemActions({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-// Cabeçalho que ocupa a linha inteira (ex.: imagem de capa antes do conteúdo).
+// Header that spans the entire row (e.g., a cover image before the content).
 function ItemHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -172,7 +172,7 @@ function ItemHeader({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-// Rodapé que ocupa a linha inteira.
+// Footer that spans the entire row.
 function ItemFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div

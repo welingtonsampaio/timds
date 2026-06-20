@@ -5,11 +5,11 @@ import { esmExternalRequirePlugin } from 'rolldown/plugins'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
-// Storybook também carrega esta config; nesse caso não queremos o build
-// em modo library nem a geração de tipos (.d.ts) — só os plugins de base.
+// Storybook also loads this config; in that case we don't want the library-mode
+// build nor type generation (.d.ts) — only the base plugins.
 const isStorybook = process.env.npm_lifecycle_event?.includes('storybook') ?? false
 
-// Externos do build em modo library (react fica como peer; builtins do Node).
+// Externals of the library-mode build (react stays as a peer; Node builtins).
 const libExternal = [
   'react',
   'react-dom',
@@ -18,12 +18,12 @@ const libExternal = [
   /^node:/,
 ]
 
-// recharts NÃO é empacotado: o consumidor compõe o gráfico com primitivos do
-// recharts (AreaChart, Pie…) e o nosso `ChartContainer` usa o `ResponsiveContainer`.
-// Se cada lado usar uma instância diferente do recharts, os contextos React não
-// batem e o gráfico renderiza vazio (sem erro). Mantendo-o externo, há uma única
-// instância (a do consumidor; o npm a instala como dep transitiva). Importado via
-// ESM (não `require`), então basta o `external` padrão — fora do plugin.
+// recharts is NOT bundled: the consumer composes the chart with recharts
+// primitives (AreaChart, Pie…) and our `ChartContainer` uses `ResponsiveContainer`.
+// If each side uses a different recharts instance, the React contexts don't
+// match and the chart renders empty (no error). Keeping it external, there is a
+// single instance (the consumer's; npm installs it as a transitive dep). Imported
+// via ESM (not `require`), so the default `external` is enough — outside the plugin.
 const libExternalEsm = ['recharts']
 
 export default defineConfig({
@@ -55,24 +55,25 @@ export default defineConfig({
           cssFileName: 'timds',
         },
         rollupOptions: {
-          // recharts externo via `external` padrão (ver libExternalEsm).
+          // recharts external via the default `external` (see libExternalEsm).
           external: libExternalEsm,
-          // react/react-dom: externalização via esmExternalRequirePlugin (não duplicar
-          // em `external` de topo — com a duplicata o tratamento padrão tem precedência
-          // e emite `__require('react')`, que LANÇA no browser). O plugin marca como
-          // externo E converte os `require('react')` das deps CJS vendorizadas (ariakit,
-          // react-redux, use-sync-external-store…) em `import` ESM.
+          // react/react-dom: externalized via esmExternalRequirePlugin (do not duplicate
+          // in the top-level `external` — with the duplicate the default handling takes
+          // precedence and emits `__require('react')`, which THROWS in the browser). The
+          // plugin marks them as external AND converts the `require('react')` calls of
+          // vendored CJS deps (ariakit, react-redux, use-sync-external-store…) into ESM
+          // `import`.
           plugins: [esmExternalRequirePlugin({ external: libExternal })],
           output: {
-            // Preserva a estrutura de módulos (um arquivo por componente) em vez de
-            // um bundle único. Permite tree-shaking confiável no consumidor: importar
-            // um único componente não arrasta a lib inteira nem deps não usadas
-            // (recharts, sonner, vaul...). Ver ADR 0010.
+            // Preserves the module structure (one file per component) instead of a
+            // single bundle. Enables reliable tree-shaking on the consumer side:
+            // importing a single component doesn't drag in the whole lib nor unused
+            // deps (recharts, sonner, vaul...). See ADR 0010.
             preserveModules: true,
             preserveModulesRoot: 'src',
-            // Deps externas bundladas iriam para `node_modules/...`; o npm ignora
-            // pastas com esse nome ao publicar. Renomeamos para `vendor/` para manter
-            // o output publicável.
+            // Bundled external deps would go to `node_modules/...`; npm ignores
+            // folders with that name when publishing. We rename them to `vendor/` to
+            // keep the output publishable.
             entryFileNames: (chunkInfo) =>
               chunkInfo.name.includes('node_modules')
                 ? `${chunkInfo.name.replace(/node_modules/g, 'vendor')}.js`

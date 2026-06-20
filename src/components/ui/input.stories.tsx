@@ -6,8 +6,8 @@ import { Input } from './input'
 const meta = {
   title: 'Data Entry/Input',
   component: Input,
-  // Sem `autodocs`: a página de docs é a MDX customizada (input.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (input.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -20,7 +20,7 @@ const meta = {
     },
   },
   args: {
-    placeholder: 'Digite aqui…',
+    placeholder: 'Type here…',
     onChange: fn(),
   },
   argTypes: {
@@ -52,7 +52,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por estado visual (render-testadas + axe).
+ * Render stories — one per visual state (render-tested + axe).
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak every prop from the **Controls** panel. */
@@ -71,19 +71,19 @@ export const WithLabel: Story = {
       <label htmlFor="email" className="text-sm font-medium text-foreground">
         E-mail
       </label>
-      <Input {...args} id="email" type="email" placeholder="voce@exemplo.com" />
+      <Input {...args} id="email" type="email" placeholder="you@example.com" />
     </div>
   ),
 }
 
 export const Disabled: Story = {
-  args: { disabled: true, value: 'Não editável' },
+  args: { disabled: true, value: 'Not editable' },
   render: (args) => <Input {...args} className="w-72" />,
 }
 
 /** `aria-invalid` switches the field to the destructive error styling. */
 export const Invalid: Story = {
-  args: { 'aria-invalid': true, value: 'valor-invalido' },
+  args: { 'aria-invalid': true, value: 'invalid-value' },
   render: (args) => <Input {...args} className="w-72" />,
 }
 
@@ -91,10 +91,10 @@ export const Invalid: Story = {
 export const Types: Story = {
   render: (args) => (
     <div className="grid w-72 gap-3">
-      <Input {...args} type="text" placeholder="Texto" />
-      <Input {...args} type="email" placeholder="E-mail" />
-      <Input {...args} type="password" placeholder="Senha" />
-      <Input {...args} type="number" placeholder="Número" />
+      <Input {...args} type="text" placeholder="Text" />
+      <Input {...args} type="email" placeholder="Email" />
+      <Input {...args} type="password" placeholder="Password" />
+      <Input {...args} type="number" placeholder="Number" />
     </div>
   ),
 }
@@ -106,16 +106,16 @@ export const File: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
+ * Interaction tests — play functions that ARE the regression tests.
  * -------------------------------------------------------------------------- */
 
 /** Typing fires `onChange` and updates the controlled value. */
 export const TypesText: Story = {
-  args: { 'aria-label': 'Nome' },
+  args: { 'aria-label': 'Name' },
   render: (args) => <Input {...args} className="w-72" />,
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    const input = canvas.getByRole('textbox', { name: 'Nome' })
+    const input = canvas.getByRole('textbox', { name: 'Name' })
     await userEvent.type(input, 'Ada Lovelace')
     await expect(input).toHaveValue('Ada Lovelace')
     await expect(args.onChange).toHaveBeenCalled()
@@ -124,38 +124,38 @@ export const TypesText: Story = {
 
 /** The field is keyboard-focusable (reachable via Tab). */
 export const FocusesWithKeyboard: Story = {
-  args: { 'aria-label': 'Nome' },
+  args: { 'aria-label': 'Name' },
   render: (args) => <Input {...args} className="w-72" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Nome' })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: 'Name' })).toHaveFocus()
   },
 }
 
 /** The error state exposes `aria-invalid="true"` for assistive tech. */
 export const InvalidExposesAria: Story = {
-  args: { 'aria-invalid': true, 'aria-label': 'E-mail', value: 'invalido' },
+  args: { 'aria-invalid': true, 'aria-label': 'Email', value: 'invalid' },
   render: (args) => <Input {...args} className="w-72" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const input = canvas.getByRole('textbox', { name: 'E-mail' })
+    const input = canvas.getByRole('textbox', { name: 'Email' })
     await expect(input).toHaveAttribute('aria-invalid', 'true')
   },
 }
 
 /** A disabled field is not focusable and does not accept input. */
 export const DisabledDoesNotType: Story = {
-  args: { disabled: true, 'aria-label': 'Bloqueado' },
+  args: { disabled: true, 'aria-label': 'Blocked' },
   render: (args) => <Input {...args} className="w-72" />,
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
-    const input = canvas.getByRole('textbox', { name: 'Bloqueado' })
+    const input = canvas.getByRole('textbox', { name: 'Blocked' })
     await expect(input).toBeDisabled()
-    // Em disabled o input tem pointer-events:none; forçamos a digitação
-    // (pointerEventsCheck: 0) para provar que o valor não muda mesmo assim.
+    // When disabled the input has pointer-events:none; we force the typing
+    // (pointerEventsCheck: 0) to prove the value does not change anyway.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
-    await user.type(input, 'nada')
+    await user.type(input, 'nothing')
     await expect(input).toHaveValue('')
     await expect(args.onChange).not.toHaveBeenCalled()
   },

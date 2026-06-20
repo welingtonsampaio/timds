@@ -83,6 +83,6 @@ per-component files. Consumers keep `import { Button } from 'timds'` and
 
 ## Related
 
-- [0001 — Build as a library with Vite](./0001-build-com-vite-library-mode.md)
-- [0002 — Distribution directly from GitHub via `prepare`](./0002-distribuicao-via-github-prepare.md)
+- [0001 — Build as a library with Vite](./0001-build-with-vite-library-mode.md)
+- [0002 — Distribution directly from GitHub via `prepare`](./0002-distribution-via-github-prepare.md)
 - [0009 — Shared style presets in `src/lib/styles.ts`](./0009-shared-style-presets.md)

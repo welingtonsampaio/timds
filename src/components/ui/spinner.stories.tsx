@@ -6,8 +6,8 @@ import { Spinner } from './spinner'
 const meta = {
   title: 'Feedback/Spinner',
   component: Spinner,
-  // Sem `autodocs`: a página de docs é a MDX customizada (spinner.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas (MultipleIndexingError).
+  // No `autodocs`: the docs page is the custom MDX (spinner.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries (MultipleIndexingError).
   parameters: {
     docs: {
       description: {
@@ -26,9 +26,8 @@ const meta = {
     },
     'aria-label': {
       control: 'text',
-      description:
-        'Accessible name announced by screen readers. Defaults to `Carregando`.',
-      table: { defaultValue: { summary: 'Carregando' } },
+      description: 'Accessible name announced by screen readers. Defaults to `Loading`.',
+      table: { defaultValue: { summary: 'Loading' } },
     },
   },
 } satisfies Meta<typeof Spinner>
@@ -38,7 +37,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — render-testadas (montam sem erro) e checadas pelo axe.
+ * Render stories — render-tested (mount without error) and checked by axe.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — tweak `className` and `aria-label` from **Controls**. */
@@ -59,32 +58,30 @@ export const Sizes: Story = {
 
 /** A custom `aria-label` overrides the default announced name. */
 export const CustomLabel: Story = {
-  args: { 'aria-label': 'Salvando alterações' },
+  args: { 'aria-label': 'Saving changes' },
 }
 
 /* --------------------------------------------------------------------------
- * Interaction tests — play functions que SÃO os testes de regressão.
- * Spinner não tem callbacks; cobrimos o contrato de acessibilidade (role/label).
+ * Interaction tests — play functions that ARE the regression tests.
+ * Spinner has no callbacks; we cover the accessibility contract (role/label).
  * -------------------------------------------------------------------------- */
 
 /** Exposes `role="status"` with the default accessible name. */
 export const ExposesStatusRole: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O status anuncia o carregamento para tecnologias assistivas.
+    // The status announces the loading state to assistive technologies.
     const status = canvas.getByRole('status')
     await expect(status).toBeInTheDocument()
-    await expect(status).toHaveAttribute('aria-label', 'Carregando')
+    await expect(status).toHaveAttribute('aria-label', 'Loading')
   },
 }
 
 /** A custom `aria-label` is reflected on the status node. */
 export const CustomLabelIsAnnounced: Story = {
-  args: { 'aria-label': 'Salvando alterações' },
+  args: { 'aria-label': 'Saving changes' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(
-      canvas.getByRole('status', { name: 'Salvando alterações' }),
-    ).toBeVisible()
+    await expect(canvas.getByRole('status', { name: 'Saving changes' })).toBeVisible()
   },
 }

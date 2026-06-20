@@ -51,4 +51,4 @@ versioned.
 
 ## Related
 
-- [0001 — Build as a library with Vite](./0001-build-com-vite-library-mode.md)
+- [0001 — Build as a library with Vite](./0001-build-with-vite-library-mode.md)

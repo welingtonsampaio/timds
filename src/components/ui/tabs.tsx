@@ -6,7 +6,7 @@ import type * as React from 'react'
 import { focusRing, svgIcon } from '@/lib/styles'
 import { cn } from '@/lib/utils'
 
-/** Posição do trilho de abas em relação ao conteúdo. */
+/** Position of the tab bar relative to the content. */
 type TabPlacement = 'top' | 'bottom' | 'start' | 'end'
 
 function Tabs({
@@ -18,7 +18,7 @@ function Tabs({
   tabPlacement?: TabPlacement
   orientation?: 'horizontal' | 'vertical'
 }) {
-  // `start`/`end` dispõem as abas ao lado do conteúdo (orientação vertical).
+  // `start`/`end` place the tabs alongside the content (vertical orientation).
   const resolvedOrientation =
     orientation ??
     (tabPlacement === 'start' || tabPlacement === 'end' ? 'vertical' : 'horizontal')
@@ -39,29 +39,29 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  // Base comum: o trilho da lista de abas.
+  // Common base: the tab list bar.
   'group/tabs-list inline-flex w-fit items-center justify-center text-muted-foreground group-data-[orientation=vertical]/tabs:flex-col',
   {
     variants: {
       variant: {
-        // Segmented control padrão (fundo "muted", item ativo elevado).
+        // Default segmented control ("muted" background, raised active item).
         default: 'gap-1 rounded-lg bg-muted p-1',
-        // Abas em linha com indicador inferior.
+        // Inline tabs with a bottom indicator.
         line: 'gap-1 rounded-none bg-transparent',
-        // Pílula: trilho branco arredondado com sombra e item ativo em destaque.
-        // Na vertical usa um raio fixo para não virar um círculo.
+        // Pill: rounded white bar with a shadow and a highlighted active item.
+        // In vertical mode it uses a fixed radius so it doesn't turn into a circle.
         pill: 'gap-1 rounded-full border border-border bg-card p-1.5 shadow-sm group-data-[orientation=vertical]/tabs:rounded-3xl',
-        // Card: abas no formato de pasta, conectadas ao conteúdo por uma linha.
+        // Card: folder-style tabs, connected to the content by a line.
         card: 'gap-1 rounded-none border-border bg-transparent group-data-[orientation=horizontal]/tabs:border-b group-data-[orientation=vertical]/tabs:border-r',
       },
-      // O tamanho só define o atributo `data-size`; o espaçamento vertical e a
-      // tipografia são aplicados nos gatilhos via `group-data`.
+      // The size only sets the `data-size` attribute; vertical spacing and
+      // typography are applied to the triggers via `group-data`.
       size: {
         sm: '',
         default: '',
         lg: '',
       },
-      // Centraliza o trilho ocupando toda a largura disponível.
+      // Centers the bar, taking up all available width.
       centered: {
         true: 'w-full justify-center',
         false: '',
@@ -104,11 +104,11 @@ function TabsTrigger({
   onKeyDown,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger> & {
-  /** Exibe um botão de fechar (x) na aba. */
+  /** Shows a close button (x) on the tab. */
   closable?: boolean
-  /** Ícone personalizado do botão de fechar. */
+  /** Custom icon for the close button. */
   closeIcon?: React.ReactNode
-  /** Disparado ao fechar a aba (clique no x ou Delete/Backspace). */
+  /** Fired when the tab is closed (clicking the x or Delete/Backspace). */
   onClose?: (event: React.SyntheticEvent) => void
 }) {
   return (
@@ -116,26 +116,26 @@ function TabsTrigger({
       data-slot="tabs-trigger"
       onKeyDown={(event) => {
         onKeyDown?.(event)
-        // Padrão WAI-ARIA: a aba focada é fechada com Delete/Backspace.
+        // WAI-ARIA pattern: the focused tab is closed with Delete/Backspace.
         if (closable && (event.key === 'Delete' || event.key === 'Backspace')) {
           event.preventDefault()
           onClose?.(event)
         }
       }}
       className={cn(
-        // Base comum a todas as variantes.
+        // Common base for all variants.
         'relative inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap font-medium text-foreground/60 transition-all group-data-[centered=true]/tabs-list:flex-none group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground',
         focusRing,
         svgIcon,
-        // Tamanho: padding vertical e tipografia.
+        // Size: vertical padding and typography.
         'group-data-[size=sm]/tabs-list:py-1 group-data-[size=sm]/tabs-list:text-xs group-data-[size=default]/tabs-list:py-1.5 group-data-[size=default]/tabs-list:text-sm group-data-[size=lg]/tabs-list:py-2.5 group-data-[size=lg]/tabs-list:text-base',
-        // Variante default: cápsula interna com leve elevação no item ativo.
+        // Default variant: inner capsule with a slight elevation on the active item.
         'group-data-[variant=default]/tabs-list:rounded-md group-data-[variant=default]/tabs-list:px-3 group-data-[variant=default]/tabs-list:data-[state=active]:bg-background group-data-[variant=default]/tabs-list:data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm dark:group-data-[variant=default]/tabs-list:data-[state=active]:bg-input/30 dark:group-data-[variant=default]/tabs-list:data-[state=active]:text-foreground',
-        // Variante pill: padding horizontal generoso e item ativo na cor primária.
+        // Pill variant: generous horizontal padding and active item in the primary color.
         'group-data-[variant=pill]/tabs-list:rounded-full group-data-[variant=pill]/tabs-list:px-6 group-data-[variant=pill]/tabs-list:data-[state=active]:bg-primary group-data-[variant=pill]/tabs-list:data-[state=active]:text-primary-foreground group-data-[variant=pill]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=pill]/tabs-list:data-[state=active]:hover:text-primary-foreground',
-        // Variante card: aba em formato de pasta conectada ao conteúdo.
+        // Card variant: folder-style tab connected to the content.
         'group-data-[variant=card]/tabs-list:rounded-t-md group-data-[variant=card]/tabs-list:border group-data-[variant=card]/tabs-list:border-border group-data-[variant=card]/tabs-list:bg-muted/40 group-data-[variant=card]/tabs-list:px-4 group-data-[variant=card]/tabs-list:data-[state=active]:bg-background group-data-[variant=card]/tabs-list:data-[state=active]:text-primary-text group-data-[orientation=horizontal]/tabs:group-data-[variant=card]/tabs-list:mb-[-1px] group-data-[orientation=horizontal]/tabs:group-data-[variant=card]/tabs-list:data-[state=active]:border-b-background group-data-[orientation=vertical]/tabs:group-data-[variant=card]/tabs-list:mr-[-1px] group-data-[orientation=vertical]/tabs:group-data-[variant=card]/tabs-list:rounded-tr-none group-data-[orientation=vertical]/tabs:group-data-[variant=card]/tabs-list:rounded-l-md group-data-[orientation=vertical]/tabs:group-data-[variant=card]/tabs-list:data-[state=active]:border-r-background',
-        // Variante line: aba transparente com sublinhado animado no item ativo.
+        // Line variant: transparent tab with an animated underline on the active item.
         'group-data-[variant=line]/tabs-list:rounded-none group-data-[variant=line]/tabs-list:px-2 group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:text-foreground after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100',
         className,
       )}
@@ -143,10 +143,10 @@ function TabsTrigger({
     >
       {children}
       {closable && (
-        // X decorativo (aria-hidden, sem role): acionado pelo mouse. Não usamos
-        // um elemento interativo aqui para não aninhar controles dentro do
-        // <button> do Trigger (violação `nested-interactive`). O acesso por
-        // teclado é feito na própria aba via Delete/Backspace (ver onKeyDown).
+        // Decorative X (aria-hidden, no role): triggered by the mouse. We don't
+        // use an interactive element here so as not to nest controls inside the
+        // Trigger's <button> (`nested-interactive` violation). Keyboard access
+        // is handled on the tab itself via Delete/Backspace (see onKeyDown).
         <span
           aria-hidden="true"
           data-slot="tabs-trigger-close"

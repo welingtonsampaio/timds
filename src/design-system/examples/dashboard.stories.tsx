@@ -69,10 +69,10 @@ import {
 } from '@/components/ui/table'
 
 /**
- * **Dashboard** — o exemplo mais completo: um shell de aplicação com `Sidebar`
- * colapsável, cabeçalho fixo, cartões de métrica com indicadores de tendência,
- * dois gráficos (`Chart`/Recharts) e uma tabela de vendas recentes. Reúne quase
- * todas as famílias do design system numa única tela coerente.
+ * **Dashboard** — the most complete example: an application shell with a
+ * collapsible `Sidebar`, a sticky header, metric cards with trend indicators,
+ * two charts (`Chart`/Recharts) and a recent-sales table. It brings together
+ * almost every design system family into a single coherent screen.
  */
 const meta = {
   title: 'Examples/Dashboard',
@@ -95,21 +95,21 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* -------------------------------------------------------------------------- */
-/*  Dados                                                                       */
+/*  Data                                                                        */
 /* -------------------------------------------------------------------------- */
 
 const revenueData = [
   { month: 'Jan', receita: 4200, despesa: 2400 },
-  { month: 'Fev', receita: 5100, despesa: 2800 },
+  { month: 'Feb', receita: 5100, despesa: 2800 },
   { month: 'Mar', receita: 4800, despesa: 3100 },
-  { month: 'Abr', receita: 6300, despesa: 3300 },
-  { month: 'Mai', receita: 7200, despesa: 3600 },
+  { month: 'Apr', receita: 6300, despesa: 3300 },
+  { month: 'May', receita: 7200, despesa: 3600 },
   { month: 'Jun', receita: 8100, despesa: 3900 },
 ]
 
 const revenueConfig = {
-  receita: { label: 'Receita', color: 'var(--chart-1)' },
-  despesa: { label: 'Despesa', color: 'var(--chart-2)' },
+  receita: { label: 'Revenue', color: 'var(--chart-1)' },
+  despesa: { label: 'Expenses', color: 'var(--chart-2)' },
 } satisfies ChartConfig
 
 const channelData = [
@@ -120,11 +120,11 @@ const channelData = [
 ]
 
 const channelConfig = {
-  visitas: { label: 'Visitas' },
-  organico: { label: 'Orgânico', color: 'var(--chart-1)' },
+  visitas: { label: 'Visits' },
+  organico: { label: 'Organic', color: 'var(--chart-1)' },
   social: { label: 'Social', color: 'var(--chart-2)' },
-  pago: { label: 'Pago', color: 'var(--chart-3)' },
-  direto: { label: 'Direto', color: 'var(--chart-4)' },
+  pago: { label: 'Paid', color: 'var(--chart-3)' },
+  direto: { label: 'Direct', color: 'var(--chart-4)' },
 } satisfies ChartConfig
 
 const kpis: {
@@ -134,35 +134,35 @@ const kpis: {
   up: boolean
   icon: LucideIcon
 }[] = [
-  { label: 'Receita', value: 'R$ 45.231', delta: '+20,1%', up: true, icon: DollarSign },
-  { label: 'Assinantes', value: '2.350', delta: '+12,4%', up: true, icon: Users },
-  { label: 'Vendas', value: '1.024', delta: '+8,2%', up: true, icon: CreditCard },
+  { label: 'Revenue', value: '$45,231', delta: '+20.1%', up: true, icon: DollarSign },
+  { label: 'Subscribers', value: '2,350', delta: '+12.4%', up: true, icon: Users },
+  { label: 'Sales', value: '1,024', delta: '+8.2%', up: true, icon: CreditCard },
   {
-    label: 'Cancelamentos',
+    label: 'Churn',
     value: '38',
-    delta: '-3,1%',
+    delta: '-3.1%',
     up: false,
     icon: ArrowDownRight,
   },
 ]
 
 const sales = [
-  { name: 'Ana Souza', email: 'ana@timds.dev', amount: 'R$ 1.999', img: 47 },
-  { name: 'Bruno Lima', email: 'bruno@timds.dev', amount: 'R$ 39', img: 12 },
-  { name: 'Carla Dias', email: 'carla@timds.dev', amount: 'R$ 299', img: 5 },
-  { name: 'Diego Reis', email: 'diego@timds.dev', amount: 'R$ 99', img: 33 },
+  { name: 'Ana Souza', email: 'ana@timds.dev', amount: '$1,999', img: 47 },
+  { name: 'Bruno Lima', email: 'bruno@timds.dev', amount: '$39', img: 12 },
+  { name: 'Carla Dias', email: 'carla@timds.dev', amount: '$299', img: 5 },
+  { name: 'Diego Reis', email: 'diego@timds.dev', amount: '$99', img: 33 },
 ]
 
 const navItems: { title: string; icon: LucideIcon; badge?: string }[] = [
   { title: 'Dashboard', icon: LayoutDashboard },
-  { title: 'Análises', icon: BarChart3 },
-  { title: 'Clientes', icon: Users, badge: '24' },
-  { title: 'Pagamentos', icon: CreditCard },
-  { title: 'Configurações', icon: Settings },
+  { title: 'Analytics', icon: BarChart3 },
+  { title: 'Customers', icon: Users, badge: '24' },
+  { title: 'Payments', icon: CreditCard },
+  { title: 'Settings', icon: Settings },
 ]
 
 /* -------------------------------------------------------------------------- */
-/*  Subcomponentes                                                              */
+/*  Subcomponents                                                               */
 /* -------------------------------------------------------------------------- */
 
 function KpiCard({ label, value, delta, up, icon: Icon }: (typeof kpis)[number]) {
@@ -208,7 +208,7 @@ function DashboardApp() {
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navItems.map((item, i) => (
@@ -246,7 +246,7 @@ function DashboardApp() {
       </Sidebar>
 
       <SidebarInset>
-        {/* Cabeçalho fixo */}
+        {/* Sticky header */}
         <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur">
           <SidebarTrigger />
           <h1 className="font-semibold text-base">Dashboard</h1>
@@ -255,9 +255,9 @@ function DashboardApp() {
               <InputGroupAddon>
                 <Search className="size-4" aria-hidden="true" />
               </InputGroupAddon>
-              <InputGroupInput placeholder="Buscar..." aria-label="Buscar" />
+              <InputGroupInput placeholder="Search..." aria-label="Search" />
             </InputGroup>
-            <Button variant="ghost" size="icon" aria-label="Notificações">
+            <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="size-4" aria-hidden="true" />
             </Button>
             <DropdownMenu>
@@ -266,7 +266,7 @@ function DashboardApp() {
                   variant="ghost"
                   size="icon"
                   className="rounded-full"
-                  aria-label="Conta"
+                  aria-label="Account"
                 >
                   <Avatar className="size-7">
                     <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Ana Souza" />
@@ -275,17 +275,17 @@ function DashboardApp() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Faturamento</DropdownMenuItem>
+                <DropdownMenuLabel>My account</DropdownMenuLabel>
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">Sair</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive">Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </header>
 
-        {/* Conteúdo */}
+        {/* Content */}
         <div className="flex flex-1 flex-col gap-4 p-4">
           {/* KPIs */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -294,12 +294,12 @@ function DashboardApp() {
             ))}
           </div>
 
-          {/* Gráficos */}
+          {/* Charts */}
           <div className="grid gap-4 lg:grid-cols-3">
             <Card className="lg:col-span-2">
               <CardHeader>
-                <CardTitle>Receita x Despesa</CardTitle>
-                <CardDescription>Últimos 6 meses</CardDescription>
+                <CardTitle>Revenue vs. Expenses</CardTitle>
+                <CardDescription>Last 6 months</CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer config={revenueConfig} className="h-[260px] w-full">
@@ -364,8 +364,8 @@ function DashboardApp() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Tráfego por canal</CardTitle>
-                <CardDescription>Origem das visitas</CardDescription>
+                <CardTitle>Traffic by channel</CardTitle>
+                <CardDescription>Source of visits</CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer
@@ -392,18 +392,18 @@ function DashboardApp() {
             </Card>
           </div>
 
-          {/* Vendas recentes */}
+          {/* Recent sales */}
           <Card>
             <CardHeader>
-              <CardTitle>Vendas recentes</CardTitle>
-              <CardDescription>Você fez 265 vendas este mês.</CardDescription>
+              <CardTitle>Recent sales</CardTitle>
+              <CardDescription>You made 265 sales this month.</CardDescription>
             </CardHeader>
             <CardContent className="px-0">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="pl-6">Cliente</TableHead>
-                    <TableHead className="text-right pr-6">Valor</TableHead>
+                    <TableHead className="pl-6">Customer</TableHead>
+                    <TableHead className="text-right pr-6">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -451,8 +451,8 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument()
-    await expect(canvas.getByText('R$ 45.231')).toBeInTheDocument()
-    // A navegação marca o item ativo.
+    await expect(canvas.getByText('$45,231')).toBeInTheDocument()
+    // The navigation marks the active item.
     await expect(canvas.getByRole('button', { name: 'Dashboard' })).toHaveAttribute(
       'data-active',
       'true',

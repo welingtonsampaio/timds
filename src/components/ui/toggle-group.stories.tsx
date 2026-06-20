@@ -7,7 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from './toggle-group'
 const meta = {
   title: 'Data Entry/ToggleGroup',
   component: ToggleGroup,
-  // Sem `autodocs`: a página de docs é a MDX customizada (toggle-group.mdx).
+  // No `autodocs`: the docs page is the custom MDX (toggle-group.mdx).
   parameters: {
     docs: {
       description: {
@@ -75,10 +75,10 @@ const alignmentItems = (
   </>
 )
 
-// Render de um grupo single-selection (alinhamento). Fixar `type="single"` e
-// enviar só as props conhecidas (sem espalhar `type`) evita o conflito do union
-// discriminado do Radix — `defaultValue` é `string` no single e `string[]` no
-// multiple, então o spread de `args` não tipa.
+// Renders a single-selection group (alignment). Pinning `type="single"` and
+// passing only the known props (without spreading `type`) avoids Radix's
+// discriminated-union conflict — `defaultValue` is `string` in single and
+// `string[]` in multiple, so spreading `args` doesn't type-check.
 const renderSingle =
   (overrides?: { variant?: 'default' | 'outline' }) => (args: Story['args']) => (
     <ToggleGroup
@@ -247,19 +247,19 @@ export const KeyboardNavigation: Story = {
     const left = canvas.getByRole('radio', { name: 'Align left' })
     const center = canvas.getByRole('radio', { name: 'Align center' })
 
-    // O roving tabindex do Radix só torna o grupo "tabbable" (root com
-    // tabindex=0) depois que os itens se registram num efeito. Em ambientes de
-    // captura (Chromatic) o `tab()` pode rodar antes disso e o foco ficaria no
-    // <body>; esperamos o grupo ficar focável antes de navegar.
+    // Radix's roving tabindex only makes the group "tabbable" (root with
+    // tabindex=0) after the items register in an effect. In capture
+    // environments (Chromatic) `tab()` may run before that and focus would land
+    // on <body>; we wait for the group to become focusable before navigating.
     const group = canvasElement.querySelector('[data-slot="toggle-group"]')
     await waitFor(() => expect(group).toHaveAttribute('tabindex', '0'))
 
     await userEvent.tab()
     await expect(left).toHaveFocus()
-    // A seta move o foco entre os itens, mas não altera a seleção.
+    // The arrow moves focus between items but does not change the selection.
     await userEvent.keyboard('{ArrowRight}')
     await expect(center).toHaveFocus()
-    // A seleção do item focado acontece com Space/Enter.
+    // Selecting the focused item happens with Space/Enter.
     await userEvent.keyboard(' ')
     await expect(args.onValueChange).toHaveBeenCalledWith('center')
     await expect(center).toHaveAttribute('aria-checked', 'true')
@@ -274,8 +274,8 @@ export const DisabledDoesNotSelect: Story = {
     const canvas = within(canvasElement)
     const center = canvas.getByRole('radio', { name: 'Align center' })
 
-    // pointer-events:none nos itens desabilitados; forçamos o clique só para
-    // confirmar que a seleção não muda.
+    // pointer-events:none on disabled items; we force the click only to
+    // confirm the selection does not change.
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     await user.click(center)
     await expect(args.onValueChange).not.toHaveBeenCalled()

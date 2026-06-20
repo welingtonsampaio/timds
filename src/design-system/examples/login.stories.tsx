@@ -16,10 +16,10 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Separator } from '@/components/ui/separator'
 
 /**
- * **Login** — o exemplo mais simples do conjunto. Mostra como uma única `Card`
- * organiza um formulário curto: campos com ícone (`InputGroup`), ações primárias
- * e secundárias, um divisor semântico e provedores sociais. Tudo apoiado nos
- * tokens do design system, sem nenhuma cor solta.
+ * **Login** — the simplest example in the set. Shows how a single `Card`
+ * organizes a short form: fields with an icon (`InputGroup`), primary and
+ * secondary actions, a semantic divider and social providers. Everything is
+ * backed by the design system tokens, without any loose color.
  */
 const meta = {
   title: 'Examples/Login',
@@ -49,14 +49,16 @@ export const Default: Story = {
           <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
             <Lock className="size-5" aria-hidden="true" />
           </div>
-          <CardTitle className="text-xl">Acesse sua conta</CardTitle>
-          <CardDescription>Entre com seu e-mail e senha para continuar</CardDescription>
+          <CardTitle className="text-xl">Access your account</CardTitle>
+          <CardDescription>
+            Sign in with your email and password to continue
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="login-email" className="text-sm font-medium">
-              E-mail
+              Email
             </label>
             <InputGroup>
               <InputGroupAddon>
@@ -65,7 +67,7 @@ export const Default: Story = {
               <InputGroupInput
                 id="login-email"
                 type="email"
-                placeholder="voce@exemplo.com"
+                placeholder="you@example.com"
                 autoComplete="email"
               />
             </InputGroup>
@@ -74,13 +76,13 @@ export const Default: Story = {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <label htmlFor="login-password" className="text-sm font-medium">
-                Senha
+                Password
               </label>
               <a
                 href="#redefinir"
                 className="text-sm font-medium text-primary-text hover:underline"
               >
-                Esqueceu?
+                Forgot?
               </a>
             </div>
             <InputGroup>
@@ -100,14 +102,14 @@ export const Default: Story = {
             htmlFor="login-remember"
             className="flex items-center gap-2 text-sm text-muted-foreground"
           >
-            <Checkbox id="login-remember" defaultChecked /> Manter conectado
+            <Checkbox id="login-remember" defaultChecked /> Keep me signed in
           </label>
 
-          <Button className="w-full">Entrar</Button>
+          <Button className="w-full">Sign in</Button>
 
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">ou continue com</span>
+            <span className="text-xs text-muted-foreground">or continue with</span>
             <Separator className="flex-1" />
           </div>
 
@@ -119,9 +121,9 @@ export const Default: Story = {
 
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Não tem conta?{' '}
+            Don't have an account?{' '}
             <a href="#criar" className="font-medium text-primary-text hover:underline">
-              Criar agora
+              Create one now
             </a>
           </p>
         </CardFooter>
@@ -130,9 +132,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O título e o CTA principal montam, e o e-mail tem rótulo associado.
-    await expect(canvas.getByText('Acesse sua conta')).toBeInTheDocument()
-    await expect(canvas.getByLabelText('E-mail')).toBeInTheDocument()
-    await expect(canvas.getByRole('button', { name: 'Entrar' })).toBeInTheDocument()
+    // The title and the main CTA mount, and the email has an associated label.
+    await expect(canvas.getByText('Access your account')).toBeInTheDocument()
+    await expect(canvas.getByLabelText('Email')).toBeInTheDocument()
+    await expect(canvas.getByRole('button', { name: 'Sign in' })).toBeInTheDocument()
   },
 }

@@ -14,7 +14,7 @@ const config: ChartConfig = {
   mobile: { label: 'Mobile', color: 'blue' },
 }
 
-// Renderiza o conteúdo de tooltip dentro do container (que provê o contexto).
+// Renders the tooltip content inside the container (which provides the context).
 function renderTooltip(
   props: React.ComponentProps<typeof ChartTooltipContent>,
   cfg: ChartConfig = config,
@@ -27,7 +27,7 @@ function renderTooltip(
 }
 
 describe('ChartContainer / useChart', () => {
-  it('lança erro quando o conteúdo é usado fora do ChartContainer', () => {
+  it('throws an error when the content is used outside the ChartContainer', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() => render(<ChartTooltipContent active payload={[]} />)).toThrow(
       /ChartContainer/,
@@ -35,7 +35,7 @@ describe('ChartContainer / useChart', () => {
     spy.mockRestore()
   })
 
-  it('respeita o id informado no data-chart', () => {
+  it('respects the provided id in data-chart', () => {
     const { container } = render(
       <ChartContainer id="vendas" config={config}>
         <div />
@@ -46,14 +46,14 @@ describe('ChartContainer / useChart', () => {
 })
 
 describe('ChartStyle', () => {
-  it('não renderiza nada quando nenhuma cor/tema é configurada', () => {
+  it('renders nothing when no color/theme is configured', () => {
     const { container } = render(
       <ChartStyle id="x" config={{ desktop: { label: 'Desktop' } }} />,
     )
     expect(container.querySelector('style')).toBeNull()
   })
 
-  it('injeta variáveis CSS para cores e temas', () => {
+  it('injects CSS variables for colors and themes', () => {
     const { container } = render(
       <ChartStyle
         id="y"
@@ -70,7 +70,7 @@ describe('ChartStyle', () => {
     expect(style?.innerHTML).toContain('--color-b: black')
   })
 
-  it('omite a variável quando a cor do tema é vazia', () => {
+  it('omits the variable when the theme color is empty', () => {
     const { container } = render(
       <ChartStyle
         id="z"
@@ -79,7 +79,7 @@ describe('ChartStyle', () => {
     )
     const style = container.querySelector('style')
     expect(style?.innerHTML).toContain('--color-c: green')
-    // O tema dark tem cor vazia → não gera a variável.
+    // The dark theme has an empty color → does not generate the variable.
     expect(style?.innerHTML).not.toContain('--color-c: ;')
   })
 })
@@ -96,26 +96,26 @@ describe('ChartLegendContent', () => {
     )
   }
 
-  it('não renderiza nada sem payload', () => {
+  it('renders nothing without a payload', () => {
     const { container } = renderLegend({ payload: [] })
     expect(container.querySelector('.gap-4')).toBeNull()
   })
 
-  it('renderiza rótulos e o swatch de cor padrão', () => {
+  it('renders labels and the default color swatch', () => {
     renderLegend({
       payload: [
         { value: 'desktop', dataKey: 'desktop', color: 'red', type: 'square' },
-        // Sem dataKey nem nameKey → cai no fallback de chave 'value'.
-        { value: 'sem-chave', color: 'green', type: 'square' },
+        // No dataKey or nameKey → falls back to the 'value' key.
+        { value: 'no-key', color: 'green', type: 'square' },
         { value: 'none', dataKey: 'none', color: 'gray', type: 'none' },
       ] as never,
     })
     expect(screen.getByText('Desktop')).toBeInTheDocument()
-    // O item type "none" é filtrado.
+    // The item with type "none" is filtered out.
     expect(screen.queryByText('none')).not.toBeInTheDocument()
   })
 
-  it('usa o ícone do config quando presente e hideIcon é falso', () => {
+  it('uses the config icon when present and hideIcon is false', () => {
     const Icon = () => <svg data-testid="legend-icon" />
     renderLegend(
       { verticalAlign: 'top', payload: [{ dataKey: 'desktop', color: 'red' }] as never },
@@ -124,7 +124,7 @@ describe('ChartLegendContent', () => {
     expect(screen.getByTestId('legend-icon')).toBeInTheDocument()
   })
 
-  it('oculta o ícone do config com hideIcon e resolve via nameKey', () => {
+  it('hides the config icon with hideIcon and resolves via nameKey', () => {
     const Icon = () => <svg data-testid="legend-icon" />
     const { container } = renderLegend(
       {
@@ -141,12 +141,12 @@ describe('ChartLegendContent', () => {
 })
 
 describe('ChartTooltipContent', () => {
-  it('não renderiza quando inativo ou sem payload', () => {
+  it('does not render when inactive or without a payload', () => {
     const { container } = renderTooltip({ active: false, payload: [] })
     expect(container.querySelector('.grid')).toBeNull()
   })
 
-  it('mostra o rótulo a partir do config quando label é string', () => {
+  it('shows the label from the config when label is a string', () => {
     renderTooltip({
       active: true,
       label: 'desktop',
@@ -161,20 +161,20 @@ describe('ChartTooltipContent', () => {
       ] as never,
     })
     expect(screen.getAllByText('Desktop').length).toBeGreaterThan(0)
-    // value numérico formatado com toLocaleString.
+    // numeric value formatted with toLocaleString.
     expect(screen.getByText((1234).toLocaleString())).toBeInTheDocument()
   })
 
-  it('usa a própria string de label quando não está no config', () => {
+  it('uses the label string itself when it is not in the config', () => {
     renderTooltip({
       active: true,
-      label: 'Sem Config',
+      label: 'No Config',
       payload: [{ dataKey: 'desktop', name: 'desktop', value: 1 }] as never,
     })
-    expect(screen.getByText('Sem Config')).toBeInTheDocument()
+    expect(screen.getByText('No Config')).toBeInTheDocument()
   })
 
-  it('usa labelFormatter quando fornecido', () => {
+  it('uses labelFormatter when provided', () => {
     renderTooltip({
       active: true,
       label: 'desktop',
@@ -184,7 +184,7 @@ describe('ChartTooltipContent', () => {
     expect(screen.getByText(/FMT:Desktop/)).toBeInTheDocument()
   })
 
-  it('não renderiza rótulo quando não há valor resolvível', () => {
+  it('does not render a label when there is no resolvable value', () => {
     renderTooltip({
       active: true,
       payload: [{ dataKey: 'unknown', name: 'unknown', value: 5 }] as never,
@@ -192,18 +192,18 @@ describe('ChartTooltipContent', () => {
     expect(screen.queryByText('Desktop')).not.toBeInTheDocument()
   })
 
-  it('oculta o rótulo com hideLabel', () => {
+  it('hides the label with hideLabel', () => {
     renderTooltip({
       active: true,
       hideLabel: true,
       label: 'desktop',
-      // Item fora do config para que "Desktop" só pudesse vir do rótulo do topo.
+      // Item outside the config so that "Desktop" could only come from the top label.
       payload: [{ dataKey: 'unknown', name: 'unknown', value: 1 }] as never,
     })
     expect(screen.queryByText('Desktop')).not.toBeInTheDocument()
   })
 
-  it('aninha o rótulo (nestLabel) com indicator "line" e único item', () => {
+  it('nests the label (nestLabel) with indicator "line" and a single item', () => {
     const { container } = renderTooltip({
       active: true,
       indicator: 'line',
@@ -214,7 +214,7 @@ describe('ChartTooltipContent', () => {
     expect(container.querySelector('.w-1')).not.toBeNull()
   })
 
-  it('renderiza indicator "dashed"', () => {
+  it('renders indicator "dashed"', () => {
     const { container } = renderTooltip({
       active: true,
       indicator: 'dashed',
@@ -224,7 +224,7 @@ describe('ChartTooltipContent', () => {
     expect(container.querySelector('.border-dashed')).not.toBeNull()
   })
 
-  it('omite o indicador com hideIndicator', () => {
+  it('omits the indicator with hideIndicator', () => {
     const { container } = renderTooltip({
       active: true,
       hideIndicator: true,
@@ -236,7 +236,7 @@ describe('ChartTooltipContent', () => {
     expect(container.querySelector('.h-2\\.5.w-2\\.5')).toBeNull()
   })
 
-  it('usa o formatter por item quando fornecido', () => {
+  it('uses the per-item formatter when provided', () => {
     renderTooltip({
       active: true,
       formatter: (value, name) => (
@@ -249,7 +249,7 @@ describe('ChartTooltipContent', () => {
     expect(screen.getByText('ITEM:desktop=9')).toBeInTheDocument()
   })
 
-  it('renderiza o ícone do config quando presente', () => {
+  it('renders the config icon when present', () => {
     const Icon = () => <svg data-testid="cfg-icon" />
     renderTooltip(
       {
@@ -261,21 +261,21 @@ describe('ChartTooltipContent', () => {
     expect(screen.getByTestId('cfg-icon')).toBeInTheDocument()
   })
 
-  it('formata valor string e ignora itens type "none" e value nulo', () => {
+  it('formats a string value and ignores items with type "none" and null value', () => {
     renderTooltip({
       active: true,
       payload: [
-        { dataKey: 'desktop', name: 'desktop', value: 'texto' },
+        { dataKey: 'desktop', name: 'desktop', value: 'text' },
         { dataKey: 'mobile', name: 'mobile', value: 10, type: 'none' },
         { dataKey: 'extra', name: 'extra', value: null },
       ] as never,
     })
-    expect(screen.getByText('texto')).toBeInTheDocument()
-    // O item type "none" foi filtrado.
+    expect(screen.getByText('text')).toBeInTheDocument()
+    // The item with type "none" was filtered out.
     expect(screen.queryByText((10).toLocaleString())).not.toBeInTheDocument()
   })
 
-  it('resolve config via nameKey direto no item (string)', () => {
+  it('resolves config via nameKey directly on the item (string)', () => {
     renderTooltip({
       active: true,
       nameKey: 'name',
@@ -286,7 +286,7 @@ describe('ChartTooltipContent', () => {
     expect(screen.getByText('Desktop')).toBeInTheDocument()
   })
 
-  it('resolve config via chave aninhada em item.payload', () => {
+  it('resolves config via a nested key in item.payload', () => {
     renderTooltip({
       active: true,
       nameKey: 'category',
@@ -302,12 +302,12 @@ describe('ChartTooltipContent', () => {
     expect(screen.getByText('Mobile')).toBeInTheDocument()
   })
 
-  it('tolera item primitivo no payload (getPayloadConfigFromPayload)', () => {
+  it('tolerates a primitive item in the payload (getPayloadConfigFromPayload)', () => {
     const { container } = renderTooltip({
       active: true,
       payload: ['rawstring'] as never,
     })
-    // Não quebra: o container do tooltip é renderizado.
+    // Does not break: the tooltip container is rendered.
     expect(container.querySelector('.grid')).not.toBeNull()
   })
 })

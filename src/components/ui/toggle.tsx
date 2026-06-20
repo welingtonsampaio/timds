@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 
 const toggleVariants = cva(
   [
-    // Botão de alternância: ativo via `data-[state=on]` (cor de acento).
+    // Toggle button: active via `data-[state=on]` (accent color).
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-[color,box-shadow] hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground',
     focusRing,
     ariaInvalid,

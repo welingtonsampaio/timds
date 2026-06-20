@@ -4,10 +4,10 @@ import { type DayButton, DayPicker, getDefaultClassNames } from 'react-day-picke
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-// Calendário construído sobre o `react-day-picker`. Estiliza os slots do
-// DayPicker com os tokens do design system e reusa o `Button` do repo para os
-// dias e a navegação. Suporta os modos `single` / `range` / `multiple` via a
-// prop `mode` (repassada ao DayPicker). É a base do `DatePicker`.
+// Calendar built on top of `react-day-picker`. Styles the DayPicker slots with
+// the design system tokens and reuses the repo's `Button` for the days and the
+// navigation. Supports the `single` / `range` / `multiple` modes via the `mode`
+// prop (forwarded to DayPicker). It is the foundation of `DatePicker`.
 
 function Calendar({
   className,

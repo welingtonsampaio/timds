@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// Bundla o servidor MCP (mcp/server.mjs) num único arquivo self-contained
-// (mcp/timds-mcp.mjs) com @modelcontextprotocol/sdk e zod embutidos. Assim o
-// consumidor roda o servidor só com Node, sem instalar essas dependências —
-// timds permanece uma lib de UI sem deps de runtime extras.
+// Bundles the MCP server (mcp/server.mjs) into a single self-contained file
+// (mcp/timds-mcp.mjs) with @modelcontextprotocol/sdk and zod embedded. This way the
+// consumer runs the server with only Node, without installing those dependencies —
+// timds remains a UI lib with no extra runtime deps.
 //
-// O manifesto (ai/manifest.json) NÃO é embutido: continua sendo lido em runtime
-// para poder ser regenerado sem rebundlar.
+// The manifest (ai/manifest.json) is NOT embedded: it is still read at runtime
+// so it can be regenerated without rebundling.
 
 import { chmodSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
@@ -23,7 +23,7 @@ await build({
   format: 'esm',
   target: 'node18',
   banner: { js: '#!/usr/bin/env node' },
-  // Mantém os builtins do Node externos (são resolvidos pelo runtime).
+  // Keep Node builtins external (they are resolved by the runtime).
   external: ['node:*'],
   legalComments: 'none',
   logLevel: 'warning',

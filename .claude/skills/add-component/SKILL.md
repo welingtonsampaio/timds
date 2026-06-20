@@ -90,7 +90,7 @@ const widgetVariants = cva('base classes here', {
   variants: {
     variant: {
       default: 'bg-primary text-primary-foreground',
-      // Tokens semânticos vêm de src/styles.css: success / warning / info
+      // Semantic tokens come from src/styles.css: success / warning / info
       success: 'bg-success text-success-foreground',
     },
   },

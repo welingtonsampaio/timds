@@ -66,10 +66,10 @@ function InputOTPSlot({
 
 function InputOTPSeparator({ ...props }: React.ComponentProps<'div'>) {
   return (
-    // Separador puramente visual entre grupos de slots; não é interativo nem possui valor.
-    // biome-ignore lint/a11y/useFocusableInteractive: separador decorativo, não recebe foco
-    // biome-ignore lint/a11y/useSemanticElements: divisor visual entre grupos de slots
-    // biome-ignore lint/a11y/useAriaPropsForRole: separador estático não possui aria-valuenow
+    // Purely visual separator between slot groups; it is not interactive and has no value.
+    // biome-ignore lint/a11y/useFocusableInteractive: decorative separator, does not receive focus
+    // biome-ignore lint/a11y/useSemanticElements: visual divider between slot groups
+    // biome-ignore lint/a11y/useAriaPropsForRole: static separator has no aria-valuenow
     <div data-slot="input-otp-separator" role="separator" {...props}>
       <MinusIcon />
     </div>

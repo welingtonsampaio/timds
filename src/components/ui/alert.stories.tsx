@@ -14,8 +14,8 @@ import { Alert, AlertDescription, AlertTitle } from './alert'
 const meta = {
   title: 'Feedback/Alert',
   component: Alert,
-  // Sem `autodocs`: a página de docs é a MDX customizada (alert.mdx), que embute
-  // estas stories. Ter ambos geraria entradas de Docs duplicadas.
+  // Without `autodocs`: the docs page is the custom MDX (alert.mdx), which embeds
+  // these stories. Having both would generate duplicate Docs entries.
   parameters: {
     docs: {
       description: {
@@ -49,8 +49,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* --------------------------------------------------------------------------
- * Render stories — uma por variante / composição.
- * Cada uma é render-testada (monta sem erro) e passa pelo axe automaticamente.
+ * Render stories — one per variant / composition.
+ * Each one is render-tested (mounts without error) and passes axe automatically.
  * -------------------------------------------------------------------------- */
 
 /** Fully interactive — switch the `variant` from the **Controls** panel. */
@@ -161,8 +161,8 @@ export const NoIcon: Story = {
 }
 
 /* --------------------------------------------------------------------------
- * Interaction / behavior tests — play functions que SÃO os testes de regressão.
- * Alert é estático (sem callbacks): cobrimos estrutura, role e composição.
+ * Interaction / behavior tests — play functions that ARE the regression tests.
+ * Alert is static (no callbacks): we cover structure, role and composition.
  * -------------------------------------------------------------------------- */
 
 /** Exposes `role="alert"` so assistive tech announces it on render. */
@@ -178,7 +178,7 @@ export const HasAlertRole: Story = {
     const canvas = within(canvasElement)
     const alert = canvas.getByRole('alert')
     await expect(alert).toBeVisible()
-    // O título e a descrição compõem o nome acessível anunciado pelo role alert.
+    // The title and description make up the accessible name announced by the alert role.
     await expect(alert).toHaveTextContent('Deploy scheduled')
     await expect(alert).toHaveTextContent('Going live soon.')
   },
@@ -222,7 +222,7 @@ export const AllVariants: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Toda variante deve renderizar com role="alert" e expor seu título.
+    // Every variant must render with role="alert" and expose its title.
     const alerts = canvas.getAllByRole('alert')
     await expect(alerts).toHaveLength(6)
     await expect(canvas.getByText('Success')).toBeVisible()

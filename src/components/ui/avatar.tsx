@@ -3,8 +3,8 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// O tamanho é propagado para os subcomponentes via `data-size` no root
-// (selectores `group-data-[size=…]`), por isso usamos data-attribute em vez de cva.
+// The size is propagated to the subcomponents via `data-size` on the root
+// (`group-data-[size=…]` selectors), which is why we use a data-attribute instead of cva.
 function Avatar({
   className,
   size = 'default',
@@ -16,8 +16,8 @@ function Avatar({
     <AvatarPrimitive.Root
       data-slot="avatar"
       data-size={size}
-      // Sem `overflow-hidden` aqui: o recorte circular fica na imagem/fallback,
-      // assim o `AvatarBadge` posicionado no canto não é cortado.
+      // No `overflow-hidden` here: the circular clipping lives on the image/fallback,
+      // so the `AvatarBadge` positioned in the corner is not cut off.
       className={cn(
         'group/avatar relative flex size-8 shrink-0 rounded-full select-none data-[size=lg]:size-10 data-[size=sm]:size-6',
         className,
@@ -27,7 +27,7 @@ function Avatar({
   )
 }
 
-// Imagem do avatar; some automaticamente se a fonte falhar, revelando o fallback.
+// Avatar image; automatically disappears if the source fails, revealing the fallback.
 function AvatarImage({
   className,
   ...props
@@ -41,8 +41,8 @@ function AvatarImage({
   )
 }
 
-// Conteúdo exibido enquanto a imagem carrega ou quando ela não está disponível
-// (normalmente as iniciais do usuário).
+// Content shown while the image loads or when it is unavailable
+// (usually the user's initials).
 function AvatarFallback({
   className,
   ...props
@@ -59,7 +59,7 @@ function AvatarFallback({
   )
 }
 
-// Indicador sobreposto ao avatar (ex.: status online); dimensiona conforme o `size` do root.
+// Indicator overlaid on the avatar (e.g. online status); scales according to the root's `size`.
 function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
@@ -76,7 +76,7 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
   )
 }
 
-// Empilha avatares com leve sobreposição e anel para destacar cada um.
+// Stacks avatars with a slight overlap and a ring to set each one apart.
 function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -90,7 +90,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-// Contador final de um grupo (ex.: "+3"); acompanha o `size` definido no grupo.
+// Trailing counter for a group (e.g. "+3"); follows the `size` defined on the group.
 function AvatarGroupCount({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div

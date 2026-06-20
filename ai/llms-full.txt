@@ -9,18 +9,18 @@ npm install github:welingtonsampaio/timds
 ```
 
 ```tsx
-import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)
+import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)
 import { Button, Card } from 'timds'
 ```
 
-- Importe TODOS os componentes de `timds` — nunca de subcaminhos.
-- Importe `timds/styles.css` via JS no entrypoint.
-- Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.
-- Para gráficos, instale `recharts` (peerDependency) — veja `setup.charts`.
-- Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).
-- Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).
-- Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.
-- Ícones via lucide-react. Botões só com ícone precisam de aria-label.
+- Import ALL components from `timds` — never from subpaths.
+- Import `timds/styles.css` via JS in the entrypoint.
+- Load the Inter font in your app (the DS does not load it) — see `setup.font`.
+- For charts, install `recharts` (peerDependency) — see `setup.charts`.
+- To use token utilities (bg-primary, etc.) in your own markup, add the `@theme` bridge from the `setup.tailwindBridge` field to your CSS (requires Tailwind v4 in the app).
+- Use only semantic color utilities (bg-primary, text-muted-foreground, etc.); never raw colors (bg-blue-500).
+- Vivid colors have a fill token (bg-success) and a text token (text-success-text). For text/icons use the `-text` one.
+- Icons via lucide-react. Icon-only buttons need an aria-label.
 
 ## Design tokens
 
@@ -121,7 +121,7 @@ A compact pill that labels, counts, or surfaces the status of an item.
 Import: `import { Badge, badgeVariants } from 'timds'`
 
 Variants:
-- `variant`: `default`, `secondary`, `destructive`, `warning`, `info`, `outline`, `ghost`, `link`, `success`, `chart-1`, `chart-2`, `chart-3`, `chart-4`, `chart-5`
+- `variant`: `default`, `secondary`, `destructive`, `success`, `warning`, `info`, `chart-1`, `chart-2`, `chart-3`, `chart-4`, `chart-5`, `outline`, `ghost`, `link`
 - `size`: `sm`, `md`, `lg`
 
 Props:
@@ -171,7 +171,7 @@ const config = {
     <CartesianGrid vertical={false} />
     <XAxis dataKey="month" tickLine={false} axisLine={false} />
     <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-    {/* a cor `desktop` vira a variável CSS `--color-desktop` */}
+    {/* the `desktop` color becomes the `--color-desktop` CSS variable */}
     <Area dataKey="desktop" fill="var(--color-desktop)" stroke="var(--color-desktop)" />
   </AreaChart>
 </ChartContainer>
@@ -512,13 +512,13 @@ import { Input } from 'timds'
 
 // Labelled field
 <label htmlFor="email">E-mail</label>
-<Input id="email" type="email" placeholder="voce@exemplo.com" />
+<Input id="email" type="email" placeholder="you@example.com" />
 
 // Error state
 <Input aria-invalid value={email} onChange={onEmailChange} />
 
 // Disabled
-<Input disabled value="Não editável" />
+<Input disabled value="Not editable" />
 ```
 
 #### InputGroup `Stable`
@@ -544,14 +544,14 @@ import { Search } from 'lucide-react'
   <InputGroupAddon>
     <Search />
   </InputGroupAddon>
-  <InputGroupInput placeholder="Buscar…" aria-label="Buscar" />
+  <InputGroupInput placeholder="Search…" aria-label="Search" />
 </InputGroup>
 
 // Field with a trailing action button
 <InputGroup>
-  <InputGroupInput aria-label="Cupom" />
+  <InputGroupInput aria-label="Coupon" />
   <InputGroupAddon align="inline-end">
-    <InputGroupButton onClick={apply}>Aplicar</InputGroupButton>
+    <InputGroupButton onClick={apply}>Apply</InputGroupButton>
   </InputGroupAddon>
 </InputGroup>
 ```
@@ -637,21 +637,21 @@ Variants:
 - `size`: `sm`, `default`, `lg`
 
 Props:
-- `options` — Lista de opções (
-- `size` (default: `default`) — Altura do trigger.
-- `searchable` — Exibe o campo de busca.
-- `multiple` — Multi-seleção com chips.
-- `clearable` — Exibe o botão de limpar.
-- `editable` — Gatilho editável (autocomplete no próprio campo).
-- `allowCustomValue` — Editável: aceita texto fora da lista.
-- `maxCount` — Multi: nº máximo de itens (mostra 
-- `maxDisplayChips` — Multi: chips antes de resumir em 
-- `virtualized` — Liga a virtualização (auto para > 100 itens).
-- `loading` — Indicador de carregamento na lista.
-- `hasMore` — Há mais itens para o infinite scroll.
-- `disabled` — Desabilita o trigger.
-- `value` — Valor selecionado (controlado).
-- `placeholder` — Texto quando nada está selecionado.
+- `options` — List of options (
+- `size` (default: `default`) — Trigger height.
+- `searchable` — Shows the search field.
+- `multiple` — Multi-select with chips.
+- `clearable` — Shows the clear button.
+- `editable` — Editable trigger (autocomplete in the field itself).
+- `allowCustomValue` — Editable: accepts text outside the list.
+- `maxCount` — Multi: max number of items (shows 
+- `maxDisplayChips` — Multi: chips before summarizing as 
+- `virtualized` — Enables virtualization (auto for > 100 items).
+- `loading` — Loading indicator in the list.
+- `hasMore` — There are more items for infinite scroll.
+- `disabled` — Disables the trigger.
+- `value` — Selected value (controlled).
+- `placeholder` — Text when nothing is selected.
 
 Example:
 
@@ -659,9 +659,9 @@ Example:
 import { Select, type SelectOption } from 'timds'
 
 const fruits: SelectOption[] = [
-  { value: 'apple', label: 'Maçã' },
+  { value: 'apple', label: 'Apple' },
   { value: 'banana', label: 'Banana' },
-  { value: 'pear', label: 'Pera', disabled: true },
+  { value: 'pear', label: 'Pear', disabled: true },
 ]
 
 // Single, searchable
@@ -787,14 +787,14 @@ Example:
 ```tsx
 import { Textarea } from 'timds'
 
-// Com label associado (nome acessível)
+// With an associated label (accessible name)
 <label htmlFor="bio">Bio</label>
 <Textarea id="bio" placeholder="Tell us about yourself…" />
 
-// Estado de erro
+// Error state
 <Textarea aria-invalid aria-describedby="bio-error" />
 
-// Desabilitado
+// Disabled
 <Textarea disabled value="Read-only" />
 ```
 
@@ -946,16 +946,16 @@ Example:
 ```tsx
 import { Spinner } from 'timds'
 
-// Tamanho e cor herdados do contexto
+// Size and color inherited from the context
 <span className="text-primary">
   <Spinner className="size-6" />
 </span>
 
-// Dentro de um Button, via a prop `loading`
-<Button loading>Salvando</Button>
+// Inside a Button, via the `loading` prop
+<Button loading>Saving</Button>
 
-// Nome acessível customizado
-<Spinner aria-label="Salvando alterações" />
+// Custom accessible name
+<Spinner aria-label="Saving changes" />
 ```
 
 #### Toaster `Stable`
@@ -1056,17 +1056,17 @@ Example:
 ```tsx
 import { Separator } from 'timds'
 
-// Divisor horizontal (decorativo)
+// Horizontal divider (decorative)
 <Separator className="my-4" />
 
-// Divisor inline vertical, dentro de um contêiner com altura
+// Inline vertical divider, inside a container with height
 <div className="flex h-5 items-center gap-4">
   <span>Docs</span>
   <Separator orientation="vertical" />
   <span>Source</span>
 </div>
 
-// Semântico: exposto para tecnologias assistivas
+// Semantic: exposed to assistive technologies
 <Separator decorative={false} />
 ```
 
@@ -1571,10 +1571,10 @@ import {
 } from '@/components/ui/table'
 
 /**
- * **Dashboard** — o exemplo mais completo: um shell de aplicação com `Sidebar`
- * colapsável, cabeçalho fixo, cartões de métrica com indicadores de tendência,
- * dois gráficos (`Chart`/Recharts) e uma tabela de vendas recentes. Reúne quase
- * todas as famílias do design system numa única tela coerente.
+ * **Dashboard** — the most complete example: an application shell with a
+ * collapsible `Sidebar`, a sticky header, metric cards with trend indicators,
+ * two charts (`Chart`/Recharts) and a recent-sales table. It brings together
+ * almost every design system family into a single coherent screen.
  */
 const meta = {
   title: 'Examples/Dashboard',
@@ -1597,21 +1597,21 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /* -------------------------------------------------------------------------- */
-/*  Dados                                                                       */
+/*  Data                                                                        */
 /* -------------------------------------------------------------------------- */
 
 const revenueData = [
   { month: 'Jan', receita: 4200, despesa: 2400 },
-  { month: 'Fev', receita: 5100, despesa: 2800 },
+  { month: 'Feb', receita: 5100, despesa: 2800 },
   { month: 'Mar', receita: 4800, despesa: 3100 },
-  { month: 'Abr', receita: 6300, despesa: 3300 },
-  { month: 'Mai', receita: 7200, despesa: 3600 },
+  { month: 'Apr', receita: 6300, despesa: 3300 },
+  { month: 'May', receita: 7200, despesa: 3600 },
   { month: 'Jun', receita: 8100, despesa: 3900 },
 ]
 
 const revenueConfig = {
-  receita: { label: 'Receita', color: 'var(--chart-1)' },
-  despesa: { label: 'Despesa', color: 'var(--chart-2)' },
+  receita: { label: 'Revenue', color: 'var(--chart-1)' },
+  despesa: { label: 'Expenses', color: 'var(--chart-2)' },
 } satisfies ChartConfig
 
 const channelData = [
@@ -1622,11 +1622,11 @@ const channelData = [
 ]
 
 const channelConfig = {
-  visitas: { label: 'Visitas' },
-  organico: { label: 'Orgânico', color: 'var(--chart-1)' },
+  visitas: { label: 'Visits' },
+  organico: { label: 'Organic', color: 'var(--chart-1)' },
   social: { label: 'Social', color: 'var(--chart-2)' },
-  pago: { label: 'Pago', color: 'var(--chart-3)' },
-  direto: { label: 'Direto', color: 'var(--chart-4)' },
+  pago: { label: 'Paid', color: 'var(--chart-3)' },
+  direto: { label: 'Direct', color: 'var(--chart-4)' },
 } satisfies ChartConfig
 
 const kpis: {
@@ -1636,35 +1636,35 @@ const kpis: {
   up: boolean
   icon: LucideIcon
 }[] = [
-  { label: 'Receita', value: 'R$ 45.231', delta: '+20,1%', up: true, icon: DollarSign },
-  { label: 'Assinantes', value: '2.350', delta: '+12,4%', up: true, icon: Users },
-  { label: 'Vendas', value: '1.024', delta: '+8,2%', up: true, icon: CreditCard },
+  { label: 'Revenue', value: '$45,231', delta: '+20.1%', up: true, icon: DollarSign },
+  { label: 'Subscribers', value: '2,350', delta: '+12.4%', up: true, icon: Users },
+  { label: 'Sales', value: '1,024', delta: '+8.2%', up: true, icon: CreditCard },
   {
-    label: 'Cancelamentos',
+    label: 'Churn',
     value: '38',
-    delta: '-3,1%',
+    delta: '-3.1%',
     up: false,
     icon: ArrowDownRight,
   },
 ]
 
 const sales = [
-  { name: 'Ana Souza', email: 'ana@timds.dev', amount: 'R$ 1.999', img: 47 },
-  { name: 'Bruno Lima', email: 'bruno@timds.dev', amount: 'R$ 39', img: 12 },
-  { name: 'Carla Dias', email: 'carla@timds.dev', amount: 'R$ 299', img: 5 },
-  { name: 'Diego Reis', email: 'diego@timds.dev', amount: 'R$ 99', img: 33 },
+  { name: 'Ana Souza', email: 'ana@timds.dev', amount: '$1,999', img: 47 },
+  { name: 'Bruno Lima', email: 'bruno@timds.dev', amount: '$39', img: 12 },
+  { name: 'Carla Dias', email: 'carla@timds.dev', amount: '$299', img: 5 },
+  { name: 'Diego Reis', email: 'diego@timds.dev', amount: '$99', img: 33 },
 ]
 
 const navItems: { title: string; icon: LucideIcon; badge?: string }[] = [
   { title: 'Dashboard', icon: LayoutDashboard },
-  { title: 'Análises', icon: BarChart3 },
-  { title: 'Clientes', icon: Users, badge: '24' },
-  { title: 'Pagamentos', icon: CreditCard },
-  { title: 'Configurações', icon: Settings },
+  { title: 'Analytics', icon: BarChart3 },
+  { title: 'Customers', icon: Users, badge: '24' },
+  { title: 'Payments', icon: CreditCard },
+  { title: 'Settings', icon: Settings },
 ]
 
 /* -------------------------------------------------------------------------- */
-/*  Subcomponentes                                                              */
+/*  Subcomponents                                                               */
 /* -------------------------------------------------------------------------- */
 
 function KpiCard({ label, value, delta, up, icon: Icon }: (typeof kpis)[number]) {
@@ -1710,7 +1710,7 @@ function DashboardApp() {
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navItems.map((item, i) => (
@@ -1748,7 +1748,7 @@ function DashboardApp() {
       </Sidebar>
 
       <SidebarInset>
-        {/* Cabeçalho fixo */}
+        {/* Sticky header */}
         <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur">
           <SidebarTrigger />
           <h1 className="font-semibold text-base">Dashboard</h1>
@@ -1757,9 +1757,9 @@ function DashboardApp() {
               <InputGroupAddon>
                 <Search className="size-4" aria-hidden="true" />
               </InputGroupAddon>
-              <InputGroupInput placeholder="Buscar..." aria-label="Buscar" />
+              <InputGroupInput placeholder="Search..." aria-label="Search" />
             </InputGroup>
-            <Button variant="ghost" size="icon" aria-label="Notificações">
+            <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="size-4" aria-hidden="true" />
             </Button>
             <DropdownMenu>
@@ -1768,7 +1768,7 @@ function DashboardApp() {
                   variant="ghost"
                   size="icon"
                   className="rounded-full"
-                  aria-label="Conta"
+                  aria-label="Account"
                 >
                   <Avatar className="size-7">
                     <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Ana Souza" />
@@ -1777,17 +1777,17 @@ function DashboardApp() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Faturamento</DropdownMenuItem>
+                <DropdownMenuLabel>My account</DropdownMenuLabel>
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive">Sair</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive">Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </header>
 
-        {/* Conteúdo */}
+        {/* Content */}
         <div className="flex flex-1 flex-col gap-4 p-4">
           {/* KPIs */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -1796,12 +1796,12 @@ function DashboardApp() {
             ))}
           </div>
 
-          {/* Gráficos */}
+          {/* Charts */}
           <div className="grid gap-4 lg:grid-cols-3">
             <Card className="lg:col-span-2">
               <CardHeader>
-                <CardTitle>Receita x Despesa</CardTitle>
-                <CardDescription>Últimos 6 meses</CardDescription>
+                <CardTitle>Revenue vs. Expenses</CardTitle>
+                <CardDescription>Last 6 months</CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer config={revenueConfig} className="h-[260px] w-full">
@@ -1866,8 +1866,8 @@ function DashboardApp() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Tráfego por canal</CardTitle>
-                <CardDescription>Origem das visitas</CardDescription>
+                <CardTitle>Traffic by channel</CardTitle>
+                <CardDescription>Source of visits</CardDescription>
               </CardHeader>
               <CardContent>
                 <ChartContainer
@@ -1894,18 +1894,18 @@ function DashboardApp() {
             </Card>
           </div>
 
-          {/* Vendas recentes */}
+          {/* Recent sales */}
           <Card>
             <CardHeader>
-              <CardTitle>Vendas recentes</CardTitle>
-              <CardDescription>Você fez 265 vendas este mês.</CardDescription>
+              <CardTitle>Recent sales</CardTitle>
+              <CardDescription>You made 265 sales this month.</CardDescription>
             </CardHeader>
             <CardContent className="px-0">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="pl-6">Cliente</TableHead>
-                    <TableHead className="text-right pr-6">Valor</TableHead>
+                    <TableHead className="pl-6">Customer</TableHead>
+                    <TableHead className="text-right pr-6">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -1953,8 +1953,8 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument()
-    await expect(canvas.getByText('R$ 45.231')).toBeInTheDocument()
-    // A navegação marca o item ativo.
+    await expect(canvas.getByText('$45,231')).toBeInTheDocument()
+    // The navigation marks the active item.
     await expect(canvas.getByRole('button', { name: 'Dashboard' })).toHaveAttribute(
       'data-active',
       'true',
@@ -1987,10 +1987,10 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Separator } from '@/components/ui/separator'
 
 /**
- * **Login** — o exemplo mais simples do conjunto. Mostra como uma única `Card`
- * organiza um formulário curto: campos com ícone (`InputGroup`), ações primárias
- * e secundárias, um divisor semântico e provedores sociais. Tudo apoiado nos
- * tokens do design system, sem nenhuma cor solta.
+ * **Login** — the simplest example in the set. Shows how a single `Card`
+ * organizes a short form: fields with an icon (`InputGroup`), primary and
+ * secondary actions, a semantic divider and social providers. Everything is
+ * backed by the design system tokens, without any loose color.
  */
 const meta = {
   title: 'Examples/Login',
@@ -2020,14 +2020,16 @@ export const Default: Story = {
           <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
             <Lock className="size-5" aria-hidden="true" />
           </div>
-          <CardTitle className="text-xl">Acesse sua conta</CardTitle>
-          <CardDescription>Entre com seu e-mail e senha para continuar</CardDescription>
+          <CardTitle className="text-xl">Access your account</CardTitle>
+          <CardDescription>
+            Sign in with your email and password to continue
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="login-email" className="text-sm font-medium">
-              E-mail
+              Email
             </label>
             <InputGroup>
               <InputGroupAddon>
@@ -2036,7 +2038,7 @@ export const Default: Story = {
               <InputGroupInput
                 id="login-email"
                 type="email"
-                placeholder="voce@exemplo.com"
+                placeholder="you@example.com"
                 autoComplete="email"
               />
             </InputGroup>
@@ -2045,13 +2047,13 @@ export const Default: Story = {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <label htmlFor="login-password" className="text-sm font-medium">
-                Senha
+                Password
               </label>
               <a
                 href="#redefinir"
                 className="text-sm font-medium text-primary-text hover:underline"
               >
-                Esqueceu?
+                Forgot?
               </a>
             </div>
             <InputGroup>
@@ -2071,14 +2073,14 @@ export const Default: Story = {
             htmlFor="login-remember"
             className="flex items-center gap-2 text-sm text-muted-foreground"
           >
-            <Checkbox id="login-remember" defaultChecked /> Manter conectado
+            <Checkbox id="login-remember" defaultChecked /> Keep me signed in
           </label>
 
-          <Button className="w-full">Entrar</Button>
+          <Button className="w-full">Sign in</Button>
 
           <div className="flex items-center gap-3">
             <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">ou continue com</span>
+            <span className="text-xs text-muted-foreground">or continue with</span>
             <Separator className="flex-1" />
           </div>
 
@@ -2090,9 +2092,9 @@ export const Default: Story = {
 
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Não tem conta?{' '}
+            Don't have an account?{' '}
             <a href="#criar" className="font-medium text-primary-text hover:underline">
-              Criar agora
+              Create one now
             </a>
           </p>
         </CardFooter>
@@ -2101,10 +2103,10 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // O título e o CTA principal montam, e o e-mail tem rótulo associado.
-    await expect(canvas.getByText('Acesse sua conta')).toBeInTheDocument()
-    await expect(canvas.getByLabelText('E-mail')).toBeInTheDocument()
-    await expect(canvas.getByRole('button', { name: 'Entrar' })).toBeInTheDocument()
+    // The title and the main CTA mount, and the email has an associated label.
+    await expect(canvas.getByText('Access your account')).toBeInTheDocument()
+    await expect(canvas.getByLabelText('Email')).toBeInTheDocument()
+    await expect(canvas.getByRole('button', { name: 'Sign in' })).toBeInTheDocument()
   },
 }
 
@@ -2141,9 +2143,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 /**
- * **Notifications** — um feed de atividades filtrável. Mostra `Tabs` como filtro,
- * `Item` como linha rica (ícone, título, descrição e ações) e o uso de um ponto
- * de "não lida" + `Badge` de contagem que reagem ao estado local.
+ * **Notifications** — a filterable activity feed. Shows `Tabs` as a filter,
+ * `Item` as a rich row (icon, title, description and actions) and the use of an
+ * "unread" dot + a count `Badge` that react to local state.
  */
 const meta = {
   title: 'Examples/Notifications',
@@ -2186,41 +2188,41 @@ const initial: Note[] = [
   {
     id: '1',
     kind: 'mention',
-    title: 'Bruno Lima mencionou você',
-    description: '“@ana pode revisar os tokens de contraste?” em #design-system',
-    when: 'há 5 min',
+    title: 'Bruno Lima mentioned you',
+    description: '“@ana can you review the contrast tokens?” in #design-system',
+    when: '5 min ago',
     read: false,
   },
   {
     id: '2',
     kind: 'pr',
-    title: 'PR #128 aguardando revisão',
-    description: 'feat(table): agrupamento de linhas com header fixo',
-    when: 'há 1 hora',
+    title: 'PR #128 awaiting review',
+    description: 'feat(table): row grouping with sticky header',
+    when: '1 hour ago',
     read: false,
   },
   {
     id: '3',
     kind: 'comment',
-    title: 'Carla Dias comentou',
-    description: 'Adorei o novo Donut chart no dashboard!',
-    when: 'há 3 horas',
+    title: 'Carla Dias commented',
+    description: 'I love the new Donut chart on the dashboard!',
+    when: '3 hours ago',
     read: false,
   },
   {
     id: '4',
     kind: 'like',
-    title: 'Diego Reis curtiu sua atualização',
-    description: 'Release v0.4 — novos tokens de texto acessíveis',
-    when: 'ontem',
+    title: 'Diego Reis liked your update',
+    description: 'Release v0.4 — new accessible text tokens',
+    when: 'yesterday',
     read: true,
   },
   {
     id: '5',
     kind: 'mention',
-    title: 'Elena Prado mencionou você',
-    description: '“@ana fechamos a sprint amanhã” em #produto',
-    when: 'ontem',
+    title: 'Elena Prado mentioned you',
+    description: '“@ana we close the sprint tomorrow” in #product',
+    when: 'yesterday',
     read: true,
   },
 ]
@@ -2250,7 +2252,7 @@ function NotificationsFeed() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
           <CardTitle className="flex items-center gap-2">
-            Notificações
+            Notifications
             {unreadCount > 0 ? <Badge>{unreadCount}</Badge> : null}
           </CardTitle>
           <Button
@@ -2259,7 +2261,7 @@ function NotificationsFeed() {
             onClick={markAll}
             disabled={unreadCount === 0}
           >
-            <CheckCheck className="size-4" aria-hidden="true" /> Marcar todas
+            <CheckCheck className="size-4" aria-hidden="true" /> Mark all
           </Button>
         </CardHeader>
 
@@ -2267,13 +2269,13 @@ function NotificationsFeed() {
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList className="w-full">
               <TabsTrigger value="all" className="flex-1">
-                Todas
+                All
               </TabsTrigger>
               <TabsTrigger value="unread" className="flex-1">
-                Não lidas
+                Unread
               </TabsTrigger>
               <TabsTrigger value="mentions" className="flex-1">
-                Menções
+                Mentions
               </TabsTrigger>
             </TabsList>
 
@@ -2295,7 +2297,7 @@ function NotificationsFeed() {
                                 className="size-2 rounded-full bg-primary"
                                 aria-hidden="true"
                               />
-                              <span className="sr-only">Não lida</span>
+                              <span className="sr-only">Unread</span>
                             </>
                           ) : null}
                         </ItemTitle>
@@ -2309,7 +2311,7 @@ function NotificationsFeed() {
                             size="sm"
                             onClick={() => markRead(note.id)}
                           >
-                            Marcar lida
+                            Mark read
                           </Button>
                         ) : null}
                       </ItemActions>
@@ -2318,7 +2320,7 @@ function NotificationsFeed() {
                 })}
                 {visible.length === 0 ? (
                   <p className="py-10 text-center text-muted-foreground text-sm">
-                    Tudo em dia. Nenhuma notificação por aqui.
+                    All caught up. No notifications here.
                   </p>
                 ) : null}
               </div>
@@ -2334,15 +2336,15 @@ export const Default: Story = {
   render: () => <NotificationsFeed />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Começa com 3 não lidas; o filtro "Não lidas" mostra exatamente essas.
+    // Starts with 3 unread; the "Unread" filter shows exactly those.
     await expect(canvas.getByText('3')).toBeInTheDocument()
-    await userEvent.click(canvas.getByRole('tab', { name: 'Não lidas' }))
-    const markButtons = canvas.getAllByRole('button', { name: 'Marcar lida' })
+    await userEvent.click(canvas.getByRole('tab', { name: 'Unread' }))
+    const markButtons = canvas.getAllByRole('button', { name: 'Mark read' })
     await expect(markButtons).toHaveLength(3)
-    // Marcar todas zera o contador e desabilita o botão.
-    await userEvent.click(canvas.getByRole('button', { name: /Marcar todas/ }))
+    // Marking all resets the counter and disables the button.
+    await userEvent.click(canvas.getByRole('button', { name: /Mark all/ }))
     await expect(
-      canvas.queryByRole('button', { name: 'Marcar lida' }),
+      canvas.queryByRole('button', { name: 'Mark read' }),
     ).not.toBeInTheDocument()
   },
 }
@@ -2373,10 +2375,10 @@ import { Separator } from '@/components/ui/separator'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 /**
- * **Pricing** — uma página de marketing. Mostra como `Card` + `Badge` + `Button`
- * compõem um comparativo de planos, com um destaque visual no plano recomendado
- * (borda e anel na cor da marca) e um seletor de período em `Tabs` que recalcula
- * os preços.
+ * **Pricing** — a marketing page. Shows how `Card` + `Badge` + `Button`
+ * compose a plan comparison, with a visual highlight on the recommended plan
+ * (border and ring in the brand color) and a period selector in `Tabs` that
+ * recomputes the prices.
  */
 const meta = {
   title: 'Examples/Pricing',
@@ -2410,44 +2412,39 @@ type Plan = {
 const plans: Plan[] = [
   {
     name: 'Starter',
-    description: 'Para projetos pessoais e protótipos.',
+    description: 'For personal projects and prototypes.',
     monthly: 0,
-    features: [
-      '1 projeto',
-      '5 mil eventos/mês',
-      'Dashboards básicos',
-      'Suporte por e-mail',
-    ],
-    cta: 'Começar grátis',
+    features: ['1 project', '5k events/month', 'Basic dashboards', 'Email support'],
+    cta: 'Start for free',
     variant: 'outline',
   },
   {
     name: 'Pro',
-    description: 'Para times em crescimento.',
+    description: 'For growing teams.',
     monthly: 29,
     features: [
-      'Projetos ilimitados',
-      '1 milhão de eventos/mês',
-      'Dashboards avançados',
-      'Integrações e webhooks',
-      'Suporte prioritário',
+      'Unlimited projects',
+      '1 million events/month',
+      'Advanced dashboards',
+      'Integrations and webhooks',
+      'Priority support',
     ],
-    cta: 'Assinar Pro',
+    cta: 'Subscribe to Pro',
     variant: 'default',
     featured: true,
   },
   {
     name: 'Enterprise',
-    description: 'Para organizações com escala.',
+    description: 'For organizations at scale.',
     monthly: 99,
     features: [
-      'Tudo do Pro',
-      'SSO e SAML',
-      'Limites personalizados',
-      'SLA dedicado',
-      'Gerente de conta',
+      'Everything in Pro',
+      'SSO and SAML',
+      'Custom limits',
+      'Dedicated SLA',
+      'Account manager',
     ],
-    cta: 'Falar com vendas',
+    cta: 'Talk to sales',
     variant: 'outline',
   },
 ]
@@ -2460,24 +2457,24 @@ function PricingTable() {
     <div className="mx-auto flex max-w-5xl flex-col gap-8 py-6">
       <header className="flex flex-col items-center gap-4 text-center">
         <Badge variant="secondary" className="gap-1">
-          <Sparkles className="size-3.5" aria-hidden="true" /> Preços simples
+          <Sparkles className="size-3.5" aria-hidden="true" /> Simple pricing
         </Badge>
         <h1 className="text-3xl font-bold tracking-tight">
-          Escolha o plano ideal para você
+          Choose the plan that's right for you
         </h1>
         <p className="max-w-xl text-muted-foreground">
-          Comece de graça e evolua conforme cresce. Sem surpresas, cancele quando quiser.
+          Start for free and grow as you scale. No surprises, cancel anytime.
         </p>
         <ToggleGroup
           type="single"
           variant="outline"
           value={period}
           onValueChange={(v) => v && setPeriod(v as 'monthly' | 'yearly')}
-          aria-label="Período de cobrança"
+          aria-label="Billing period"
         >
-          <ToggleGroupItem value="monthly">Mensal</ToggleGroupItem>
+          <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
           <ToggleGroupItem value="yearly">
-            Anual
+            Yearly
             <Badge variant="success" className="ml-2">
               -20%
             </Badge>
@@ -2488,7 +2485,7 @@ function PricingTable() {
       <div className="grid gap-6 md:grid-cols-3">
         {plans.map((plan) => {
           const price = yearly ? Math.round(plan.monthly * 12 * 0.8) : plan.monthly
-          const suffix = plan.monthly === 0 ? '' : yearly ? '/ano' : '/mês'
+          const suffix = plan.monthly === 0 ? '' : yearly ? '/year' : '/month'
           return (
             <Card
               key={plan.name}
@@ -2499,7 +2496,7 @@ function PricingTable() {
               }
             >
               {plan.featured ? (
-                <Badge className="-top-3 absolute right-6">Mais popular</Badge>
+                <Badge className="-top-3 absolute right-6">Most popular</Badge>
               ) : null}
               <CardHeader>
                 <CardTitle>{plan.name}</CardTitle>
@@ -2542,9 +2539,9 @@ export const Default: Story = {
   render: () => <PricingTable />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // No mensal o Pro custa R$ 29; trocar para anual aplica o desconto (12×0,8).
+    // Monthly, Pro costs R$ 29; switching to yearly applies the discount (12×0.8).
     await expect(canvas.getByText('R$ 29')).toBeInTheDocument()
-    await userEvent.click(canvas.getByText('Anual'))
+    await userEvent.click(canvas.getByText('Yearly'))
     await expect(canvas.getByText('R$ 278')).toBeInTheDocument()
   },
 }
@@ -2583,9 +2580,9 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 /**
- * **Profile** — uma página de identidade. Combina `Avatar`, `Badge`, `Card` e um
- * `ItemGroup` para o feed de atividades, organizados por `Tabs`. Demonstra como
- * uma faixa de capa e um cabeçalho sobreposto se montam só com tokens e radius.
+ * **Profile** — an identity page. Combines `Avatar`, `Badge`, `Card` and an
+ * `ItemGroup` for the activity feed, organized by `Tabs`. Demonstrates how
+ * a cover band and an overlapping header are assembled using only tokens and radius.
  */
 const meta = {
   title: 'Examples/Profile',
@@ -2607,32 +2604,32 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const stats = [
-  { label: 'Projetos', value: '24' },
-  { label: 'Seguidores', value: '1,2 mil' },
-  { label: 'Seguindo', value: '318' },
-  { label: 'Estrelas', value: '4,9' },
+  { label: 'Projects', value: '24' },
+  { label: 'Followers', value: '1.2k' },
+  { label: 'Following', value: '318' },
+  { label: 'Stars', value: '4.9' },
 ]
 
 const activity = [
   {
     icon: GitCommitHorizontal,
-    title: 'Publicou 12 commits em timds/design-system',
-    when: 'há 2 horas',
+    title: 'Pushed 12 commits to timds/design-system',
+    when: '2 hours ago',
   },
   {
     icon: Star,
-    title: 'Marcou recharts/recharts com estrela',
-    when: 'há 5 horas',
+    title: 'Starred recharts/recharts',
+    when: '5 hours ago',
   },
   {
     icon: MessageSquare,
-    title: 'Comentou na issue #128 — Tokens de contraste',
-    when: 'ontem',
+    title: 'Commented on issue #128 — Contrast tokens',
+    when: 'yesterday',
   },
   {
     icon: UserPlus,
-    title: 'Começou a seguir Bruno Lima',
-    when: 'há 2 dias',
+    title: 'Started following Bruno Lima',
+    when: '2 days ago',
   },
 ]
 
@@ -2640,11 +2637,11 @@ export const Default: Story = {
   render: () => (
     <div className="mx-auto max-w-3xl">
       <Card className="overflow-hidden p-0">
-        {/* Capa */}
+        {/* Cover */}
         <div className="h-32 bg-gradient-to-r from-primary via-chart-3 to-chart-2" />
 
         <CardContent className="flex flex-col gap-6 pb-6">
-          {/* Cabeçalho sobreposto à capa */}
+          {/* Header overlapping the cover */}
           <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex items-end gap-4">
               <Avatar className="size-24 ring-4 ring-card">
@@ -2662,18 +2659,18 @@ export const Default: Story = {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" aria-label="Configurações">
+              <Button variant="outline" size="icon" aria-label="Settings">
                 <Settings className="size-4" aria-hidden="true" />
               </Button>
               <Button>
-                <UserPlus className="size-4" aria-hidden="true" /> Seguir
+                <UserPlus className="size-4" aria-hidden="true" /> Follow
               </Button>
             </div>
           </div>
 
           <p className="max-w-prose text-sm">
-            Construindo design systems acessíveis e bem documentados. Apaixonada por
-            tokens, tipografia e bons defaults.
+            Building accessible and well-documented design systems. Passionate about
+            tokens, typography and good defaults.
           </p>
 
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground text-sm">
@@ -2681,13 +2678,13 @@ export const Default: Story = {
               <MapPin className="size-4" aria-hidden="true" /> São Paulo, BR
             </span>
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-4" aria-hidden="true" /> Entrou em mar 2023
+              <CalendarDays className="size-4" aria-hidden="true" /> Joined Mar 2023
             </span>
           </div>
 
           <Separator />
 
-          {/* Estatísticas */}
+          {/* Stats */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {stats.map((stat) => (
               <div key={stat.label} className="flex flex-col">
@@ -2697,11 +2694,11 @@ export const Default: Story = {
             ))}
           </div>
 
-          {/* Corpo em abas */}
+          {/* Tabbed body */}
           <Tabs defaultValue="activity">
             <TabsList variant="line">
-              <TabsTrigger value="activity">Atividade</TabsTrigger>
-              <TabsTrigger value="about">Sobre</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="about">About</TabsTrigger>
             </TabsList>
 
             <TabsContent value="activity" className="pt-2">
@@ -2722,8 +2719,8 @@ export const Default: Story = {
 
             <TabsContent value="about" className="pt-2">
               <p className="text-sm text-muted-foreground">
-                Engenheira de design focada em sistemas reutilizáveis, acessibilidade e
-                experiência de desenvolvimento. Mantenedora do timds.
+                Design engineer focused on reusable systems, accessibility and developer
+                experience. Maintainer of timds.
               </p>
             </TabsContent>
           </Tabs>
@@ -2734,8 +2731,8 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { name: 'Ana Souza' })).toBeInTheDocument()
-    // A aba de atividade é a padrão e lista o feed.
-    await expect(canvas.getByText(/Publicou 12 commits/)).toBeInTheDocument()
+    // The activity tab is the default and lists the feed.
+    await expect(canvas.getByText(/Pushed 12 commits/)).toBeInTheDocument()
   },
 }
 
@@ -2768,10 +2765,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 
 /**
- * **Settings** — uma tela densa de configurações organizada por `Tabs`. Mostra o
- * casamento de `Card` para seccionar, `Switch` com rótulos acessíveis para
- * preferências, `Input`/`Textarea` para campos e uma "zona de perigo" usando o
- * token `destructive`.
+ * **Settings** — a dense settings screen organized by `Tabs`. It shows the
+ * pairing of `Card` for sectioning, `Switch` with accessible labels for
+ * preferences, `Input`/`Textarea` for fields and a "danger zone" using the
+ * `destructive` token.
  */
 const meta = {
   title: 'Examples/Settings',
@@ -2792,7 +2789,7 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-// Linha de preferência: título + descrição à esquerda, Switch à direita.
+// Preference row: title + description on the left, Switch on the right.
 function ToggleRow({
   id,
   title,
@@ -2840,31 +2837,31 @@ export const Default: Story = {
   render: () => (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 py-2">
       <header className="flex flex-col gap-1">
-        <h1 className="font-bold text-2xl tracking-tight">Configurações</h1>
+        <h1 className="font-bold text-2xl tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
-          Gerencie sua conta, preferências e segurança.
+          Manage your account, preferences and security.
         </p>
       </header>
 
       <Tabs defaultValue="account">
         <TabsList>
           <TabsTrigger value="account">
-            <User className="size-4" aria-hidden="true" /> Conta
+            <User className="size-4" aria-hidden="true" /> Account
           </TabsTrigger>
           <TabsTrigger value="notifications">
-            <Bell className="size-4" aria-hidden="true" /> Notificações
+            <Bell className="size-4" aria-hidden="true" /> Notifications
           </TabsTrigger>
           <TabsTrigger value="security">
-            <Shield className="size-4" aria-hidden="true" /> Segurança
+            <Shield className="size-4" aria-hidden="true" /> Security
           </TabsTrigger>
         </TabsList>
 
-        {/* Conta */}
+        {/* Account */}
         <TabsContent value="account" className="pt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Perfil</CardTitle>
-              <CardDescription>Estas informações aparecem publicamente.</CardDescription>
+              <CardTitle>Profile</CardTitle>
+              <CardDescription>This information is shown publicly.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               <div className="flex items-center gap-4">
@@ -2874,107 +2871,107 @@ export const Default: Story = {
                 </Avatar>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
-                    Trocar foto
+                    Change photo
                   </Button>
                   <Button variant="ghost" size="sm">
-                    Remover
+                    Remove
                   </Button>
                 </div>
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
-                <Field id="set-name" label="Nome">
+                <Field id="set-name" label="Name">
                   <Input id="set-name" defaultValue="Ana Souza" />
                 </Field>
-                <Field id="set-username" label="Usuário">
+                <Field id="set-username" label="Username">
                   <Input id="set-username" defaultValue="anasouza" />
                 </Field>
               </div>
-              <Field id="set-email" label="E-mail">
+              <Field id="set-email" label="Email">
                 <Input id="set-email" type="email" defaultValue="ana@timds.dev" />
               </Field>
               <Field id="set-bio" label="Bio">
                 <Textarea
                   id="set-bio"
                   rows={3}
-                  defaultValue="Design Engineer construindo design systems acessíveis."
+                  defaultValue="Design Engineer building accessible design systems."
                 />
               </Field>
             </CardContent>
             <CardFooter className="justify-end gap-2">
-              <Button variant="ghost">Cancelar</Button>
-              <Button>Salvar alterações</Button>
+              <Button variant="ghost">Cancel</Button>
+              <Button>Save changes</Button>
             </CardFooter>
           </Card>
         </TabsContent>
 
-        {/* Notificações */}
+        {/* Notifications */}
         <TabsContent value="notifications" className="pt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Notificações</CardTitle>
-              <CardDescription>Escolha o que deseja receber.</CardDescription>
+              <CardTitle>Notifications</CardTitle>
+              <CardDescription>Choose what you want to receive.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               <ToggleRow
                 id="notif-product"
-                title="Novidades do produto"
-                description="Lançamentos, melhorias e dicas."
+                title="Product news"
+                description="Releases, improvements and tips."
                 defaultChecked
               />
               <Separator />
               <ToggleRow
                 id="notif-security"
-                title="Alertas de segurança"
-                description="Acessos e mudanças sensíveis na conta."
+                title="Security alerts"
+                description="Sign-ins and sensitive account changes."
                 defaultChecked
               />
               <Separator />
               <ToggleRow
                 id="notif-marketing"
-                title="E-mails de marketing"
-                description="Promoções e conteúdos ocasionais."
+                title="Marketing emails"
+                description="Occasional promotions and content."
               />
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Segurança */}
+        {/* Security */}
         <TabsContent value="security" className="flex flex-col gap-6 pt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Senha</CardTitle>
+              <CardTitle>Password</CardTitle>
               <CardDescription>
-                Use uma senha forte e única para esta conta.
+                Use a strong, unique password for this account.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
-              <Field id="sec-current" label="Senha atual">
+              <Field id="sec-current" label="Current password">
                 <Input id="sec-current" type="password" autoComplete="current-password" />
               </Field>
-              <Field id="sec-new" label="Nova senha">
+              <Field id="sec-new" label="New password">
                 <Input id="sec-new" type="password" autoComplete="new-password" />
               </Field>
               <ToggleRow
                 id="sec-2fa"
-                title="Autenticação em dois fatores"
-                description="Exige um código além da senha ao entrar."
+                title="Two-factor authentication"
+                description="Requires a code in addition to your password when signing in."
                 defaultChecked
               />
             </CardContent>
             <CardFooter className="justify-end">
-              <Button>Atualizar senha</Button>
+              <Button>Update password</Button>
             </CardFooter>
           </Card>
 
           <Card className="border-destructive/40">
             <CardHeader>
-              <CardTitle className="text-destructive-text">Zona de perigo</CardTitle>
+              <CardTitle className="text-destructive-text">Danger zone</CardTitle>
               <CardDescription>
-                Excluir a conta é permanente e não pode ser desfeito.
+                Deleting your account is permanent and cannot be undone.
               </CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button variant="destructive">Excluir conta</Button>
+              <Button variant="destructive">Delete account</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -2983,9 +2980,9 @@ export const Default: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Navega até a aba de notificações e alterna uma preferência desligada.
-    await userEvent.click(canvas.getByRole('tab', { name: /Notificações/ }))
-    const marketing = canvas.getByRole('switch', { name: 'E-mails de marketing' })
+    // Navigate to the notifications tab and toggle a disabled preference.
+    await userEvent.click(canvas.getByRole('tab', { name: /Notifications/ }))
+    const marketing = canvas.getByRole('switch', { name: 'Marketing emails' })
     await expect(marketing).toHaveAttribute('aria-checked', 'false')
     await userEvent.click(marketing)
     await expect(marketing).toHaveAttribute('aria-checked', 'true')
@@ -3025,9 +3022,9 @@ import { Progress } from '@/components/ui/progress'
 import { Select } from '@/components/ui/select'
 
 /**
- * **Sign Up** — um passo acima do Login: mais campos, um medidor de força de
- * senha (`Progress`) que reage ao input, revelar/ocultar senha com
- * `InputGroupButton` e um `Select` data-driven para o papel do usuário.
+ * **Sign Up** — a step beyond Login: more fields, a password-strength meter
+ * (`Progress`) that reacts to input, reveal/hide password with
+ * `InputGroupButton` and a data-driven `Select` for the user's role.
  */
 const meta = {
   title: 'Examples/Sign Up',
@@ -3049,14 +3046,14 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const roles = [
-  { value: 'eng', label: 'Engenharia' },
+  { value: 'eng', label: 'Engineering' },
   { value: 'design', label: 'Design' },
-  { value: 'product', label: 'Produto' },
+  { value: 'product', label: 'Product' },
   { value: 'marketing', label: 'Marketing' },
-  { value: 'other', label: 'Outro' },
+  { value: 'other', label: 'Other' },
 ]
 
-// Força da senha: 0–4 → rótulo + variante de cor do Progress.
+// Password strength: 0–4 → label + Progress color variant.
 function strengthOf(value: string) {
   let score = 0
   if (value.length >= 8) score++
@@ -3064,11 +3061,11 @@ function strengthOf(value: string) {
   if (/[0-9]/.test(value)) score++
   if (/[^A-Za-z0-9]/.test(value)) score++
   const levels = [
-    { label: 'Muito fraca', variant: 'destructive' as const },
-    { label: 'Fraca', variant: 'destructive' as const },
-    { label: 'Razoável', variant: 'warning' as const },
-    { label: 'Boa', variant: 'info' as const },
-    { label: 'Forte', variant: 'success' as const },
+    { label: 'Very weak', variant: 'destructive' as const },
+    { label: 'Weak', variant: 'destructive' as const },
+    { label: 'Fair', variant: 'warning' as const },
+    { label: 'Good', variant: 'info' as const },
+    { label: 'Strong', variant: 'success' as const },
   ][score]
   return { score, ...levels }
 }
@@ -3085,49 +3082,49 @@ function SignUpForm() {
           <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
             <UserPlus className="size-5" aria-hidden="true" />
           </div>
-          <CardTitle className="text-xl">Crie sua conta</CardTitle>
-          <CardDescription>Leva menos de um minuto</CardDescription>
+          <CardTitle className="text-xl">Create your account</CardTitle>
+          <CardDescription>It takes less than a minute</CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="su-name" className="text-sm font-medium">
-              Nome completo
+              Full name
             </label>
             <Input id="su-name" placeholder="Ana Souza" autoComplete="name" />
           </div>
 
           <div className="flex flex-col gap-2">
             <label htmlFor="su-email" className="text-sm font-medium">
-              E-mail de trabalho
+              Work email
             </label>
             <Input
               id="su-email"
               type="email"
-              placeholder="ana@empresa.com"
+              placeholder="ana@company.com"
               autoComplete="email"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium">Função</span>
+            <span className="text-sm font-medium">Role</span>
             <Select
               options={roles}
-              placeholder="Selecione sua área..."
-              aria-label="Função"
+              placeholder="Select your area..."
+              aria-label="Role"
               triggerClassName="w-full"
             />
           </div>
 
           <div className="flex flex-col gap-2">
             <label htmlFor="su-password" className="text-sm font-medium">
-              Senha
+              Password
             </label>
             <InputGroup>
               <InputGroupInput
                 id="su-password"
                 type={show ? 'text' : 'password'}
-                placeholder="Crie uma senha"
+                placeholder="Create a password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -3135,7 +3132,7 @@ function SignUpForm() {
               <InputGroupAddon align="inline-end">
                 <InputGroupButton
                   size="icon-xs"
-                  aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}
+                  aria-label={show ? 'Hide password' : 'Show password'}
                   onClick={() => setShow((s) => !s)}
                 >
                   {show ? (
@@ -3152,7 +3149,7 @@ function SignUpForm() {
                   value={(strength.score / 4) * 100}
                   variant={strength.variant}
                   className="flex-1"
-                  aria-label="Força da senha"
+                  aria-label="Password strength"
                 />
                 <span className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">
                   {strength.label}
@@ -3160,7 +3157,7 @@ function SignUpForm() {
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Use 8+ caracteres com letras, números e símbolos.
+                Use 8+ characters with letters, numbers and symbols.
               </p>
             )}
           </div>
@@ -3171,29 +3168,29 @@ function SignUpForm() {
           >
             <Checkbox id="su-terms" className="mt-0.5" />
             <span>
-              Concordo com os{' '}
+              I agree to the{' '}
               <a href="#termos" className="font-medium text-primary-text hover:underline">
-                Termos de Serviço
+                Terms of Service
               </a>{' '}
-              e a{' '}
+              and the{' '}
               <a
                 href="#privacidade"
                 className="font-medium text-primary-text hover:underline"
               >
-                Política de Privacidade
+                Privacy Policy
               </a>
               .
             </span>
           </label>
 
-          <Button className="w-full">Criar conta</Button>
+          <Button className="w-full">Create account</Button>
         </CardContent>
 
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Já tem conta?{' '}
+            Already have an account?{' '}
             <a href="#entrar" className="font-medium text-primary-text hover:underline">
-              Entrar
+              Sign in
             </a>
           </p>
         </CardFooter>
@@ -3206,12 +3203,12 @@ export const Default: Story = {
   render: () => <SignUpForm />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Digitar uma senha forte move o medidor para "Forte".
-    await userEvent.type(canvas.getByLabelText('Senha'), 'Sup3r!Senha')
-    await expect(canvas.getByText('Forte')).toBeInTheDocument()
-    // Revelar a senha troca o tipo do campo para texto.
-    await userEvent.click(canvas.getByRole('button', { name: 'Mostrar senha' }))
-    await expect(canvas.getByLabelText('Senha')).toHaveAttribute('type', 'text')
+    // Typing a strong password moves the meter to "Strong".
+    await userEvent.type(canvas.getByLabelText('Password'), 'Sup3r!Pass')
+    await expect(canvas.getByText('Strong')).toBeInTheDocument()
+    // Revealing the password switches the field type to text.
+    await userEvent.click(canvas.getByRole('button', { name: 'Show password' }))
+    await expect(canvas.getByLabelText('Password')).toHaveAttribute('type', 'text')
   },
 }
 
@@ -3253,10 +3250,10 @@ import {
 } from '@/components/ui/table'
 
 /**
- * **Team** — uma tela de gestão orientada a dados. Reúne busca (`InputGroup`),
- * filtro (`Select`), seleção de linhas (`Checkbox` + `data-state="selected"`),
- * status com `Badge`, ações por linha em `DropdownMenu` e `PaginationShort`,
- * tudo dentro de um `Card`.
+ * **Team** — a data-driven management screen. It brings together search (`InputGroup`),
+ * filtering (`Select`), row selection (`Checkbox` + `data-state="selected"`),
+ * status with `Badge`, per-row actions in `DropdownMenu` and `PaginationShort`,
+ * all inside a `Card`.
  */
 const meta = {
   title: 'Examples/Team',
@@ -3277,7 +3274,7 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-type Status = 'Ativo' | 'Convidado' | 'Inativo'
+type Status = 'Active' | 'Invited' | 'Inactive'
 
 type Member = {
   id: string
@@ -3294,7 +3291,7 @@ const members: Member[] = [
     name: 'Ana Souza',
     email: 'ana@timds.dev',
     role: 'Admin',
-    status: 'Ativo',
+    status: 'Active',
     img: 47,
   },
   {
@@ -3302,7 +3299,7 @@ const members: Member[] = [
     name: 'Bruno Lima',
     email: 'bruno@timds.dev',
     role: 'Dev',
-    status: 'Ativo',
+    status: 'Active',
     img: 12,
   },
   {
@@ -3310,7 +3307,7 @@ const members: Member[] = [
     name: 'Carla Dias',
     email: 'carla@timds.dev',
     role: 'Design',
-    status: 'Convidado',
+    status: 'Invited',
     img: 5,
   },
   {
@@ -3318,15 +3315,15 @@ const members: Member[] = [
     name: 'Diego Reis',
     email: 'diego@timds.dev',
     role: 'Dev',
-    status: 'Ativo',
+    status: 'Active',
     img: 33,
   },
   {
     id: '5',
     name: 'Elena Prado',
     email: 'elena@timds.dev',
-    role: 'Produto',
-    status: 'Inativo',
+    role: 'Product',
+    status: 'Inactive',
     img: 24,
   },
   {
@@ -3334,7 +3331,7 @@ const members: Member[] = [
     name: 'Felipe Nunes',
     email: 'felipe@timds.dev',
     role: 'Dev',
-    status: 'Ativo',
+    status: 'Active',
     img: 8,
   },
   {
@@ -3342,31 +3339,31 @@ const members: Member[] = [
     name: 'Gabi Rocha',
     email: 'gabi@timds.dev',
     role: 'Design',
-    status: 'Convidado',
+    status: 'Invited',
     img: 16,
   },
   {
     id: '8',
     name: 'Hugo Mello',
     email: 'hugo@timds.dev',
-    role: 'Produto',
-    status: 'Ativo',
+    role: 'Product',
+    status: 'Active',
     img: 51,
   },
 ]
 
 const statusVariant: Record<Status, 'success' | 'warning' | 'secondary'> = {
-  Ativo: 'success',
-  Convidado: 'warning',
-  Inativo: 'secondary',
+  Active: 'success',
+  Invited: 'warning',
+  Inactive: 'secondary',
 }
 
 const roleOptions = [
-  { value: 'all', label: 'Todas as funções' },
+  { value: 'all', label: 'All roles' },
   { value: 'Admin', label: 'Admin' },
   { value: 'Dev', label: 'Dev' },
   { value: 'Design', label: 'Design' },
-  { value: 'Produto', label: 'Produto' },
+  { value: 'Product', label: 'Product' },
 ]
 
 const PAGE_SIZE = 5
@@ -3422,14 +3419,14 @@ function TeamTable() {
     <div className="mx-auto flex max-w-4xl flex-col gap-4 py-2">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex flex-col gap-1">
-          <h1 className="font-bold text-2xl tracking-tight">Equipe</h1>
+          <h1 className="font-bold text-2xl tracking-tight">Team</h1>
           <p className="text-muted-foreground">
-            {filtered.length} {filtered.length === 1 ? 'membro' : 'membros'}
-            {selected.size > 0 ? ` · ${selected.size} selecionado(s)` : ''}
+            {filtered.length} {filtered.length === 1 ? 'member' : 'members'}
+            {selected.size > 0 ? ` · ${selected.size} selected` : ''}
           </p>
         </div>
         <Button>
-          <UserPlus className="size-4" aria-hidden="true" /> Convidar
+          <UserPlus className="size-4" aria-hidden="true" /> Invite
         </Button>
       </div>
 
@@ -3440,8 +3437,8 @@ function TeamTable() {
               <Search className="size-4" aria-hidden="true" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Buscar por nome ou e-mail..."
-              aria-label="Buscar membros"
+              placeholder="Search by name or email..."
+              aria-label="Search members"
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value)
@@ -3452,7 +3449,7 @@ function TeamTable() {
           <Select
             options={roleOptions}
             defaultValue="all"
-            aria-label="Filtrar por função"
+            aria-label="Filter by role"
             onValueChange={(v) => {
               setRole(v as string)
               setPage(1)
@@ -3467,16 +3464,16 @@ function TeamTable() {
               <TableRow>
                 <TableHead className="w-10">
                   <Checkbox
-                    aria-label="Selecionar todos nesta página"
+                    aria-label="Select all on this page"
                     checked={allOnPageSelected}
                     onCheckedChange={toggleAllOnPage}
                   />
                 </TableHead>
-                <TableHead>Membro</TableHead>
-                <TableHead>Função</TableHead>
+                <TableHead>Member</TableHead>
+                <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-10 text-right">
-                  <span className="sr-only">Ações</span>
+                  <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -3488,7 +3485,7 @@ function TeamTable() {
                 >
                   <TableCell>
                     <Checkbox
-                      aria-label={`Selecionar ${m.name}`}
+                      aria-label={`Select ${m.name}`}
                       checked={selected.has(m.id)}
                       onCheckedChange={() => toggle(m.id)}
                     />
@@ -3525,18 +3522,18 @@ function TeamTable() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          aria-label={`Ações de ${m.name}`}
+                          aria-label={`Actions for ${m.name}`}
                         >
                           <MoreHorizontal className="size-4" aria-hidden="true" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-                        <DropdownMenuItem>Editar função</DropdownMenuItem>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>View profile</DropdownMenuItem>
+                        <DropdownMenuItem>Edit role</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem variant="destructive">
-                          Remover da equipe
+                          Remove from team
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -3549,7 +3546,7 @@ function TeamTable() {
                     colSpan={5}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    Nenhum membro encontrado.
+                    No members found.
                   </TableCell>
                 </TableRow>
               ) : null}
@@ -3569,13 +3566,13 @@ export const Default: Story = {
   render: () => <TeamTable />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Buscar reduz a lista a um único membro.
-    await userEvent.type(canvas.getByLabelText('Buscar membros'), 'bruno')
+    // Searching narrows the list down to a single member.
+    await userEvent.type(canvas.getByLabelText('Search members'), 'bruno')
     await expect(canvas.getByText('Bruno Lima')).toBeInTheDocument()
     await expect(canvas.queryByText('Ana Souza')).not.toBeInTheDocument()
-    // Selecionar a linha marca o estado "selected".
-    await userEvent.click(canvas.getByRole('checkbox', { name: 'Selecionar Bruno Lima' }))
-    await expect(canvas.getByText(/1 selecionado/)).toBeInTheDocument()
+    // Selecting the row marks the "selected" state.
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Bruno Lima' }))
+    await expect(canvas.getByText(/1 selected/)).toBeInTheDocument()
   },
 }
 

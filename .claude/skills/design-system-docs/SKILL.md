@@ -59,9 +59,9 @@ These are not negotiable defaults — they are how `timds` is wired (see `CLAUDE
 - **Overlays use portals**: Radix/Ariakit append popovers/dialogs to `document.body`,
   outside the story canvas. Query them with `screen` (or `within(document.body)`), not
   `canvas`.
-- **Language**: docs **prose is English**; **code comments are Portuguese**; story IDs
-  and prop names are English (PascalCase stories). Story content/labels may be
-  Portuguese where that reads naturally (e.g. `'Lançar'`), matching existing stories.
+- **Language**: docs **prose is English**; **code comments are English**; story IDs
+  and prop names are English (PascalCase stories). Story content/labels are English
+  (e.g. `'Launch'`), matching existing stories.
 
 ## The two coordinated outputs
 

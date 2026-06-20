@@ -4,7 +4,7 @@ import type * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-// Trilho (fundo): tom translúcido da matiz, altura definida por `size`.
+// Track (background): translucent tint of the hue, height defined by `size`.
 const progressVariants = cva('relative w-full overflow-hidden rounded-full', {
   variants: {
     variant: {
@@ -26,7 +26,7 @@ const progressVariants = cva('relative w-full overflow-hidden rounded-full', {
   },
 })
 
-// Indicador (preenchimento): cor sólida da matiz; o avanço vem do translateX.
+// Indicator (fill): solid color of the hue; the progress comes from translateX.
 const indicatorVariants = cva('h-full w-full flex-1 transition-all', {
   variants: {
     variant: {
@@ -48,7 +48,7 @@ function Progress({
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root> &
   VariantProps<typeof progressVariants>) {
-  // Normaliza para indexar o cva (VariantProps permite null).
+  // Normalize to index the cva (VariantProps allows null).
   const v = variant ?? 'default'
   const s = size ?? 'default'
 

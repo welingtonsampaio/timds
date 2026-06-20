@@ -24,9 +24,9 @@ import { Progress } from '@/components/ui/progress'
 import { Select } from '@/components/ui/select'
 
 /**
- * **Sign Up** — um passo acima do Login: mais campos, um medidor de força de
- * senha (`Progress`) que reage ao input, revelar/ocultar senha com
- * `InputGroupButton` e um `Select` data-driven para o papel do usuário.
+ * **Sign Up** — a step beyond Login: more fields, a password-strength meter
+ * (`Progress`) that reacts to input, reveal/hide password with
+ * `InputGroupButton` and a data-driven `Select` for the user's role.
  */
 const meta = {
   title: 'Examples/Sign Up',
@@ -48,14 +48,14 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const roles = [
-  { value: 'eng', label: 'Engenharia' },
+  { value: 'eng', label: 'Engineering' },
   { value: 'design', label: 'Design' },
-  { value: 'product', label: 'Produto' },
+  { value: 'product', label: 'Product' },
   { value: 'marketing', label: 'Marketing' },
-  { value: 'other', label: 'Outro' },
+  { value: 'other', label: 'Other' },
 ]
 
-// Força da senha: 0–4 → rótulo + variante de cor do Progress.
+// Password strength: 0–4 → label + Progress color variant.
 function strengthOf(value: string) {
   let score = 0
   if (value.length >= 8) score++
@@ -63,11 +63,11 @@ function strengthOf(value: string) {
   if (/[0-9]/.test(value)) score++
   if (/[^A-Za-z0-9]/.test(value)) score++
   const levels = [
-    { label: 'Muito fraca', variant: 'destructive' as const },
-    { label: 'Fraca', variant: 'destructive' as const },
-    { label: 'Razoável', variant: 'warning' as const },
-    { label: 'Boa', variant: 'info' as const },
-    { label: 'Forte', variant: 'success' as const },
+    { label: 'Very weak', variant: 'destructive' as const },
+    { label: 'Weak', variant: 'destructive' as const },
+    { label: 'Fair', variant: 'warning' as const },
+    { label: 'Good', variant: 'info' as const },
+    { label: 'Strong', variant: 'success' as const },
   ][score]
   return { score, ...levels }
 }
@@ -84,49 +84,49 @@ function SignUpForm() {
           <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
             <UserPlus className="size-5" aria-hidden="true" />
           </div>
-          <CardTitle className="text-xl">Crie sua conta</CardTitle>
-          <CardDescription>Leva menos de um minuto</CardDescription>
+          <CardTitle className="text-xl">Create your account</CardTitle>
+          <CardDescription>It takes less than a minute</CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="su-name" className="text-sm font-medium">
-              Nome completo
+              Full name
             </label>
             <Input id="su-name" placeholder="Ana Souza" autoComplete="name" />
           </div>
 
           <div className="flex flex-col gap-2">
             <label htmlFor="su-email" className="text-sm font-medium">
-              E-mail de trabalho
+              Work email
             </label>
             <Input
               id="su-email"
               type="email"
-              placeholder="ana@empresa.com"
+              placeholder="ana@company.com"
               autoComplete="email"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium">Função</span>
+            <span className="text-sm font-medium">Role</span>
             <Select
               options={roles}
-              placeholder="Selecione sua área..."
-              aria-label="Função"
+              placeholder="Select your area..."
+              aria-label="Role"
               triggerClassName="w-full"
             />
           </div>
 
           <div className="flex flex-col gap-2">
             <label htmlFor="su-password" className="text-sm font-medium">
-              Senha
+              Password
             </label>
             <InputGroup>
               <InputGroupInput
                 id="su-password"
                 type={show ? 'text' : 'password'}
-                placeholder="Crie uma senha"
+                placeholder="Create a password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -134,7 +134,7 @@ function SignUpForm() {
               <InputGroupAddon align="inline-end">
                 <InputGroupButton
                   size="icon-xs"
-                  aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}
+                  aria-label={show ? 'Hide password' : 'Show password'}
                   onClick={() => setShow((s) => !s)}
                 >
                   {show ? (
@@ -151,7 +151,7 @@ function SignUpForm() {
                   value={(strength.score / 4) * 100}
                   variant={strength.variant}
                   className="flex-1"
-                  aria-label="Força da senha"
+                  aria-label="Password strength"
                 />
                 <span className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">
                   {strength.label}
@@ -159,7 +159,7 @@ function SignUpForm() {
               </div>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Use 8+ caracteres com letras, números e símbolos.
+                Use 8+ characters with letters, numbers and symbols.
               </p>
             )}
           </div>
@@ -170,29 +170,29 @@ function SignUpForm() {
           >
             <Checkbox id="su-terms" className="mt-0.5" />
             <span>
-              Concordo com os{' '}
+              I agree to the{' '}
               <a href="#termos" className="font-medium text-primary-text hover:underline">
-                Termos de Serviço
+                Terms of Service
               </a>{' '}
-              e a{' '}
+              and the{' '}
               <a
                 href="#privacidade"
                 className="font-medium text-primary-text hover:underline"
               >
-                Política de Privacidade
+                Privacy Policy
               </a>
               .
             </span>
           </label>
 
-          <Button className="w-full">Criar conta</Button>
+          <Button className="w-full">Create account</Button>
         </CardContent>
 
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Já tem conta?{' '}
+            Already have an account?{' '}
             <a href="#entrar" className="font-medium text-primary-text hover:underline">
-              Entrar
+              Sign in
             </a>
           </p>
         </CardFooter>
@@ -205,11 +205,11 @@ export const Default: Story = {
   render: () => <SignUpForm />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // Digitar uma senha forte move o medidor para "Forte".
-    await userEvent.type(canvas.getByLabelText('Senha'), 'Sup3r!Senha')
-    await expect(canvas.getByText('Forte')).toBeInTheDocument()
-    // Revelar a senha troca o tipo do campo para texto.
-    await userEvent.click(canvas.getByRole('button', { name: 'Mostrar senha' }))
-    await expect(canvas.getByLabelText('Senha')).toHaveAttribute('type', 'text')
+    // Typing a strong password moves the meter to "Strong".
+    await userEvent.type(canvas.getByLabelText('Password'), 'Sup3r!Pass')
+    await expect(canvas.getByText('Strong')).toBeInTheDocument()
+    // Revealing the password switches the field type to text.
+    await userEvent.click(canvas.getByRole('button', { name: 'Show password' }))
+    await expect(canvas.getByLabelText('Password')).toHaveAttribute('type', 'text')
   },
 }
