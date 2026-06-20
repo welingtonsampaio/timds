@@ -5,7 +5,7 @@ React component library with a built-in design system (shadcn/ui new-york + Tail
 ## Setup & rules
 
 ```bash
-npm install github:welington-sampaio/timds
+npm install github:welingtonsampaio/timds
 ```
 
 ```tsx
