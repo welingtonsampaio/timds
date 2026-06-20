@@ -10,16 +10,16 @@ const alertVariants = cva(
       variant: {
         default: 'bg-card text-card-foreground',
         destructive:
-          'bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
+          'bg-card text-destructive-text *:data-[slot=alert-description]:text-destructive-text/90 [&>svg]:text-current',
         // Variantes "soft": fundo levemente tingido na matiz, borda na cor e
         // ícone colorido. O texto fica em foreground/muted-foreground para
         // manter contraste AA em light e dark (os tokens semânticos são
         // vívidos demais para texto pequeno).
         success:
-          'border-success/30 bg-success/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-success',
+          'border-success/30 bg-success/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-success-text',
         warning:
-          'border-warning/30 bg-warning/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-warning',
-        info: 'border-info/30 bg-info/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-info',
+          'border-warning/30 bg-warning/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-warning-text',
+        info: 'border-info/30 bg-info/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-info-text',
         accent:
           'border-primary/30 bg-primary/10 text-foreground *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-primary',
       },

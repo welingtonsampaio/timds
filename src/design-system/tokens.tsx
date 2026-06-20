@@ -11,6 +11,11 @@ export type ColorToken = {
   description?: string
   /** Optional companion `*-foreground` token used to preview text on top. */
   foreground?: string
+  /**
+   * Token meant to be used as text/icon color (not a fill). Previews the value
+   * as colored text over the surface instead of a solid swatch.
+   */
+  textOnly?: boolean
 }
 
 export type ColorGroup = {
@@ -50,6 +55,7 @@ export const COLOR_GROUPS: ColorGroup[] = [
         foreground: 'primary-foreground',
         description: 'Brand / main CTA',
       },
+      { name: 'primary-text', textOnly: true, description: 'Brand link/text' },
       {
         name: 'secondary',
         foreground: 'secondary-foreground',
@@ -66,16 +72,22 @@ export const COLOR_GROUPS: ColorGroup[] = [
   {
     title: 'Feedback',
     description:
-      'Status colors. `destructive` ships with shadcn; the rest are custom tokens.',
+      'Status colors. `destructive` ships with shadcn; the rest are custom tokens. ' +
+      'The vivid tokens are fills (dark text on top); the `*-text` tokens are the ' +
+      'darker variants for icon/text use on light surfaces (WCAG AA).',
     tokens: [
       {
         name: 'destructive',
         foreground: 'destructive-foreground',
         description: 'Errors / danger',
       },
-      { name: 'success', foreground: 'success-foreground', description: 'Success' },
-      { name: 'warning', foreground: 'warning-foreground', description: 'Warning' },
-      { name: 'info', foreground: 'info-foreground', description: 'Information' },
+      { name: 'destructive-text', textOnly: true, description: 'Danger icon/text' },
+      { name: 'success', foreground: 'success-foreground', description: 'Success fill' },
+      { name: 'warning', foreground: 'warning-foreground', description: 'Warning fill' },
+      { name: 'info', foreground: 'info-foreground', description: 'Information fill' },
+      { name: 'success-text', textOnly: true, description: 'Success icon/text' },
+      { name: 'warning-text', textOnly: true, description: 'Warning icon/text' },
+      { name: 'info-text', textOnly: true, description: 'Information icon/text' },
     ],
   },
   {
@@ -126,19 +138,46 @@ export const COLOR_GROUPS: ColorGroup[] = [
 export function Swatch({ token }: { token: ColorToken }) {
   return (
     <figure className="m-0 flex flex-col gap-2">
-      <div
-        className="flex h-20 items-end justify-end rounded-lg border border-border p-2 shadow-sm"
-        style={{ background: `var(--${token.name})` }}
-      >
-        {token.foreground ? (
+      {token.textOnly ? (
+        <div
+          className="flex h-20 items-center justify-center gap-2 rounded-lg border border-border p-2 shadow-sm"
+          style={{ background: 'var(--background)' }}
+        >
           <span
-            className="rounded px-1.5 py-0.5 text-xs font-medium"
-            style={{ color: `var(--${token.foreground})` }}
+            className="text-2xl font-semibold"
+            style={{ color: `var(--${token.name})` }}
           >
             Aa
           </span>
-        ) : null}
-      </div>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="size-6"
+            fill="none"
+            stroke={`var(--${token.name})`}
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+        </div>
+      ) : (
+        <div
+          className="flex h-20 items-end justify-end rounded-lg border border-border p-2 shadow-sm"
+          style={{ background: `var(--${token.name})` }}
+        >
+          {token.foreground ? (
+            <span
+              className="rounded px-1.5 py-0.5 text-xs font-medium"
+              style={{ color: `var(--${token.foreground})` }}
+            >
+              Aa
+            </span>
+          ) : null}
+        </div>
+      )}
       <figcaption className="flex flex-col gap-0.5">
         <code className="text-xs font-semibold text-foreground">--{token.name}</code>
         {token.description ? (

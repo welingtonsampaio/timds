@@ -4,6 +4,21 @@ import { useEffect } from 'react'
 import '../src/styles.css'
 import { allModes } from './modes'
 
+// Sob o test runner (vitest browser), zera animações/transições. As animações
+// de entrada/saída dos overlays (Radix + tw-animate-css) deixam opacity 0 no
+// primeiro frame e mantêm o nó no DOM durante o fade-out, causando flakiness em
+// asserts de `toBeVisible`/axe. Não afeta Storybook dev nem Chromatic.
+if (import.meta.env.MODE === 'test' && typeof document !== 'undefined') {
+  const style = document.createElement('style')
+  style.textContent = `*, *::before, *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }`
+  document.head.appendChild(style)
+}
+
 const withTheme: Decorator = (Story, context) => {
   const theme = context.globals.theme ?? 'light'
   // `layout: 'fullscreen'` (token/overview pages) precisa ocupar a área toda;

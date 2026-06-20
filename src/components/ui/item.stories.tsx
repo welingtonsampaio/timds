@@ -8,7 +8,7 @@ import {
   ShieldAlertIcon,
 } from 'lucide-react'
 import { Fragment } from 'react'
-import { expect, fn, screen, userEvent, within } from 'storybook/test'
+import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test'
 
 import { Avatar, AvatarFallback, AvatarImage } from './avatar'
 import { Button } from './button'
@@ -572,7 +572,10 @@ export const OpensInDropdownMenu: Story = {
     await expect(within(menu).getByText('shadcn')).toBeInTheDocument()
     // Fecha o menu antes do axe rodar (no afterEach): aberto, o modal marca os
     // irmãos como aria-hidden mantendo o trigger focável (viola aria-hidden-focus).
+    // Aguarda a animação de saída concluir e o menu sair do DOM, senão o axe
+    // ainda enxerga o fundo aria-hidden durante o fade-out.
     await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument())
   },
 }
 

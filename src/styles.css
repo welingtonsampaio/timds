@@ -33,6 +33,9 @@
   /* === PRIMARY (violeta da marca) === */
   --primary: oklch(0.549 0.233 300.8);
   --primary-foreground: oklch(0.99 0 0);
+  /* Violeta escurecido para uso como TEXTO/link sobre superfícies claras
+     (o --primary é fill; como texto fica abaixo de AA). 5.5:1 sobre branco. */
+  --primary-text: oklch(0.52 0.22 300.8);
 
   /* === SECONDARY === */
   --secondary: oklch(0.965 0.012 296.4);
@@ -50,10 +53,15 @@
      L 0.586 -> 0.564 para o texto branco passar com folga (>= 4.5:1, AA). */
   --destructive: oklch(0.564 0.222 17.6);
   --destructive-foreground: oklch(0.99 0 0);
+  /* Vermelho para uso como TEXTO/ícone (item destrutivo em menus, título de
+     alert destructive) sobre superfícies claras. 5.1:1 sobre branco. */
+  --destructive-text: oklch(0.54 0.2 17.6);
 
-  /* === BORDERS & INPUTS === */
-  --border: oklch(0.925 0.016 297.5);
-  --input: oklch(0.925 0.016 297.5);
+  /* === BORDERS & INPUTS ===
+     L reduzida (0.925 -> 0.90 / input 0.87) para a borda ficar perceptível
+     sobre o branco; a antiga (1.25:1) era quase invisível. */
+  --border: oklch(0.9 0.018 297.5);
+  --input: oklch(0.87 0.02 297.5);
   --ring: oklch(0.549 0.233 300.8);
 
   /* === CHART === */
@@ -83,6 +91,16 @@
   --warning-foreground: oklch(0.22 0.05 58.3);
   --info: oklch(0.685 0.148 237.3);
   --info-foreground: oklch(0.22 0.05 237.3);
+
+  /* === SEMÂNTICAS — TEXTO/ÍCONE ===
+     Os tokens acima são vívidos para FUNDOS preenchidos (com texto escuro por
+     cima). Como cor de ÍCONE/TEXTO sobre superfície clara eles ficam fracos
+     (info 2.77:1, warning 3.18:1, success 3.30:1). Estes tokens escuros são
+     para esse papel e passam AA (>= 4.5:1) sobre o branco. No dark, a cor
+     vívida já contrasta com o fundo escuro, então apontam para o token base. */
+  --success-text: oklch(0.52 0.15 149.2);
+  --warning-text: oklch(0.52 0.13 58.3);
+  --info-text: oklch(0.52 0.15 237.3);
 }
 
 .dark {
@@ -104,6 +122,9 @@
      o violeta mais vívido (0.622), pois não carregam texto por cima. */
   --primary: oklch(0.56 0.217 302.6);
   --primary-foreground: oklch(0.99 0 0);
+  /* No dark o --primary (fill) fica abaixo de AA como texto sobre o fundo
+     escuro; clareamos para 5.5:1 (pior caso sobre accent). */
+  --primary-text: oklch(0.74 0.18 302.6);
 
   /* === SECONDARY === */
   --secondary: oklch(0.238 0.047 285.9);
@@ -122,10 +143,14 @@
      mantendo o vermelho de erro. */
   --destructive: oklch(0.56 0.193 12.7);
   --destructive-foreground: oklch(0.99 0 0);
+  /* Clareado para servir de texto/ícone sobre superfícies escuras (5.1:1). */
+  --destructive-text: oklch(0.72 0.17 12.7);
 
-  /* === BORDERS & INPUTS === */
-  --border: oklch(0.303 0.064 285.7);
-  --input: oklch(0.337 0.071 285.3);
+  /* === BORDERS & INPUTS ===
+     L elevada (0.303 -> 0.34 / input 0.39) para a borda destacar do fundo
+     escuro; a antiga (1.42:1) era quase imperceptível. */
+  --border: oklch(0.34 0.05 285.7);
+  --input: oklch(0.39 0.05 285.3);
   --ring: oklch(0.622 0.217 302.6);
 
   /* === CHART === */
@@ -152,6 +177,14 @@
   --warning-foreground: oklch(0.2 0.04 80);
   --info: oklch(0.757 0.122 237.7);
   --info-foreground: oklch(0.18 0.03 240);
+
+  /* === SEMÂNTICAS — TEXTO/ÍCONE ===
+     No dark a cor vívida já contrasta com o fundo escuro (success 9.3:1,
+     warning 10.7:1, info 8.4:1 sobre o card), então o token de texto reusa
+     o vívido. */
+  --success-text: oklch(0.773 0.153 163.2);
+  --warning-text: oklch(0.837 0.164 84.4);
+  --info-text: oklch(0.757 0.122 237.7);
 }
 
 @theme inline {
@@ -170,6 +203,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-text: var(--primary-text);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -178,6 +212,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-text: var(--destructive-text);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -199,10 +234,13 @@
 
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-success-text: var(--success-text);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  --color-warning-text: var(--warning-text);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-info-text: var(--info-text);
 }
 
 @layer base {

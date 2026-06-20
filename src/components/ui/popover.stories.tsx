@@ -134,7 +134,10 @@ export const OpensAndCloses: Story = {
     await expect(screen.queryByText('Dimensions')).not.toBeInTheDocument()
 
     await userEvent.click(trigger)
-    await expect(await screen.findByText('Dimensions')).toBeVisible()
+    // findByText espera o portal montar; waitFor cobre a animação de entrada
+    // (animate-in/fade-in deixa opacity 0 no primeiro frame → toBeVisible falha).
+    await screen.findByText('Dimensions')
+    await waitFor(() => expect(screen.getByText('Dimensions')).toBeVisible())
 
     // Escape fecha e devolve o foco ao gatilho (popover não-modal).
     await userEvent.keyboard('{Escape}')

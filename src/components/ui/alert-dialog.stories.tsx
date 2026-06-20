@@ -178,7 +178,8 @@ export const OpensOnTrigger: Story = {
     await expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
     await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
     const dialog = await screen.findByRole('alertdialog')
-    await expect(dialog).toBeVisible()
+    // waitFor cobre a animação de entrada (opacity 0 no primeiro frame).
+    await waitFor(() => expect(dialog).toBeVisible())
     // O diálogo é nomeado pelo título e descrito pela descrição (Radix faz o wiring).
     await expect(dialog).toHaveAccessibleName('Are you absolutely sure?')
     // Fecha para a story não terminar aberta (evita aria-hidden-focus com o trigger).
@@ -212,7 +213,8 @@ export const ConfirmFlow: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Delete account' }))
     // O conteúdo é renderizado num portal, fora do canvas — busca no document.
     const dialog = await screen.findByRole('alertdialog')
-    await expect(dialog).toBeVisible()
+    // waitFor cobre a animação de entrada (opacity 0 no primeiro frame).
+    await waitFor(() => expect(dialog).toBeVisible())
     await userEvent.click(screen.getByRole('button', { name: 'Continue' }))
     await expect(onConfirm).toHaveBeenCalledOnce()
     // Confirmar fecha o diálogo.

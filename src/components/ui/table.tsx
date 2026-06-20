@@ -25,9 +25,17 @@ function Table({
 }) {
   return (
     <TableColumnCountContext.Provider value={columnCount}>
+      {/* tabIndex={0} torna a região de scroll acessível por teclado: como o
+          container é sempre `overflow-x-auto` (e pode ter scroll vertical via
+          containerClassName), o axe exige que seja focável (scrollable-region-
+          focusable). */}
       <div
         data-slot="table-container"
-        className={cn('relative w-full overflow-x-auto', containerClassName)}
+        tabIndex={0}
+        className={cn(
+          'relative w-full overflow-x-auto rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+          containerClassName,
+        )}
       >
         <table
           data-slot="table"

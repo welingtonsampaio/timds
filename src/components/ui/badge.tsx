@@ -46,7 +46,7 @@ const badgeVariants = cva(
         outline:
           'border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
         ghost: '[a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 [a&]:hover:underline',
+        link: 'text-primary-text underline-offset-4 [a&]:hover:underline',
       },
       size: {
         sm: 'px-1.5 py-0 text-[0.625rem] [&>svg]:size-2.5',

@@ -90,10 +90,10 @@ const onTextColor: Record<NonNullable<SwitchProps['variant']>, string> = {
 // Cor do texto exibido quando desligado (sobre o trilho no estado unchecked).
 // Sobre fundos claros usamos um tom suave; no green_red o fundo é o vermelho.
 const offTextColor: Record<NonNullable<SwitchProps['variant']>, string> = {
-  default: 'text-muted-foreground',
+  default: 'text-foreground/70',
   green_red: 'text-destructive-foreground',
-  success: 'text-muted-foreground',
-  destructive: 'text-muted-foreground',
+  success: 'text-foreground/70',
+  destructive: 'text-foreground/70',
 }
 
 export interface SwitchProps

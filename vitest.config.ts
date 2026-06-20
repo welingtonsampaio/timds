@@ -38,7 +38,12 @@ export default defineConfig({
       // 2) Histórias do Storybook executadas como testes em browser real
       //    (smoke render de todas + play functions). Única fonte da verdade.
       {
-        plugins: [storybookTest({ configDir: resolve(__dirname, '.storybook') })],
+        // tailwindcss() é necessário aqui: o storybookTest não herda os plugins
+        // do vite.config.ts raiz, então sem ele as classes utilitárias não geram
+        // CSS no browser de teste e o addon-a11y validava contraste sobre um DOM
+        // sem estilo (falsos resultados). Com o plugin, o axe avalia as cores
+        // reais de cada story.
+        plugins: [tailwindcss(), storybookTest({ configDir: resolve(__dirname, '.storybook') })],
         resolve: { alias },
         test: {
           name: 'storybook',
