@@ -1,6 +1,7 @@
 // button.stories.tsx — exemplo trabalhado para a skill design-system-docs.
 // As stories funcionam como testes de interação (regressão) via play functions.
-// Espelha as convenções reais do timds: title 'UI/...', tags autodocs, utilitários
+// Espelha as convenções reais do timds: title por categoria semântica (ex.: 'Data
+// Entry/Button', nunca 'UI/*'), tags autodocs, utilitários
 // de `storybook/test`, idioma `canvasElement` + `within`, comentários em pt-BR.
 
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -10,7 +11,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Button } from './button'
 
 const meta = {
-  title: 'UI/Button',
+  title: 'Data Entry/Button',
   component: Button,
   // Sem `autodocs`: a página de docs é a MDX customizada (button.mdx). Ter os
   // dois geraria entradas de Docs duplicadas (MultipleIndexingError).

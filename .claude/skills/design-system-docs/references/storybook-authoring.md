@@ -28,7 +28,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { Button } from './button'
 
 const meta = {
-  title: 'UI/Button',                  // always 'UI/<ComponentName>'
+  title: 'Data Entry/Button',          // '<Category>/<ComponentName>' — never 'UI/*'
   component: Button,
   tags: ['autodocs'],                  // generate the autodocs page
   parameters: {
@@ -138,8 +138,12 @@ sync with the code and the tests.
 
 ## Naming & placement
 
-- `title: 'UI/<ComponentName>'` controls the sidebar hierarchy (`UI/Button`,
-  `UI/Select`). Foundation pages use `Design System/<Page>`.
+- `title: '<Category>/<ComponentName>'` controls the sidebar hierarchy — group by
+  **semantic category, not a flat `UI/*` namespace** (`Data Entry/Button`,
+  `Data Entry/Select`, `Data Display/Table`). The category must be one of the ordered
+  groups in `.storybook/preview.tsx` → `storySort.order` (Layout, Navigation, Data Entry,
+  Data Display, Feedback, Overlays); add a new one there if none fits. Foundation pages
+  use `Design System/<Page>`. See the category guide in `SKILL.md`.
 - Co-locate `<component-name>.stories.tsx` and `<component-name>.mdx` with the component
   in `src/components/ui/`, kebab-case.
 - Hide regression-only fixtures from the sidebar/docs with `tags: ['!dev', '!autodocs']`

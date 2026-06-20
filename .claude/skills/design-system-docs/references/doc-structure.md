@@ -55,8 +55,16 @@ Use this order. Omit a section that does not apply rather than padding it.
 
 ## Formatting rules
 
-- Correct heading hierarchy; tables for structured data; fenced code blocks with
-  language tags; blockquotes for warnings.
+- Correct heading hierarchy; fenced code blocks with language tags; blockquotes for
+  warnings.
+- **Never use Markdown pipe tables (`| Col | … |`)** — the Storybook MDX pipeline has no
+  `remark-gfm`, so a pipe table renders as raw `| --- |` text, not a table. For a
+  component's own props use the live `<Controls of={Stories.X} />` Doc Block. For
+  **subcomponent props** (parts whose component is not `meta.component`, e.g.
+  `TableGroupRow` alongside `Table`), document them as a **Markdown list**
+  (`- **propName** (\`type\`, default \`x\`) — description.`), mirroring the **Anatomy**
+  list and `card.mdx`. If you truly need a grid, hand-write a JSX/HTML `<table>` (always
+  rendered) — but a list is preferred and matches the repo.
 - Prose is concise — every sentence earns its place. Imperative for guidance, present
   tense for descriptions.
 - Consistent terminology — one term per concept (see `content-and-style.md`); match the

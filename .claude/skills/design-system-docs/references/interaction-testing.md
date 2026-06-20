@@ -215,7 +215,7 @@ them and they auto-reset between stories:
 
 ```tsx
 const meta = {
-  title: 'UI/Button',
+  title: 'Data Entry/Button',       // categoria semântica, nunca 'UI/*'
   component: Button,
   tags: ['autodocs'],
   args: { onClick: fn() },          // 👈 spy shared by all stories, auto-reset

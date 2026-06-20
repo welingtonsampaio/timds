@@ -27,7 +27,23 @@ These are not negotiable defaults — they are how `timds` is wired (see `CLAUDE
 - **Files are kebab-case and flat** in `src/components/ui/` — `button.tsx`,
   `button.stories.tsx`, `button.mdx`, optional `button.test.tsx`. No per-component
   folder.
-- **`title: 'UI/<ComponentName>'`** on every `meta`. **`autodocs` and a custom MDX
+- **`title: '<Category>/<ComponentName>'`** on every `meta` — the sidebar is grouped by
+  **semantic category, not a flat `UI/*` namespace**. Pick the category that matches the
+  component's role, matching the ordered groups in `.storybook/preview.tsx`
+  (`storySort.order`):
+  - **Layout** — structural surfaces (`Card`, `Separator`).
+  - **Navigation** — moving between views (`Tabs`, `Sidebar`, `Pagination`).
+  - **Data Entry** — controls that capture input (`Button`, `Input`, `Select`,
+    `Checkbox`, `Switch`, `Slider`, `DatePicker`, …).
+  - **Data Display** — present read-only data (`Table`, `Badge`, `Avatar`, `Chart`,
+    `Item`).
+  - **Feedback** — status/async signals (`Alert`, `Progress`, `Spinner`, `Skeleton`,
+    `Toaster`).
+  - **Overlays** — portaled surfaces (`Dialog`, `AlertDialog`, `Drawer`, `Popover`,
+    `Tooltip`, `DropdownMenu`, `ContextMenu`).
+
+  Foundation pages use `Design System/<Page>`. If no category fits, add a new one to
+  `storySort.order` rather than falling back to `UI/*`. **`autodocs` and a custom MDX
   page are mutually exclusive** for the same component: a `*.mdx` with
   `<Meta of={Stories} />` IS the Docs entry, so keeping `tags: ['autodocs']` too makes
   Storybook index two Docs pages and **fails the build** (`MultipleIndexingError`).
@@ -92,7 +108,7 @@ Follow these steps in order.
    read `references/doc-structure.md`. Consult `references/storybook-authoring.md` for
    CSF3 / Doc Block / autodocs / JSDoc syntax (with the project's exact import paths)
    and `references/content-and-style.md` for voice, microcopy, and language policy.
-3. **Write the stories file first.** Set up `meta` (`title: 'UI/X'`, `component`, `args`
+3. **Write the stories file first.** Set up `meta` (`title: '<Category>/X'`, `component`, `args`
    with `fn()` spies, rich `argTypes` descriptions, a `docs.description.component`).
    Do **not** add `tags: ['autodocs']` — the MDX is the Docs page (if the component
    already had it from `add-component`, remove it now). Add a `Playground` story, a
