@@ -352,7 +352,7 @@ const manifest = {
     'Consumed as a compiled package: import components from `timds` and styles from `timds/styles.css`.',
   version: JSON.parse(read(join(root, 'package.json'))).version,
   setup: {
-    install: 'npm install github:welington-sampaio/timds',
+    install: 'npm install github:welingtonsampaio/timds',
     // Importe via JS no entrypoint — NÃO via `@import` em CSS: o CSS compilado
     // começa com um `@import` de fonte que, re-importado dentro de outro CSS,
     // quebra a ordenação (`@import must precede all other statements`).

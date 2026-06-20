@@ -3,7 +3,7 @@
   "description": "React component library with a built-in design system (shadcn/ui new-york + Tailwind v4). Consumed as a compiled package: import components from `timds` and styles from `timds/styles.css`.",
   "version": "0.0.1",
   "setup": {
-    "install": "npm install github:welington-sampaio/timds",
+    "install": "npm install github:welingtonsampaio/timds",
     "importStyles": "import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)",
     "importComponents": "import { Button, Card } from 'timds'",
     "darkMode": "Adicione a classe `dark` em um ancestral (ex.: <html class=\"dark\">). Opt-in.",
