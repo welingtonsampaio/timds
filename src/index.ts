@@ -236,6 +236,17 @@ export {
   switchVariants,
 } from '@/components/ui/switch'
 export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableGroupRow,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+export {
   Tabs,
   TabsContent,
   TabsList,

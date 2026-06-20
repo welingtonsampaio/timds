@@ -1,0 +1,223 @@
+{/* table.mdx — prosa em English; embute as stories testadas. Doc Blocks de
+    @storybook/addon-docs/blocks (Storybook 10). */}
+import { Meta, Canvas, Controls, Source } from '@storybook/addon-docs/blocks'
+import * as Stories from './table.stories'
+
+<Meta of={Stories} />
+
+# Table · `Stable`
+
+Displays tabular data in rows and columns, built on native HTML table elements.
+
+## Overview
+
+Use a Table to present structured data — records with the same set of attributes — so
+people can scan and compare across rows. It is a thin, styled wrapper over the native
+`<table>` semantics: you compose the parts yourself, keeping full control over content
+and accessibility. For sorting, filtering, pagination or column visibility, drive the
+markup with a headless table library (e.g. TanStack Table) and render its output through
+these parts.
+
+<Canvas of={Stories.Default} />
+
+## Anatomy
+
+- **Table** — the scroll container plus the `<table>` element; carries the base styling.
+- **TableCaption** — an optional `<caption>` that names the table for assistive tech.
+- **TableHeader** — the `<thead>` wrapping the header row(s).
+- **TableHead** — a `<th>` column header cell.
+- **TableBody** — the `<tbody>` wrapping the data rows.
+- **TableRow** — a `<tr>`; mark a selected row with `data-state="selected"`.
+- **TableCell** — a `<td>` data cell.
+- **TableGroupRow** — a full-width `<th scope="rowgroup">` row that labels a group of
+  rows (e.g. "Overdue", "To pay", "Paid").
+- **TableFooter** — an optional `<tfoot>` for totals or summaries.
+
+## When to use
+
+- Use to display homogeneous records with shared columns (invoices, users, transactions).
+- Use when people need to compare values across rows or scan a column.
+- Use the footer for column totals or aggregate summaries.
+- Use `TableGroupRow` to split rows into labelled sections (status, category, date) — the
+  classic finance/CRM case (overdue / to pay / paid).
+
+## When not to use
+
+- Avoid for layout — use CSS grid/flex, not a table, to position unrelated content.
+- Avoid for a small set of key/value pairs about a single entity — a description list or
+  **Item** reads better.
+- Avoid hand-rolling sort/filter/pagination state — compose with a headless table library
+  and feed its rows into these parts.
+
+## Variants & states
+
+Table has no visual variants; it inherits the design tokens. The meaningful states are
+compositional.
+
+### Default
+<Canvas of={Stories.Default} />
+
+### With caption
+<Canvas of={Stories.WithCaption} />
+
+### With footer
+<Canvas of={Stories.WithFooter} />
+
+### Selectable rows
+<Canvas of={Stories.SelectableRows} />
+
+### Grouped rows
+<Canvas of={Stories.GroupedRows} />
+
+### Sticky group headers
+<Canvas of={Stories.StickyGroupHeaders} />
+
+### Empty
+<Canvas of={Stories.Empty} />
+
+## Props
+
+Each part forwards the props of its native element (`<table>`, `<thead>`, `<tr>`, …) and
+merges `className` last via `cn`, so any utility is overridable.
+
+<Controls of={Stories.Playground} />
+
+### `Table` grouping prop
+
+- **`columnCount`** (`number`) — total number of columns. Propagates `colSpan` to every
+  `TableGroupRow` via context, so group rows span the full width without hand-counting.
+- **`containerClassName`** (`string`) — classes for the scroll container (the `<div>`
+  wrapping the `<table>`). Constrain its height here (e.g. `max-h-64 overflow-y-auto`) to
+  enable vertical scrolling — **required for `TableGroupRow sticky`**, whose `top-0`
+  anchors to this container, not to an outer wrapper.
+
+### `TableGroupRow` props
+
+`TableGroupRow` renders a full-width `<tr><th colSpan scope="rowgroup">`. It is purely
+presentational — you supply already-grouped data; it does not compute groups.
+
+- **`children`** (`ReactNode`) — the group label.
+- **`count`** (`number`) — item count, rendered as `(n)` next to the label.
+- **`colSpan`** (`number`, default: `Table`'s `columnCount`) — columns to span. Falls back
+  to the context; pass it explicitly when the `Table` has no `columnCount`.
+- **`sticky`** (`boolean`, default `false`) — pins the group header to the top on scroll
+  (`position: sticky`).
+
+> Provide either `columnCount` on `Table` **or** `colSpan` on each `TableGroupRow` — with
+> neither, the header spans a single column.
+
+## Behavior & interaction
+
+These behaviors are guarded by interaction tests in `table.stories.tsx`:
+
+- The composition exposes native table semantics — roles `table`, `columnheader`, `row`,
+  `cell` with the expected counts — `RendersTableSemantics`.
+- `TableCaption` renders as a `<caption>` that labels the table — `CaptionLabelsTable`.
+- Checking a row's checkbox marks that row with `data-state="selected"` — `SelectsRow`.
+- The header "select all" checkbox selects every row at once — `SelectsAllRows`.
+- The empty state renders a single full-width cell — `RendersEmptyState`.
+- `TableGroupRow` renders a `<th scope="rowgroup">` spanning all columns, with the count
+  resolved from `Table`'s `columnCount` — `GroupHeaderSpansColumns`.
+- With no `columnCount`, `colSpan` falls back to the prop — `GroupHeaderColSpanFallback`.
+- `sticky` marks the group cell with `data-sticky` — `GroupHeaderIsSticky`.
+
+> **Sticky requires height on the `Table` container.** `position: sticky` anchors to the
+> nearest scroll ancestor; the `Table` already wraps its `<table>` in an
+> `overflow-x-auto` container, so the vertical scroll must live there too — set
+> `containerClassName="max-h-… overflow-y-auto"`. An outer wrapper with the height won't
+> work: the inner container becomes the scroll ancestor but never scrolls, so the header
+> never detaches.
+
+> Visual states (the sticky band, group background) are verified by Chromatic, not the
+> interaction tests — the Storybook test project loads no CSS.
+
+## Code examples
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from 'timds'
+
+<Table>
+  <TableCaption>Recent invoices.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {invoices.map((row) => (
+      <TableRow key={row.invoice}>
+        <TableCell className="font-medium">{row.invoice}</TableCell>
+        <TableCell className="text-right">{row.amount}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+```
+
+<Source of={Stories.Default} />
+
+Group rows by status — `Table` supplies `columnCount` so each group spans every column:
+
+```tsx
+import { Table, TableBody, TableGroupRow, TableHead, TableHeader, TableRow } from 'timds'
+
+<Table columnCount={3}>
+  <TableHeader>{/* … */}</TableHeader>
+  <TableBody>
+    {Object.entries(groups).map(([label, rows]) => (
+      <Fragment key={label}>
+        <TableGroupRow count={rows.length}>{label}</TableGroupRow>
+        {rows.map((row) => (
+          <TableRow key={row.id}>{/* … */}</TableRow>
+        ))}
+      </Fragment>
+    ))}
+  </TableBody>
+</Table>
+```
+
+## Content & UX writing
+
+- **Column headers** — short noun phrases in sentence case ("Payment method", not "PAY").
+- **Numeric columns** — right-align values and headers so digits line up for scanning.
+- **Caption** — a brief, descriptive label of what the table contains, not a sentence.
+- **Group labels** — short status nouns ("Overdue", "Paid"); show the count as `(n)`.
+- **Empty state** — a plain, specific message ("No invoices yet."), never a blank table.
+
+## Accessibility
+
+- Built on native `<table>` semantics: assistive tech exposes roles `table`, `row`,
+  `columnheader` and `cell` automatically — verified by `RendersTableSemantics`.
+- Use `TableCaption` to give the table an accessible name — verified by
+  `CaptionLabelsTable`.
+- Group headers use `<th scope="rowgroup">`, the correct scope for a header that labels a
+  group of rows (not `colgroup`). Put the count in the visible text ("Overdue (3)") — no
+  screen reader counts rows on its own.
+- Selection controls must carry an accessible name (e.g. `aria-label="Select INV001"`);
+  icon-only or checkbox-only cells are unlabeled otherwise.
+- axe runs on every story (`a11y: { test: 'error' }`), so name/role/contrast rules are
+  gated in CI.
+
+## Do's and Don'ts
+
+- ✅ Do use `TableCaption` (or another labelling strategy) to name the table.
+- ✅ Do right-align numeric columns and keep headers in sentence case.
+- ✅ Do show an explicit empty state instead of an empty body.
+- ✅ Do set `columnCount` on `Table` so group rows span every column automatically.
+- ❌ Don't use a Table for visual layout of unrelated content.
+- ❌ Don't ship selection checkboxes without an `aria-label`.
+
+## Related components & patterns
+
+- **Checkbox** — composes into a selection column, per row and a header "select all".
+- **Pagination** — pairs with a Table to page through large datasets.
+- **Item** — prefer it for a single entity's attributes rather than a one-row table.
