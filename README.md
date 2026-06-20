@@ -141,6 +141,38 @@ Once configured, just ask in natural language — the agent calls the tools as n
 The agent should call `get_setup` first (it covers loading the font and, if you use
 charts, installing `recharts`).
 
+### Make the agent use it automatically (`CLAUDE.md`)
+
+So the agent reaches for the MCP **without being told every time**, paste this block
+into your project's `CLAUDE.md` (or `.cursorrules` / your agent's rules file):
+
+```md
+## timds design system (MCP)
+
+This project's UI uses the **timds** design system. A `timds` MCP server is
+configured (tools prefixed `mcp__timds__`). Use it — do not guess the API.
+
+When to use it:
+- Before writing or editing any UI that uses timds components.
+- Whenever you are unsure of a component's name, props, variants, import path or tokens.
+- When starting UI in a fresh project (call `get_setup` first).
+
+How to use it:
+- `get_setup` — run once when setting up: style import, font, dark mode, and the
+  Tailwind token bridge (needed to use `bg-primary`/`text-muted-foreground` in your
+  own markup). For charts, install `recharts`.
+- `list_components` / `search_components` — discover what exists before building.
+- `get_component <name>` — read a component's real props/variants/example BEFORE using
+  it. Never invent props.
+- `get_tokens` — use semantic color utilities; never raw colors (`bg-blue-500`).
+- `get_example <id>` — adapt a full page (e.g. `dashboard`, `login`) instead of
+  starting from scratch.
+
+Rules:
+- Import all components from `timds` (never from subpaths); icons from `lucide-react`.
+- Import `timds/styles.css` once in the app entrypoint.
+```
+
 ### `llms.txt`
 
 For tools that follow the [llms.txt](https://llmstxt.org) convention, point them at
