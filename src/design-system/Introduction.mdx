@@ -2,65 +2,140 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 <Meta title="Design System/Introduction" />
 
-# Timds - This Is My Design System
+# Timds — This Is My Design System
 
-> timds (pronounced "tim-dis") are represents This Is My Design System, a personal project to build a reusable component library and design system for my projects. The goal is to create a cohesive visual language and set of UI components that can be easily integrated into various applications, ensuring consistency and efficiency in design and development.
+> **timds** (pronounced "tim-dis") stands for _This Is My Design System_ — a personal
+> project to build a reusable component library and a cohesive design language for my
+> apps, so every product looks consistent and ships faster.
 
-A React component library with a built-in design system, powered by
+A React component library with a **built-in design system**, powered by
 **shadcn/ui (new-york)** and **Tailwind CSS v4**. Tokens are defined once as CSS
 variables in `src/styles.css` and consumed everywhere through Tailwind's
-`@theme inline` bridge.
+`@theme inline` bridge — so re-theming the whole library is a single-file change.
 
-The visual language is derived from a dark, modern **analytics dashboard**:
-deep indigo surfaces, a vibrant violet brand color, and a cyan support accent.
+The visual language is derived from a dark, modern **analytics dashboard**: deep
+indigo surfaces, a vibrant violet brand color, and a cyan support accent.
 
 ## At a glance
 
 <table>
-<thead>
-<tr>
-<th>Aspect</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-  <tr>
-    <td><strong>Primary</strong></td>
-    <td>Violet — <code>oklch(0.622 0.217 302.6)</code> · <code>#a25af0</code></td>
-  </tr>
-  <tr>
-    <td><strong>Accent</strong></td>
-    <td>Cyan — <code>#5cbbf4</code></td>
-  </tr>
-  <tr>
-    <td><strong>Font</strong></td>
-    <td>Inter (variable, geometric grotesque)</td>
-  </tr>
-  <tr>
-    <td><strong>Radius</strong></td>
-    <td><code>0.75rem</code> — soft, rounded</td>
-  </tr>
-  <tr>
-    <td><strong>Elevation</strong></td>
-    <td>Subtle, flat shadows</td>
-  </tr>
-  <tr>
-    <td><strong>Modes</strong></td>
-    <td>Light + Dark (dark mirrors the reference)</td>
-  </tr>
+  <thead>
+    <tr>
+      <th>Aspect</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Primary</strong></td>
+      <td>Violet — <code>oklch(0.622 0.217 302.6)</code> · <code>#a25af0</code></td>
+    </tr>
+    <tr>
+      <td><strong>Accent</strong></td>
+      <td>Cyan — <code>#5cbbf4</code></td>
+    </tr>
+    <tr>
+      <td><strong>Font</strong></td>
+      <td>Inter (variable, geometric grotesque)</td>
+    </tr>
+    <tr>
+      <td><strong>Radius</strong></td>
+      <td><code>0.75rem</code> — soft, rounded</td>
+    </tr>
+    <tr>
+      <td><strong>Elevation</strong></td>
+      <td>Subtle, flat shadows</td>
+    </tr>
+    <tr>
+      <td><strong>Modes</strong></td>
+      <td>Light + Dark (dark mirrors the reference)</td>
+    </tr>
+    <tr>
+      <td><strong>Color space</strong></td>
+      <td><code>oklch</code> — perceptually uniform, easy to tune</td>
+    </tr>
+  </tbody>
+</table>
+
+## Design principles
+
+These are the rules every component and example in this library follows.
+
+<table>
+  <thead>
+    <tr>
+      <th>Principle</th>
+      <th>What it means in practice</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tokens, never raw colors</strong></td>
+      <td>
+        Components reference semantic utilities (<code>bg-primary</code>,
+        <code>text-muted-foreground</code>) — never hex or <code>oklch</code> values.
+        One token file drives both themes.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Accessible by default</strong></td>
+      <td>
+        Every interactive state is keyboard-reachable, labelled, and passes WCAG AA
+        contrast. Accessibility is enforced in CI, not reviewed by eye — see the
+        <strong>Accessibility</strong> page.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Composition over configuration</strong></td>
+      <td>
+        Prefer small primitives you assemble (<code>Card</code> + <code>Badge</code> +
+        <code>Button</code>) over monolithic components with dozens of props. The
+        <strong>Examples</strong> show this end to end.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Dark-first, light-ready</strong></td>
+      <td>
+        The palette is tuned against the dark reference, with a light mode that mirrors
+        it. Toggle the <strong>Theme</strong> switch in the toolbar to compare.
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Docs are tests</strong></td>
+      <td>
+        Each story renders in a real browser as a smoke + accessibility test; many also
+        carry interaction (<code>play</code>) assertions. A broken example fails the build.
+      </td>
+    </tr>
   </tbody>
 </table>
 
 ## How tokens flow
 
-
 <ol style={{ listStyleType: 'decimal' }}>
-  <li><strong><code>:root</code> / <code>.dark</code></strong> in <code>styles.css</code> declare the raw <code>oklch</code> values.</li>
-  <li><strong><code>@theme inline</code></strong> maps each <code>--token</code> to a Tailwind color utility (e.g. <code>--color-primary</code> → <code>bg-primary</code>, <code>text-primary</code>).</li>
-  <li><strong>Components</strong> reference only the semantic utilities — never raw colors — so re-theming is a single-file change.</li>
+  <li>
+    <strong><code>:root</code> / <code>.dark</code></strong> in <code>styles.css</code>
+    declare the raw <code>oklch</code> values.
+  </li>
+  <li>
+    <strong><code>@theme inline</code></strong> maps each <code>--token</code> to a
+    Tailwind color utility (e.g. <code>--color-primary</code> → <code>bg-primary</code>,
+    <code>text-primary</code>).
+  </li>
+  <li>
+    <strong>Components</strong> reference only the semantic utilities — never raw colors —
+    so re-theming is a single-file change.
+  </li>
 </ol>
 
+See the **Theming** page for the full pipeline, dark mode, and how to customize tokens
+in a consuming app.
+
 ## Using the library
+
+The library is distributed **directly from GitHub** (no npm registry). On install, the
+`prepare` script builds `dist/`, so consumers import components and the precompiled
+tokens straight away:
 
 ```tsx
 import { Button, Card, CardHeader, CardTitle, Badge } from 'timds'
@@ -71,7 +146,7 @@ export function Example() {
     <Card>
       <CardHeader>
         <CardTitle>Revenue</CardTitle>
-        <Badge>+9.8%</Badge>
+        <Badge variant="success">+9.8%</Badge>
       </CardHeader>
     </Card>
   )
@@ -80,10 +155,19 @@ export function Example() {
 
 ## Explore
 
-- **Colors** — every semantic, chart and sidebar token.
-- **Typography** — the Inter type scale and weights.
-- **Foundations** — radius, spacing rhythm and elevation.
-- **UI** — the component gallery (Button, Card, Badge, Alert, Radio Group).
+**Foundations**
 
-> Tip: use the **Theme** switch in the toolbar to flip between light and dark.
-> The story canvas defaults to **dark** to match the reference design.
+- **Colors** — every semantic, chart and sidebar token, in both modes.
+- **Typography** — the Inter type scale, weights and body styles.
+- **Foundations** — radius, spacing rhythm and elevation.
+- **Theming** — the token pipeline, dark mode and customization.
+- **Accessibility** — the AA commitments and how they're enforced.
+
+**Examples** — real pages composed from the library, from a single login `Card` up to a
+full analytics **Dashboard**. Start at **Examples → Overview**.
+
+**Components** — the full gallery, grouped by role: _Layout_, _Navigation_,
+_Data Entry_, _Data Display_, _Feedback_ and _Overlays_.
+
+> Tip: use the **Theme** switch in the toolbar to flip between light and dark. The story
+> canvas defaults to **dark** to match the reference design.

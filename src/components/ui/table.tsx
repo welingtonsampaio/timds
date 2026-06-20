@@ -29,6 +29,7 @@ function Table({
           container é sempre `overflow-x-auto` (e pode ter scroll vertical via
           containerClassName), o axe exige que seja focável (scrollable-region-
           focusable). */}
+      {/* biome-ignore-start lint/a11y/noNoninteractiveTabindex: a região de scroll precisa ser focável por teclado (axe scrollable-region-focusable) */}
       <div
         data-slot="table-container"
         tabIndex={0}
@@ -43,6 +44,7 @@ function Table({
           {...props}
         />
       </div>
+      {/* biome-ignore-end lint/a11y/noNoninteractiveTabindex: fim da exceção do container de scroll */}
     </TableColumnCountContext.Provider>
   )
 }

@@ -76,7 +76,26 @@ const preview: Preview = {
       storySort: {
         order: [
           'Design System',
-          ['Introduction', 'Foundations', 'Colors', 'Typography'],
+          [
+            'Introduction',
+            'Foundations',
+            'Colors',
+            'Typography',
+            'Theming',
+            'Accessibility',
+          ],
+          'Examples',
+          [
+            'Overview',
+            'Login',
+            'Sign Up',
+            'Pricing',
+            'Profile',
+            'Notifications',
+            'Settings',
+            'Team',
+            'Dashboard',
+          ],
           'Layout',
           'Navigation',
           'Data Entry',

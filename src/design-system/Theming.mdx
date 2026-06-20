@@ -1,0 +1,129 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Design System/Theming" />
+
+# Theming
+
+All theming in timds is **CSS-first**. There is no `tailwind.config` and no JS theme
+object — the single source of truth is `src/styles.css`, which compiles into
+`dist/timds.css` (imported as `timds/styles.css`).
+
+## The three-layer pipeline
+
+<ol style={{ listStyleType: 'decimal' }}>
+  <li>
+    <strong>Raw values</strong> — <code>:root</code> (light) and <code>.dark</code>
+    declare every token as an <code>oklch</code> CSS variable, e.g.
+    <code>--primary: oklch(0.622 0.217 302.6)</code>.
+  </li>
+  <li>
+    <strong>The bridge</strong> — <code>@theme inline</code> maps each variable to a
+    Tailwind utility namespace: <code>--color-primary</code> →
+    <code>bg-primary</code> / <code>text-primary</code> / <code>border-primary</code>.
+  </li>
+  <li>
+    <strong>Consumption</strong> — components and examples use only those semantic
+    utilities. They never reference a hex or <code>oklch</code> literal, so a single edit
+    re-themes everything.
+  </li>
+</ol>
+
+```css
+/* src/styles.css (simplified) */
+:root {
+  --background: oklch(1 0 0);
+  --primary: oklch(0.622 0.217 302.6);
+}
+.dark {
+  --background: oklch(0.202 0.02 289.1);
+  --primary: oklch(0.678 0.182 302.6);
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-primary: var(--primary);
+}
+```
+
+## Dark mode
+
+Dark mode is **opt-in via a `dark` class** on any ancestor (declared as
+`@custom-variant dark (&:is(.dark *))`). Add the class to `<html>` so portaled surfaces
+(Dialog, Popover, Tooltip, dropdowns) that mount on `document.body` inherit the theme:
+
+```tsx
+document.documentElement.classList.toggle('dark', isDark)
+```
+
+In Storybook, the **Theme** toolbar switch does exactly this; the canvas defaults to
+**dark** to match the reference design.
+
+## Token categories
+
+Every token is previewed live on the **Colors** page. They are grouped the same way
+they live in `styles.css`:
+
+- **Base** — `background`, `foreground`.
+- **Surfaces** — `card`, `popover` (+ their `*-foreground`).
+- **Brand & actions** — `primary`, `secondary`, `muted`, `accent`.
+- **Feedback** — `destructive`, `success`, `warning`, `info`.
+- **Borders & rings** — `border`, `input`, `ring`.
+- **Charts** — `chart-1` … `chart-5`.
+- **Sidebar** — a dedicated set so the nav rail can diverge from the page.
+
+## Fill tokens vs. text tokens
+
+Some vivid colors come in **two flavors**, and using the right one is what keeps text
+legible:
+
+<table>
+  <thead>
+    <tr>
+      <th>Use</th>
+      <th>Token</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Fill</strong> (solid surface, dark text on top)</td>
+      <td><code>--success</code>, <code>--warning</code>, <code>--info</code>, <code>--primary</code></td>
+      <td><code>bg-success text-success-foreground</code></td>
+    </tr>
+    <tr>
+      <td><strong>Text / icon</strong> (colored glyph on a light surface)</td>
+      <td><code>--success-text</code>, <code>--warning-text</code>, <code>--info-text</code>, <code>--primary-text</code>, <code>--destructive-text</code></td>
+      <td><code>text-success-text</code></td>
+    </tr>
+  </tbody>
+</table>
+
+> Never use a vivid **fill** token as a text color (e.g. `text-success` on white): it
+> fails AA contrast. Reach for the `*-text` variant instead. See the **Accessibility**
+> page.
+
+## Charts
+
+Charts pull from the `--chart-1` … `--chart-5` ramp (violet → cyan → blue → pink →
+green). The `ChartContainer` injects each series color as a `--color-<key>` variable
+from your `ChartConfig`, which you then reference with `fill="var(--color-desktop)"`.
+A single config drives the series, the tooltip and the legend, and adapts to dark mode
+automatically.
+
+## Customizing in a consuming app
+
+Because tokens are plain CSS variables, an app can override any of them **after**
+importing the library styles — no rebuild required:
+
+```css
+/* app.css — loaded after `import 'timds/styles.css'` */
+:root {
+  --primary: oklch(0.65 0.2 250); /* swap the brand to blue */
+  --radius: 0.5rem; /* tighten the corners */
+}
+.dark {
+  --primary: oklch(0.7 0.17 250);
+}
+```
+
+Override only the raw values — the `@theme inline` bridge and every component utility
+follow along.

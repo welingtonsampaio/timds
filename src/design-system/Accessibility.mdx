@@ -1,0 +1,103 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Design System/Accessibility" />
+
+# Accessibility
+
+Accessibility in timds is a **build-time guarantee**, not a manual review. Every story —
+including the component gallery and the **Examples** — renders in a real Chromium
+browser and is scanned with [axe](https://github.com/dequelabs/axe-core). A violation
+**fails the test**.
+
+```ts
+// .storybook/preview.tsx
+a11y: { test: 'error' }
+```
+
+That single setting is why the examples in this library are written the way they are:
+labelled inputs, named icon-only buttons, alt text on avatars, and AA-compliant color.
+
+## Color contrast (WCAG AA)
+
+Text and icons meet a contrast ratio of **≥ 4.5:1** against their background (≥ 3:1 for
+large text) in **both** light and dark modes. This is enforced because the Storybook
+test runner loads the real Tailwind CSS, so axe measures contrast on the actual styled
+DOM.
+
+The key rule that follows from this:
+
+> **Vivid fill tokens are not text colors.** `--success` / `--warning` / `--info` /
+> `--primary` are tuned as **fills** (dark text on top). To color a glyph or a link on a
+> light surface, use the darker `*-text` variant — `text-success-text`,
+> `text-warning-text`, `text-info-text`, `text-primary-text`, `text-destructive-text` —
+> which passes AA. See **Theming → Fill tokens vs. text tokens**.
+
+## Keyboard & focus
+
+- Every interactive element is reachable and operable by keyboard.
+- A consistent focus ring (the shared `focusRing` preset, built on the `--ring` token)
+  marks the focused control — visible in both themes.
+- Composite widgets (Tabs, Select, Sidebar, menus) follow the WAI-ARIA APG patterns
+  from their underlying primitives (Radix, and Ariakit for `Select`).
+
+## Labelling patterns used throughout
+
+<table>
+  <thead>
+    <tr>
+      <th>Case</th>
+      <th>Pattern</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Text input</td>
+      <td>
+        <code>&lt;label htmlFor="id"&gt;</code> + <code>&lt;Input id="id" /&gt;</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Checkbox / Switch</td>
+      <td>
+        <code>&lt;label htmlFor="id"&gt;…&lt;Checkbox id="id" /&gt;&lt;/label&gt;</code>
+        (both are labelable elements)
+      </td>
+    </tr>
+    <tr>
+      <td>Icon-only button</td>
+      <td>
+        <code>aria-label="…"</code>, with the icon marked
+        <code>aria-hidden="true"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Avatar image</td>
+      <td>
+        a real <code>alt</code>, plus an <code>AvatarFallback</code> with initials
+      </td>
+    </tr>
+    <tr>
+      <td>Decorative dot / glyph</td>
+      <td>
+        <code>aria-hidden="true"</code> + an <code>sr-only</code> text node for meaning
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Opting out responsibly
+
+When a specific axe rule genuinely cannot apply to a story, disable that **single rule**
+with a documented reason — never the whole check:
+
+```tsx
+parameters: {
+  a11y: {
+    config: {
+      rules: [{ id: 'color-contrast', enabled: false }], // motivo: …
+    },
+  },
+}
+```
+
+Prefer fixing the markup. A disabled rule is a debt, and it should be rare.

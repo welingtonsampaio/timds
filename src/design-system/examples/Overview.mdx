@@ -1,0 +1,88 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Examples/Overview" />
+
+# Examples
+
+Real pages composed entirely from timds components — no one-off CSS, no raw colors.
+They double as a **cookbook** (copy a story, swap the data) and as a **stress test** for
+the design system: every example renders in a real browser and passes the same
+accessibility checks as the component gallery.
+
+They're ordered from the simplest single-card screen to a full application shell. Each
+one is also an interaction-tested story — open the **Interactions** panel to watch its
+`play` function exercise the page.
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Example</th>
+      <th>What it demonstrates</th>
+      <th>Key components</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td><strong>Login</strong></td>
+      <td>The smallest unit: one card, a short form, social providers.</td>
+      <td><code>Card</code>, <code>InputGroup</code>, <code>Button</code>, <code>Checkbox</code>, <code>Separator</code></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>Sign Up</strong></td>
+      <td>A richer form: reveal-password, live strength meter, a data-driven select.</td>
+      <td><code>InputGroup</code>, <code>Progress</code>, <code>Select</code>, <code>Checkbox</code></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>Pricing</strong></td>
+      <td>A marketing layout with a highlighted tier and a billing-period toggle.</td>
+      <td><code>Card</code>, <code>Badge</code>, <code>Tabs</code>, <code>Button</code></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>Profile</strong></td>
+      <td>An identity page: cover, overlapping avatar, stats and a tabbed activity feed.</td>
+      <td><code>Avatar</code>, <code>Badge</code>, <code>Tabs</code>, <code>Item</code></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>Notifications</strong></td>
+      <td>A filterable feed with unread state and a count badge.</td>
+      <td><code>Tabs</code>, <code>Item</code>, <code>Badge</code>, <code>Button</code></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td><strong>Settings</strong></td>
+      <td>A dense, tabbed configuration screen ending in a destructive danger zone.</td>
+      <td><code>Tabs</code>, <code>Switch</code>, <code>Input</code>, <code>Textarea</code>, <code>Card</code></td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td><strong>Team</strong></td>
+      <td>A data table with search, filter, row selection, row actions and pagination.</td>
+      <td><code>Table</code>, <code>Select</code>, <code>DropdownMenu</code>, <code>Pagination</code>, <code>Checkbox</code></td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td><strong>Dashboard</strong></td>
+      <td>The capstone: a collapsible app shell with KPIs, charts and a sales table.</td>
+      <td><code>Sidebar</code>, <code>Chart</code>, <code>Card</code>, <code>Table</code>, <code>Badge</code></td>
+    </tr>
+  </tbody>
+</table>
+
+## How to read them
+
+- **Tokens only.** Colors come from semantic utilities (`bg-primary`,
+  `text-muted-foreground`, `text-success-text`) — flip the **Theme** toolbar and every
+  page re-themes itself.
+- **Accessible by construction.** Inputs are labelled, icon-only buttons are named, and
+  contrast passes AA. The same rules are documented on the **Accessibility** page.
+- **Composition first.** Notice how little glue code each page needs: the components do
+  the heavy lifting, and layout is plain Tailwind fl/grid.
+
+> Want a new building block instead of a page? Browse the component categories —
+> _Layout_, _Navigation_, _Data Entry_, _Data Display_, _Feedback_ and _Overlays_.

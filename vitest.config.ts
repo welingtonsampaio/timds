@@ -43,7 +43,10 @@ export default defineConfig({
         // CSS no browser de teste e o addon-a11y validava contraste sobre um DOM
         // sem estilo (falsos resultados). Com o plugin, o axe avalia as cores
         // reais de cada story.
-        plugins: [tailwindcss(), storybookTest({ configDir: resolve(__dirname, '.storybook') })],
+        plugins: [
+          tailwindcss(),
+          storybookTest({ configDir: resolve(__dirname, '.storybook') }),
+        ],
         resolve: { alias },
         test: {
           name: 'storybook',
