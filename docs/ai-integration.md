@@ -67,6 +67,10 @@ reference.
 - **Load the Inter font yourself** — the DS declares the family but does not ship the
   font (so its CSS carries no remote `@import`). Add a `<link>` or `@font-face` in your
   app; otherwise text falls back to `system-ui`.
+- **Install `recharts` for charts** — it is an optional `peerDependency` so the app and
+  the DS share a single instance (otherwise the chart's React context mismatches and it
+  renders empty). Run `npm i recharts`; chart primitives come from `recharts`,
+  `ChartContainer`/`ChartTooltip`… from `timds`.
 - **To use token utilities** (`bg-primary`, `text-muted-foreground`, …) in your own
   markup, add the `@theme` bridge from `mcp__timds__get_setup` (field
   `setup.tailwindBridge`) to your global CSS (requires Tailwind v4 in the app).

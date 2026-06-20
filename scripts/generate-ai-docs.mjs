@@ -362,11 +362,14 @@ const manifest = {
     darkMode:
       'Adicione a classe `dark` em um ancestral (ex.: <html class="dark">). Opt-in.',
     font: 'O DS usa a família Inter (`--font-sans`), mas NÃO carrega a fonte. Carregue Inter no seu app (ex.: <link> do Google Fonts ou @font-face no index.html); sem isso cai no fallback system-ui.',
+    charts:
+      'Para usar Chart/ChartContainer, instale `recharts` (>=3) no app: `npm i recharts`. É peerDependency (uma única instância compartilhada entre o app e o DS); os primitivos do gráfico (AreaChart, Pie, …) vêm de `recharts`, e ChartContainer/ChartTooltip… de `timds`.',
     tailwindBridge,
     rules: [
       'Importe TODOS os componentes de `timds` — nunca de subcaminhos.',
       'Importe `timds/styles.css` via JS no entrypoint.',
       'Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.',
+      'Para gráficos, instale `recharts` (peerDependency) — veja `setup.charts`.',
       'Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).',
       'Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).',
       'Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.',

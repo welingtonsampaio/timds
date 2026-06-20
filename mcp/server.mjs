@@ -211,6 +211,7 @@ server.registerTool(
     out += `2. Importe os estilos no entrypoint (JS, ex.: main.tsx):\n\`\`\`tsx\n${s.importStyles}\n\`\`\`\n`
     out += `3. Importe componentes:\n\`\`\`tsx\n${s.importComponents}\n\`\`\`\n`
     if (s.font) out += `   - Fonte: ${s.font}\n`
+    if (s.charts) out += `   - Gráficos: ${s.charts}\n`
     if (s.tailwindBridge) {
       out += `4. (Tailwind v4 no app) Para usar utilitários de token na sua marcação, adicione ao seu CSS global:\n\`\`\`css\n${s.tailwindBridge}\n\`\`\`\n`
     }

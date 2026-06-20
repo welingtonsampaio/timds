@@ -16,6 +16,7 @@ import { Button, Card } from 'timds'
 - Importe TODOS os componentes de `timds` — nunca de subcaminhos.
 - Importe `timds/styles.css` via JS no entrypoint.
 - Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.
+- Para gráficos, instale `recharts` (peerDependency) — veja `setup.charts`.
 - Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).
 - Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).
 - Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.
