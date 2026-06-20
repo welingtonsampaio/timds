@@ -208,9 +208,13 @@ server.registerTool(
     const s = manifest.setup
     let out = `# Setup do timds\n\n`
     out += `1. Instale:\n\`\`\`bash\n${s.install}\n\`\`\`\n`
-    out += `2. Importe os estilos uma vez no entrypoint:\n\`\`\`tsx\n${s.importStyles}\n\`\`\`\n`
+    out += `2. Importe os estilos no entrypoint (JS, ex.: main.tsx):\n\`\`\`tsx\n${s.importStyles}\n\`\`\`\n`
     out += `3. Importe componentes:\n\`\`\`tsx\n${s.importComponents}\n\`\`\`\n`
-    out += `4. Dark mode: ${s.darkMode}\n\n`
+    if (s.font) out += `   - Fonte: ${s.font}\n`
+    if (s.tailwindBridge) {
+      out += `4. (Tailwind v4 no app) Para usar utilitários de token na sua marcação, adicione ao seu CSS global:\n\`\`\`css\n${s.tailwindBridge}\n\`\`\`\n`
+    }
+    out += `5. Dark mode: ${s.darkMode}\n\n`
     out += `## Regras\n${s.rules.map((r) => `- ${r}`).join('\n')}\n`
     return text(out)
   },

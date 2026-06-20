@@ -1,6 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
+
+/* A fonte (Inter) NÃO é carregada aqui: `--font-sans` apenas declara a família
+   preferida + fallbacks. Isto mantém o CSS distribuído sem `@import` remoto — um
+   `@import` no topo do CSS compilado quebra a ordenação quando o consumidor o
+   re-importa via CSS ("@import must precede all other statements"). Cada app
+   carrega Inter como preferir (link/@font-face). No nosso Storybook/playground a
+   fonte é carregada via index.html e .storybook/preview.tsx. */
 
 @custom-variant dark (&:is(.dark *));
 

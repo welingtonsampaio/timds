@@ -329,6 +329,22 @@ for (const mod of moduleFiles) {
 
 components.sort((a, b) => a.name.localeCompare(b.name))
 
+const tokens = parseTokens()
+
+// Bridge para o Tailwind do app: mapeia os tokens timds (--primary, …) para
+// utilitários (bg-primary, text-muted-foreground, …) usáveis na marcação própria
+// do consumidor. Sem isso, os componentes ainda funcionam (CSS já compilado), mas
+// classes de token escritas à mão pelo app não geram.
+const tailwindBridge = [
+  '@import "tailwindcss";',
+  '',
+  '@theme inline {',
+  '  --radius-lg: var(--radius);',
+  '  --font-sans: var(--font-sans);',
+  ...tokens.colors.map((t) => `  --color-${t.name}: var(--${t.name});`),
+  '}',
+].join('\n')
+
 const manifest = {
   name: 'timds',
   description:
@@ -337,13 +353,21 @@ const manifest = {
   version: JSON.parse(read(join(root, 'package.json'))).version,
   setup: {
     install: 'npm install github:welington-sampaio/timds',
-    importStyles: "import 'timds/styles.css' // uma vez, no entrypoint do app",
+    // Importe via JS no entrypoint — NÃO via `@import` em CSS: o CSS compilado
+    // começa com um `@import` de fonte que, re-importado dentro de outro CSS,
+    // quebra a ordenação (`@import must precede all other statements`).
+    importStyles:
+      "import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)",
     importComponents: "import { Button, Card } from 'timds'",
     darkMode:
       'Adicione a classe `dark` em um ancestral (ex.: <html class="dark">). Opt-in.',
+    font: 'O DS usa a família Inter (`--font-sans`), mas NÃO carrega a fonte. Carregue Inter no seu app (ex.: <link> do Google Fonts ou @font-face no index.html); sem isso cai no fallback system-ui.',
+    tailwindBridge,
     rules: [
       'Importe TODOS os componentes de `timds` — nunca de subcaminhos.',
-      'Importe `timds/styles.css` uma única vez no entrypoint.',
+      'Importe `timds/styles.css` via JS no entrypoint.',
+      'Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.',
+      'Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).',
       'Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).',
       'Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.',
       'Ícones via lucide-react. Botões só com ícone precisam de aria-label.',
@@ -351,7 +375,7 @@ const manifest = {
   },
   categories: [...new Set(components.map((c) => c.category))].sort(),
   components,
-  tokens: parseTokens(),
+  tokens,
   examples: parseExamples(),
 }
 

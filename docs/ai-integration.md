@@ -60,6 +60,18 @@ If your tool follows the llms.txt convention, point it at `node_modules/timds/ai
 (or the raw GitHub URL). For a one-shot paste, `ai/llms-full.txt` contains the entire
 reference.
 
+## Consumer setup notes
+
+- **Import styles via JS** in your entrypoint (`import 'timds/styles.css'` in
+  `main.tsx`), not via a CSS `@import`.
+- **Load the Inter font yourself** — the DS declares the family but does not ship the
+  font (so its CSS carries no remote `@import`). Add a `<link>` or `@font-face` in your
+  app; otherwise text falls back to `system-ui`.
+- **To use token utilities** (`bg-primary`, `text-muted-foreground`, …) in your own
+  markup, add the `@theme` bridge from `mcp__timds__get_setup` (field
+  `setup.tailwindBridge`) to your global CSS (requires Tailwind v4 in the app).
+  Components themselves are styled without it.
+
 ## Regenerating
 
 Both layers are produced by the build (`prebuild` / `prepare`). To refresh manually:
