@@ -120,7 +120,7 @@ export const Default: Story = {
             </CardHeader>
             <CardContent className="flex flex-col gap-5">
               <div className="flex items-center gap-4">
-                <Avatar size="lg" className="size-16">
+                <Avatar className="size-16">
                   <AvatarImage src="https://i.pravatar.cc/150?img=47" alt="Ana Souza" />
                   <AvatarFallback className="text-lg">AS</AvatarFallback>
                 </Avatar>

@@ -89,7 +89,7 @@ export const Default: Story = {
           {/* Cabeçalho sobreposto à capa */}
           <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex items-end gap-4">
-              <Avatar size="lg" className="size-24 ring-4 ring-card">
+              <Avatar className="size-24 ring-4 ring-card">
                 <AvatarImage src="https://i.pravatar.cc/150?img=47" alt="Ana Souza" />
                 <AvatarFallback className="text-2xl">AS</AvatarFallback>
               </Avatar>
