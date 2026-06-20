@@ -1,0 +1,3583 @@
+# timds — full reference for AI agents
+
+React component library with a built-in design system (shadcn/ui new-york + Tailwind v4). Consumed as a compiled package: import components from `timds` and styles from `timds/styles.css`.
+
+## Setup & rules
+
+```bash
+npm install github:welington-sampaio/timds
+```
+
+```tsx
+import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)
+import { Button, Card } from 'timds'
+```
+
+- Importe TODOS os componentes de `timds` — nunca de subcaminhos.
+- Importe `timds/styles.css` via JS no entrypoint.
+- Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.
+- Para gráficos, instale `recharts` (peerDependency) — veja `setup.charts`.
+- Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).
+- Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).
+- Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.
+- Ícones via lucide-react. Botões só com ícone precisam de aria-label.
+
+## Design tokens
+
+Radius base: `0.75rem`. Font: `Inter`.
+
+Use these as Tailwind utilities (`bg-*`, `text-*`, `border-*`). Light/dark resolve automatically.
+
+- `background` — light `oklch(1 0 0)`, dark `oklch(0.159 0.023 279.4)`
+- `foreground` — light `oklch(0.202 0.02 289.1)`, dark `oklch(0.939 0.015 281.9)`
+- `card` — light `oklch(1 0 0)`, dark `oklch(0.208 0.041 282.2)`
+- `card-foreground` — light `oklch(0.202 0.02 289.1)`, dark `oklch(0.939 0.015 281.9)`
+- `popover` — light `oklch(1 0 0)`, dark `oklch(0.231 0.044 284.4)`
+- `popover-foreground` — light `oklch(0.202 0.02 289.1)`, dark `oklch(0.939 0.015 281.9)`
+- `primary` — light `oklch(0.549 0.233 300.8)`, dark `oklch(0.56 0.217 302.6)`
+- `primary-foreground` — light `oklch(0.99 0 0)`, dark `oklch(0.99 0 0)`
+- `primary-text` — light `oklch(0.52 0.22 300.8)`, dark `oklch(0.74 0.18 302.6)`
+- `secondary` — light `oklch(0.965 0.012 296.4)`, dark `oklch(0.238 0.047 285.9)`
+- `secondary-foreground` — light `oklch(0.286 0.047 290.1)`, dark `oklch(0.939 0.015 281.9)`
+- `muted` — light `oklch(0.965 0.012 296.4)`, dark `oklch(0.238 0.047 285.9)`
+- `muted-foreground` — light `oklch(0.535 0.042 286.6)`, dark `oklch(0.665 0.063 279.3)`
+- `accent` — light `oklch(0.946 0.023 299.4)`, dark `oklch(0.303 0.064 285.7)`
+- `accent-foreground` — light `oklch(0.286 0.047 290.1)`, dark `oklch(0.939 0.015 281.9)`
+- `destructive` — light `oklch(0.564 0.222 17.6)`, dark `oklch(0.56 0.193 12.7)`
+- `destructive-foreground` — light `oklch(0.99 0 0)`, dark `oklch(0.99 0 0)`
+- `destructive-text` — light `oklch(0.54 0.2 17.6)`, dark `oklch(0.72 0.17 12.7)`
+- `border` — light `oklch(0.9 0.018 297.5)`, dark `oklch(0.34 0.05 285.7)`
+- `input` — light `oklch(0.87 0.02 297.5)`, dark `oklch(0.39 0.05 285.3)`
+- `ring` — light `oklch(0.549 0.233 300.8)`, dark `oklch(0.622 0.217 302.6)`
+- `chart-1` — light `oklch(0.549 0.233 300.8)`, dark `oklch(0.622 0.217 302.6)`
+- `chart-2` — light `oklch(0.656 0.132 238.2)`, dark `oklch(0.757 0.122 237.7)`
+- `chart-3` — light `oklch(0.46 0.161 271.4)`, dark `oklch(0.533 0.147 266.5)`
+- `chart-4` — light `oklch(0.614 0.195 352.8)`, dark `oklch(0.672 0.189 352.4)`
+- `chart-5` — light `oklch(0.631 0.134 162.7)`, dark `oklch(0.773 0.153 163.2)`
+- `sidebar` — light `oklch(0.984 0.005 297.7)`, dark `oklch(0.172 0.031 282.7)`
+- `sidebar-foreground` — light `oklch(0.202 0.02 289.1)`, dark `oklch(0.939 0.015 281.9)`
+- `sidebar-primary` — light `oklch(0.549 0.233 300.8)`, dark `oklch(0.56 0.217 302.6)`
+- `sidebar-primary-foreground` — light `oklch(0.99 0 0)`, dark `oklch(0.99 0 0)`
+- `sidebar-accent` — light `oklch(0.946 0.023 299.4)`, dark `oklch(0.238 0.047 285.9)`
+- `sidebar-accent-foreground` — light `oklch(0.286 0.047 290.1)`, dark `oklch(0.939 0.015 281.9)`
+- `sidebar-border` — light `oklch(0.925 0.016 297.5)`, dark `oklch(0.303 0.064 285.7)`
+- `sidebar-ring` — light `oklch(0.549 0.233 300.8)`, dark `oklch(0.622 0.217 302.6)`
+- `success` — light `oklch(0.627 0.17 149.2)`, dark `oklch(0.773 0.153 163.2)`
+- `success-foreground` — light `oklch(0.22 0.05 149.2)`, dark `oklch(0.18 0.03 165)`
+- `success-text` — light `oklch(0.52 0.15 149.2)`, dark `oklch(0.773 0.153 163.2)`
+- `warning` — light `oklch(0.666 0.157 58.3)`, dark `oklch(0.837 0.164 84.4)`
+- `warning-foreground` — light `oklch(0.22 0.05 58.3)`, dark `oklch(0.2 0.04 80)`
+- `warning-text` — light `oklch(0.52 0.13 58.3)`, dark `oklch(0.837 0.164 84.4)`
+- `info` — light `oklch(0.685 0.148 237.3)`, dark `oklch(0.757 0.122 237.7)`
+- `info-foreground` — light `oklch(0.22 0.05 237.3)`, dark `oklch(0.18 0.03 240)`
+- `info-text` — light `oklch(0.52 0.15 237.3)`, dark `oklch(0.757 0.122 237.7)`
+
+## Components
+
+### Data Display
+
+#### Avatar `Stable`
+
+Represents a user or entity with an image, falling back to initials when no image is available.
+
+Import: `import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from 'timds'`
+
+Variants:
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `size` (default: `default`) — Avatar diameter; propagated to badge and group count.
+
+Example:
+
+```tsx
+import { Avatar, AvatarImage, AvatarFallback, AvatarBadge, AvatarGroup, AvatarGroupCount } from 'timds'
+
+// Image with initials fallback
+<Avatar>
+  <AvatarImage src="/users/ada.png" alt="Ada Lovelace" />
+  <AvatarFallback>AL</AvatarFallback>
+</Avatar>
+
+// With a status dot
+<Avatar size="lg">
+  <AvatarImage src="/users/ada.png" alt="Ada Lovelace" />
+  <AvatarFallback>AL</AvatarFallback>
+  <AvatarBadge className="bg-success" />
+</Avatar>
+
+// Stacked group
+<AvatarGroup>
+  <Avatar><AvatarFallback>AL</AvatarFallback></Avatar>
+  <Avatar><AvatarFallback>CB</AvatarFallback></Avatar>
+  <AvatarGroupCount>+3</AvatarGroupCount>
+</AvatarGroup>
+```
+
+#### Badge `Stable`
+
+A compact pill that labels, counts, or surfaces the status of an item.
+
+Import: `import { Badge, badgeVariants } from 'timds'`
+
+Variants:
+- `variant`: `default`, `secondary`, `destructive`, `warning`, `info`, `outline`, `ghost`, `link`, `success`, `chart-1`, `chart-2`, `chart-3`, `chart-4`, `chart-5`
+- `size`: `sm`, `md`, `lg`
+
+Props:
+- `variant` (default: `default`) — Visual style of the badge.
+- `size` (default: `md`) — Padding and font size of the badge.
+- `children` — Badge content.
+- `asChild` — Render the styling onto the child element (e.g. an 
+
+Example:
+
+```tsx
+import { Badge } from 'timds'
+
+<Badge>New</Badge>
+<Badge variant="success">Completed</Badge>
+<Badge variant="warning" size="sm">Pending</Badge>
+
+// As a link (e.g. a filter chip)
+<Badge asChild variant="outline">
+  <a href="#filters">Filters</a>
+</Badge>
+```
+
+#### Chart `Stable`
+
+A thin, themeable wrapper around [Recharts](https://recharts.org) that drives series colors, tooltips and legends from one design-system-aware config.
+
+Import: `import { ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChartConfig } from 'timds'`
+
+Example:
+
+```tsx
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from 'timds'
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+
+const config = {
+  desktop: { label: 'Desktop', color: 'var(--chart-1)' },
+} satisfies ChartConfig
+
+<ChartContainer config={config} className="h-[240px] w-full">
+  <AreaChart accessibilityLayer data={data}>
+    <CartesianGrid vertical={false} />
+    <XAxis dataKey="month" tickLine={false} axisLine={false} />
+    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+    {/* a cor `desktop` vira a variável CSS `--color-desktop` */}
+    <Area dataKey="desktop" fill="var(--color-desktop)" stroke="var(--color-desktop)" />
+  </AreaChart>
+</ChartContainer>
+```
+
+#### Item `Stable`
+
+A flexible row primitive for lists, cards, and menus — a leading media slot, a central title/description, and trailing actions, composed from small named parts.
+
+Import: `import { Item, ItemActions, ItemContent, ItemDescription, ItemFooter, ItemGroup, ItemHeader, ItemMedia, ItemSeparator, ItemTitle, itemVariants } from 'timds'`
+
+Variants:
+- `variant`: `default`, `outline`, `muted`, `icon`, `image`
+- `size`: `default`, `sm`
+
+Props:
+- `variant` (default: `default`) — Visual style of the row surface.
+- `size` (default: `default`) — Padding and gap density.
+- `asChild` (default: `false`) — Merge props onto the single child instead of rendering a 
+
+Example:
+
+```tsx
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from 'timds'
+
+// Basic row with a trailing action
+<Item variant="outline">
+  <ItemContent>
+    <ItemTitle>Basic Item</ItemTitle>
+    <ItemDescription>A simple row with title and description.</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Button variant="outline" size="sm">Action</Button>
+  </ItemActions>
+</Item>
+
+// The whole row as a link
+<Item variant="outline" asChild>
+  <a href="/docs">
+    <ItemContent>
+      <ItemTitle>Visit our documentation</ItemTitle>
+      <ItemDescription>Learn how to get started.</ItemDescription>
+    </ItemContent>
+  </a>
+</Item>
+
+// A grouped, separated list
+<ItemGroup>
+  <Item>
+    <ItemMedia>
+      <Avatar>
+        <AvatarImage src="/shadcn.png" alt="shadcn" />
+        <AvatarFallback>S</AvatarFallback>
+      </Avatar>
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>shadcn</ItemTitle>
+      <ItemDescription>shadcn@vercel.com</ItemDescription>
+    </ItemContent>
+  </Item>
+  <ItemSeparator />
+  {/* …more items */}
+</ItemGroup>
+```
+
+#### Table `Stable`
+
+Displays tabular data in rows and columns, built on native HTML table elements.
+
+Import: `import { Table, TableBody, TableCaption, TableCell, TableFooter, TableGroupRow, TableHead, TableHeader, TableRow } from 'timds'`
+
+Props:
+- `className` — Extra classes merged onto the 
+
+Example:
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from 'timds'
+
+<Table>
+  <TableCaption>Recent invoices.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {invoices.map((row) => (
+      <TableRow key={row.invoice}>
+        <TableCell className="font-medium">{row.invoice}</TableCell>
+        <TableCell className="text-right">{row.amount}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+```
+
+### Data Entry
+
+#### Button `Stable`
+
+Triggers an action or event — the primary way users commit to something in the UI.
+
+Import: `import { Button, buttonVariants, ButtonProps } from 'timds'`
+
+Variants:
+- `variant`: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`
+- `size`: `default`, `sm`, `lg`, `icon`
+- `shape`: `default`, `rounded`
+- `block`: `true`, `false`
+- `iconPlacement`: `left`, `right`
+- `htmlType`: `button`, `submit`, `reset`
+
+Props:
+- `variant` (default: `default`) — Visual style / emphasis of the button.
+- `size` (default: `default`) — Height and padding preset. Use 
+- `shape` (default: `default`) — Corner shape. 
+- `iconPlacement` (default: `left`) — Side where the 
+- `icon` — Icon node shown alongside the content.
+- `loading` — Show a spinner in place of the icon and disable the button.
+- `block` (default: `false`) — Stretch the button to fill its container width.
+- `htmlType` (default: `button`) — Native 
+- `href` — Render the button as an 
+- `asChild` — Merge props onto the child element instead of rendering a 
+- `disabled` — Disables interaction and dims the button.
+- `children` — Button label or content.
+
+Example:
+
+```tsx
+import { Button } from 'timds'
+
+<Button onClick={handleSave}>Save</Button>
+<Button variant="secondary" onClick={handleCancel}>Cancel</Button>
+<Button icon={<Rocket />} loading>Launching</Button>
+<Button href="https://example.com">Open link</Button>
+```
+
+#### ButtonGroup `Stable`
+
+A layout wrapper that joins buttons (and related controls) into a single continuous segment, collapsing the inner borders and corners between them.
+
+Import: `import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, buttonGroupVariants } from 'timds'`
+
+Variants:
+- `orientation`: `horizontal`, `vertical`
+
+Props:
+- `orientation` (default: `horizontal`) — Direction the buttons are stacked in.
+
+Example:
+
+```tsx
+import { Button, ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from 'timds'
+
+// Joined actions
+<ButtonGroup>
+  <Button variant="outline">Archive</Button>
+  <Button variant="outline">Report</Button>
+  <Button variant="outline">Snooze</Button>
+</ButtonGroup>
+
+// Stepper with a static value
+<ButtonGroup>
+  <Button variant="outline" size="icon" aria-label="Decrease"><Minus /></Button>
+  <ButtonGroupText>12</ButtonGroupText>
+  <Button variant="outline" size="icon" aria-label="Increase"><Plus /></Button>
+</ButtonGroup>
+
+// Vertical stack
+<ButtonGroup orientation="vertical">
+  <Button variant="outline">Top</Button>
+  <Button variant="outline">Bottom</Button>
+</ButtonGroup>
+```
+
+#### Calendar `Stable`
+
+An inline month grid for selecting a single date, a range, or multiple days.
+
+Import: `import { Calendar, CalendarDayButton } from 'timds'`
+
+Variants:
+- `mode`: `single`, `range`, `multiple`
+- `captionLayout`: `label`, `dropdown`, `dropdown-months`, `dropdown-years`
+- `buttonVariant`: `default`, `outline`, `ghost`, `secondary`
+
+Props:
+- `mode` — Selection shape (drives the 
+- `captionLayout` (default: `label`) — Header as a static label or month/year dropdowns.
+- `numberOfMonths` (default: `1`) — How many months to render side by side.
+- `showOutsideDays` (default: `true`) — Show leading/trailing days from adjacent months.
+- `buttonVariant` (default: `ghost`) — Button variant used by the navigation arrows.
+
+Example:
+
+```tsx
+import { Calendar } from 'timds'
+import { useState } from 'react'
+import type { DateRange } from 'react-day-picker'
+
+// Single date (controlled)
+const [date, setDate] = useState<Date>()
+<Calendar mode="single" selected={date} onSelect={setDate} />
+
+// Range
+const [range, setRange] = useState<DateRange>()
+<Calendar mode="range" selected={range} onSelect={setRange} numberOfMonths={2} />
+
+// Constrain selectable days + dropdown caption
+<Calendar mode="single" disabled={{ before: new Date() }} captionLayout="dropdown" />
+```
+
+#### Checkbox `Stable`
+
+A boolean control for selecting an option, typically as part of a form submitted later.
+
+Import: `import { Checkbox, CheckboxGroup, CheckboxGroupItem, checkboxVariants, CheckboxGroupItemProps, CheckboxGroupProps, CheckboxProps } from 'timds'`
+
+Variants:
+- `variant`: `default`, `success`, `destructive`
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `variant` (default: `default`) — Chromatic scheme of the box when checked.
+- `size` (default: `default`) — Box and inner icon size.
+- `disabled` — Disables the checkbox.
+- `checked` — Controlled checked state.
+- `defaultChecked` — Initial checked state (uncontrolled).
+
+Example:
+
+```tsx
+import { Checkbox, CheckboxGroup, CheckboxGroupItem } from 'timds'
+
+// Single checkbox paired with a label
+<label htmlFor="terms" className="flex items-center gap-2">
+  <Checkbox id="terms" />
+  Accept the terms
+</label>
+
+// Controlled
+<Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} />
+
+// Indeterminate
+<Checkbox checked="indeterminate" />
+
+// Group of related values
+<CheckboxGroup defaultValue={['react']} onValueChange={setValues}>
+  <CheckboxGroupItem value="react" />
+  <CheckboxGroupItem value="vue" />
+</CheckboxGroup>
+```
+
+#### DatePicker `Stable`
+
+A trigger that shows the selected date and opens a calendar popover to pick a single day.
+
+Import: `import { DatePicker, DatePickerProps } from 'timds'`
+
+Variants:
+- `size`: `sm`, `default`, `lg`
+- `align`: `start`, `center`, `end`
+
+Props:
+- `placeholder` (default: `Pick a date`) — Text shown on the trigger while no date is selected.
+- `formatStr` (default: `PPP`) — date-fns format string for the trigger label.
+- `size` (default: `default`) — Trigger size.
+- `align` (default: `start`) — Popover alignment relative to the trigger.
+- `block` — Full-width trigger.
+- `disabled` — Disables the trigger.
+- `value` — Selected date (controlled).
+- `defaultValue` — Initial date (uncontrolled).
+
+Example:
+
+```tsx
+import { DatePicker } from 'timds'
+
+// Uncontrolled
+<DatePicker defaultValue={new Date()} onValueChange={(date) => console.log(date)} />
+
+// Controlled
+<DatePicker value={date} onValueChange={setDate} />
+
+// Localized label + constrained calendar
+<DatePicker
+  formatStr="dd/MM/yyyy"
+  calendarProps={{ disabled: { before: new Date() }, captionLayout: 'dropdown' }}
+/>
+
+// In a form (emits a hidden yyyy-MM-dd input)
+<DatePicker name="dueDate" />
+```
+
+#### Input `Stable`
+
+A single-line text field — the primary way users enter free-form text into a form.
+
+Import: `import { Input } from 'timds'`
+
+Variants:
+- `type`: `text`, `email`, `password`, `number`, `search`, `tel`, `url`, `file`
+
+Props:
+- `type` (default: `text`) — Native 
+- `placeholder` — Placeholder shown while the field is empty.
+- `value` — Controlled value of the field.
+- `disabled` — Disables the field: not focusable, ignores input.
+- `onChange` — Fires on every value change.
+
+Example:
+
+```tsx
+import { Input } from 'timds'
+
+// Labelled field
+<label htmlFor="email">E-mail</label>
+<Input id="email" type="email" placeholder="voce@exemplo.com" />
+
+// Error state
+<Input aria-invalid value={email} onChange={onEmailChange} />
+
+// Disabled
+<Input disabled value="Não editável" />
+```
+
+#### InputGroup `Stable`
+
+A container that wraps a text control with addons — icons, text or buttons — sharing a single border, focus ring and error state.
+
+Import: `import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from 'timds'`
+
+Variants:
+- `size`: `xs`, `sm`
+
+Props:
+- `children` — Inner control (
+
+Example:
+
+```tsx
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupButton, InputGroupText } from 'timds'
+import { Search } from 'lucide-react'
+
+// Search field with a leading icon
+<InputGroup>
+  <InputGroupAddon>
+    <Search />
+  </InputGroupAddon>
+  <InputGroupInput placeholder="Buscar…" aria-label="Buscar" />
+</InputGroup>
+
+// Field with a trailing action button
+<InputGroup>
+  <InputGroupInput aria-label="Cupom" />
+  <InputGroupAddon align="inline-end">
+    <InputGroupButton onClick={apply}>Aplicar</InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>
+```
+
+#### InputOTP `Stable`
+
+A fixed-length code field that splits a one-time password or verification code into per-character slots.
+
+Import: `import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from 'timds'`
+
+Props:
+- `maxLength` — Total number of characters/slots the field accepts.
+- `pattern` — Regex restricting accepted characters (e.g. 
+- `disabled` — Disables the field.
+- `value` — Controlled value.
+- `onChange` — Fires with the full string on every change.
+- `children` — Slot layout: 
+
+Example:
+
+```tsx
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from 'timds'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+
+<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} onChange={setCode}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
+  <InputOTPSeparator />
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+#### RadioGroup `Stable`
+
+A set of mutually exclusive options where exactly one can be selected at a time.
+
+Import: `import { RadioGroup, RadioGroupItem } from 'timds'`
+
+Variants:
+- `orientation`: `vertical`, `horizontal`
+
+Props:
+- `defaultValue` — Initially selected value (uncontrolled).
+- `disabled` — Disable the entire group.
+- `orientation` — Layout/keyboard navigation direction.
+- `onValueChange` — Fired with the newly selected value.
+
+Example:
+
+```tsx
+import { RadioGroup, RadioGroupItem } from 'timds'
+
+// Uncontrolled
+<RadioGroup defaultValue="yearly" aria-label="Plan">
+  <label htmlFor="monthly">
+    <RadioGroupItem id="monthly" value="monthly" /> Monthly
+  </label>
+  <label htmlFor="yearly">
+    <RadioGroupItem id="yearly" value="yearly" /> Yearly
+  </label>
+</RadioGroup>
+
+// Controlled
+<RadioGroup value={value} onValueChange={setValue} aria-label="Plan">
+  {/* …items */}
+</RadioGroup>
+```
+
+#### Select `Stable`
+
+An advanced Select / Combobox built on **Ariakit** with search, multi-select, custom rendering, async loading and list virtualization — not the native `<select>`.
+
+Import: `import { Select, SelectContent, SelectEmpty, SelectGroup, SelectItem, SelectList, SelectLoading, SelectRoot, SelectSearch, SelectTrigger, SelectValue, selectTriggerVariants, SelectMessages, SelectOption, SelectProps } from 'timds'`
+
+Variants:
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `options` — Lista de opções (
+- `size` (default: `default`) — Altura do trigger.
+- `searchable` — Exibe o campo de busca.
+- `multiple` — Multi-seleção com chips.
+- `clearable` — Exibe o botão de limpar.
+- `editable` — Gatilho editável (autocomplete no próprio campo).
+- `allowCustomValue` — Editável: aceita texto fora da lista.
+- `maxCount` — Multi: nº máximo de itens (mostra 
+- `maxDisplayChips` — Multi: chips antes de resumir em 
+- `virtualized` — Liga a virtualização (auto para > 100 itens).
+- `loading` — Indicador de carregamento na lista.
+- `hasMore` — Há mais itens para o infinite scroll.
+- `disabled` — Desabilita o trigger.
+- `value` — Valor selecionado (controlado).
+- `placeholder` — Texto quando nada está selecionado.
+
+Example:
+
+```tsx
+import { Select, type SelectOption } from 'timds'
+
+const fruits: SelectOption[] = [
+  { value: 'apple', label: 'Maçã' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'pear', label: 'Pera', disabled: true },
+]
+
+// Single, searchable
+<Select options={fruits} searchable placeholder="Pick a fruit…" aria-label="Fruit" />
+
+// Multi-select with chips, a clear button and a cap
+<Select
+  options={fruits}
+  multiple
+  clearable
+  maxCount={3}
+  defaultValue={['apple', 'banana']}
+  aria-label="Fruits"
+/>
+
+// Async + infinite scroll
+<Select
+  options={options}
+  searchable
+  onSearch={fetchOptions}
+  loading={loading}
+  onLoadMore={loadMore}
+  hasMore={hasMore}
+  aria-label="User"
+/>
+
+// Editable autocomplete that accepts free text
+<Select
+  options={fruits}
+  editable
+  allowCustomValue
+  multiple
+  aria-label="Tags"
+/>
+```
+
+#### Slider `Stable`
+
+An input for picking a numeric value — or a range — by dragging a thumb along a track.
+
+Import: `import { sliderRangeVariants, Slider, sliderThumbVariants, SliderProps } from 'timds'`
+
+Variants:
+- `variant`: `default`, `success`, `destructive`
+- `size`: `sm`, `default`, `lg`
+- `orientation`: `horizontal`, `vertical`
+
+Props:
+- `variant` (default: `default`) — Chromatic scheme of the filled range and thumb.
+- `size` (default: `default`) — Track thickness and thumb diameter.
+- `min` — Minimum value.
+- `max` — Maximum value.
+- `step` — Stepping interval.
+- `orientation` (default: `horizontal`) — Layout direction of the slider.
+- `disabled` — Disables the slider.
+- `value` — Controlled value (array).
+- `defaultValue` — Initial value as an array (uncontrolled).
+
+Example:
+
+```tsx
+import { Slider } from 'timds'
+
+// Single value (uncontrolled)
+<Slider defaultValue={[50]} aria-label="Volume" />
+
+// Range
+<Slider defaultValue={[20, 80]} aria-label="Price range" />
+
+// Controlled
+<Slider value={value} onValueChange={setValue} aria-label="Brightness" />
+
+// Discrete steps
+<Slider defaultValue={[40]} step={10} aria-label="Opacity" />
+```
+
+#### Switch `Stable`
+
+A boolean toggle that flips a single setting on or off, taking effect immediately.
+
+Import: `import { Switch, switchVariants, SwitchProps } from 'timds'`
+
+Variants:
+- `size`: `sm`, `default`, `lg`
+- `variant`: `default`, `green_red`, `success`, `destructive`
+
+Props:
+- `variant` (default: `default`) — Chromatic scheme of the track (on / off colors).
+- `size` (default: `default`) — Track height and thumb size.
+- `texts` — Optional 
+- `disabled` — Disables the switch.
+- `checked` — Controlled checked state.
+- `defaultChecked` — Initial checked state (uncontrolled).
+
+Example:
+
+```tsx
+import { Switch } from 'timds'
+
+// Uncontrolled
+<Switch defaultChecked aria-label="Notifications" />
+
+// Controlled
+<Switch checked={enabled} onCheckedChange={setEnabled} aria-label="Dark mode" />
+
+// With in-track labels (decorative) + an accessible name
+<Switch texts={{ on: 'Ativo', off: 'Inativo' }} variant="green_red" aria-label="Status" />
+```
+
+#### Textarea `Stable`
+
+A multi-line text field for free-form input that can span several lines.
+
+Import: `import { Textarea } from 'timds'`
+
+Props:
+- `placeholder` — Placeholder text.
+- `disabled` — Disable the field.
+- `rows` — Initial visible number of text lines.
+
+Example:
+
+```tsx
+import { Textarea } from 'timds'
+
+// Com label associado (nome acessível)
+<label htmlFor="bio">Bio</label>
+<Textarea id="bio" placeholder="Tell us about yourself…" />
+
+// Estado de erro
+<Textarea aria-invalid aria-describedby="bio-error" />
+
+// Desabilitado
+<Textarea disabled value="Read-only" />
+```
+
+#### Toggle `Stable`
+
+A two-state button that stays pressed once activated — for binary, on/off controls like a formatting mark in a toolbar.
+
+Import: `import { Toggle, toggleVariants } from 'timds'`
+
+Variants:
+- `variant`: `default`, `outline`
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `variant` (default: `default`) — Visual style: transparent (
+- `size` (default: `default`) — Control height and minimum width.
+- `disabled` — Disables the toggle.
+- `pressed` — Controlled pressed state.
+- `defaultPressed` — Initial pressed state (uncontrolled).
+
+Example:
+
+```tsx
+import { Toggle } from 'timds'
+import { Bold } from 'lucide-react'
+
+function BoldToggle() {
+  return (
+    <Toggle aria-label="Bold">
+      <Bold />
+    </Toggle>
+  )
+}
+```
+
+#### ToggleGroup `Stable`
+
+A set of **Toggle** buttons that share styling and coordinate selection — the building block for segmented controls and formatting toolbars.
+
+Import: `import { ToggleGroup, ToggleGroupItem } from 'timds'`
+
+Variants:
+- `type`: `single`, `multiple`
+- `variant`: `default`, `outline`
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `type` (default: `single`) — Single (
+- `variant` (default: `default`) — Visual style shared by every item.
+- `size` (default: `default`) — Item height shared by every item.
+- `spacing` (default: `0`) — Gap (theme units) between items. 
+- `disabled` — Disables every item in the group.
+
+Example:
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from 'timds'
+import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
+
+// Single selection (radiogroup)
+<ToggleGroup type="single" defaultValue="left" aria-label="Text alignment">
+  <ToggleGroupItem value="left" aria-label="Align left">
+    <AlignLeft />
+  </ToggleGroupItem>
+  <ToggleGroupItem value="center" aria-label="Align center">
+    <AlignCenter />
+  </ToggleGroupItem>
+  <ToggleGroupItem value="right" aria-label="Align right">
+    <AlignRight />
+  </ToggleGroupItem>
+</ToggleGroup>
+```
+
+### Feedback
+
+#### Alert `Stable`
+
+A contextual feedback banner that surfaces a short message inline, in place on the page.
+
+Import: `import { Alert, AlertDescription, AlertTitle } from 'timds'`
+
+Variants:
+- `variant`: `default`, `destructive`, `warning`, `info`, `accent`, `success`
+
+Props:
+- `variant` (default: `default`) — Neutral, destructive (error) or one of the soft semantic styles (success, warning, info, accent).
+- `children` — Composed content — typically an icon, 
+
+Example:
+
+```tsx
+import { Alert, AlertTitle, AlertDescription } from 'timds'
+import { CheckCircle2 } from 'lucide-react'
+
+<Alert variant="success">
+  <CheckCircle2 />
+  <AlertTitle>Changes saved</AlertTitle>
+  <AlertDescription>Your settings were updated successfully.</AlertDescription>
+</Alert>
+```
+
+#### Progress `Stable`
+
+A linear bar that communicates how far along a determinate task is, or that work of unknown duration is underway.
+
+Import: `import { Progress, progressVariants } from 'timds'`
+
+Variants:
+- `variant`: `default`, `success`, `warning`, `info`, `destructive`
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `variant` (default: `default`) — Chromatic scheme of the track and indicator.
+- `size` (default: `default`) — Height of the progress bar.
+- `value` — Current progress (0–100). Omit it for the indeterminate state.
+
+Example:
+
+```tsx
+import { Progress } from 'timds'
+
+// Determinate — always give it an accessible name.
+<Progress value={60} aria-label="Uploading files" />
+
+// Semantic variant + size.
+<Progress value={90} variant="destructive" size="lg" aria-label="Storage used" />
+
+// Indeterminate (omit value).
+<Progress aria-label="Loading" />
+```
+
+#### Skeleton `Stable`
+
+A pulsing placeholder that reserves layout space while real content loads.
+
+Import: `import { Skeleton } from 'timds'`
+
+#### Spinner `Stable`
+
+An animated indicator that communicates an ongoing, indeterminate loading state.
+
+Import: `import { Spinner } from 'timds'`
+
+Props:
+- `className` — Tailwind classes to override size (
+
+Example:
+
+```tsx
+import { Spinner } from 'timds'
+
+// Tamanho e cor herdados do contexto
+<span className="text-primary">
+  <Spinner className="size-6" />
+</span>
+
+// Dentro de um Button, via a prop `loading`
+<Button loading>Salvando</Button>
+
+// Nome acessível customizado
+<Spinner aria-label="Salvando alterações" />
+```
+
+#### Toaster `Stable`
+
+Brief, non-blocking notifications anchored to a corner of the screen. Built on [sonner](https://sonner.emilkowal.ski/): mount `<Toaster />` once, then fire toasts from anywhere with the imperative `toast` function.
+
+Import: `import { Toaster, toast, ToasterProps } from 'timds'`
+
+Variants:
+- `position`: `top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right`
+- `theme`: `light`, `dark`, `system`
+
+Props:
+- `position` (default: `bottom-right`) — Where the stack of toasts is anchored on screen.
+- `richColors` (default: `true`) — Colorize toasts by type (success/error/warning/info) using the design tokens.
+- `closeButton` — Render an explicit close (×) button on every toast.
+- `expand` — Keep toasts expanded instead of stacking them collapsed.
+- `duration` (default: `4000`) — Default auto-dismiss time in ms (per toast can override).
+- `visibleToasts` (default: `3`) — How many toasts are shown at once before older ones collapse.
+- `theme` — Sonner’s internal theme. Colors here come from tokens, so this rarely matters; 
+
+Example:
+
+```tsx
+import { Toaster } from 'timds'
+
+export function App({ children }) {
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  )
+}
+```
+
+### Layout
+
+#### Card `Stable`
+
+A surface container that groups related content and actions into a single panel.
+
+Import: `import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'timds'`
+
+Props:
+- `title` — CardTitle text.
+- `description` — CardDescription text.
+- `value` — Main metric shown in CardContent.
+- `footer` — Footer button label.
+
+Example:
+
+```tsx
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardAction,
+  CardContent,
+  CardFooter,
+  Button,
+  Badge,
+} from 'timds'
+
+<Card className="w-80">
+  <CardHeader>
+    <CardTitle>Total revenue</CardTitle>
+    <CardDescription>Last 30 days</CardDescription>
+    <CardAction>
+      <Badge variant="success">+9.8%</Badge>
+    </CardAction>
+  </CardHeader>
+  <CardContent>
+    <p className="text-3xl font-bold">$125,830</p>
+  </CardContent>
+  <CardFooter>
+    <Button variant="outline" className="w-full">View report</Button>
+  </CardFooter>
+</Card>
+```
+
+#### Separator `Stable`
+
+A thin visual divider that groups or splits content, horizontally or vertically.
+
+Import: `import { Separator } from 'timds'`
+
+Variants:
+- `orientation`: `horizontal`, `vertical`
+
+Props:
+- `orientation` (default: `horizontal`) — Direction the divider runs in.
+- `decorative` (default: `true`) — When true (default) the separator is purely visual and hidden from assistive tech.
+
+Example:
+
+```tsx
+import { Separator } from 'timds'
+
+// Divisor horizontal (decorativo)
+<Separator className="my-4" />
+
+// Divisor inline vertical, dentro de um contêiner com altura
+<div className="flex h-5 items-center gap-4">
+  <span>Docs</span>
+  <Separator orientation="vertical" />
+  <span>Source</span>
+</div>
+
+// Semântico: exposto para tecnologias assistivas
+<Separator decorative={false} />
+```
+
+### Navigation
+
+#### Pagination `Stable`
+
+Splits long content into pages and lets people move between them.
+
+Import: `import { getPaginationRange, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationShort, PaginationMode, PaginationRangeItem, PaginationRangeOptions, PaginationShortLabels, PaginationShortProps } from 'timds'`
+
+Variants:
+- `mode`: `full`, `numbers`, `simple`, `compact`
+- `size`: `sm`, `default`, `lg`
+
+Props:
+- `page` — Current page (1-based).
+- `total` — Total number of pages.
+- `mode` (default: `full`) — Rendering shape.
+- `size` (default: `default`) — Control size.
+- `siblingCount` (default: `1`) — Sibling pages around the current one (full/numbers).
+- `boundaryCount` (default: `1`) — Fixed pages at each edge (full/numbers).
+- `pageSize` — Current rows-per-page value (needs 
+- `pageSizeOptions` — Rows-per-page choices; renders the selector when provided.
+- `onPageChange` — Called with the chosen page (SPA mode).
+- `onPageSizeChange` — Called with the chosen rows-per-page value.
+- `href` — Builds each page href (real-links/SSR mode); wins over onPageChange.
+
+Example:
+
+```tsx
+import { PaginationShort } from 'timds'
+
+// SPA — controlled by state
+const [page, setPage] = useState(1)
+<PaginationShort page={page} total={20} onPageChange={setPage} />
+
+// Just previous/next
+<PaginationShort mode="simple" page={page} total={20} onPageChange={setPage} />
+
+// Arrows + "Page X of Y"
+<PaginationShort mode="compact" page={page} total={20} onPageChange={setPage} />
+
+// Real links (SSR) — renders <a> anchors
+<PaginationShort page={page} total={20} href={(n) => `/items?page=${n}`} />
+
+// Rows-per-page selector (table footer)
+<PaginationShort
+  mode="simple"
+  page={page}
+  total={20}
+  onPageChange={setPage}
+  pageSize={pageSize}
+  pageSizeOptions={[10, 25, 50, 100]}
+  onPageSizeChange={setPageSize}
+/>
+
+// i18n labels
+<PaginationShort
+  page={page}
+  total={20}
+  onPageChange={setPage}
+  labels={{ previous: 'Anterior', next: 'Próximo', page: 'Página', of: 'de' }}
+/>
+```
+
+#### Tabs `Stable`
+
+Switches between sibling panels of content within the same context, one visible at a time.
+
+Import: `import { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants } from 'timds'`
+
+Variants:
+- `tabPlacement`: `top`, `bottom`, `start`, `end`
+
+Props:
+- `defaultValue` — Value of the tab selected on mount (uncontrolled).
+- `tabPlacement` (default: `top`) — Placement of the tab bar relative to the content.
+
+Example:
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'timds'
+
+<Tabs defaultValue="home">
+  <TabsList variant="pill">
+    <TabsTrigger value="home">Home</TabsTrigger>
+    <TabsTrigger value="products">Products</TabsTrigger>
+  </TabsList>
+  <TabsContent value="home">Home panel</TabsContent>
+  <TabsContent value="products">Products panel</TabsContent>
+</Tabs>
+
+// Editable tabs
+<TabsTrigger value="1" closable onClose={() => remove('1')}>
+  Tab 1
+</TabsTrigger>
+```
+
+### Other
+
+#### Sidebar `Stable`
+
+A composable, collapsible application sidebar — the persistent navigation frame for a page, with a desktop layout and a mobile off-canvas overlay built in.
+
+Import: `import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, sidebarMenuButtonVariants, useSidebar } from 'timds'`
+
+Variants:
+- `variant`: `default`, `outline`, `sidebar`, `floating`, `inset`
+- `size`: `default`, `sm`, `lg`
+- `side`: `left`, `right`
+- `collapsible`: `offcanvas`, `icon`, `none`
+
+Props:
+- `side` (default: `left`) — Which edge the sidebar is anchored to.
+- `variant` (default: `sidebar`) — Visual treatment: flush 
+- `collapsible` (default: `offcanvas`) — How it collapses on desktop: slide 
+
+Example:
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from 'timds'
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton isActive tooltip="Home">
+                    <HomeIcon />
+                    <span>Home</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-12 items-center gap-2 border-b px-4">
+          <SidebarTrigger />
+        </header>
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}
+```
+
+### Overlays
+
+#### AlertDialog `Stable`
+
+A modal confirmation that interrupts the user and demands an explicit choice before a destructive or irreversible action.
+
+Import: `import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger } from 'timds'`
+
+Example:
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  Button,
+} from 'timds'
+
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="destructive">Delete project</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete this project?</AlertDialogTitle>
+      <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Keep project</AlertDialogCancel>
+      <AlertDialogAction variant="destructive" onClick={handleDelete}>
+        Delete
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+#### Context Menu `Stable`
+
+A menu of actions opened by right-clicking (or long-pressing) a region — the actions appear at the pointer and dismiss once the user picks one or moves away.
+
+Import: `import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from 'timds'`
+
+Example:
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuItem,
+  ContextMenuShortcut,
+} from 'timds'
+
+<ContextMenu>
+  <ContextMenuTrigger className="flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm">
+    Right click here
+  </ContextMenuTrigger>
+  <ContextMenuContent className="w-52">
+    <ContextMenuLabel>Actions</ContextMenuLabel>
+    <ContextMenuSeparator />
+    <ContextMenuItem onSelect={handleReload}>
+      Reload
+      <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+    </ContextMenuItem>
+    <ContextMenuItem variant="destructive" onSelect={handleDelete}>
+      Delete
+    </ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+#### Dialog `Stable`
+
+A modal overlay that focuses the user on a single task — a form, details, or a confirmation — before returning them to the page.
+
+Import: `import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from 'timds'`
+
+Example:
+
+```tsx
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+  Button,
+} from 'timds'
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">Edit profile</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Edit profile</DialogTitle>
+      <DialogDescription>Update your details.</DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button variant="outline">Cancel</Button>
+      </DialogClose>
+      <DialogClose asChild>
+        <Button onClick={handleSave}>Save changes</Button>
+      </DialogClose>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+#### Drawer `Stable`
+
+A panel that slides in from an edge of the viewport to hold secondary content — filters, details, navigation, or a short form — without taking over the whole screen.
+
+Import: `import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerPortal, DrawerTitle, DrawerTrigger } from 'timds'`
+
+Example:
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+  Button,
+} from 'timds'
+
+<Drawer direction="right">
+  <DrawerTrigger asChild>
+    <Button variant="outline">Open panel</Button>
+  </DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Filters</DrawerTitle>
+      <DrawerDescription>Refine the results shown in the list.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <Button onClick={handleApply}>Apply</Button>
+      <DrawerClose asChild>
+        <Button variant="outline">Cancel</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+#### Dropdown Menu `Stable`
+
+A menu of actions anchored to a trigger — opened on demand, dismissed once the user picks an action or moves away.
+
+Import: `import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from 'timds'`
+
+Example:
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  Button,
+} from 'timds'
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline">Open menu</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent className="w-48">
+    <DropdownMenuLabel>My account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem onSelect={handleProfile}>
+      Profile
+      <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+    </DropdownMenuItem>
+    <DropdownMenuItem variant="destructive" onSelect={handleSignOut}>
+      Sign out
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+#### Popover `Stable`
+
+A floating panel anchored to a trigger, for secondary content shown on demand.
+
+Import: `import { Popover, PopoverAnchor, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from 'timds'`
+
+Variants:
+- `align`: `start`, `center`, `end`
+- `side`: `top`, `right`, `bottom`, `left`
+
+Props:
+- `align` (default: `center`) — Alignment of the content relative to the trigger.
+- `side` (default: `bottom`) — Preferred side of the trigger to render on (flips on collision).
+- `sideOffset` (default: `4`) — Distance in pixels between the content and the trigger.
+
+Example:
+
+```tsx
+import { Button, Input, Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from 'timds'
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Open</Button>
+  </PopoverTrigger>
+  <PopoverContent align="start">
+    <PopoverHeader>
+      <PopoverTitle>Dimensions</PopoverTitle>
+    </PopoverHeader>
+    <Input aria-label="Width" defaultValue="100%" />
+  </PopoverContent>
+</Popover>
+```
+
+#### Tooltip `Stable`
+
+A small floating label that explains an element on hover or keyboard focus.
+
+Import: `import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'timds'`
+
+Example:
+
+```tsx
+import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'timds'
+
+function SaveButton() {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline" size="icon" aria-label="Save">
+            <SaveIcon />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Save changes</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+```
+
+## Page examples
+
+### Dashboard
+
+A full analytics dashboard: a collapsible `Sidebar` + `SidebarInset` shell, a sticky header, KPI `Card`s with trend `Badge`s, an area and a donut `Chart`, and a recent-sales `Table`. The capstone composition.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  BarChart3,
+  Bell,
+  CreditCard,
+  DollarSign,
+  LayoutDashboard,
+  type LucideIcon,
+  Search,
+  Settings,
+  Users,
+} from 'lucide-react'
+import { Area, AreaChart, CartesianGrid, Pie, PieChart, XAxis } from 'recharts'
+import { expect, within } from 'storybook/test'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+/**
+ * **Dashboard** — o exemplo mais completo: um shell de aplicação com `Sidebar`
+ * colapsável, cabeçalho fixo, cartões de métrica com indicadores de tendência,
+ * dois gráficos (`Chart`/Recharts) e uma tabela de vendas recentes. Reúne quase
+ * todas as famílias do design system numa única tela coerente.
+ */
+const meta = {
+  title: 'Examples/Dashboard',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      story: { inline: false, height: '720px' },
+      description: {
+        component:
+          'A full analytics dashboard: a collapsible `Sidebar` + `SidebarInset` ' +
+          'shell, a sticky header, KPI `Card`s with trend `Badge`s, an area and a ' +
+          'donut `Chart`, and a recent-sales `Table`. The capstone composition.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+/* -------------------------------------------------------------------------- */
+/*  Dados                                                                       */
+/* -------------------------------------------------------------------------- */
+
+const revenueData = [
+  { month: 'Jan', receita: 4200, despesa: 2400 },
+  { month: 'Fev', receita: 5100, despesa: 2800 },
+  { month: 'Mar', receita: 4800, despesa: 3100 },
+  { month: 'Abr', receita: 6300, despesa: 3300 },
+  { month: 'Mai', receita: 7200, despesa: 3600 },
+  { month: 'Jun', receita: 8100, despesa: 3900 },
+]
+
+const revenueConfig = {
+  receita: { label: 'Receita', color: 'var(--chart-1)' },
+  despesa: { label: 'Despesa', color: 'var(--chart-2)' },
+} satisfies ChartConfig
+
+const channelData = [
+  { channel: 'organico', visitas: 1240, fill: 'var(--color-organico)' },
+  { channel: 'social', visitas: 860, fill: 'var(--color-social)' },
+  { channel: 'pago', visitas: 540, fill: 'var(--color-pago)' },
+  { channel: 'direto', visitas: 420, fill: 'var(--color-direto)' },
+]
+
+const channelConfig = {
+  visitas: { label: 'Visitas' },
+  organico: { label: 'Orgânico', color: 'var(--chart-1)' },
+  social: { label: 'Social', color: 'var(--chart-2)' },
+  pago: { label: 'Pago', color: 'var(--chart-3)' },
+  direto: { label: 'Direto', color: 'var(--chart-4)' },
+} satisfies ChartConfig
+
+const kpis: {
+  label: string
+  value: string
+  delta: string
+  up: boolean
+  icon: LucideIcon
+}[] = [
+  { label: 'Receita', value: 'R$ 45.231', delta: '+20,1%', up: true, icon: DollarSign },
+  { label: 'Assinantes', value: '2.350', delta: '+12,4%', up: true, icon: Users },
+  { label: 'Vendas', value: '1.024', delta: '+8,2%', up: true, icon: CreditCard },
+  {
+    label: 'Cancelamentos',
+    value: '38',
+    delta: '-3,1%',
+    up: false,
+    icon: ArrowDownRight,
+  },
+]
+
+const sales = [
+  { name: 'Ana Souza', email: 'ana@timds.dev', amount: 'R$ 1.999', img: 47 },
+  { name: 'Bruno Lima', email: 'bruno@timds.dev', amount: 'R$ 39', img: 12 },
+  { name: 'Carla Dias', email: 'carla@timds.dev', amount: 'R$ 299', img: 5 },
+  { name: 'Diego Reis', email: 'diego@timds.dev', amount: 'R$ 99', img: 33 },
+]
+
+const navItems: { title: string; icon: LucideIcon; badge?: string }[] = [
+  { title: 'Dashboard', icon: LayoutDashboard },
+  { title: 'Análises', icon: BarChart3 },
+  { title: 'Clientes', icon: Users, badge: '24' },
+  { title: 'Pagamentos', icon: CreditCard },
+  { title: 'Configurações', icon: Settings },
+]
+
+/* -------------------------------------------------------------------------- */
+/*  Subcomponentes                                                              */
+/* -------------------------------------------------------------------------- */
+
+function KpiCard({ label, value, delta, up, icon: Icon }: (typeof kpis)[number]) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
+        <CardDescription>{label}</CardDescription>
+        <Icon className="size-4 text-muted-foreground" aria-hidden="true" />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-1">
+        <span className="font-bold text-2xl tracking-tight">{value}</span>
+        <Badge variant={up ? 'success' : 'destructive'} className="w-fit gap-1">
+          {up ? (
+            <ArrowUpRight className="size-3" aria-hidden="true" />
+          ) : (
+            <ArrowDownRight className="size-3" aria-hidden="true" />
+          )}
+          {delta}
+        </Badge>
+      </CardContent>
+    </Card>
+  )
+}
+
+function DashboardApp() {
+  return (
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="timds">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  t
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">timds</span>
+                  <span className="text-xs">Analytics</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {navItems.map((item, i) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton tooltip={item.title} isActive={i === 0}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                    {item.badge ? (
+                      <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                    ) : null}
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="Ana Souza">
+                <Avatar className="size-8">
+                  <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Ana Souza" />
+                  <AvatarFallback>AS</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">Ana Souza</span>
+                  <span className="text-xs">ana@timds.dev</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+
+      <SidebarInset>
+        {/* Cabeçalho fixo */}
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur">
+          <SidebarTrigger />
+          <h1 className="font-semibold text-base">Dashboard</h1>
+          <div className="ml-auto flex items-center gap-2">
+            <InputGroup className="hidden w-56 sm:flex">
+              <InputGroupAddon>
+                <Search className="size-4" aria-hidden="true" />
+              </InputGroupAddon>
+              <InputGroupInput placeholder="Buscar..." aria-label="Buscar" />
+            </InputGroup>
+            <Button variant="ghost" size="icon" aria-label="Notificações">
+              <Bell className="size-4" aria-hidden="true" />
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label="Conta"
+                >
+                  <Avatar className="size-7">
+                    <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Ana Souza" />
+                    <AvatarFallback>AS</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+                <DropdownMenuItem>Perfil</DropdownMenuItem>
+                <DropdownMenuItem>Faturamento</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">Sair</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </header>
+
+        {/* Conteúdo */}
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          {/* KPIs */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {kpis.map((kpi) => (
+              <KpiCard key={kpi.label} {...kpi} />
+            ))}
+          </div>
+
+          {/* Gráficos */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>Receita x Despesa</CardTitle>
+                <CardDescription>Últimos 6 meses</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer config={revenueConfig} className="h-[260px] w-full">
+                  <AreaChart
+                    accessibilityLayer
+                    data={revenueData}
+                    margin={{ left: 12, right: 12 }}
+                  >
+                    <defs>
+                      <linearGradient id="dashReceita" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor="var(--color-receita)"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="var(--color-receita)"
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                      <linearGradient id="dashDespesa" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor="var(--color-despesa)"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="var(--color-despesa)"
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                    />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                    <Area
+                      dataKey="receita"
+                      type="natural"
+                      fill="url(#dashReceita)"
+                      stroke="var(--color-receita)"
+                      stackId="a"
+                    />
+                    <Area
+                      dataKey="despesa"
+                      type="natural"
+                      fill="url(#dashDespesa)"
+                      stroke="var(--color-despesa)"
+                      stackId="b"
+                    />
+                    <ChartLegend content={<ChartLegendContent />} />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Tráfego por canal</CardTitle>
+                <CardDescription>Origem das visitas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer
+                  config={channelConfig}
+                  className="mx-auto aspect-square max-h-[260px]"
+                >
+                  <PieChart>
+                    <ChartTooltip
+                      content={<ChartTooltipContent nameKey="visitas" hideLabel />}
+                    />
+                    <Pie
+                      data={channelData}
+                      dataKey="visitas"
+                      nameKey="channel"
+                      innerRadius={55}
+                    />
+                    <ChartLegend
+                      content={<ChartLegendContent nameKey="channel" />}
+                      className="flex-wrap gap-2"
+                    />
+                  </PieChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Vendas recentes */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Vendas recentes</CardTitle>
+              <CardDescription>Você fez 265 vendas este mês.</CardDescription>
+            </CardHeader>
+            <CardContent className="px-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="pl-6">Cliente</TableHead>
+                    <TableHead className="text-right pr-6">Valor</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sales.map((sale) => (
+                    <TableRow key={sale.email}>
+                      <TableCell className="pl-6">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="size-8">
+                            <AvatarImage
+                              src={`https://i.pravatar.cc/80?img=${sale.img}`}
+                              alt={sale.name}
+                            />
+                            <AvatarFallback>
+                              {sale.name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{sale.name}</span>
+                            <span className="text-muted-foreground text-xs">
+                              {sale.email}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="pr-6 text-right font-medium">
+                        {sale.amount}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}
+
+export const Default: Story = {
+  render: () => <DashboardApp />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument()
+    await expect(canvas.getByText('R$ 45.231')).toBeInTheDocument()
+    // A navegação marca o item ativo.
+    await expect(canvas.getByRole('button', { name: 'Dashboard' })).toHaveAttribute(
+      'data-active',
+      'true',
+    )
+  },
+}
+
+```
+
+### Login
+
+A focused authentication card composed from `Card`, `InputGroup`, `Button`, `Checkbox` and `Separator`. Inputs are labelled, the icon-only nature of the addons is decorative, and every color comes from a semantic token.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Lock, Mail } from 'lucide-react'
+import { expect, within } from 'storybook/test'
+
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { Separator } from '@/components/ui/separator'
+
+/**
+ * **Login** — o exemplo mais simples do conjunto. Mostra como uma única `Card`
+ * organiza um formulário curto: campos com ícone (`InputGroup`), ações primárias
+ * e secundárias, um divisor semântico e provedores sociais. Tudo apoiado nos
+ * tokens do design system, sem nenhuma cor solta.
+ */
+const meta = {
+  title: 'Examples/Login',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A focused authentication card composed from `Card`, `InputGroup`, ' +
+          '`Button`, `Checkbox` and `Separator`. Inputs are labelled, the ' +
+          'icon-only nature of the addons is decorative, and every color comes ' +
+          'from a semantic token.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  render: () => (
+    <div className="flex min-h-[calc(100vh-3rem)] items-center justify-center">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <Lock className="size-5" aria-hidden="true" />
+          </div>
+          <CardTitle className="text-xl">Acesse sua conta</CardTitle>
+          <CardDescription>Entre com seu e-mail e senha para continuar</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="login-email" className="text-sm font-medium">
+              E-mail
+            </label>
+            <InputGroup>
+              <InputGroupAddon>
+                <Mail className="size-4" aria-hidden="true" />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="login-email"
+                type="email"
+                placeholder="voce@exemplo.com"
+                autoComplete="email"
+              />
+            </InputGroup>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <label htmlFor="login-password" className="text-sm font-medium">
+                Senha
+              </label>
+              <a
+                href="#redefinir"
+                className="text-sm font-medium text-primary-text hover:underline"
+              >
+                Esqueceu?
+              </a>
+            </div>
+            <InputGroup>
+              <InputGroupAddon>
+                <Lock className="size-4" aria-hidden="true" />
+              </InputGroupAddon>
+              <InputGroupInput
+                id="login-password"
+                type="password"
+                placeholder="••••••••"
+                autoComplete="current-password"
+              />
+            </InputGroup>
+          </div>
+
+          <label
+            htmlFor="login-remember"
+            className="flex items-center gap-2 text-sm text-muted-foreground"
+          >
+            <Checkbox id="login-remember" defaultChecked /> Manter conectado
+          </label>
+
+          <Button className="w-full">Entrar</Button>
+
+          <div className="flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">ou continue com</span>
+            <Separator className="flex-1" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="outline">GitHub</Button>
+            <Button variant="outline">Google</Button>
+          </div>
+        </CardContent>
+
+        <CardFooter className="justify-center">
+          <p className="text-sm text-muted-foreground">
+            Não tem conta?{' '}
+            <a href="#criar" className="font-medium text-primary-text hover:underline">
+              Criar agora
+            </a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // O título e o CTA principal montam, e o e-mail tem rótulo associado.
+    await expect(canvas.getByText('Acesse sua conta')).toBeInTheDocument()
+    await expect(canvas.getByLabelText('E-mail')).toBeInTheDocument()
+    await expect(canvas.getByRole('button', { name: 'Entrar' })).toBeInTheDocument()
+  },
+}
+
+```
+
+### Notifications
+
+A filterable activity feed: `Tabs` switch between all / unread / mentions, each row is an `Item` with media, content and actions, and an unread dot plus a count `Badge` track local state.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import {
+  AtSign,
+  CheckCheck,
+  GitPullRequest,
+  Heart,
+  type LucideIcon,
+  MessageSquare,
+} from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { expect, userEvent, within } from 'storybook/test'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from '@/components/ui/item'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+/**
+ * **Notifications** — um feed de atividades filtrável. Mostra `Tabs` como filtro,
+ * `Item` como linha rica (ícone, título, descrição e ações) e o uso de um ponto
+ * de "não lida" + `Badge` de contagem que reagem ao estado local.
+ */
+const meta = {
+  title: 'Examples/Notifications',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A filterable activity feed: `Tabs` switch between all / unread / ' +
+          'mentions, each row is an `Item` with media, content and actions, and an ' +
+          'unread dot plus a count `Badge` track local state.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+type Kind = 'comment' | 'mention' | 'pr' | 'like'
+
+type Note = {
+  id: string
+  kind: Kind
+  title: string
+  description: string
+  when: string
+  read: boolean
+}
+
+const ICONS: Record<Kind, LucideIcon> = {
+  comment: MessageSquare,
+  mention: AtSign,
+  pr: GitPullRequest,
+  like: Heart,
+}
+
+const initial: Note[] = [
+  {
+    id: '1',
+    kind: 'mention',
+    title: 'Bruno Lima mencionou você',
+    description: '“@ana pode revisar os tokens de contraste?” em #design-system',
+    when: 'há 5 min',
+    read: false,
+  },
+  {
+    id: '2',
+    kind: 'pr',
+    title: 'PR #128 aguardando revisão',
+    description: 'feat(table): agrupamento de linhas com header fixo',
+    when: 'há 1 hora',
+    read: false,
+  },
+  {
+    id: '3',
+    kind: 'comment',
+    title: 'Carla Dias comentou',
+    description: 'Adorei o novo Donut chart no dashboard!',
+    when: 'há 3 horas',
+    read: false,
+  },
+  {
+    id: '4',
+    kind: 'like',
+    title: 'Diego Reis curtiu sua atualização',
+    description: 'Release v0.4 — novos tokens de texto acessíveis',
+    when: 'ontem',
+    read: true,
+  },
+  {
+    id: '5',
+    kind: 'mention',
+    title: 'Elena Prado mencionou você',
+    description: '“@ana fechamos a sprint amanhã” em #produto',
+    when: 'ontem',
+    read: true,
+  },
+]
+
+function NotificationsFeed() {
+  const [notes, setNotes] = useState(initial)
+  const [tab, setTab] = useState<'all' | 'unread' | 'mentions'>('all')
+
+  const unreadCount = notes.filter((n) => !n.read).length
+
+  const visible = useMemo(() => {
+    if (tab === 'unread') return notes.filter((n) => !n.read)
+    if (tab === 'mentions') return notes.filter((n) => n.kind === 'mention')
+    return notes
+  }, [notes, tab])
+
+  function markRead(id: string) {
+    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
+  }
+
+  function markAll() {
+    setNotes((prev) => prev.map((n) => ({ ...n, read: true })))
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl py-2">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-2">
+          <CardTitle className="flex items-center gap-2">
+            Notificações
+            {unreadCount > 0 ? <Badge>{unreadCount}</Badge> : null}
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={markAll}
+            disabled={unreadCount === 0}
+          >
+            <CheckCheck className="size-4" aria-hidden="true" /> Marcar todas
+          </Button>
+        </CardHeader>
+
+        <CardContent>
+          <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
+            <TabsList className="w-full">
+              <TabsTrigger value="all" className="flex-1">
+                Todas
+              </TabsTrigger>
+              <TabsTrigger value="unread" className="flex-1">
+                Não lidas
+              </TabsTrigger>
+              <TabsTrigger value="mentions" className="flex-1">
+                Menções
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={tab} className="pt-3">
+              <div className="flex flex-col gap-1">
+                {visible.map((note) => {
+                  const Icon = ICONS[note.kind]
+                  return (
+                    <Item key={note.id} variant={note.read ? 'default' : 'muted'}>
+                      <ItemMedia variant="icon">
+                        <Icon className="size-4" aria-hidden="true" />
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle className="flex items-center gap-2">
+                          {note.title}
+                          {!note.read ? (
+                            <>
+                              <span
+                                className="size-2 rounded-full bg-primary"
+                                aria-hidden="true"
+                              />
+                              <span className="sr-only">Não lida</span>
+                            </>
+                          ) : null}
+                        </ItemTitle>
+                        <ItemDescription>{note.description}</ItemDescription>
+                        <ItemDescription className="text-xs">{note.when}</ItemDescription>
+                      </ItemContent>
+                      <ItemActions>
+                        {!note.read ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => markRead(note.id)}
+                          >
+                            Marcar lida
+                          </Button>
+                        ) : null}
+                      </ItemActions>
+                    </Item>
+                  )
+                })}
+                {visible.length === 0 ? (
+                  <p className="py-10 text-center text-muted-foreground text-sm">
+                    Tudo em dia. Nenhuma notificação por aqui.
+                  </p>
+                ) : null}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+export const Default: Story = {
+  render: () => <NotificationsFeed />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Começa com 3 não lidas; o filtro "Não lidas" mostra exatamente essas.
+    await expect(canvas.getByText('3')).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('tab', { name: 'Não lidas' }))
+    const markButtons = canvas.getAllByRole('button', { name: 'Marcar lida' })
+    await expect(markButtons).toHaveLength(3)
+    // Marcar todas zera o contador e desabilita o botão.
+    await userEvent.click(canvas.getByRole('button', { name: /Marcar todas/ }))
+    await expect(
+      canvas.queryByRole('button', { name: 'Marcar lida' }),
+    ).not.toBeInTheDocument()
+  },
+}
+
+```
+
+### Pricing
+
+A pricing section: three `Card` tiers, a recommended tier highlighted with a brand ring and a `Badge`, feature lists with success-colored check icons, and a monthly/yearly `Tabs` toggle that recomputes prices.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Check, Sparkles } from 'lucide-react'
+import { useState } from 'react'
+import { expect, userEvent, within } from 'storybook/test'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+
+/**
+ * **Pricing** — uma página de marketing. Mostra como `Card` + `Badge` + `Button`
+ * compõem um comparativo de planos, com um destaque visual no plano recomendado
+ * (borda e anel na cor da marca) e um seletor de período em `Tabs` que recalcula
+ * os preços.
+ */
+const meta = {
+  title: 'Examples/Pricing',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A pricing section: three `Card` tiers, a recommended tier highlighted ' +
+          'with a brand ring and a `Badge`, feature lists with success-colored ' +
+          'check icons, and a monthly/yearly `Tabs` toggle that recomputes prices.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+type Plan = {
+  name: string
+  description: string
+  monthly: number
+  features: string[]
+  cta: string
+  variant: 'outline' | 'default'
+  featured?: boolean
+}
+
+const plans: Plan[] = [
+  {
+    name: 'Starter',
+    description: 'Para projetos pessoais e protótipos.',
+    monthly: 0,
+    features: [
+      '1 projeto',
+      '5 mil eventos/mês',
+      'Dashboards básicos',
+      'Suporte por e-mail',
+    ],
+    cta: 'Começar grátis',
+    variant: 'outline',
+  },
+  {
+    name: 'Pro',
+    description: 'Para times em crescimento.',
+    monthly: 29,
+    features: [
+      'Projetos ilimitados',
+      '1 milhão de eventos/mês',
+      'Dashboards avançados',
+      'Integrações e webhooks',
+      'Suporte prioritário',
+    ],
+    cta: 'Assinar Pro',
+    variant: 'default',
+    featured: true,
+  },
+  {
+    name: 'Enterprise',
+    description: 'Para organizações com escala.',
+    monthly: 99,
+    features: [
+      'Tudo do Pro',
+      'SSO e SAML',
+      'Limites personalizados',
+      'SLA dedicado',
+      'Gerente de conta',
+    ],
+    cta: 'Falar com vendas',
+    variant: 'outline',
+  },
+]
+
+function PricingTable() {
+  const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly')
+  const yearly = period === 'yearly'
+
+  return (
+    <div className="mx-auto flex max-w-5xl flex-col gap-8 py-6">
+      <header className="flex flex-col items-center gap-4 text-center">
+        <Badge variant="secondary" className="gap-1">
+          <Sparkles className="size-3.5" aria-hidden="true" /> Preços simples
+        </Badge>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Escolha o plano ideal para você
+        </h1>
+        <p className="max-w-xl text-muted-foreground">
+          Comece de graça e evolua conforme cresce. Sem surpresas, cancele quando quiser.
+        </p>
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={period}
+          onValueChange={(v) => v && setPeriod(v as 'monthly' | 'yearly')}
+          aria-label="Período de cobrança"
+        >
+          <ToggleGroupItem value="monthly">Mensal</ToggleGroupItem>
+          <ToggleGroupItem value="yearly">
+            Anual
+            <Badge variant="success" className="ml-2">
+              -20%
+            </Badge>
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </header>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        {plans.map((plan) => {
+          const price = yearly ? Math.round(plan.monthly * 12 * 0.8) : plan.monthly
+          const suffix = plan.monthly === 0 ? '' : yearly ? '/ano' : '/mês'
+          return (
+            <Card
+              key={plan.name}
+              className={
+                plan.featured
+                  ? 'relative border-primary shadow-lg ring-1 ring-primary'
+                  : undefined
+              }
+            >
+              {plan.featured ? (
+                <Badge className="-top-3 absolute right-6">Mais popular</Badge>
+              ) : null}
+              <CardHeader>
+                <CardTitle>{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-5">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-bold tracking-tight">R$ {price}</span>
+                  {suffix ? (
+                    <span className="text-sm text-muted-foreground">{suffix}</span>
+                  ) : null}
+                </div>
+                <Separator />
+                <ul className="flex flex-col gap-3 text-sm">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2">
+                      <Check
+                        className="size-4 shrink-0 text-success-text"
+                        aria-hidden="true"
+                      />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button variant={plan.variant} className="w-full">
+                  {plan.cta}
+                </Button>
+              </CardFooter>
+            </Card>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export const Default: Story = {
+  render: () => <PricingTable />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // No mensal o Pro custa R$ 29; trocar para anual aplica o desconto (12×0,8).
+    await expect(canvas.getByText('R$ 29')).toBeInTheDocument()
+    await userEvent.click(canvas.getByText('Anual'))
+    await expect(canvas.getByText('R$ 278')).toBeInTheDocument()
+  },
+}
+
+```
+
+### Profile
+
+A profile page: a gradient cover, an overlapping `Avatar`, identity metadata with `Badge`s, a stats row and a tabbed body whose activity feed is an `ItemGroup`.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import {
+  CalendarDays,
+  GitCommitHorizontal,
+  MapPin,
+  MessageSquare,
+  Settings,
+  Star,
+  UserPlus,
+} from 'lucide-react'
+import { expect, within } from 'storybook/test'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from '@/components/ui/item'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+/**
+ * **Profile** — uma página de identidade. Combina `Avatar`, `Badge`, `Card` e um
+ * `ItemGroup` para o feed de atividades, organizados por `Tabs`. Demonstra como
+ * uma faixa de capa e um cabeçalho sobreposto se montam só com tokens e radius.
+ */
+const meta = {
+  title: 'Examples/Profile',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A profile page: a gradient cover, an overlapping `Avatar`, identity ' +
+          'metadata with `Badge`s, a stats row and a tabbed body whose activity ' +
+          'feed is an `ItemGroup`.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+const stats = [
+  { label: 'Projetos', value: '24' },
+  { label: 'Seguidores', value: '1,2 mil' },
+  { label: 'Seguindo', value: '318' },
+  { label: 'Estrelas', value: '4,9' },
+]
+
+const activity = [
+  {
+    icon: GitCommitHorizontal,
+    title: 'Publicou 12 commits em timds/design-system',
+    when: 'há 2 horas',
+  },
+  {
+    icon: Star,
+    title: 'Marcou recharts/recharts com estrela',
+    when: 'há 5 horas',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Comentou na issue #128 — Tokens de contraste',
+    when: 'ontem',
+  },
+  {
+    icon: UserPlus,
+    title: 'Começou a seguir Bruno Lima',
+    when: 'há 2 dias',
+  },
+]
+
+export const Default: Story = {
+  render: () => (
+    <div className="mx-auto max-w-3xl">
+      <Card className="overflow-hidden p-0">
+        {/* Capa */}
+        <div className="h-32 bg-gradient-to-r from-primary via-chart-3 to-chart-2" />
+
+        <CardContent className="flex flex-col gap-6 pb-6">
+          {/* Cabeçalho sobreposto à capa */}
+          <div className="-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex items-end gap-4">
+              <Avatar className="size-24 ring-4 ring-card">
+                <AvatarImage src="https://i.pravatar.cc/150?img=47" alt="Ana Souza" />
+                <AvatarFallback className="text-2xl">AS</AvatarFallback>
+              </Avatar>
+              <div className="mb-1 flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <h1 className="font-bold text-xl">Ana Souza</h1>
+                  <Badge variant="info">Pro</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Design Engineer · @anasouza
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="icon" aria-label="Configurações">
+                <Settings className="size-4" aria-hidden="true" />
+              </Button>
+              <Button>
+                <UserPlus className="size-4" aria-hidden="true" /> Seguir
+              </Button>
+            </div>
+          </div>
+
+          <p className="max-w-prose text-sm">
+            Construindo design systems acessíveis e bem documentados. Apaixonada por
+            tokens, tipografia e bons defaults.
+          </p>
+
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground text-sm">
+            <span className="flex items-center gap-1.5">
+              <MapPin className="size-4" aria-hidden="true" /> São Paulo, BR
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CalendarDays className="size-4" aria-hidden="true" /> Entrou em mar 2023
+            </span>
+          </div>
+
+          <Separator />
+
+          {/* Estatísticas */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="flex flex-col">
+                <span className="font-semibold text-2xl">{stat.value}</span>
+                <span className="text-muted-foreground text-sm">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Corpo em abas */}
+          <Tabs defaultValue="activity">
+            <TabsList variant="line">
+              <TabsTrigger value="activity">Atividade</TabsTrigger>
+              <TabsTrigger value="about">Sobre</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="activity" className="pt-2">
+              <div className="flex flex-col divide-y divide-border">
+                {activity.map((entry) => (
+                  <Item key={entry.title}>
+                    <ItemMedia variant="icon">
+                      <entry.icon className="size-4" aria-hidden="true" />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{entry.title}</ItemTitle>
+                      <ItemDescription>{entry.when}</ItemDescription>
+                    </ItemContent>
+                  </Item>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="about" className="pt-2">
+              <p className="text-sm text-muted-foreground">
+                Engenheira de design focada em sistemas reutilizáveis, acessibilidade e
+                experiência de desenvolvimento. Mantenedora do timds.
+              </p>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('heading', { name: 'Ana Souza' })).toBeInTheDocument()
+    // A aba de atividade é a padrão e lista o feed.
+    await expect(canvas.getByText(/Publicou 12 commits/)).toBeInTheDocument()
+  },
+}
+
+```
+
+### Settings
+
+A settings screen split by `Tabs` (account, notifications, security). Each section is a `Card`; preferences are labelled `Switch` rows; the security tab ends with a destructive "danger zone".
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Bell, Shield, User } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { expect, userEvent, within } from 'storybook/test'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+
+/**
+ * **Settings** — uma tela densa de configurações organizada por `Tabs`. Mostra o
+ * casamento de `Card` para seccionar, `Switch` com rótulos acessíveis para
+ * preferências, `Input`/`Textarea` para campos e uma "zona de perigo" usando o
+ * token `destructive`.
+ */
+const meta = {
+  title: 'Examples/Settings',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A settings screen split by `Tabs` (account, notifications, security). ' +
+          'Each section is a `Card`; preferences are labelled `Switch` rows; the ' +
+          'security tab ends with a destructive "danger zone".',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+// Linha de preferência: título + descrição à esquerda, Switch à direita.
+function ToggleRow({
+  id,
+  title,
+  description,
+  defaultChecked,
+}: {
+  id: string
+  title: string
+  description: string
+  defaultChecked?: boolean
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-0.5">
+        <label htmlFor={id} className="font-medium text-sm">
+          {title}
+        </label>
+        <p className="text-muted-foreground text-sm">{description}</p>
+      </div>
+      <Switch id={id} defaultChecked={defaultChecked} />
+    </div>
+  )
+}
+
+function Field({
+  id,
+  label,
+  children,
+}: {
+  id: string
+  label: string
+  children: ReactNode
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="font-medium text-sm">
+        {label}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+export const Default: Story = {
+  render: () => (
+    <div className="mx-auto flex max-w-2xl flex-col gap-6 py-2">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-bold text-2xl tracking-tight">Configurações</h1>
+        <p className="text-muted-foreground">
+          Gerencie sua conta, preferências e segurança.
+        </p>
+      </header>
+
+      <Tabs defaultValue="account">
+        <TabsList>
+          <TabsTrigger value="account">
+            <User className="size-4" aria-hidden="true" /> Conta
+          </TabsTrigger>
+          <TabsTrigger value="notifications">
+            <Bell className="size-4" aria-hidden="true" /> Notificações
+          </TabsTrigger>
+          <TabsTrigger value="security">
+            <Shield className="size-4" aria-hidden="true" /> Segurança
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Conta */}
+        <TabsContent value="account" className="pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Perfil</CardTitle>
+              <CardDescription>Estas informações aparecem publicamente.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-5">
+              <div className="flex items-center gap-4">
+                <Avatar className="size-16">
+                  <AvatarImage src="https://i.pravatar.cc/150?img=47" alt="Ana Souza" />
+                  <AvatarFallback className="text-lg">AS</AvatarFallback>
+                </Avatar>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    Trocar foto
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    Remover
+                  </Button>
+                </div>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field id="set-name" label="Nome">
+                  <Input id="set-name" defaultValue="Ana Souza" />
+                </Field>
+                <Field id="set-username" label="Usuário">
+                  <Input id="set-username" defaultValue="anasouza" />
+                </Field>
+              </div>
+              <Field id="set-email" label="E-mail">
+                <Input id="set-email" type="email" defaultValue="ana@timds.dev" />
+              </Field>
+              <Field id="set-bio" label="Bio">
+                <Textarea
+                  id="set-bio"
+                  rows={3}
+                  defaultValue="Design Engineer construindo design systems acessíveis."
+                />
+              </Field>
+            </CardContent>
+            <CardFooter className="justify-end gap-2">
+              <Button variant="ghost">Cancelar</Button>
+              <Button>Salvar alterações</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+
+        {/* Notificações */}
+        <TabsContent value="notifications" className="pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notificações</CardTitle>
+              <CardDescription>Escolha o que deseja receber.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-5">
+              <ToggleRow
+                id="notif-product"
+                title="Novidades do produto"
+                description="Lançamentos, melhorias e dicas."
+                defaultChecked
+              />
+              <Separator />
+              <ToggleRow
+                id="notif-security"
+                title="Alertas de segurança"
+                description="Acessos e mudanças sensíveis na conta."
+                defaultChecked
+              />
+              <Separator />
+              <ToggleRow
+                id="notif-marketing"
+                title="E-mails de marketing"
+                description="Promoções e conteúdos ocasionais."
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Segurança */}
+        <TabsContent value="security" className="flex flex-col gap-6 pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Senha</CardTitle>
+              <CardDescription>
+                Use uma senha forte e única para esta conta.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-5">
+              <Field id="sec-current" label="Senha atual">
+                <Input id="sec-current" type="password" autoComplete="current-password" />
+              </Field>
+              <Field id="sec-new" label="Nova senha">
+                <Input id="sec-new" type="password" autoComplete="new-password" />
+              </Field>
+              <ToggleRow
+                id="sec-2fa"
+                title="Autenticação em dois fatores"
+                description="Exige um código além da senha ao entrar."
+                defaultChecked
+              />
+            </CardContent>
+            <CardFooter className="justify-end">
+              <Button>Atualizar senha</Button>
+            </CardFooter>
+          </Card>
+
+          <Card className="border-destructive/40">
+            <CardHeader>
+              <CardTitle className="text-destructive-text">Zona de perigo</CardTitle>
+              <CardDescription>
+                Excluir a conta é permanente e não pode ser desfeito.
+              </CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button variant="destructive">Excluir conta</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Navega até a aba de notificações e alterna uma preferência desligada.
+    await userEvent.click(canvas.getByRole('tab', { name: /Notificações/ }))
+    const marketing = canvas.getByRole('switch', { name: 'E-mails de marketing' })
+    await expect(marketing).toHaveAttribute('aria-checked', 'false')
+    await userEvent.click(marketing)
+    await expect(marketing).toHaveAttribute('aria-checked', 'true')
+  },
+}
+
+```
+
+### Sign Up
+
+A registration form that grows the Login pattern: labelled fields, a reveal-password button inside an `InputGroup`, a live password-strength `Progress`, a data-driven `Select` and a terms `Checkbox`.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Eye, EyeOff, UserPlus } from 'lucide-react'
+import { useState } from 'react'
+import { expect, userEvent, within } from 'storybook/test'
+
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group'
+import { Progress } from '@/components/ui/progress'
+import { Select } from '@/components/ui/select'
+
+/**
+ * **Sign Up** — um passo acima do Login: mais campos, um medidor de força de
+ * senha (`Progress`) que reage ao input, revelar/ocultar senha com
+ * `InputGroupButton` e um `Select` data-driven para o papel do usuário.
+ */
+const meta = {
+  title: 'Examples/Sign Up',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A registration form that grows the Login pattern: labelled fields, a ' +
+          'reveal-password button inside an `InputGroup`, a live password-strength ' +
+          '`Progress`, a data-driven `Select` and a terms `Checkbox`.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+const roles = [
+  { value: 'eng', label: 'Engenharia' },
+  { value: 'design', label: 'Design' },
+  { value: 'product', label: 'Produto' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'other', label: 'Outro' },
+]
+
+// Força da senha: 0–4 → rótulo + variante de cor do Progress.
+function strengthOf(value: string) {
+  let score = 0
+  if (value.length >= 8) score++
+  if (/[A-Z]/.test(value)) score++
+  if (/[0-9]/.test(value)) score++
+  if (/[^A-Za-z0-9]/.test(value)) score++
+  const levels = [
+    { label: 'Muito fraca', variant: 'destructive' as const },
+    { label: 'Fraca', variant: 'destructive' as const },
+    { label: 'Razoável', variant: 'warning' as const },
+    { label: 'Boa', variant: 'info' as const },
+    { label: 'Forte', variant: 'success' as const },
+  ][score]
+  return { score, ...levels }
+}
+
+function SignUpForm() {
+  const [password, setPassword] = useState('')
+  const [show, setShow] = useState(false)
+  const strength = strengthOf(password)
+
+  return (
+    <div className="flex min-h-[calc(100vh-3rem)] items-center justify-center">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <UserPlus className="size-5" aria-hidden="true" />
+          </div>
+          <CardTitle className="text-xl">Crie sua conta</CardTitle>
+          <CardDescription>Leva menos de um minuto</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="su-name" className="text-sm font-medium">
+              Nome completo
+            </label>
+            <Input id="su-name" placeholder="Ana Souza" autoComplete="name" />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="su-email" className="text-sm font-medium">
+              E-mail de trabalho
+            </label>
+            <Input
+              id="su-email"
+              type="email"
+              placeholder="ana@empresa.com"
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="text-sm font-medium">Função</span>
+            <Select
+              options={roles}
+              placeholder="Selecione sua área..."
+              aria-label="Função"
+              triggerClassName="w-full"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="su-password" className="text-sm font-medium">
+              Senha
+            </label>
+            <InputGroup>
+              <InputGroupInput
+                id="su-password"
+                type={show ? 'text' : 'password'}
+                placeholder="Crie uma senha"
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  size="icon-xs"
+                  aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}
+                  onClick={() => setShow((s) => !s)}
+                >
+                  {show ? (
+                    <EyeOff className="size-4" aria-hidden="true" />
+                  ) : (
+                    <Eye className="size-4" aria-hidden="true" />
+                  )}
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+            {password ? (
+              <div className="flex items-center gap-3">
+                <Progress
+                  value={(strength.score / 4) * 100}
+                  variant={strength.variant}
+                  className="flex-1"
+                  aria-label="Força da senha"
+                />
+                <span className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">
+                  {strength.label}
+                </span>
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Use 8+ caracteres com letras, números e símbolos.
+              </p>
+            )}
+          </div>
+
+          <label
+            htmlFor="su-terms"
+            className="flex items-start gap-2 text-sm text-muted-foreground"
+          >
+            <Checkbox id="su-terms" className="mt-0.5" />
+            <span>
+              Concordo com os{' '}
+              <a href="#termos" className="font-medium text-primary-text hover:underline">
+                Termos de Serviço
+              </a>{' '}
+              e a{' '}
+              <a
+                href="#privacidade"
+                className="font-medium text-primary-text hover:underline"
+              >
+                Política de Privacidade
+              </a>
+              .
+            </span>
+          </label>
+
+          <Button className="w-full">Criar conta</Button>
+        </CardContent>
+
+        <CardFooter className="justify-center">
+          <p className="text-sm text-muted-foreground">
+            Já tem conta?{' '}
+            <a href="#entrar" className="font-medium text-primary-text hover:underline">
+              Entrar
+            </a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
+  )
+}
+
+export const Default: Story = {
+  render: () => <SignUpForm />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Digitar uma senha forte move o medidor para "Forte".
+    await userEvent.type(canvas.getByLabelText('Senha'), 'Sup3r!Senha')
+    await expect(canvas.getByText('Forte')).toBeInTheDocument()
+    // Revelar a senha troca o tipo do campo para texto.
+    await userEvent.click(canvas.getByRole('button', { name: 'Mostrar senha' }))
+    await expect(canvas.getByLabelText('Senha')).toHaveAttribute('type', 'text')
+  },
+}
+
+```
+
+### Team
+
+A data-management screen: a searchable, filterable, paginated `Table` with row selection, avatars, role and status `Badge`s and per-row `DropdownMenu` actions — wrapped in a `Card` toolbar.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MoreHorizontal, Search, UserPlus } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { expect, userEvent, within } from 'storybook/test'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { PaginationShort } from '@/components/ui/pagination'
+import { Select } from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+/**
+ * **Team** — uma tela de gestão orientada a dados. Reúne busca (`InputGroup`),
+ * filtro (`Select`), seleção de linhas (`Checkbox` + `data-state="selected"`),
+ * status com `Badge`, ações por linha em `DropdownMenu` e `PaginationShort`,
+ * tudo dentro de um `Card`.
+ */
+const meta = {
+  title: 'Examples/Team',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'A data-management screen: a searchable, filterable, paginated `Table` ' +
+          'with row selection, avatars, role and status `Badge`s and per-row ' +
+          '`DropdownMenu` actions — wrapped in a `Card` toolbar.',
+      },
+    },
+  },
+} satisfies Meta
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+type Status = 'Ativo' | 'Convidado' | 'Inativo'
+
+type Member = {
+  id: string
+  name: string
+  email: string
+  role: string
+  status: Status
+  img: number
+}
+
+const members: Member[] = [
+  {
+    id: '1',
+    name: 'Ana Souza',
+    email: 'ana@timds.dev',
+    role: 'Admin',
+    status: 'Ativo',
+    img: 47,
+  },
+  {
+    id: '2',
+    name: 'Bruno Lima',
+    email: 'bruno@timds.dev',
+    role: 'Dev',
+    status: 'Ativo',
+    img: 12,
+  },
+  {
+    id: '3',
+    name: 'Carla Dias',
+    email: 'carla@timds.dev',
+    role: 'Design',
+    status: 'Convidado',
+    img: 5,
+  },
+  {
+    id: '4',
+    name: 'Diego Reis',
+    email: 'diego@timds.dev',
+    role: 'Dev',
+    status: 'Ativo',
+    img: 33,
+  },
+  {
+    id: '5',
+    name: 'Elena Prado',
+    email: 'elena@timds.dev',
+    role: 'Produto',
+    status: 'Inativo',
+    img: 24,
+  },
+  {
+    id: '6',
+    name: 'Felipe Nunes',
+    email: 'felipe@timds.dev',
+    role: 'Dev',
+    status: 'Ativo',
+    img: 8,
+  },
+  {
+    id: '7',
+    name: 'Gabi Rocha',
+    email: 'gabi@timds.dev',
+    role: 'Design',
+    status: 'Convidado',
+    img: 16,
+  },
+  {
+    id: '8',
+    name: 'Hugo Mello',
+    email: 'hugo@timds.dev',
+    role: 'Produto',
+    status: 'Ativo',
+    img: 51,
+  },
+]
+
+const statusVariant: Record<Status, 'success' | 'warning' | 'secondary'> = {
+  Ativo: 'success',
+  Convidado: 'warning',
+  Inativo: 'secondary',
+}
+
+const roleOptions = [
+  { value: 'all', label: 'Todas as funções' },
+  { value: 'Admin', label: 'Admin' },
+  { value: 'Dev', label: 'Dev' },
+  { value: 'Design', label: 'Design' },
+  { value: 'Produto', label: 'Produto' },
+]
+
+const PAGE_SIZE = 5
+
+function TeamTable() {
+  const [query, setQuery] = useState('')
+  const [role, setRole] = useState('all')
+  const [page, setPage] = useState(1)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return members.filter((m) => {
+      const matchesQuery =
+        !q || m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)
+      const matchesRole = role === 'all' || m.role === role
+      return matchesQuery && matchesRole
+    })
+  }, [query, role])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const current = Math.min(page, totalPages)
+  const pageRows = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
+
+  const allOnPageSelected =
+    pageRows.length > 0 && pageRows.every((m) => selected.has(m.id))
+
+  function toggle(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  function toggleAllOnPage() {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (allOnPageSelected) {
+        for (const m of pageRows) next.delete(m.id)
+      } else {
+        for (const m of pageRows) next.add(m.id)
+      }
+      return next
+    })
+  }
+
+  return (
+    <div className="mx-auto flex max-w-4xl flex-col gap-4 py-2">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-bold text-2xl tracking-tight">Equipe</h1>
+          <p className="text-muted-foreground">
+            {filtered.length} {filtered.length === 1 ? 'membro' : 'membros'}
+            {selected.size > 0 ? ` · ${selected.size} selecionado(s)` : ''}
+          </p>
+        </div>
+        <Button>
+          <UserPlus className="size-4" aria-hidden="true" /> Convidar
+        </Button>
+      </div>
+
+      <Card className="overflow-hidden p-0">
+        <CardHeader className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
+          <InputGroup className="sm:max-w-xs">
+            <InputGroupAddon>
+              <Search className="size-4" aria-hidden="true" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Buscar por nome ou e-mail..."
+              aria-label="Buscar membros"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setPage(1)
+              }}
+            />
+          </InputGroup>
+          <Select
+            options={roleOptions}
+            defaultValue="all"
+            aria-label="Filtrar por função"
+            onValueChange={(v) => {
+              setRole(v as string)
+              setPage(1)
+            }}
+            triggerClassName="sm:w-48"
+          />
+        </CardHeader>
+
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-10">
+                  <Checkbox
+                    aria-label="Selecionar todos nesta página"
+                    checked={allOnPageSelected}
+                    onCheckedChange={toggleAllOnPage}
+                  />
+                </TableHead>
+                <TableHead>Membro</TableHead>
+                <TableHead>Função</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-10 text-right">
+                  <span className="sr-only">Ações</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {pageRows.map((m) => (
+                <TableRow
+                  key={m.id}
+                  data-state={selected.has(m.id) ? 'selected' : undefined}
+                >
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`Selecionar ${m.name}`}
+                      checked={selected.has(m.id)}
+                      onCheckedChange={() => toggle(m.id)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-8">
+                        <AvatarImage
+                          src={`https://i.pravatar.cc/80?img=${m.img}`}
+                          alt={m.name}
+                        />
+                        <AvatarFallback>
+                          {m.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{m.name}</span>
+                        <span className="text-muted-foreground text-xs">{m.email}</span>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{m.role}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={statusVariant[m.status]}>{m.status}</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Ações de ${m.name}`}
+                        >
+                          <MoreHorizontal className="size-4" aria-hidden="true" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                        <DropdownMenuItem>Ver perfil</DropdownMenuItem>
+                        <DropdownMenuItem>Editar função</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="destructive">
+                          Remover da equipe
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {pageRows.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Nenhum membro encontrado.
+                  </TableCell>
+                </TableRow>
+              ) : null}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end">
+        <PaginationShort page={current} total={totalPages} onPageChange={setPage} />
+      </div>
+    </div>
+  )
+}
+
+export const Default: Story = {
+  render: () => <TeamTable />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // Buscar reduz a lista a um único membro.
+    await userEvent.type(canvas.getByLabelText('Buscar membros'), 'bruno')
+    await expect(canvas.getByText('Bruno Lima')).toBeInTheDocument()
+    await expect(canvas.queryByText('Ana Souza')).not.toBeInTheDocument()
+    // Selecionar a linha marca o estado "selected".
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Selecionar Bruno Lima' }))
+    await expect(canvas.getByText(/1 selecionado/)).toBeInTheDocument()
+  },
+}
+
+```
+

@@ -38,9 +38,13 @@ Run a single test file: `npx vitest run src/components/ui/button.test.tsx`. Run 
 
 **Shared Vite config, two modes (vite.config.ts).** The same config serves both the library build and Storybook. It branches on `npm_lifecycle_event` containing `storybook`: under Storybook it loads only the base plugins (react, tailwind); otherwise it adds library mode (ESM-only, externalizes react/react-dom) and `vite-plugin-dts` for `.d.ts` generation. The `@` alias → `src/` is defined in vite, vitest, and tsconfig — keep all three in sync.
 
+**Externalization (lib build).** `react`/`react-dom` are externalized via rolldown's `esmExternalRequirePlugin` (NOT `rollupOptions.external`): vendored CJS deps `require('react')`, and the default external handling emits `__require('react')` which throws in the browser; the plugin rewrites those into ESM imports. **`recharts` is also external** (`rollupOptions.external`) — the consumer composes recharts primitives (`AreaChart`, `Pie`…) with our `ChartContainer`, so both sides must share one recharts instance or the React context mismatches and charts render empty. Other deps (radix, ariakit, vaul, sonner, react-day-picker…) stay bundled — consumers use our wrappers, so there is only one instance. When adding a dep that consumers import **directly** alongside our components, externalize it too.
+
 **Design system tokens are CSS-first (src/styles.css).** All theming lives in CSS custom properties using `oklch` colors, with `:root` (light) and `.dark` overrides. Dark mode is opt-in via a `dark` class on an ancestor. This file is the single source of design tokens; it compiles into `dist/timds.css`. There is no `tailwind.config` — Tailwind v4 is configured via CSS `@import`/`@theme`. `src/index.ts` imports `./styles.css` so the library carries its own styles.
 
 **Public API (src/index.ts).** This is the only entrypoint that ships. Every component must be explicitly re-exported here (with its variants/types) to be part of the public API. Internal imports use the `@/` alias.
+
+**AI integration (ai/ + mcp/).** `scripts/generate-ai-docs.mjs` parses the sources (index.ts, components' `.tsx`/`.stories.tsx`/`.mdx`, styles.css, examples) into `ai/manifest.json`, `ai/llms.txt` and `ai/llms-full.txt`. `mcp/server.mjs` is the MCP server source; `scripts/build-mcp.mjs` bundles it (deps inlined) into `mcp/timds-mcp.mjs` so consumers run it with only Node. Both run in `prebuild`/`prepare`. The bundle is `.gitignore`d; the manifest is read at runtime. See ADR 0011 and `docs/ai-integration.md`. Commands: `npm run ai:docs`, `npm run mcp:build`, `npm run mcp` (run source in dev).
 
 ## Conventions
 

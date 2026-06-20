@@ -1,0 +1,85 @@
+# timds
+
+> React component library with a built-in design system (shadcn/ui new-york + Tailwind v4). Consumed as a compiled package: import components from `timds` and styles from `timds/styles.css`.
+
+## Setup
+
+- Install: `npm install github:welington-sampaio/timds`
+- Styles: `import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)`
+- Import: `import { Button, Card } from 'timds'`
+- Dark mode: Adicione a classe `dark` em um ancestral (ex.: <html class="dark">). Opt-in.
+
+## Components
+
+### Data Display
+
+- **Avatar**: `Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage` — Represents a user or entity with an image, falling back to initials when no image is available.
+- **Badge**: `Badge, badgeVariants` — A compact pill that labels, counts, or surfaces the status of an item.
+- **Chart**: `ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent` — A thin, themeable wrapper around [Recharts](https://recharts.org) that drives series colors, tooltips and legends from one design-system-aware config.
+- **Item**: `Item, ItemActions, ItemContent, ItemDescription, ItemFooter, ItemGroup, ItemHeader, ItemMedia, ItemSeparator, ItemTitle, itemVariants` — A flexible row primitive for lists, cards, and menus — a leading media slot, a central title/description, and trailing actions, composed from small named parts.
+- **Table**: `Table, TableBody, TableCaption, TableCell, TableFooter, TableGroupRow, TableHead, TableHeader, TableRow` — Displays tabular data in rows and columns, built on native HTML table elements.
+
+### Data Entry
+
+- **Button**: `Button, buttonVariants` — Triggers an action or event — the primary way users commit to something in the UI.
+- **ButtonGroup**: `ButtonGroup, ButtonGroupSeparator, ButtonGroupText, buttonGroupVariants` — A layout wrapper that joins buttons (and related controls) into a single continuous segment, collapsing the inner borders and corners between them.
+- **Calendar**: `Calendar, CalendarDayButton` — An inline month grid for selecting a single date, a range, or multiple days.
+- **Checkbox**: `Checkbox, CheckboxGroup, CheckboxGroupItem, checkboxVariants` — A boolean control for selecting an option, typically as part of a form submitted later.
+- **DatePicker**: `DatePicker` — A trigger that shows the selected date and opens a calendar popover to pick a single day.
+- **Input**: `Input` — A single-line text field — the primary way users enter free-form text into a form.
+- **InputGroup**: `InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea` — A container that wraps a text control with addons — icons, text or buttons — sharing a single border, focus ring and error state.
+- **InputOTP**: `InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot` — A fixed-length code field that splits a one-time password or verification code into per-character slots.
+- **RadioGroup**: `RadioGroup, RadioGroupItem` — A set of mutually exclusive options where exactly one can be selected at a time.
+- **Select**: `Select, SelectContent, SelectEmpty, SelectGroup, SelectItem, SelectList, SelectLoading, SelectRoot, SelectSearch, SelectTrigger, SelectValue, selectTriggerVariants` — An advanced Select / Combobox built on **Ariakit** with search, multi-select, custom rendering, async loading and list virtualization — not the native `<select>`.
+- **Slider**: `sliderRangeVariants, Slider, sliderThumbVariants` — An input for picking a numeric value — or a range — by dragging a thumb along a track.
+- **Switch**: `Switch, switchVariants` — A boolean toggle that flips a single setting on or off, taking effect immediately.
+- **Textarea**: `Textarea` — A multi-line text field for free-form input that can span several lines.
+- **Toggle**: `Toggle, toggleVariants` — A two-state button that stays pressed once activated — for binary, on/off controls like a formatting mark in a toolbar.
+- **ToggleGroup**: `ToggleGroup, ToggleGroupItem` — A set of **Toggle** buttons that share styling and coordinate selection — the building block for segmented controls and formatting toolbars.
+
+### Feedback
+
+- **Alert**: `Alert, AlertDescription, AlertTitle` — A contextual feedback banner that surfaces a short message inline, in place on the page.
+- **Progress**: `Progress, progressVariants` — A linear bar that communicates how far along a determinate task is, or that work of unknown duration is underway.
+- **Skeleton**: `Skeleton` — A pulsing placeholder that reserves layout space while real content loads.
+- **Spinner**: `Spinner` — An animated indicator that communicates an ongoing, indeterminate loading state.
+- **Toaster**: `Toaster, toast` — Brief, non-blocking notifications anchored to a corner of the screen.
+
+### Layout
+
+- **Card**: `Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle` — A surface container that groups related content and actions into a single panel.
+- **Separator**: `Separator` — A thin visual divider that groups or splits content, horizontally or vertically.
+
+### Navigation
+
+- **Pagination**: `getPaginationRange, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationShort` — Splits long content into pages and lets people move between them.
+- **Tabs**: `Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants` — Switches between sibling panels of content within the same context, one visible at a time.
+
+### Other
+
+- **Sidebar**: `Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, sidebarMenuButtonVariants, useSidebar` — A composable, collapsible application sidebar — the persistent navigation frame for a page, with a desktop layout and a mobile off-canvas overlay built in.
+
+### Overlays
+
+- **AlertDialog**: `AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger` — A modal confirmation that interrupts the user and demands an explicit choice before a destructive or irreversible action.
+- **Context Menu**: `ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger` — A menu of actions opened by right-clicking (or long-pressing) a region — the actions appear at the pointer and dismiss once the user picks one or moves away.
+- **Dialog**: `Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger` — A modal overlay that focuses the user on a single task — a form, details, or a confirmation — before returning them to the page.
+- **Drawer**: `Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerPortal, DrawerTitle, DrawerTrigger` — A panel that slides in from an edge of the viewport to hold secondary content — filters, details, navigation, or a short form — without taking over the whole screen.
+- **Dropdown Menu**: `DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger` — A menu of actions anchored to a trigger — opened on demand, dismissed once the user picks an action or moves away.
+- **Popover**: `Popover, PopoverAnchor, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger` — A floating panel anchored to a trigger, for secondary content shown on demand.
+- **Tooltip**: `Tooltip, TooltipContent, TooltipProvider, TooltipTrigger` — A small floating label that explains an element on hover or keyboard focus.
+
+## Page examples
+
+- **Dashboard** — A full analytics dashboard: a collapsible `Sidebar` + `SidebarInset` shell, a sticky header, KPI `Card`s with trend `Badge`s, an area and a donut `Chart`, and a recent-sales `Table`. The capstone composition.
+- **Login** — A focused authentication card composed from `Card`, `InputGroup`, `Button`, `Checkbox` and `Separator`. Inputs are labelled, the icon-only nature of the addons is decorative, and every color comes from a semantic token.
+- **Notifications** — A filterable activity feed: `Tabs` switch between all / unread / mentions, each row is an `Item` with media, content and actions, and an unread dot plus a count `Badge` track local state.
+- **Pricing** — A pricing section: three `Card` tiers, a recommended tier highlighted with a brand ring and a `Badge`, feature lists with success-colored check icons, and a monthly/yearly `Tabs` toggle that recomputes prices.
+- **Profile** — A profile page: a gradient cover, an overlapping `Avatar`, identity metadata with `Badge`s, a stats row and a tabbed body whose activity feed is an `ItemGroup`.
+- **Settings** — A settings screen split by `Tabs` (account, notifications, security). Each section is a `Card`; preferences are labelled `Switch` rows; the security tab ends with a destructive "danger zone".
+- **Sign Up** — A registration form that grows the Login pattern: labelled fields, a reveal-password button inside an `InputGroup`, a live password-strength `Progress`, a data-driven `Select` and a terms `Checkbox`.
+- **Team** — A data-management screen: a searchable, filterable, paginated `Table` with row selection, avatars, role and status `Badge`s and per-row `DropdownMenu` actions — wrapped in a `Card` toolbar.
+
+## Design tokens
+
+Semantic color utilities (light/dark auto): background, foreground, card, card-foreground, popover, popover-foreground, primary, primary-foreground, primary-text, secondary, secondary-foreground, muted, muted-foreground, accent, accent-foreground, destructive, destructive-foreground, destructive-text, border, input, ring, chart-1, chart-2, chart-3, chart-4, chart-5, sidebar, sidebar-foreground, sidebar-primary, sidebar-primary-foreground, sidebar-accent, sidebar-accent-foreground, sidebar-border, sidebar-ring, success, success-foreground, success-text, warning, warning-foreground, warning-text, info, info-foreground, info-text.

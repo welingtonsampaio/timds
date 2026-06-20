@@ -1,0 +1,2446 @@
+{
+  "name": "timds",
+  "description": "React component library with a built-in design system (shadcn/ui new-york + Tailwind v4). Consumed as a compiled package: import components from `timds` and styles from `timds/styles.css`.",
+  "version": "0.0.1",
+  "setup": {
+    "install": "npm install github:welington-sampaio/timds",
+    "importStyles": "import 'timds/styles.css' // em main.tsx/entrypoint (JS, não via CSS @import)",
+    "importComponents": "import { Button, Card } from 'timds'",
+    "darkMode": "Adicione a classe `dark` em um ancestral (ex.: <html class=\"dark\">). Opt-in.",
+    "font": "O DS usa a família Inter (`--font-sans`), mas NÃO carrega a fonte. Carregue Inter no seu app (ex.: <link> do Google Fonts ou @font-face no index.html); sem isso cai no fallback system-ui.",
+    "charts": "Para usar Chart/ChartContainer, instale `recharts` (>=3) no app: `npm i recharts`. É peerDependency (uma única instância compartilhada entre o app e o DS); os primitivos do gráfico (AreaChart, Pie, …) vêm de `recharts`, e ChartContainer/ChartTooltip… de `timds`.",
+    "tailwindBridge": "@import \"tailwindcss\";\n\n@theme inline {\n  --radius-lg: var(--radius);\n  --font-sans: var(--font-sans);\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-primary-text: var(--primary-text);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n  --color-destructive-text: var(--destructive-text);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --color-chart-1: var(--chart-1);\n  --color-chart-2: var(--chart-2);\n  --color-chart-3: var(--chart-3);\n  --color-chart-4: var(--chart-4);\n  --color-chart-5: var(--chart-5);\n  --color-sidebar: var(--sidebar);\n  --color-sidebar-foreground: var(--sidebar-foreground);\n  --color-sidebar-primary: var(--sidebar-primary);\n  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);\n  --color-sidebar-accent: var(--sidebar-accent);\n  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);\n  --color-sidebar-border: var(--sidebar-border);\n  --color-sidebar-ring: var(--sidebar-ring);\n  --color-success: var(--success);\n  --color-success-foreground: var(--success-foreground);\n  --color-success-text: var(--success-text);\n  --color-warning: var(--warning);\n  --color-warning-foreground: var(--warning-foreground);\n  --color-warning-text: var(--warning-text);\n  --color-info: var(--info);\n  --color-info-foreground: var(--info-foreground);\n  --color-info-text: var(--info-text);\n}",
+    "rules": [
+      "Importe TODOS os componentes de `timds` — nunca de subcaminhos.",
+      "Importe `timds/styles.css` via JS no entrypoint.",
+      "Carregue a fonte Inter no seu app (o DS não a carrega) — veja `setup.font`.",
+      "Para gráficos, instale `recharts` (peerDependency) — veja `setup.charts`.",
+      "Para usar utilitários de token (bg-primary, etc.) na sua própria marcação, adicione o bridge `@theme` do campo `setup.tailwindBridge` ao seu CSS (precisa de Tailwind v4 no app).",
+      "Use apenas utilitários de cor semânticos (bg-primary, text-muted-foreground, etc.); nunca cores cruas (bg-blue-500).",
+      "Cores vívidas têm token de fill (bg-success) e token de texto (text-success-text). Para texto/ícone use o `-text`.",
+      "Ícones via lucide-react. Botões só com ícone precisam de aria-label."
+    ]
+  },
+  "categories": [
+    "Data Display",
+    "Data Entry",
+    "Feedback",
+    "Layout",
+    "Navigation",
+    "Other",
+    "Overlays"
+  ],
+  "components": [
+    {
+      "module": "alert",
+      "name": "Alert",
+      "category": "Feedback",
+      "status": "Stable",
+      "description": "A contextual feedback banner that surfaces a short message inline, in place on the page.",
+      "exports": [
+        "Alert",
+        "AlertDescription",
+        "AlertTitle"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Alert, AlertDescription, AlertTitle } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "destructive",
+          "warning",
+          "info",
+          "accent",
+          "success"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Neutral, destructive (error) or one of the soft semantic styles (success, warning, info, accent).",
+          "options": [
+            "default",
+            "destructive",
+            "success",
+            "warning",
+            "info",
+            "accent"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "children",
+          "description": "Composed content — typically an icon, "
+        }
+      ],
+      "example": "import { Alert, AlertTitle, AlertDescription } from 'timds'\nimport { CheckCircle2 } from 'lucide-react'\n\n<Alert variant=\"success\">\n  <CheckCircle2 />\n  <AlertTitle>Changes saved</AlertTitle>\n  <AlertDescription>Your settings were updated successfully.</AlertDescription>\n</Alert>"
+    },
+    {
+      "module": "alert-dialog",
+      "name": "AlertDialog",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A modal confirmation that interrupts the user and demands an explicit choice before a destructive or irreversible action.",
+      "exports": [
+        "AlertDialog",
+        "AlertDialogAction",
+        "AlertDialogCancel",
+        "AlertDialogContent",
+        "AlertDialogDescription",
+        "AlertDialogFooter",
+        "AlertDialogHeader",
+        "AlertDialogMedia",
+        "AlertDialogOverlay",
+        "AlertDialogPortal",
+        "AlertDialogTitle",
+        "AlertDialogTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import {\n  AlertDialog,\n  AlertDialogTrigger,\n  AlertDialogContent,\n  AlertDialogHeader,\n  AlertDialogTitle,\n  AlertDialogDescription,\n  AlertDialogFooter,\n  AlertDialogCancel,\n  AlertDialogAction,\n  Button,\n} from 'timds'\n\n<AlertDialog>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Delete project</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Delete this project?</AlertDialogTitle>\n      <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <AlertDialogCancel>Keep project</AlertDialogCancel>\n      <AlertDialogAction variant=\"destructive\" onClick={handleDelete}>\n        Delete\n      </AlertDialogAction>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
+    },
+    {
+      "module": "avatar",
+      "name": "Avatar",
+      "category": "Data Display",
+      "status": "Stable",
+      "description": "Represents a user or entity with an image, falling back to initials when no image is available.",
+      "exports": [
+        "Avatar",
+        "AvatarBadge",
+        "AvatarFallback",
+        "AvatarGroup",
+        "AvatarGroupCount",
+        "AvatarImage"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from 'timds'",
+      "variants": {
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "size",
+          "description": "Avatar diameter; propagated to badge and group count.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        }
+      ],
+      "example": "import { Avatar, AvatarImage, AvatarFallback, AvatarBadge, AvatarGroup, AvatarGroupCount } from 'timds'\n\n// Image with initials fallback\n<Avatar>\n  <AvatarImage src=\"/users/ada.png\" alt=\"Ada Lovelace\" />\n  <AvatarFallback>AL</AvatarFallback>\n</Avatar>\n\n// With a status dot\n<Avatar size=\"lg\">\n  <AvatarImage src=\"/users/ada.png\" alt=\"Ada Lovelace\" />\n  <AvatarFallback>AL</AvatarFallback>\n  <AvatarBadge className=\"bg-success\" />\n</Avatar>\n\n// Stacked group\n<AvatarGroup>\n  <Avatar><AvatarFallback>AL</AvatarFallback></Avatar>\n  <Avatar><AvatarFallback>CB</AvatarFallback></Avatar>\n  <AvatarGroupCount>+3</AvatarGroupCount>\n</AvatarGroup>"
+    },
+    {
+      "module": "badge",
+      "name": "Badge",
+      "category": "Data Display",
+      "status": "Stable",
+      "description": "A compact pill that labels, counts, or surfaces the status of an item.",
+      "exports": [
+        "Badge",
+        "badgeVariants"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Badge, badgeVariants } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "secondary",
+          "destructive",
+          "warning",
+          "info",
+          "outline",
+          "ghost",
+          "link",
+          "success",
+          "chart-1",
+          "chart-2",
+          "chart-3",
+          "chart-4",
+          "chart-5"
+        ],
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Visual style of the badge.",
+          "options": [
+            "default",
+            "secondary",
+            "destructive",
+            "success",
+            "warning",
+            "info",
+            "chart-1",
+            "chart-2",
+            "chart-3",
+            "chart-4",
+            "chart-5",
+            "outline",
+            "ghost",
+            "link"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Padding and font size of the badge.",
+          "options": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "default": "md"
+        },
+        {
+          "name": "children",
+          "description": "Badge content."
+        },
+        {
+          "name": "asChild",
+          "description": "Render the styling onto the child element (e.g. an "
+        }
+      ],
+      "example": "import { Badge } from 'timds'\n\n<Badge>New</Badge>\n<Badge variant=\"success\">Completed</Badge>\n<Badge variant=\"warning\" size=\"sm\">Pending</Badge>\n\n// As a link (e.g. a filter chip)\n<Badge asChild variant=\"outline\">\n  <a href=\"#filters\">Filters</a>\n</Badge>"
+    },
+    {
+      "module": "button",
+      "name": "Button",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "Triggers an action or event — the primary way users commit to something in the UI.",
+      "exports": [
+        "Button",
+        "buttonVariants"
+      ],
+      "typeExports": [
+        "ButtonProps"
+      ],
+      "importStatement": "import { Button, buttonVariants, ButtonProps } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "destructive",
+          "outline",
+          "secondary",
+          "ghost",
+          "link"
+        ],
+        "size": [
+          "default",
+          "sm",
+          "lg",
+          "icon"
+        ],
+        "shape": [
+          "default",
+          "rounded"
+        ],
+        "block": [
+          "true",
+          "false"
+        ],
+        "iconPlacement": [
+          "left",
+          "right"
+        ],
+        "htmlType": [
+          "button",
+          "submit",
+          "reset"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Visual style / emphasis of the button.",
+          "options": [
+            "default",
+            "secondary",
+            "destructive",
+            "outline",
+            "ghost",
+            "link"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Height and padding preset. Use ",
+          "options": [
+            "default",
+            "sm",
+            "lg",
+            "icon"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "shape",
+          "description": "Corner shape. ",
+          "options": [
+            "default",
+            "rounded"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "iconPlacement",
+          "description": "Side where the ",
+          "options": [
+            "left",
+            "right"
+          ],
+          "default": "left"
+        },
+        {
+          "name": "icon",
+          "description": "Icon node shown alongside the content."
+        },
+        {
+          "name": "loading",
+          "description": "Show a spinner in place of the icon and disable the button."
+        },
+        {
+          "name": "block",
+          "description": "Stretch the button to fill its container width.",
+          "default": "false"
+        },
+        {
+          "name": "htmlType",
+          "description": "Native ",
+          "options": [
+            "button",
+            "submit",
+            "reset"
+          ],
+          "default": "button"
+        },
+        {
+          "name": "href",
+          "description": "Render the button as an "
+        },
+        {
+          "name": "asChild",
+          "description": "Merge props onto the child element instead of rendering a "
+        },
+        {
+          "name": "disabled",
+          "description": "Disables interaction and dims the button."
+        },
+        {
+          "name": "children",
+          "description": "Button label or content."
+        }
+      ],
+      "example": "import { Button } from 'timds'\n\n<Button onClick={handleSave}>Save</Button>\n<Button variant=\"secondary\" onClick={handleCancel}>Cancel</Button>\n<Button icon={<Rocket />} loading>Launching</Button>\n<Button href=\"https://example.com\">Open link</Button>"
+    },
+    {
+      "module": "button-group",
+      "name": "ButtonGroup",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A layout wrapper that joins buttons (and related controls) into a single continuous segment, collapsing the inner borders and corners between them.",
+      "exports": [
+        "ButtonGroup",
+        "ButtonGroupSeparator",
+        "ButtonGroupText",
+        "buttonGroupVariants"
+      ],
+      "typeExports": [],
+      "importStatement": "import { ButtonGroup, ButtonGroupSeparator, ButtonGroupText, buttonGroupVariants } from 'timds'",
+      "variants": {
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      "props": [
+        {
+          "name": "orientation",
+          "description": "Direction the buttons are stacked in.",
+          "options": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "horizontal"
+        }
+      ],
+      "example": "import { Button, ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from 'timds'\n\n// Joined actions\n<ButtonGroup>\n  <Button variant=\"outline\">Archive</Button>\n  <Button variant=\"outline\">Report</Button>\n  <Button variant=\"outline\">Snooze</Button>\n</ButtonGroup>\n\n// Stepper with a static value\n<ButtonGroup>\n  <Button variant=\"outline\" size=\"icon\" aria-label=\"Decrease\"><Minus /></Button>\n  <ButtonGroupText>12</ButtonGroupText>\n  <Button variant=\"outline\" size=\"icon\" aria-label=\"Increase\"><Plus /></Button>\n</ButtonGroup>\n\n// Vertical stack\n<ButtonGroup orientation=\"vertical\">\n  <Button variant=\"outline\">Top</Button>\n  <Button variant=\"outline\">Bottom</Button>\n</ButtonGroup>"
+    },
+    {
+      "module": "calendar",
+      "name": "Calendar",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "An inline month grid for selecting a single date, a range, or multiple days.",
+      "exports": [
+        "Calendar",
+        "CalendarDayButton"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Calendar, CalendarDayButton } from 'timds'",
+      "variants": {
+        "mode": [
+          "single",
+          "range",
+          "multiple"
+        ],
+        "captionLayout": [
+          "label",
+          "dropdown",
+          "dropdown-months",
+          "dropdown-years"
+        ],
+        "buttonVariant": [
+          "default",
+          "outline",
+          "ghost",
+          "secondary"
+        ]
+      },
+      "props": [
+        {
+          "name": "mode",
+          "description": "Selection shape (drives the ",
+          "options": [
+            "single",
+            "range",
+            "multiple"
+          ]
+        },
+        {
+          "name": "captionLayout",
+          "description": "Header as a static label or month/year dropdowns.",
+          "options": [
+            "label",
+            "dropdown",
+            "dropdown-months",
+            "dropdown-years"
+          ],
+          "default": "label"
+        },
+        {
+          "name": "numberOfMonths",
+          "description": "How many months to render side by side.",
+          "default": "1"
+        },
+        {
+          "name": "showOutsideDays",
+          "description": "Show leading/trailing days from adjacent months.",
+          "default": "true"
+        },
+        {
+          "name": "buttonVariant",
+          "description": "Button variant used by the navigation arrows.",
+          "options": [
+            "default",
+            "outline",
+            "ghost",
+            "secondary"
+          ],
+          "default": "ghost"
+        }
+      ],
+      "example": "import { Calendar } from 'timds'\nimport { useState } from 'react'\nimport type { DateRange } from 'react-day-picker'\n\n// Single date (controlled)\nconst [date, setDate] = useState<Date>()\n<Calendar mode=\"single\" selected={date} onSelect={setDate} />\n\n// Range\nconst [range, setRange] = useState<DateRange>()\n<Calendar mode=\"range\" selected={range} onSelect={setRange} numberOfMonths={2} />\n\n// Constrain selectable days + dropdown caption\n<Calendar mode=\"single\" disabled={{ before: new Date() }} captionLayout=\"dropdown\" />"
+    },
+    {
+      "module": "card",
+      "name": "Card",
+      "category": "Layout",
+      "status": "Stable",
+      "description": "A surface container that groups related content and actions into a single panel.",
+      "exports": [
+        "Card",
+        "CardAction",
+        "CardContent",
+        "CardDescription",
+        "CardFooter",
+        "CardHeader",
+        "CardTitle"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'timds'",
+      "variants": {},
+      "props": [
+        {
+          "name": "title",
+          "description": "CardTitle text."
+        },
+        {
+          "name": "description",
+          "description": "CardDescription text."
+        },
+        {
+          "name": "value",
+          "description": "Main metric shown in CardContent."
+        },
+        {
+          "name": "footer",
+          "description": "Footer button label."
+        }
+      ],
+      "example": "import {\n  Card,\n  CardHeader,\n  CardTitle,\n  CardDescription,\n  CardAction,\n  CardContent,\n  CardFooter,\n  Button,\n  Badge,\n} from 'timds'\n\n<Card className=\"w-80\">\n  <CardHeader>\n    <CardTitle>Total revenue</CardTitle>\n    <CardDescription>Last 30 days</CardDescription>\n    <CardAction>\n      <Badge variant=\"success\">+9.8%</Badge>\n    </CardAction>\n  </CardHeader>\n  <CardContent>\n    <p className=\"text-3xl font-bold\">$125,830</p>\n  </CardContent>\n  <CardFooter>\n    <Button variant=\"outline\" className=\"w-full\">View report</Button>\n  </CardFooter>\n</Card>"
+    },
+    {
+      "module": "chart",
+      "name": "Chart",
+      "category": "Data Display",
+      "status": "Stable",
+      "description": "A thin, themeable wrapper around [Recharts](https://recharts.org) that drives series colors, tooltips and legends from one design-system-aware config.",
+      "exports": [
+        "ChartContainer",
+        "ChartLegend",
+        "ChartLegendContent",
+        "ChartStyle",
+        "ChartTooltip",
+        "ChartTooltipContent"
+      ],
+      "typeExports": [
+        "ChartConfig"
+      ],
+      "importStatement": "import { ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChartConfig } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import {\n  type ChartConfig,\n  ChartContainer,\n  ChartTooltip,\n  ChartTooltipContent,\n} from 'timds'\nimport { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'\n\nconst config = {\n  desktop: { label: 'Desktop', color: 'var(--chart-1)' },\n} satisfies ChartConfig\n\n<ChartContainer config={config} className=\"h-[240px] w-full\">\n  <AreaChart accessibilityLayer data={data}>\n    <CartesianGrid vertical={false} />\n    <XAxis dataKey=\"month\" tickLine={false} axisLine={false} />\n    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />\n    {/* a cor `desktop` vira a variável CSS `--color-desktop` */}\n    <Area dataKey=\"desktop\" fill=\"var(--color-desktop)\" stroke=\"var(--color-desktop)\" />\n  </AreaChart>\n</ChartContainer>"
+    },
+    {
+      "module": "checkbox",
+      "name": "Checkbox",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A boolean control for selecting an option, typically as part of a form submitted later.",
+      "exports": [
+        "Checkbox",
+        "CheckboxGroup",
+        "CheckboxGroupItem",
+        "checkboxVariants"
+      ],
+      "typeExports": [
+        "CheckboxGroupItemProps",
+        "CheckboxGroupProps",
+        "CheckboxProps"
+      ],
+      "importStatement": "import { Checkbox, CheckboxGroup, CheckboxGroupItem, checkboxVariants, CheckboxGroupItemProps, CheckboxGroupProps, CheckboxProps } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "success",
+          "destructive"
+        ],
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Chromatic scheme of the box when checked.",
+          "options": [
+            "default",
+            "success",
+            "destructive"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Box and inner icon size.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the checkbox."
+        },
+        {
+          "name": "checked",
+          "description": "Controlled checked state."
+        },
+        {
+          "name": "defaultChecked",
+          "description": "Initial checked state (uncontrolled)."
+        }
+      ],
+      "example": "import { Checkbox, CheckboxGroup, CheckboxGroupItem } from 'timds'\n\n// Single checkbox paired with a label\n<label htmlFor=\"terms\" className=\"flex items-center gap-2\">\n  <Checkbox id=\"terms\" />\n  Accept the terms\n</label>\n\n// Controlled\n<Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} />\n\n// Indeterminate\n<Checkbox checked=\"indeterminate\" />\n\n// Group of related values\n<CheckboxGroup defaultValue={['react']} onValueChange={setValues}>\n  <CheckboxGroupItem value=\"react\" />\n  <CheckboxGroupItem value=\"vue\" />\n</CheckboxGroup>"
+    },
+    {
+      "module": "context-menu",
+      "name": "Context Menu",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A menu of actions opened by right-clicking (or long-pressing) a region — the actions appear at the pointer and dismiss once the user picks one or moves away.",
+      "exports": [
+        "ContextMenu",
+        "ContextMenuCheckboxItem",
+        "ContextMenuContent",
+        "ContextMenuGroup",
+        "ContextMenuItem",
+        "ContextMenuLabel",
+        "ContextMenuPortal",
+        "ContextMenuRadioGroup",
+        "ContextMenuRadioItem",
+        "ContextMenuSeparator",
+        "ContextMenuShortcut",
+        "ContextMenuSub",
+        "ContextMenuSubContent",
+        "ContextMenuSubTrigger",
+        "ContextMenuTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import {\n  ContextMenu,\n  ContextMenuTrigger,\n  ContextMenuContent,\n  ContextMenuLabel,\n  ContextMenuSeparator,\n  ContextMenuItem,\n  ContextMenuShortcut,\n} from 'timds'\n\n<ContextMenu>\n  <ContextMenuTrigger className=\"flex h-32 w-72 items-center justify-center rounded-md border border-dashed text-sm\">\n    Right click here\n  </ContextMenuTrigger>\n  <ContextMenuContent className=\"w-52\">\n    <ContextMenuLabel>Actions</ContextMenuLabel>\n    <ContextMenuSeparator />\n    <ContextMenuItem onSelect={handleReload}>\n      Reload\n      <ContextMenuShortcut>⌘R</ContextMenuShortcut>\n    </ContextMenuItem>\n    <ContextMenuItem variant=\"destructive\" onSelect={handleDelete}>\n      Delete\n    </ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
+    },
+    {
+      "module": "date-picker",
+      "name": "DatePicker",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A trigger that shows the selected date and opens a calendar popover to pick a single day.",
+      "exports": [
+        "DatePicker"
+      ],
+      "typeExports": [
+        "DatePickerProps"
+      ],
+      "importStatement": "import { DatePicker, DatePickerProps } from 'timds'",
+      "variants": {
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ],
+        "align": [
+          "start",
+          "center",
+          "end"
+        ]
+      },
+      "props": [
+        {
+          "name": "placeholder",
+          "description": "Text shown on the trigger while no date is selected.",
+          "default": "Pick a date"
+        },
+        {
+          "name": "formatStr",
+          "description": "date-fns format string for the trigger label.",
+          "default": "PPP"
+        },
+        {
+          "name": "size",
+          "description": "Trigger size.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "align",
+          "description": "Popover alignment relative to the trigger.",
+          "options": [
+            "start",
+            "center",
+            "end"
+          ],
+          "default": "start"
+        },
+        {
+          "name": "block",
+          "description": "Full-width trigger."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the trigger."
+        },
+        {
+          "name": "value",
+          "description": "Selected date (controlled)."
+        },
+        {
+          "name": "defaultValue",
+          "description": "Initial date (uncontrolled)."
+        }
+      ],
+      "example": "import { DatePicker } from 'timds'\n\n// Uncontrolled\n<DatePicker defaultValue={new Date()} onValueChange={(date) => console.log(date)} />\n\n// Controlled\n<DatePicker value={date} onValueChange={setDate} />\n\n// Localized label + constrained calendar\n<DatePicker\n  formatStr=\"dd/MM/yyyy\"\n  calendarProps={{ disabled: { before: new Date() }, captionLayout: 'dropdown' }}\n/>\n\n// In a form (emits a hidden yyyy-MM-dd input)\n<DatePicker name=\"dueDate\" />"
+    },
+    {
+      "module": "dialog",
+      "name": "Dialog",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A modal overlay that focuses the user on a single task — a form, details, or a confirmation — before returning them to the page.",
+      "exports": [
+        "Dialog",
+        "DialogClose",
+        "DialogContent",
+        "DialogDescription",
+        "DialogFooter",
+        "DialogHeader",
+        "DialogOverlay",
+        "DialogPortal",
+        "DialogTitle",
+        "DialogTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import {\n  Dialog,\n  DialogTrigger,\n  DialogContent,\n  DialogHeader,\n  DialogTitle,\n  DialogDescription,\n  DialogFooter,\n  DialogClose,\n  Button,\n} from 'timds'\n\n<Dialog>\n  <DialogTrigger asChild>\n    <Button variant=\"outline\">Edit profile</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Edit profile</DialogTitle>\n      <DialogDescription>Update your details.</DialogDescription>\n    </DialogHeader>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <DialogClose asChild>\n        <Button onClick={handleSave}>Save changes</Button>\n      </DialogClose>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
+    },
+    {
+      "module": "drawer",
+      "name": "Drawer",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A panel that slides in from an edge of the viewport to hold secondary content — filters, details, navigation, or a short form — without taking over the whole screen.",
+      "exports": [
+        "Drawer",
+        "DrawerClose",
+        "DrawerContent",
+        "DrawerDescription",
+        "DrawerFooter",
+        "DrawerHeader",
+        "DrawerOverlay",
+        "DrawerPortal",
+        "DrawerTitle",
+        "DrawerTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerPortal, DrawerTitle, DrawerTrigger } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import {\n  Drawer,\n  DrawerTrigger,\n  DrawerContent,\n  DrawerHeader,\n  DrawerTitle,\n  DrawerDescription,\n  DrawerFooter,\n  DrawerClose,\n  Button,\n} from 'timds'\n\n<Drawer direction=\"right\">\n  <DrawerTrigger asChild>\n    <Button variant=\"outline\">Open panel</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Filters</DrawerTitle>\n      <DrawerDescription>Refine the results shown in the list.</DrawerDescription>\n    </DrawerHeader>\n    <DrawerFooter>\n      <Button onClick={handleApply}>Apply</Button>\n      <DrawerClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DrawerClose>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
+    },
+    {
+      "module": "dropdown-menu",
+      "name": "Dropdown Menu",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A menu of actions anchored to a trigger — opened on demand, dismissed once the user picks an action or moves away.",
+      "exports": [
+        "DropdownMenu",
+        "DropdownMenuCheckboxItem",
+        "DropdownMenuContent",
+        "DropdownMenuGroup",
+        "DropdownMenuItem",
+        "DropdownMenuLabel",
+        "DropdownMenuPortal",
+        "DropdownMenuRadioGroup",
+        "DropdownMenuRadioItem",
+        "DropdownMenuSeparator",
+        "DropdownMenuShortcut",
+        "DropdownMenuSub",
+        "DropdownMenuSubContent",
+        "DropdownMenuSubTrigger",
+        "DropdownMenuTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import {\n  DropdownMenu,\n  DropdownMenuTrigger,\n  DropdownMenuContent,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuItem,\n  DropdownMenuShortcut,\n  Button,\n} from 'timds'\n\n<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button variant=\"outline\">Open menu</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent className=\"w-48\">\n    <DropdownMenuLabel>My account</DropdownMenuLabel>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem onSelect={handleProfile}>\n      Profile\n      <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>\n    </DropdownMenuItem>\n    <DropdownMenuItem variant=\"destructive\" onSelect={handleSignOut}>\n      Sign out\n    </DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+    },
+    {
+      "module": "input",
+      "name": "Input",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A single-line text field — the primary way users enter free-form text into a form.",
+      "exports": [
+        "Input"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Input } from 'timds'",
+      "variants": {
+        "type": [
+          "text",
+          "email",
+          "password",
+          "number",
+          "search",
+          "tel",
+          "url",
+          "file"
+        ]
+      },
+      "props": [
+        {
+          "name": "type",
+          "description": "Native ",
+          "options": [
+            "text",
+            "email",
+            "password",
+            "number",
+            "search",
+            "tel",
+            "url",
+            "file"
+          ],
+          "default": "text"
+        },
+        {
+          "name": "placeholder",
+          "description": "Placeholder shown while the field is empty."
+        },
+        {
+          "name": "value",
+          "description": "Controlled value of the field."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the field: not focusable, ignores input."
+        },
+        {
+          "name": "onChange",
+          "description": "Fires on every value change."
+        }
+      ],
+      "example": "import { Input } from 'timds'\n\n// Labelled field\n<label htmlFor=\"email\">E-mail</label>\n<Input id=\"email\" type=\"email\" placeholder=\"voce@exemplo.com\" />\n\n// Error state\n<Input aria-invalid value={email} onChange={onEmailChange} />\n\n// Disabled\n<Input disabled value=\"Não editável\" />"
+    },
+    {
+      "module": "input-group",
+      "name": "InputGroup",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A container that wraps a text control with addons — icons, text or buttons — sharing a single border, focus ring and error state.",
+      "exports": [
+        "InputGroup",
+        "InputGroupAddon",
+        "InputGroupButton",
+        "InputGroupInput",
+        "InputGroupText",
+        "InputGroupTextarea"
+      ],
+      "typeExports": [],
+      "importStatement": "import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText, InputGroupTextarea } from 'timds'",
+      "variants": {
+        "size": [
+          "xs",
+          "sm"
+        ]
+      },
+      "props": [
+        {
+          "name": "children",
+          "description": "Inner control ("
+        }
+      ],
+      "example": "import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupButton, InputGroupText } from 'timds'\nimport { Search } from 'lucide-react'\n\n// Search field with a leading icon\n<InputGroup>\n  <InputGroupAddon>\n    <Search />\n  </InputGroupAddon>\n  <InputGroupInput placeholder=\"Buscar…\" aria-label=\"Buscar\" />\n</InputGroup>\n\n// Field with a trailing action button\n<InputGroup>\n  <InputGroupInput aria-label=\"Cupom\" />\n  <InputGroupAddon align=\"inline-end\">\n    <InputGroupButton onClick={apply}>Aplicar</InputGroupButton>\n  </InputGroupAddon>\n</InputGroup>"
+    },
+    {
+      "module": "input-otp",
+      "name": "InputOTP",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A fixed-length code field that splits a one-time password or verification code into per-character slots.",
+      "exports": [
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSeparator",
+        "InputOTPSlot"
+      ],
+      "typeExports": [],
+      "importStatement": "import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from 'timds'",
+      "variants": {},
+      "props": [
+        {
+          "name": "maxLength",
+          "description": "Total number of characters/slots the field accepts."
+        },
+        {
+          "name": "pattern",
+          "description": "Regex restricting accepted characters (e.g. "
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the field."
+        },
+        {
+          "name": "value",
+          "description": "Controlled value."
+        },
+        {
+          "name": "onChange",
+          "description": "Fires with the full string on every change."
+        },
+        {
+          "name": "children",
+          "description": "Slot layout: "
+        }
+      ],
+      "example": "import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from 'timds'\nimport { REGEXP_ONLY_DIGITS } from 'input-otp'\n\n<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} onChange={setCode}>\n  <InputOTPGroup>\n    <InputOTPSlot index={0} />\n    <InputOTPSlot index={1} />\n    <InputOTPSlot index={2} />\n  </InputOTPGroup>\n  <InputOTPSeparator />\n  <InputOTPGroup>\n    <InputOTPSlot index={3} />\n    <InputOTPSlot index={4} />\n    <InputOTPSlot index={5} />\n  </InputOTPGroup>\n</InputOTP>"
+    },
+    {
+      "module": "item",
+      "name": "Item",
+      "category": "Data Display",
+      "status": "Stable",
+      "description": "A flexible row primitive for lists, cards, and menus — a leading media slot, a central title/description, and trailing actions, composed from small named parts.",
+      "exports": [
+        "Item",
+        "ItemActions",
+        "ItemContent",
+        "ItemDescription",
+        "ItemFooter",
+        "ItemGroup",
+        "ItemHeader",
+        "ItemMedia",
+        "ItemSeparator",
+        "ItemTitle",
+        "itemVariants"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Item, ItemActions, ItemContent, ItemDescription, ItemFooter, ItemGroup, ItemHeader, ItemMedia, ItemSeparator, ItemTitle, itemVariants } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "outline",
+          "muted",
+          "icon",
+          "image"
+        ],
+        "size": [
+          "default",
+          "sm"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Visual style of the row surface.",
+          "options": [
+            "default",
+            "outline",
+            "muted"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Padding and gap density.",
+          "options": [
+            "default",
+            "sm"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "asChild",
+          "description": "Merge props onto the single child instead of rendering a ",
+          "default": "false"
+        }
+      ],
+      "example": "import {\n  Avatar,\n  AvatarFallback,\n  AvatarImage,\n  Button,\n  Item,\n  ItemActions,\n  ItemContent,\n  ItemDescription,\n  ItemGroup,\n  ItemMedia,\n  ItemSeparator,\n  ItemTitle,\n} from 'timds'\n\n// Basic row with a trailing action\n<Item variant=\"outline\">\n  <ItemContent>\n    <ItemTitle>Basic Item</ItemTitle>\n    <ItemDescription>A simple row with title and description.</ItemDescription>\n  </ItemContent>\n  <ItemActions>\n    <Button variant=\"outline\" size=\"sm\">Action</Button>\n  </ItemActions>\n</Item>\n\n// The whole row as a link\n<Item variant=\"outline\" asChild>\n  <a href=\"/docs\">\n    <ItemContent>\n      <ItemTitle>Visit our documentation</ItemTitle>\n      <ItemDescription>Learn how to get started.</ItemDescription>\n    </ItemContent>\n  </a>\n</Item>\n\n// A grouped, separated list\n<ItemGroup>\n  <Item>\n    <ItemMedia>\n      <Avatar>\n        <AvatarImage src=\"/shadcn.png\" alt=\"shadcn\" />\n        <AvatarFallback>S</AvatarFallback>\n      </Avatar>\n    </ItemMedia>\n    <ItemContent>\n      <ItemTitle>shadcn</ItemTitle>\n      <ItemDescription>shadcn@vercel.com</ItemDescription>\n    </ItemContent>\n  </Item>\n  <ItemSeparator />\n  {/* …more items */}\n</ItemGroup>"
+    },
+    {
+      "module": "pagination",
+      "name": "Pagination",
+      "category": "Navigation",
+      "status": "Stable",
+      "description": "Splits long content into pages and lets people move between them.",
+      "exports": [
+        "getPaginationRange",
+        "Pagination",
+        "PaginationContent",
+        "PaginationEllipsis",
+        "PaginationItem",
+        "PaginationLink",
+        "PaginationNext",
+        "PaginationPrevious",
+        "PaginationShort"
+      ],
+      "typeExports": [
+        "PaginationMode",
+        "PaginationRangeItem",
+        "PaginationRangeOptions",
+        "PaginationShortLabels",
+        "PaginationShortProps"
+      ],
+      "importStatement": "import { getPaginationRange, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationShort, PaginationMode, PaginationRangeItem, PaginationRangeOptions, PaginationShortLabels, PaginationShortProps } from 'timds'",
+      "variants": {
+        "mode": [
+          "full",
+          "numbers",
+          "simple",
+          "compact"
+        ],
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "page",
+          "description": "Current page (1-based)."
+        },
+        {
+          "name": "total",
+          "description": "Total number of pages."
+        },
+        {
+          "name": "mode",
+          "description": "Rendering shape.",
+          "options": [
+            "full",
+            "numbers",
+            "simple",
+            "compact"
+          ],
+          "default": "full"
+        },
+        {
+          "name": "size",
+          "description": "Control size.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "siblingCount",
+          "description": "Sibling pages around the current one (full/numbers).",
+          "default": "1"
+        },
+        {
+          "name": "boundaryCount",
+          "description": "Fixed pages at each edge (full/numbers).",
+          "default": "1"
+        },
+        {
+          "name": "pageSize",
+          "description": "Current rows-per-page value (needs "
+        },
+        {
+          "name": "pageSizeOptions",
+          "description": "Rows-per-page choices; renders the selector when provided."
+        },
+        {
+          "name": "onPageChange",
+          "description": "Called with the chosen page (SPA mode)."
+        },
+        {
+          "name": "onPageSizeChange",
+          "description": "Called with the chosen rows-per-page value."
+        },
+        {
+          "name": "href",
+          "description": "Builds each page href (real-links/SSR mode); wins over onPageChange."
+        }
+      ],
+      "example": "import { PaginationShort } from 'timds'\n\n// SPA — controlled by state\nconst [page, setPage] = useState(1)\n<PaginationShort page={page} total={20} onPageChange={setPage} />\n\n// Just previous/next\n<PaginationShort mode=\"simple\" page={page} total={20} onPageChange={setPage} />\n\n// Arrows + \"Page X of Y\"\n<PaginationShort mode=\"compact\" page={page} total={20} onPageChange={setPage} />\n\n// Real links (SSR) — renders <a> anchors\n<PaginationShort page={page} total={20} href={(n) => `/items?page=${n}`} />\n\n// Rows-per-page selector (table footer)\n<PaginationShort\n  mode=\"simple\"\n  page={page}\n  total={20}\n  onPageChange={setPage}\n  pageSize={pageSize}\n  pageSizeOptions={[10, 25, 50, 100]}\n  onPageSizeChange={setPageSize}\n/>\n\n// i18n labels\n<PaginationShort\n  page={page}\n  total={20}\n  onPageChange={setPage}\n  labels={{ previous: 'Anterior', next: 'Próximo', page: 'Página', of: 'de' }}\n/>"
+    },
+    {
+      "module": "popover",
+      "name": "Popover",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A floating panel anchored to a trigger, for secondary content shown on demand.",
+      "exports": [
+        "Popover",
+        "PopoverAnchor",
+        "PopoverContent",
+        "PopoverDescription",
+        "PopoverHeader",
+        "PopoverTitle",
+        "PopoverTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Popover, PopoverAnchor, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from 'timds'",
+      "variants": {
+        "align": [
+          "start",
+          "center",
+          "end"
+        ],
+        "side": [
+          "top",
+          "right",
+          "bottom",
+          "left"
+        ]
+      },
+      "props": [
+        {
+          "name": "align",
+          "description": "Alignment of the content relative to the trigger.",
+          "options": [
+            "start",
+            "center",
+            "end"
+          ],
+          "default": "center"
+        },
+        {
+          "name": "side",
+          "description": "Preferred side of the trigger to render on (flips on collision).",
+          "options": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ],
+          "default": "bottom"
+        },
+        {
+          "name": "sideOffset",
+          "description": "Distance in pixels between the content and the trigger.",
+          "default": "4"
+        }
+      ],
+      "example": "import { Button, Input, Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from 'timds'\n\n<Popover>\n  <PopoverTrigger asChild>\n    <Button variant=\"outline\">Open</Button>\n  </PopoverTrigger>\n  <PopoverContent align=\"start\">\n    <PopoverHeader>\n      <PopoverTitle>Dimensions</PopoverTitle>\n    </PopoverHeader>\n    <Input aria-label=\"Width\" defaultValue=\"100%\" />\n  </PopoverContent>\n</Popover>"
+    },
+    {
+      "module": "progress",
+      "name": "Progress",
+      "category": "Feedback",
+      "status": "Stable",
+      "description": "A linear bar that communicates how far along a determinate task is, or that work of unknown duration is underway.",
+      "exports": [
+        "Progress",
+        "progressVariants"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Progress, progressVariants } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "success",
+          "warning",
+          "info",
+          "destructive"
+        ],
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Chromatic scheme of the track and indicator.",
+          "options": [
+            "default",
+            "success",
+            "warning",
+            "info",
+            "destructive"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Height of the progress bar.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "value",
+          "description": "Current progress (0–100). Omit it for the indeterminate state."
+        }
+      ],
+      "example": "import { Progress } from 'timds'\n\n// Determinate — always give it an accessible name.\n<Progress value={60} aria-label=\"Uploading files\" />\n\n// Semantic variant + size.\n<Progress value={90} variant=\"destructive\" size=\"lg\" aria-label=\"Storage used\" />\n\n// Indeterminate (omit value).\n<Progress aria-label=\"Loading\" />"
+    },
+    {
+      "module": "radio-group",
+      "name": "RadioGroup",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A set of mutually exclusive options where exactly one can be selected at a time.",
+      "exports": [
+        "RadioGroup",
+        "RadioGroupItem"
+      ],
+      "typeExports": [],
+      "importStatement": "import { RadioGroup, RadioGroupItem } from 'timds'",
+      "variants": {
+        "orientation": [
+          "vertical",
+          "horizontal"
+        ]
+      },
+      "props": [
+        {
+          "name": "defaultValue",
+          "description": "Initially selected value (uncontrolled)."
+        },
+        {
+          "name": "disabled",
+          "description": "Disable the entire group."
+        },
+        {
+          "name": "orientation",
+          "description": "Layout/keyboard navigation direction.",
+          "options": [
+            "vertical",
+            "horizontal"
+          ]
+        },
+        {
+          "name": "onValueChange",
+          "description": "Fired with the newly selected value."
+        }
+      ],
+      "example": "import { RadioGroup, RadioGroupItem } from 'timds'\n\n// Uncontrolled\n<RadioGroup defaultValue=\"yearly\" aria-label=\"Plan\">\n  <label htmlFor=\"monthly\">\n    <RadioGroupItem id=\"monthly\" value=\"monthly\" /> Monthly\n  </label>\n  <label htmlFor=\"yearly\">\n    <RadioGroupItem id=\"yearly\" value=\"yearly\" /> Yearly\n  </label>\n</RadioGroup>\n\n// Controlled\n<RadioGroup value={value} onValueChange={setValue} aria-label=\"Plan\">\n  {/* …items */}\n</RadioGroup>"
+    },
+    {
+      "module": "select",
+      "name": "Select",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "An advanced Select / Combobox built on **Ariakit** with search, multi-select, custom rendering, async loading and list virtualization — not the native `<select>`.",
+      "exports": [
+        "Select",
+        "SelectContent",
+        "SelectEmpty",
+        "SelectGroup",
+        "SelectItem",
+        "SelectList",
+        "SelectLoading",
+        "SelectRoot",
+        "SelectSearch",
+        "SelectTrigger",
+        "SelectValue",
+        "selectTriggerVariants"
+      ],
+      "typeExports": [
+        "SelectMessages",
+        "SelectOption",
+        "SelectProps"
+      ],
+      "importStatement": "import { Select, SelectContent, SelectEmpty, SelectGroup, SelectItem, SelectList, SelectLoading, SelectRoot, SelectSearch, SelectTrigger, SelectValue, selectTriggerVariants, SelectMessages, SelectOption, SelectProps } from 'timds'",
+      "variants": {
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "options",
+          "description": "Lista de opções ("
+        },
+        {
+          "name": "size",
+          "description": "Altura do trigger.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "searchable",
+          "description": "Exibe o campo de busca."
+        },
+        {
+          "name": "multiple",
+          "description": "Multi-seleção com chips."
+        },
+        {
+          "name": "clearable",
+          "description": "Exibe o botão de limpar."
+        },
+        {
+          "name": "editable",
+          "description": "Gatilho editável (autocomplete no próprio campo)."
+        },
+        {
+          "name": "allowCustomValue",
+          "description": "Editável: aceita texto fora da lista."
+        },
+        {
+          "name": "maxCount",
+          "description": "Multi: nº máximo de itens (mostra "
+        },
+        {
+          "name": "maxDisplayChips",
+          "description": "Multi: chips antes de resumir em "
+        },
+        {
+          "name": "virtualized",
+          "description": "Liga a virtualização (auto para > 100 itens)."
+        },
+        {
+          "name": "loading",
+          "description": "Indicador de carregamento na lista."
+        },
+        {
+          "name": "hasMore",
+          "description": "Há mais itens para o infinite scroll."
+        },
+        {
+          "name": "disabled",
+          "description": "Desabilita o trigger."
+        },
+        {
+          "name": "value",
+          "description": "Valor selecionado (controlado)."
+        },
+        {
+          "name": "placeholder",
+          "description": "Texto quando nada está selecionado."
+        }
+      ],
+      "example": "import { Select, type SelectOption } from 'timds'\n\nconst fruits: SelectOption[] = [\n  { value: 'apple', label: 'Maçã' },\n  { value: 'banana', label: 'Banana' },\n  { value: 'pear', label: 'Pera', disabled: true },\n]\n\n// Single, searchable\n<Select options={fruits} searchable placeholder=\"Pick a fruit…\" aria-label=\"Fruit\" />\n\n// Multi-select with chips, a clear button and a cap\n<Select\n  options={fruits}\n  multiple\n  clearable\n  maxCount={3}\n  defaultValue={['apple', 'banana']}\n  aria-label=\"Fruits\"\n/>\n\n// Async + infinite scroll\n<Select\n  options={options}\n  searchable\n  onSearch={fetchOptions}\n  loading={loading}\n  onLoadMore={loadMore}\n  hasMore={hasMore}\n  aria-label=\"User\"\n/>\n\n// Editable autocomplete that accepts free text\n<Select\n  options={fruits}\n  editable\n  allowCustomValue\n  multiple\n  aria-label=\"Tags\"\n/>"
+    },
+    {
+      "module": "separator",
+      "name": "Separator",
+      "category": "Layout",
+      "status": "Stable",
+      "description": "A thin visual divider that groups or splits content, horizontally or vertically.",
+      "exports": [
+        "Separator"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Separator } from 'timds'",
+      "variants": {
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      "props": [
+        {
+          "name": "orientation",
+          "description": "Direction the divider runs in.",
+          "options": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "horizontal"
+        },
+        {
+          "name": "decorative",
+          "description": "When true (default) the separator is purely visual and hidden from assistive tech.",
+          "default": "true"
+        }
+      ],
+      "example": "import { Separator } from 'timds'\n\n// Divisor horizontal (decorativo)\n<Separator className=\"my-4\" />\n\n// Divisor inline vertical, dentro de um contêiner com altura\n<div className=\"flex h-5 items-center gap-4\">\n  <span>Docs</span>\n  <Separator orientation=\"vertical\" />\n  <span>Source</span>\n</div>\n\n// Semântico: exposto para tecnologias assistivas\n<Separator decorative={false} />"
+    },
+    {
+      "module": "sidebar",
+      "name": "Sidebar",
+      "category": "Other",
+      "status": "Stable",
+      "description": "A composable, collapsible application sidebar — the persistent navigation frame for a page, with a desktop layout and a mobile off-canvas overlay built in.",
+      "exports": [
+        "Sidebar",
+        "SidebarContent",
+        "SidebarFooter",
+        "SidebarGroup",
+        "SidebarGroupAction",
+        "SidebarGroupContent",
+        "SidebarGroupLabel",
+        "SidebarHeader",
+        "SidebarInput",
+        "SidebarInset",
+        "SidebarMenu",
+        "SidebarMenuAction",
+        "SidebarMenuBadge",
+        "SidebarMenuButton",
+        "SidebarMenuItem",
+        "SidebarMenuSkeleton",
+        "SidebarMenuSub",
+        "SidebarMenuSubButton",
+        "SidebarMenuSubItem",
+        "SidebarProvider",
+        "SidebarRail",
+        "SidebarSeparator",
+        "SidebarTrigger",
+        "sidebarMenuButtonVariants",
+        "useSidebar"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, sidebarMenuButtonVariants, useSidebar } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "outline",
+          "sidebar",
+          "floating",
+          "inset"
+        ],
+        "size": [
+          "default",
+          "sm",
+          "lg"
+        ],
+        "side": [
+          "left",
+          "right"
+        ],
+        "collapsible": [
+          "offcanvas",
+          "icon",
+          "none"
+        ]
+      },
+      "props": [
+        {
+          "name": "side",
+          "description": "Which edge the sidebar is anchored to.",
+          "options": [
+            "left",
+            "right"
+          ],
+          "default": "left"
+        },
+        {
+          "name": "variant",
+          "description": "Visual treatment: flush ",
+          "options": [
+            "sidebar",
+            "floating",
+            "inset"
+          ],
+          "default": "sidebar"
+        },
+        {
+          "name": "collapsible",
+          "description": "How it collapses on desktop: slide ",
+          "options": [
+            "offcanvas",
+            "icon",
+            "none"
+          ],
+          "default": "offcanvas"
+        }
+      ],
+      "example": "import {\n  Sidebar,\n  SidebarContent,\n  SidebarGroup,\n  SidebarGroupContent,\n  SidebarGroupLabel,\n  SidebarInset,\n  SidebarMenu,\n  SidebarMenuButton,\n  SidebarMenuItem,\n  SidebarProvider,\n  SidebarTrigger,\n} from 'timds'\n\nexport function AppShell({ children }: { children: React.ReactNode }) {\n  return (\n    <SidebarProvider>\n      <Sidebar>\n        <SidebarContent>\n          <SidebarGroup>\n            <SidebarGroupLabel>Platform</SidebarGroupLabel>\n            <SidebarGroupContent>\n              <SidebarMenu>\n                <SidebarMenuItem>\n                  <SidebarMenuButton isActive tooltip=\"Home\">\n                    <HomeIcon />\n                    <span>Home</span>\n                  </SidebarMenuButton>\n                </SidebarMenuItem>\n              </SidebarMenu>\n            </SidebarGroupContent>\n          </SidebarGroup>\n        </SidebarContent>\n      </Sidebar>\n      <SidebarInset>\n        <header className=\"flex h-12 items-center gap-2 border-b px-4\">\n          <SidebarTrigger />\n        </header>\n        {children}\n      </SidebarInset>\n    </SidebarProvider>\n  )\n}"
+    },
+    {
+      "module": "skeleton",
+      "name": "Skeleton",
+      "category": "Feedback",
+      "status": "Stable",
+      "description": "A pulsing placeholder that reserves layout space while real content loads.",
+      "exports": [
+        "Skeleton"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Skeleton } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": null
+    },
+    {
+      "module": "slider",
+      "name": "Slider",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "An input for picking a numeric value — or a range — by dragging a thumb along a track.",
+      "exports": [
+        "sliderRangeVariants",
+        "Slider",
+        "sliderThumbVariants"
+      ],
+      "typeExports": [
+        "SliderProps"
+      ],
+      "importStatement": "import { sliderRangeVariants, Slider, sliderThumbVariants, SliderProps } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "success",
+          "destructive"
+        ],
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ],
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Chromatic scheme of the filled range and thumb.",
+          "options": [
+            "default",
+            "success",
+            "destructive"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Track thickness and thumb diameter.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "min",
+          "description": "Minimum value."
+        },
+        {
+          "name": "max",
+          "description": "Maximum value."
+        },
+        {
+          "name": "step",
+          "description": "Stepping interval."
+        },
+        {
+          "name": "orientation",
+          "description": "Layout direction of the slider.",
+          "options": [
+            "horizontal",
+            "vertical"
+          ],
+          "default": "horizontal"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the slider."
+        },
+        {
+          "name": "value",
+          "description": "Controlled value (array)."
+        },
+        {
+          "name": "defaultValue",
+          "description": "Initial value as an array (uncontrolled)."
+        }
+      ],
+      "example": "import { Slider } from 'timds'\n\n// Single value (uncontrolled)\n<Slider defaultValue={[50]} aria-label=\"Volume\" />\n\n// Range\n<Slider defaultValue={[20, 80]} aria-label=\"Price range\" />\n\n// Controlled\n<Slider value={value} onValueChange={setValue} aria-label=\"Brightness\" />\n\n// Discrete steps\n<Slider defaultValue={[40]} step={10} aria-label=\"Opacity\" />"
+    },
+    {
+      "module": "spinner",
+      "name": "Spinner",
+      "category": "Feedback",
+      "status": "Stable",
+      "description": "An animated indicator that communicates an ongoing, indeterminate loading state.",
+      "exports": [
+        "Spinner"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Spinner } from 'timds'",
+      "variants": {},
+      "props": [
+        {
+          "name": "className",
+          "description": "Tailwind classes to override size ("
+        }
+      ],
+      "example": "import { Spinner } from 'timds'\n\n// Tamanho e cor herdados do contexto\n<span className=\"text-primary\">\n  <Spinner className=\"size-6\" />\n</span>\n\n// Dentro de um Button, via a prop `loading`\n<Button loading>Salvando</Button>\n\n// Nome acessível customizado\n<Spinner aria-label=\"Salvando alterações\" />"
+    },
+    {
+      "module": "switch",
+      "name": "Switch",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A boolean toggle that flips a single setting on or off, taking effect immediately.",
+      "exports": [
+        "Switch",
+        "switchVariants"
+      ],
+      "typeExports": [
+        "SwitchProps"
+      ],
+      "importStatement": "import { Switch, switchVariants, SwitchProps } from 'timds'",
+      "variants": {
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ],
+        "variant": [
+          "default",
+          "green_red",
+          "success",
+          "destructive"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Chromatic scheme of the track (on / off colors).",
+          "options": [
+            "default",
+            "green_red",
+            "success",
+            "destructive"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Track height and thumb size.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "texts",
+          "description": "Optional "
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the switch."
+        },
+        {
+          "name": "checked",
+          "description": "Controlled checked state."
+        },
+        {
+          "name": "defaultChecked",
+          "description": "Initial checked state (uncontrolled)."
+        }
+      ],
+      "example": "import { Switch } from 'timds'\n\n// Uncontrolled\n<Switch defaultChecked aria-label=\"Notifications\" />\n\n// Controlled\n<Switch checked={enabled} onCheckedChange={setEnabled} aria-label=\"Dark mode\" />\n\n// With in-track labels (decorative) + an accessible name\n<Switch texts={{ on: 'Ativo', off: 'Inativo' }} variant=\"green_red\" aria-label=\"Status\" />"
+    },
+    {
+      "module": "table",
+      "name": "Table",
+      "category": "Data Display",
+      "status": "Stable",
+      "description": "Displays tabular data in rows and columns, built on native HTML table elements.",
+      "exports": [
+        "Table",
+        "TableBody",
+        "TableCaption",
+        "TableCell",
+        "TableFooter",
+        "TableGroupRow",
+        "TableHead",
+        "TableHeader",
+        "TableRow"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Table, TableBody, TableCaption, TableCell, TableFooter, TableGroupRow, TableHead, TableHeader, TableRow } from 'timds'",
+      "variants": {},
+      "props": [
+        {
+          "name": "className",
+          "description": "Extra classes merged onto the "
+        }
+      ],
+      "example": "import {\n  Table,\n  TableBody,\n  TableCaption,\n  TableCell,\n  TableHead,\n  TableHeader,\n  TableRow,\n} from 'timds'\n\n<Table>\n  <TableCaption>Recent invoices.</TableCaption>\n  <TableHeader>\n    <TableRow>\n      <TableHead>Invoice</TableHead>\n      <TableHead className=\"text-right\">Amount</TableHead>\n    </TableRow>\n  </TableHeader>\n  <TableBody>\n    {invoices.map((row) => (\n      <TableRow key={row.invoice}>\n        <TableCell className=\"font-medium\">{row.invoice}</TableCell>\n        <TableCell className=\"text-right\">{row.amount}</TableCell>\n      </TableRow>\n    ))}\n  </TableBody>\n</Table>"
+    },
+    {
+      "module": "tabs",
+      "name": "Tabs",
+      "category": "Navigation",
+      "status": "Stable",
+      "description": "Switches between sibling panels of content within the same context, one visible at a time.",
+      "exports": [
+        "Tabs",
+        "TabsContent",
+        "TabsList",
+        "TabsTrigger",
+        "tabsListVariants"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants } from 'timds'",
+      "variants": {
+        "tabPlacement": [
+          "top",
+          "bottom",
+          "start",
+          "end"
+        ]
+      },
+      "props": [
+        {
+          "name": "defaultValue",
+          "description": "Value of the tab selected on mount (uncontrolled)."
+        },
+        {
+          "name": "tabPlacement",
+          "description": "Placement of the tab bar relative to the content.",
+          "options": [
+            "top",
+            "bottom",
+            "start",
+            "end"
+          ],
+          "default": "top"
+        }
+      ],
+      "example": "import { Tabs, TabsContent, TabsList, TabsTrigger } from 'timds'\n\n<Tabs defaultValue=\"home\">\n  <TabsList variant=\"pill\">\n    <TabsTrigger value=\"home\">Home</TabsTrigger>\n    <TabsTrigger value=\"products\">Products</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"home\">Home panel</TabsContent>\n  <TabsContent value=\"products\">Products panel</TabsContent>\n</Tabs>\n\n// Editable tabs\n<TabsTrigger value=\"1\" closable onClose={() => remove('1')}>\n  Tab 1\n</TabsTrigger>"
+    },
+    {
+      "module": "textarea",
+      "name": "Textarea",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A multi-line text field for free-form input that can span several lines.",
+      "exports": [
+        "Textarea"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Textarea } from 'timds'",
+      "variants": {},
+      "props": [
+        {
+          "name": "placeholder",
+          "description": "Placeholder text."
+        },
+        {
+          "name": "disabled",
+          "description": "Disable the field."
+        },
+        {
+          "name": "rows",
+          "description": "Initial visible number of text lines."
+        }
+      ],
+      "example": "import { Textarea } from 'timds'\n\n// Com label associado (nome acessível)\n<label htmlFor=\"bio\">Bio</label>\n<Textarea id=\"bio\" placeholder=\"Tell us about yourself…\" />\n\n// Estado de erro\n<Textarea aria-invalid aria-describedby=\"bio-error\" />\n\n// Desabilitado\n<Textarea disabled value=\"Read-only\" />"
+    },
+    {
+      "module": "sonner",
+      "name": "Toaster",
+      "category": "Feedback",
+      "status": "Stable",
+      "description": "Brief, non-blocking notifications anchored to a corner of the screen. Built on [sonner](https://sonner.emilkowal.ski/): mount `<Toaster />` once, then fire toasts from anywhere with the imperative `toast` function.",
+      "exports": [
+        "Toaster",
+        "toast"
+      ],
+      "typeExports": [
+        "ToasterProps"
+      ],
+      "importStatement": "import { Toaster, toast, ToasterProps } from 'timds'",
+      "variants": {
+        "position": [
+          "top-left",
+          "top-center",
+          "top-right",
+          "bottom-left",
+          "bottom-center",
+          "bottom-right"
+        ],
+        "theme": [
+          "light",
+          "dark",
+          "system"
+        ]
+      },
+      "props": [
+        {
+          "name": "position",
+          "description": "Where the stack of toasts is anchored on screen.",
+          "options": [
+            "top-left",
+            "top-center",
+            "top-right",
+            "bottom-left",
+            "bottom-center",
+            "bottom-right"
+          ],
+          "default": "bottom-right"
+        },
+        {
+          "name": "richColors",
+          "description": "Colorize toasts by type (success/error/warning/info) using the design tokens.",
+          "default": "true"
+        },
+        {
+          "name": "closeButton",
+          "description": "Render an explicit close (×) button on every toast."
+        },
+        {
+          "name": "expand",
+          "description": "Keep toasts expanded instead of stacking them collapsed."
+        },
+        {
+          "name": "duration",
+          "description": "Default auto-dismiss time in ms (per toast can override).",
+          "default": "4000"
+        },
+        {
+          "name": "visibleToasts",
+          "description": "How many toasts are shown at once before older ones collapse.",
+          "default": "3"
+        },
+        {
+          "name": "theme",
+          "description": "Sonner’s internal theme. Colors here come from tokens, so this rarely matters; ",
+          "options": [
+            "light",
+            "dark",
+            "system"
+          ]
+        }
+      ],
+      "example": "import { Toaster } from 'timds'\n\nexport function App({ children }) {\n  return (\n    <>\n      {children}\n      <Toaster />\n    </>\n  )\n}"
+    },
+    {
+      "module": "toggle",
+      "name": "Toggle",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A two-state button that stays pressed once activated — for binary, on/off controls like a formatting mark in a toolbar.",
+      "exports": [
+        "Toggle",
+        "toggleVariants"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Toggle, toggleVariants } from 'timds'",
+      "variants": {
+        "variant": [
+          "default",
+          "outline"
+        ],
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "variant",
+          "description": "Visual style: transparent (",
+          "options": [
+            "default",
+            "outline"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Control height and minimum width.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the toggle."
+        },
+        {
+          "name": "pressed",
+          "description": "Controlled pressed state."
+        },
+        {
+          "name": "defaultPressed",
+          "description": "Initial pressed state (uncontrolled)."
+        }
+      ],
+      "example": "import { Toggle } from 'timds'\nimport { Bold } from 'lucide-react'\n\nfunction BoldToggle() {\n  return (\n    <Toggle aria-label=\"Bold\">\n      <Bold />\n    </Toggle>\n  )\n}"
+    },
+    {
+      "module": "toggle-group",
+      "name": "ToggleGroup",
+      "category": "Data Entry",
+      "status": "Stable",
+      "description": "A set of **Toggle** buttons that share styling and coordinate selection — the building block for segmented controls and formatting toolbars.",
+      "exports": [
+        "ToggleGroup",
+        "ToggleGroupItem"
+      ],
+      "typeExports": [],
+      "importStatement": "import { ToggleGroup, ToggleGroupItem } from 'timds'",
+      "variants": {
+        "type": [
+          "single",
+          "multiple"
+        ],
+        "variant": [
+          "default",
+          "outline"
+        ],
+        "size": [
+          "sm",
+          "default",
+          "lg"
+        ]
+      },
+      "props": [
+        {
+          "name": "type",
+          "description": "Single (",
+          "options": [
+            "single",
+            "multiple"
+          ],
+          "default": "single"
+        },
+        {
+          "name": "variant",
+          "description": "Visual style shared by every item.",
+          "options": [
+            "default",
+            "outline"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "size",
+          "description": "Item height shared by every item.",
+          "options": [
+            "sm",
+            "default",
+            "lg"
+          ],
+          "default": "default"
+        },
+        {
+          "name": "spacing",
+          "description": "Gap (theme units) between items. ",
+          "default": "0"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables every item in the group."
+        }
+      ],
+      "example": "import { ToggleGroup, ToggleGroupItem } from 'timds'\nimport { AlignLeft, AlignCenter, AlignRight } from 'lucide-react'\n\n// Single selection (radiogroup)\n<ToggleGroup type=\"single\" defaultValue=\"left\" aria-label=\"Text alignment\">\n  <ToggleGroupItem value=\"left\" aria-label=\"Align left\">\n    <AlignLeft />\n  </ToggleGroupItem>\n  <ToggleGroupItem value=\"center\" aria-label=\"Align center\">\n    <AlignCenter />\n  </ToggleGroupItem>\n  <ToggleGroupItem value=\"right\" aria-label=\"Align right\">\n    <AlignRight />\n  </ToggleGroupItem>\n</ToggleGroup>"
+    },
+    {
+      "module": "tooltip",
+      "name": "Tooltip",
+      "category": "Overlays",
+      "status": "Stable",
+      "description": "A small floating label that explains an element on hover or keyboard focus.",
+      "exports": [
+        "Tooltip",
+        "TooltipContent",
+        "TooltipProvider",
+        "TooltipTrigger"
+      ],
+      "typeExports": [],
+      "importStatement": "import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'timds'",
+      "variants": {},
+      "props": [],
+      "example": "import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'timds'\n\nfunction SaveButton() {\n  return (\n    <TooltipProvider>\n      <Tooltip>\n        <TooltipTrigger asChild>\n          <Button variant=\"outline\" size=\"icon\" aria-label=\"Save\">\n            <SaveIcon />\n          </Button>\n        </TooltipTrigger>\n        <TooltipContent>Save changes</TooltipContent>\n      </Tooltip>\n    </TooltipProvider>\n  )\n}"
+    }
+  ],
+  "tokens": {
+    "radius": "0.75rem",
+    "fontSans": "Inter",
+    "colors": [
+      {
+        "name": "background",
+        "light": "oklch(1 0 0)",
+        "dark": "oklch(0.159 0.023 279.4)",
+        "utilities": [
+          "bg-background",
+          "text-background",
+          "border-background"
+        ]
+      },
+      {
+        "name": "foreground",
+        "light": "oklch(0.202 0.02 289.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-foreground",
+          "text-foreground",
+          "border-foreground"
+        ]
+      },
+      {
+        "name": "card",
+        "light": "oklch(1 0 0)",
+        "dark": "oklch(0.208 0.041 282.2)",
+        "utilities": [
+          "bg-card",
+          "text-card",
+          "border-card"
+        ]
+      },
+      {
+        "name": "card-foreground",
+        "light": "oklch(0.202 0.02 289.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-card-foreground",
+          "text-card-foreground",
+          "border-card-foreground"
+        ]
+      },
+      {
+        "name": "popover",
+        "light": "oklch(1 0 0)",
+        "dark": "oklch(0.231 0.044 284.4)",
+        "utilities": [
+          "bg-popover",
+          "text-popover",
+          "border-popover"
+        ]
+      },
+      {
+        "name": "popover-foreground",
+        "light": "oklch(0.202 0.02 289.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-popover-foreground",
+          "text-popover-foreground",
+          "border-popover-foreground"
+        ]
+      },
+      {
+        "name": "primary",
+        "light": "oklch(0.549 0.233 300.8)",
+        "dark": "oklch(0.56 0.217 302.6)",
+        "utilities": [
+          "bg-primary",
+          "text-primary",
+          "border-primary"
+        ]
+      },
+      {
+        "name": "primary-foreground",
+        "light": "oklch(0.99 0 0)",
+        "dark": "oklch(0.99 0 0)",
+        "utilities": [
+          "bg-primary-foreground",
+          "text-primary-foreground",
+          "border-primary-foreground"
+        ]
+      },
+      {
+        "name": "primary-text",
+        "light": "oklch(0.52 0.22 300.8)",
+        "dark": "oklch(0.74 0.18 302.6)",
+        "utilities": [
+          "bg-primary-text",
+          "text-primary-text",
+          "border-primary-text"
+        ]
+      },
+      {
+        "name": "secondary",
+        "light": "oklch(0.965 0.012 296.4)",
+        "dark": "oklch(0.238 0.047 285.9)",
+        "utilities": [
+          "bg-secondary",
+          "text-secondary",
+          "border-secondary"
+        ]
+      },
+      {
+        "name": "secondary-foreground",
+        "light": "oklch(0.286 0.047 290.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-secondary-foreground",
+          "text-secondary-foreground",
+          "border-secondary-foreground"
+        ]
+      },
+      {
+        "name": "muted",
+        "light": "oklch(0.965 0.012 296.4)",
+        "dark": "oklch(0.238 0.047 285.9)",
+        "utilities": [
+          "bg-muted",
+          "text-muted",
+          "border-muted"
+        ]
+      },
+      {
+        "name": "muted-foreground",
+        "light": "oklch(0.535 0.042 286.6)",
+        "dark": "oklch(0.665 0.063 279.3)",
+        "utilities": [
+          "bg-muted-foreground",
+          "text-muted-foreground",
+          "border-muted-foreground"
+        ]
+      },
+      {
+        "name": "accent",
+        "light": "oklch(0.946 0.023 299.4)",
+        "dark": "oklch(0.303 0.064 285.7)",
+        "utilities": [
+          "bg-accent",
+          "text-accent",
+          "border-accent"
+        ]
+      },
+      {
+        "name": "accent-foreground",
+        "light": "oklch(0.286 0.047 290.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-accent-foreground",
+          "text-accent-foreground",
+          "border-accent-foreground"
+        ]
+      },
+      {
+        "name": "destructive",
+        "light": "oklch(0.564 0.222 17.6)",
+        "dark": "oklch(0.56 0.193 12.7)",
+        "utilities": [
+          "bg-destructive",
+          "text-destructive",
+          "border-destructive"
+        ]
+      },
+      {
+        "name": "destructive-foreground",
+        "light": "oklch(0.99 0 0)",
+        "dark": "oklch(0.99 0 0)",
+        "utilities": [
+          "bg-destructive-foreground",
+          "text-destructive-foreground",
+          "border-destructive-foreground"
+        ]
+      },
+      {
+        "name": "destructive-text",
+        "light": "oklch(0.54 0.2 17.6)",
+        "dark": "oklch(0.72 0.17 12.7)",
+        "utilities": [
+          "bg-destructive-text",
+          "text-destructive-text",
+          "border-destructive-text"
+        ]
+      },
+      {
+        "name": "border",
+        "light": "oklch(0.9 0.018 297.5)",
+        "dark": "oklch(0.34 0.05 285.7)",
+        "utilities": [
+          "bg-border",
+          "text-border",
+          "border-border"
+        ]
+      },
+      {
+        "name": "input",
+        "light": "oklch(0.87 0.02 297.5)",
+        "dark": "oklch(0.39 0.05 285.3)",
+        "utilities": [
+          "bg-input",
+          "text-input",
+          "border-input"
+        ]
+      },
+      {
+        "name": "ring",
+        "light": "oklch(0.549 0.233 300.8)",
+        "dark": "oklch(0.622 0.217 302.6)",
+        "utilities": [
+          "bg-ring",
+          "text-ring",
+          "border-ring"
+        ]
+      },
+      {
+        "name": "chart-1",
+        "light": "oklch(0.549 0.233 300.8)",
+        "dark": "oklch(0.622 0.217 302.6)",
+        "utilities": [
+          "bg-chart-1",
+          "text-chart-1",
+          "border-chart-1"
+        ]
+      },
+      {
+        "name": "chart-2",
+        "light": "oklch(0.656 0.132 238.2)",
+        "dark": "oklch(0.757 0.122 237.7)",
+        "utilities": [
+          "bg-chart-2",
+          "text-chart-2",
+          "border-chart-2"
+        ]
+      },
+      {
+        "name": "chart-3",
+        "light": "oklch(0.46 0.161 271.4)",
+        "dark": "oklch(0.533 0.147 266.5)",
+        "utilities": [
+          "bg-chart-3",
+          "text-chart-3",
+          "border-chart-3"
+        ]
+      },
+      {
+        "name": "chart-4",
+        "light": "oklch(0.614 0.195 352.8)",
+        "dark": "oklch(0.672 0.189 352.4)",
+        "utilities": [
+          "bg-chart-4",
+          "text-chart-4",
+          "border-chart-4"
+        ]
+      },
+      {
+        "name": "chart-5",
+        "light": "oklch(0.631 0.134 162.7)",
+        "dark": "oklch(0.773 0.153 163.2)",
+        "utilities": [
+          "bg-chart-5",
+          "text-chart-5",
+          "border-chart-5"
+        ]
+      },
+      {
+        "name": "sidebar",
+        "light": "oklch(0.984 0.005 297.7)",
+        "dark": "oklch(0.172 0.031 282.7)",
+        "utilities": [
+          "bg-sidebar",
+          "text-sidebar",
+          "border-sidebar"
+        ]
+      },
+      {
+        "name": "sidebar-foreground",
+        "light": "oklch(0.202 0.02 289.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-sidebar-foreground",
+          "text-sidebar-foreground",
+          "border-sidebar-foreground"
+        ]
+      },
+      {
+        "name": "sidebar-primary",
+        "light": "oklch(0.549 0.233 300.8)",
+        "dark": "oklch(0.56 0.217 302.6)",
+        "utilities": [
+          "bg-sidebar-primary",
+          "text-sidebar-primary",
+          "border-sidebar-primary"
+        ]
+      },
+      {
+        "name": "sidebar-primary-foreground",
+        "light": "oklch(0.99 0 0)",
+        "dark": "oklch(0.99 0 0)",
+        "utilities": [
+          "bg-sidebar-primary-foreground",
+          "text-sidebar-primary-foreground",
+          "border-sidebar-primary-foreground"
+        ]
+      },
+      {
+        "name": "sidebar-accent",
+        "light": "oklch(0.946 0.023 299.4)",
+        "dark": "oklch(0.238 0.047 285.9)",
+        "utilities": [
+          "bg-sidebar-accent",
+          "text-sidebar-accent",
+          "border-sidebar-accent"
+        ]
+      },
+      {
+        "name": "sidebar-accent-foreground",
+        "light": "oklch(0.286 0.047 290.1)",
+        "dark": "oklch(0.939 0.015 281.9)",
+        "utilities": [
+          "bg-sidebar-accent-foreground",
+          "text-sidebar-accent-foreground",
+          "border-sidebar-accent-foreground"
+        ]
+      },
+      {
+        "name": "sidebar-border",
+        "light": "oklch(0.925 0.016 297.5)",
+        "dark": "oklch(0.303 0.064 285.7)",
+        "utilities": [
+          "bg-sidebar-border",
+          "text-sidebar-border",
+          "border-sidebar-border"
+        ]
+      },
+      {
+        "name": "sidebar-ring",
+        "light": "oklch(0.549 0.233 300.8)",
+        "dark": "oklch(0.622 0.217 302.6)",
+        "utilities": [
+          "bg-sidebar-ring",
+          "text-sidebar-ring",
+          "border-sidebar-ring"
+        ]
+      },
+      {
+        "name": "success",
+        "light": "oklch(0.627 0.17 149.2)",
+        "dark": "oklch(0.773 0.153 163.2)",
+        "utilities": [
+          "bg-success",
+          "text-success",
+          "border-success"
+        ]
+      },
+      {
+        "name": "success-foreground",
+        "light": "oklch(0.22 0.05 149.2)",
+        "dark": "oklch(0.18 0.03 165)",
+        "utilities": [
+          "bg-success-foreground",
+          "text-success-foreground",
+          "border-success-foreground"
+        ]
+      },
+      {
+        "name": "success-text",
+        "light": "oklch(0.52 0.15 149.2)",
+        "dark": "oklch(0.773 0.153 163.2)",
+        "utilities": [
+          "bg-success-text",
+          "text-success-text",
+          "border-success-text"
+        ]
+      },
+      {
+        "name": "warning",
+        "light": "oklch(0.666 0.157 58.3)",
+        "dark": "oklch(0.837 0.164 84.4)",
+        "utilities": [
+          "bg-warning",
+          "text-warning",
+          "border-warning"
+        ]
+      },
+      {
+        "name": "warning-foreground",
+        "light": "oklch(0.22 0.05 58.3)",
+        "dark": "oklch(0.2 0.04 80)",
+        "utilities": [
+          "bg-warning-foreground",
+          "text-warning-foreground",
+          "border-warning-foreground"
+        ]
+      },
+      {
+        "name": "warning-text",
+        "light": "oklch(0.52 0.13 58.3)",
+        "dark": "oklch(0.837 0.164 84.4)",
+        "utilities": [
+          "bg-warning-text",
+          "text-warning-text",
+          "border-warning-text"
+        ]
+      },
+      {
+        "name": "info",
+        "light": "oklch(0.685 0.148 237.3)",
+        "dark": "oklch(0.757 0.122 237.7)",
+        "utilities": [
+          "bg-info",
+          "text-info",
+          "border-info"
+        ]
+      },
+      {
+        "name": "info-foreground",
+        "light": "oklch(0.22 0.05 237.3)",
+        "dark": "oklch(0.18 0.03 240)",
+        "utilities": [
+          "bg-info-foreground",
+          "text-info-foreground",
+          "border-info-foreground"
+        ]
+      },
+      {
+        "name": "info-text",
+        "light": "oklch(0.52 0.15 237.3)",
+        "dark": "oklch(0.757 0.122 237.7)",
+        "utilities": [
+          "bg-info-text",
+          "text-info-text",
+          "border-info-text"
+        ]
+      }
+    ]
+  },
+  "examples": [
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "description": "A full analytics dashboard: a collapsible `Sidebar` + `SidebarInset` shell, a sticky header, KPI `Card`s with trend `Badge`s, an area and a donut `Chart`, and a recent-sales `Table`. The capstone composition.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport {\n  ArrowDownRight,\n  ArrowUpRight,\n  BarChart3,\n  Bell,\n  CreditCard,\n  DollarSign,\n  LayoutDashboard,\n  type LucideIcon,\n  Search,\n  Settings,\n  Users,\n} from 'lucide-react'\nimport { Area, AreaChart, CartesianGrid, Pie, PieChart, XAxis } from 'recharts'\nimport { expect, within } from 'storybook/test'\n\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardHeader,\n  CardTitle,\n} from '@/components/ui/card'\nimport {\n  type ChartConfig,\n  ChartContainer,\n  ChartLegend,\n  ChartLegendContent,\n  ChartTooltip,\n  ChartTooltipContent,\n} from '@/components/ui/chart'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\nimport {\n  Sidebar,\n  SidebarContent,\n  SidebarFooter,\n  SidebarGroup,\n  SidebarGroupContent,\n  SidebarGroupLabel,\n  SidebarHeader,\n  SidebarInset,\n  SidebarMenu,\n  SidebarMenuBadge,\n  SidebarMenuButton,\n  SidebarMenuItem,\n  SidebarProvider,\n  SidebarRail,\n  SidebarTrigger,\n} from '@/components/ui/sidebar'\nimport {\n  Table,\n  TableBody,\n  TableCell,\n  TableHead,\n  TableHeader,\n  TableRow,\n} from '@/components/ui/table'\n\n/**\n * **Dashboard** — o exemplo mais completo: um shell de aplicação com `Sidebar`\n * colapsável, cabeçalho fixo, cartões de métrica com indicadores de tendência,\n * dois gráficos (`Chart`/Recharts) e uma tabela de vendas recentes. Reúne quase\n * todas as famílias do design system numa única tela coerente.\n */\nconst meta = {\n  title: 'Examples/Dashboard',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      story: { inline: false, height: '720px' },\n      description: {\n        component:\n          'A full analytics dashboard: a collapsible `Sidebar` + `SidebarInset` ' +\n          'shell, a sticky header, KPI `Card`s with trend `Badge`s, an area and a ' +\n          'donut `Chart`, and a recent-sales `Table`. The capstone composition.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\n/* -------------------------------------------------------------------------- */\n/*  Dados                                                                       */\n/* -------------------------------------------------------------------------- */\n\nconst revenueData = [\n  { month: 'Jan', receita: 4200, despesa: 2400 },\n  { month: 'Fev', receita: 5100, despesa: 2800 },\n  { month: 'Mar', receita: 4800, despesa: 3100 },\n  { month: 'Abr', receita: 6300, despesa: 3300 },\n  { month: 'Mai', receita: 7200, despesa: 3600 },\n  { month: 'Jun', receita: 8100, despesa: 3900 },\n]\n\nconst revenueConfig = {\n  receita: { label: 'Receita', color: 'var(--chart-1)' },\n  despesa: { label: 'Despesa', color: 'var(--chart-2)' },\n} satisfies ChartConfig\n\nconst channelData = [\n  { channel: 'organico', visitas: 1240, fill: 'var(--color-organico)' },\n  { channel: 'social', visitas: 860, fill: 'var(--color-social)' },\n  { channel: 'pago', visitas: 540, fill: 'var(--color-pago)' },\n  { channel: 'direto', visitas: 420, fill: 'var(--color-direto)' },\n]\n\nconst channelConfig = {\n  visitas: { label: 'Visitas' },\n  organico: { label: 'Orgânico', color: 'var(--chart-1)' },\n  social: { label: 'Social', color: 'var(--chart-2)' },\n  pago: { label: 'Pago', color: 'var(--chart-3)' },\n  direto: { label: 'Direto', color: 'var(--chart-4)' },\n} satisfies ChartConfig\n\nconst kpis: {\n  label: string\n  value: string\n  delta: string\n  up: boolean\n  icon: LucideIcon\n}[] = [\n  { label: 'Receita', value: 'R$ 45.231', delta: '+20,1%', up: true, icon: DollarSign },\n  { label: 'Assinantes', value: '2.350', delta: '+12,4%', up: true, icon: Users },\n  { label: 'Vendas', value: '1.024', delta: '+8,2%', up: true, icon: CreditCard },\n  {\n    label: 'Cancelamentos',\n    value: '38',\n    delta: '-3,1%',\n    up: false,\n    icon: ArrowDownRight,\n  },\n]\n\nconst sales = [\n  { name: 'Ana Souza', email: 'ana@timds.dev', amount: 'R$ 1.999', img: 47 },\n  { name: 'Bruno Lima', email: 'bruno@timds.dev', amount: 'R$ 39', img: 12 },\n  { name: 'Carla Dias', email: 'carla@timds.dev', amount: 'R$ 299', img: 5 },\n  { name: 'Diego Reis', email: 'diego@timds.dev', amount: 'R$ 99', img: 33 },\n]\n\nconst navItems: { title: string; icon: LucideIcon; badge?: string }[] = [\n  { title: 'Dashboard', icon: LayoutDashboard },\n  { title: 'Análises', icon: BarChart3 },\n  { title: 'Clientes', icon: Users, badge: '24' },\n  { title: 'Pagamentos', icon: CreditCard },\n  { title: 'Configurações', icon: Settings },\n]\n\n/* -------------------------------------------------------------------------- */\n/*  Subcomponentes                                                              */\n/* -------------------------------------------------------------------------- */\n\nfunction KpiCard({ label, value, delta, up, icon: Icon }: (typeof kpis)[number]) {\n  return (\n    <Card>\n      <CardHeader className=\"flex flex-row items-center justify-between gap-2 pb-2\">\n        <CardDescription>{label}</CardDescription>\n        <Icon className=\"size-4 text-muted-foreground\" aria-hidden=\"true\" />\n      </CardHeader>\n      <CardContent className=\"flex flex-col gap-1\">\n        <span className=\"font-bold text-2xl tracking-tight\">{value}</span>\n        <Badge variant={up ? 'success' : 'destructive'} className=\"w-fit gap-1\">\n          {up ? (\n            <ArrowUpRight className=\"size-3\" aria-hidden=\"true\" />\n          ) : (\n            <ArrowDownRight className=\"size-3\" aria-hidden=\"true\" />\n          )}\n          {delta}\n        </Badge>\n      </CardContent>\n    </Card>\n  )\n}\n\nfunction DashboardApp() {\n  return (\n    <SidebarProvider>\n      <Sidebar collapsible=\"icon\">\n        <SidebarHeader>\n          <SidebarMenu>\n            <SidebarMenuItem>\n              <SidebarMenuButton size=\"lg\" tooltip=\"timds\">\n                <div className=\"flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground\">\n                  t\n                </div>\n                <div className=\"flex flex-col gap-0.5 leading-none\">\n                  <span className=\"font-semibold\">timds</span>\n                  <span className=\"text-xs\">Analytics</span>\n                </div>\n              </SidebarMenuButton>\n            </SidebarMenuItem>\n          </SidebarMenu>\n        </SidebarHeader>\n        <SidebarContent>\n          <SidebarGroup>\n            <SidebarGroupLabel>Plataforma</SidebarGroupLabel>\n            <SidebarGroupContent>\n              <SidebarMenu>\n                {navItems.map((item, i) => (\n                  <SidebarMenuItem key={item.title}>\n                    <SidebarMenuButton tooltip={item.title} isActive={i === 0}>\n                      <item.icon />\n                      <span>{item.title}</span>\n                    </SidebarMenuButton>\n                    {item.badge ? (\n                      <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>\n                    ) : null}\n                  </SidebarMenuItem>\n                ))}\n              </SidebarMenu>\n            </SidebarGroupContent>\n          </SidebarGroup>\n        </SidebarContent>\n        <SidebarFooter>\n          <SidebarMenu>\n            <SidebarMenuItem>\n              <SidebarMenuButton size=\"lg\" tooltip=\"Ana Souza\">\n                <Avatar className=\"size-8\">\n                  <AvatarImage src=\"https://i.pravatar.cc/80?img=47\" alt=\"Ana Souza\" />\n                  <AvatarFallback>AS</AvatarFallback>\n                </Avatar>\n                <div className=\"flex flex-col gap-0.5 leading-none\">\n                  <span className=\"font-semibold\">Ana Souza</span>\n                  <span className=\"text-xs\">ana@timds.dev</span>\n                </div>\n              </SidebarMenuButton>\n            </SidebarMenuItem>\n          </SidebarMenu>\n        </SidebarFooter>\n        <SidebarRail />\n      </Sidebar>\n\n      <SidebarInset>\n        {/* Cabeçalho fixo */}\n        <header className=\"sticky top-0 z-10 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur\">\n          <SidebarTrigger />\n          <h1 className=\"font-semibold text-base\">Dashboard</h1>\n          <div className=\"ml-auto flex items-center gap-2\">\n            <InputGroup className=\"hidden w-56 sm:flex\">\n              <InputGroupAddon>\n                <Search className=\"size-4\" aria-hidden=\"true\" />\n              </InputGroupAddon>\n              <InputGroupInput placeholder=\"Buscar...\" aria-label=\"Buscar\" />\n            </InputGroup>\n            <Button variant=\"ghost\" size=\"icon\" aria-label=\"Notificações\">\n              <Bell className=\"size-4\" aria-hidden=\"true\" />\n            </Button>\n            <DropdownMenu>\n              <DropdownMenuTrigger asChild>\n                <Button\n                  variant=\"ghost\"\n                  size=\"icon\"\n                  className=\"rounded-full\"\n                  aria-label=\"Conta\"\n                >\n                  <Avatar className=\"size-7\">\n                    <AvatarImage src=\"https://i.pravatar.cc/80?img=47\" alt=\"Ana Souza\" />\n                    <AvatarFallback>AS</AvatarFallback>\n                  </Avatar>\n                </Button>\n              </DropdownMenuTrigger>\n              <DropdownMenuContent align=\"end\">\n                <DropdownMenuLabel>Minha conta</DropdownMenuLabel>\n                <DropdownMenuItem>Perfil</DropdownMenuItem>\n                <DropdownMenuItem>Faturamento</DropdownMenuItem>\n                <DropdownMenuSeparator />\n                <DropdownMenuItem variant=\"destructive\">Sair</DropdownMenuItem>\n              </DropdownMenuContent>\n            </DropdownMenu>\n          </div>\n        </header>\n\n        {/* Conteúdo */}\n        <div className=\"flex flex-1 flex-col gap-4 p-4\">\n          {/* KPIs */}\n          <div className=\"grid gap-4 sm:grid-cols-2 lg:grid-cols-4\">\n            {kpis.map((kpi) => (\n              <KpiCard key={kpi.label} {...kpi} />\n            ))}\n          </div>\n\n          {/* Gráficos */}\n          <div className=\"grid gap-4 lg:grid-cols-3\">\n            <Card className=\"lg:col-span-2\">\n              <CardHeader>\n                <CardTitle>Receita x Despesa</CardTitle>\n                <CardDescription>Últimos 6 meses</CardDescription>\n              </CardHeader>\n              <CardContent>\n                <ChartContainer config={revenueConfig} className=\"h-[260px] w-full\">\n                  <AreaChart\n                    accessibilityLayer\n                    data={revenueData}\n                    margin={{ left: 12, right: 12 }}\n                  >\n                    <defs>\n                      <linearGradient id=\"dashReceita\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n                        <stop\n                          offset=\"5%\"\n                          stopColor=\"var(--color-receita)\"\n                          stopOpacity={0.8}\n                        />\n                        <stop\n                          offset=\"95%\"\n                          stopColor=\"var(--color-receita)\"\n                          stopOpacity={0.1}\n                        />\n                      </linearGradient>\n                      <linearGradient id=\"dashDespesa\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n                        <stop\n                          offset=\"5%\"\n                          stopColor=\"var(--color-despesa)\"\n                          stopOpacity={0.8}\n                        />\n                        <stop\n                          offset=\"95%\"\n                          stopColor=\"var(--color-despesa)\"\n                          stopOpacity={0.1}\n                        />\n                      </linearGradient>\n                    </defs>\n                    <CartesianGrid vertical={false} />\n                    <XAxis\n                      dataKey=\"month\"\n                      tickLine={false}\n                      axisLine={false}\n                      tickMargin={8}\n                    />\n                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />\n                    <Area\n                      dataKey=\"receita\"\n                      type=\"natural\"\n                      fill=\"url(#dashReceita)\"\n                      stroke=\"var(--color-receita)\"\n                      stackId=\"a\"\n                    />\n                    <Area\n                      dataKey=\"despesa\"\n                      type=\"natural\"\n                      fill=\"url(#dashDespesa)\"\n                      stroke=\"var(--color-despesa)\"\n                      stackId=\"b\"\n                    />\n                    <ChartLegend content={<ChartLegendContent />} />\n                  </AreaChart>\n                </ChartContainer>\n              </CardContent>\n            </Card>\n\n            <Card>\n              <CardHeader>\n                <CardTitle>Tráfego por canal</CardTitle>\n                <CardDescription>Origem das visitas</CardDescription>\n              </CardHeader>\n              <CardContent>\n                <ChartContainer\n                  config={channelConfig}\n                  className=\"mx-auto aspect-square max-h-[260px]\"\n                >\n                  <PieChart>\n                    <ChartTooltip\n                      content={<ChartTooltipContent nameKey=\"visitas\" hideLabel />}\n                    />\n                    <Pie\n                      data={channelData}\n                      dataKey=\"visitas\"\n                      nameKey=\"channel\"\n                      innerRadius={55}\n                    />\n                    <ChartLegend\n                      content={<ChartLegendContent nameKey=\"channel\" />}\n                      className=\"flex-wrap gap-2\"\n                    />\n                  </PieChart>\n                </ChartContainer>\n              </CardContent>\n            </Card>\n          </div>\n\n          {/* Vendas recentes */}\n          <Card>\n            <CardHeader>\n              <CardTitle>Vendas recentes</CardTitle>\n              <CardDescription>Você fez 265 vendas este mês.</CardDescription>\n            </CardHeader>\n            <CardContent className=\"px-0\">\n              <Table>\n                <TableHeader>\n                  <TableRow>\n                    <TableHead className=\"pl-6\">Cliente</TableHead>\n                    <TableHead className=\"text-right pr-6\">Valor</TableHead>\n                  </TableRow>\n                </TableHeader>\n                <TableBody>\n                  {sales.map((sale) => (\n                    <TableRow key={sale.email}>\n                      <TableCell className=\"pl-6\">\n                        <div className=\"flex items-center gap-3\">\n                          <Avatar className=\"size-8\">\n                            <AvatarImage\n                              src={`https://i.pravatar.cc/80?img=${sale.img}`}\n                              alt={sale.name}\n                            />\n                            <AvatarFallback>\n                              {sale.name\n                                .split(' ')\n                                .map((n) => n[0])\n                                .join('')}\n                            </AvatarFallback>\n                          </Avatar>\n                          <div className=\"flex flex-col\">\n                            <span className=\"font-medium\">{sale.name}</span>\n                            <span className=\"text-muted-foreground text-xs\">\n                              {sale.email}\n                            </span>\n                          </div>\n                        </div>\n                      </TableCell>\n                      <TableCell className=\"pr-6 text-right font-medium\">\n                        {sale.amount}\n                      </TableCell>\n                    </TableRow>\n                  ))}\n                </TableBody>\n              </Table>\n            </CardContent>\n          </Card>\n        </div>\n      </SidebarInset>\n    </SidebarProvider>\n  )\n}\n\nexport const Default: Story = {\n  render: () => <DashboardApp />,\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    await expect(canvas.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument()\n    await expect(canvas.getByText('R$ 45.231')).toBeInTheDocument()\n    // A navegação marca o item ativo.\n    await expect(canvas.getByRole('button', { name: 'Dashboard' })).toHaveAttribute(\n      'data-active',\n      'true',\n    )\n  },\n}\n"
+    },
+    {
+      "id": "login",
+      "name": "Login",
+      "description": "A focused authentication card composed from `Card`, `InputGroup`, `Button`, `Checkbox` and `Separator`. Inputs are labelled, the icon-only nature of the addons is decorative, and every color comes from a semantic token.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport { Lock, Mail } from 'lucide-react'\nimport { expect, within } from 'storybook/test'\n\nimport { Button } from '@/components/ui/button'\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from '@/components/ui/card'\nimport { Checkbox } from '@/components/ui/checkbox'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\nimport { Separator } from '@/components/ui/separator'\n\n/**\n * **Login** — o exemplo mais simples do conjunto. Mostra como uma única `Card`\n * organiza um formulário curto: campos com ícone (`InputGroup`), ações primárias\n * e secundárias, um divisor semântico e provedores sociais. Tudo apoiado nos\n * tokens do design system, sem nenhuma cor solta.\n */\nconst meta = {\n  title: 'Examples/Login',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A focused authentication card composed from `Card`, `InputGroup`, ' +\n          '`Button`, `Checkbox` and `Separator`. Inputs are labelled, the ' +\n          'icon-only nature of the addons is decorative, and every color comes ' +\n          'from a semantic token.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\nexport const Default: Story = {\n  render: () => (\n    <div className=\"flex min-h-[calc(100vh-3rem)] items-center justify-center\">\n      <Card className=\"w-full max-w-sm\">\n        <CardHeader className=\"text-center\">\n          <div className=\"mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm\">\n            <Lock className=\"size-5\" aria-hidden=\"true\" />\n          </div>\n          <CardTitle className=\"text-xl\">Acesse sua conta</CardTitle>\n          <CardDescription>Entre com seu e-mail e senha para continuar</CardDescription>\n        </CardHeader>\n\n        <CardContent className=\"flex flex-col gap-4\">\n          <div className=\"flex flex-col gap-2\">\n            <label htmlFor=\"login-email\" className=\"text-sm font-medium\">\n              E-mail\n            </label>\n            <InputGroup>\n              <InputGroupAddon>\n                <Mail className=\"size-4\" aria-hidden=\"true\" />\n              </InputGroupAddon>\n              <InputGroupInput\n                id=\"login-email\"\n                type=\"email\"\n                placeholder=\"voce@exemplo.com\"\n                autoComplete=\"email\"\n              />\n            </InputGroup>\n          </div>\n\n          <div className=\"flex flex-col gap-2\">\n            <div className=\"flex items-center justify-between\">\n              <label htmlFor=\"login-password\" className=\"text-sm font-medium\">\n                Senha\n              </label>\n              <a\n                href=\"#redefinir\"\n                className=\"text-sm font-medium text-primary-text hover:underline\"\n              >\n                Esqueceu?\n              </a>\n            </div>\n            <InputGroup>\n              <InputGroupAddon>\n                <Lock className=\"size-4\" aria-hidden=\"true\" />\n              </InputGroupAddon>\n              <InputGroupInput\n                id=\"login-password\"\n                type=\"password\"\n                placeholder=\"••••••••\"\n                autoComplete=\"current-password\"\n              />\n            </InputGroup>\n          </div>\n\n          <label\n            htmlFor=\"login-remember\"\n            className=\"flex items-center gap-2 text-sm text-muted-foreground\"\n          >\n            <Checkbox id=\"login-remember\" defaultChecked /> Manter conectado\n          </label>\n\n          <Button className=\"w-full\">Entrar</Button>\n\n          <div className=\"flex items-center gap-3\">\n            <Separator className=\"flex-1\" />\n            <span className=\"text-xs text-muted-foreground\">ou continue com</span>\n            <Separator className=\"flex-1\" />\n          </div>\n\n          <div className=\"grid grid-cols-2 gap-3\">\n            <Button variant=\"outline\">GitHub</Button>\n            <Button variant=\"outline\">Google</Button>\n          </div>\n        </CardContent>\n\n        <CardFooter className=\"justify-center\">\n          <p className=\"text-sm text-muted-foreground\">\n            Não tem conta?{' '}\n            <a href=\"#criar\" className=\"font-medium text-primary-text hover:underline\">\n              Criar agora\n            </a>\n          </p>\n        </CardFooter>\n      </Card>\n    </div>\n  ),\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    // O título e o CTA principal montam, e o e-mail tem rótulo associado.\n    await expect(canvas.getByText('Acesse sua conta')).toBeInTheDocument()\n    await expect(canvas.getByLabelText('E-mail')).toBeInTheDocument()\n    await expect(canvas.getByRole('button', { name: 'Entrar' })).toBeInTheDocument()\n  },\n}\n"
+    },
+    {
+      "id": "notifications",
+      "name": "Notifications",
+      "description": "A filterable activity feed: `Tabs` switch between all / unread / mentions, each row is an `Item` with media, content and actions, and an unread dot plus a count `Badge` track local state.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport {\n  AtSign,\n  CheckCheck,\n  GitPullRequest,\n  Heart,\n  type LucideIcon,\n  MessageSquare,\n} from 'lucide-react'\nimport { useMemo, useState } from 'react'\nimport { expect, userEvent, within } from 'storybook/test'\n\nimport { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport {\n  Item,\n  ItemActions,\n  ItemContent,\n  ItemDescription,\n  ItemMedia,\n  ItemTitle,\n} from '@/components/ui/item'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\n/**\n * **Notifications** — um feed de atividades filtrável. Mostra `Tabs` como filtro,\n * `Item` como linha rica (ícone, título, descrição e ações) e o uso de um ponto\n * de \"não lida\" + `Badge` de contagem que reagem ao estado local.\n */\nconst meta = {\n  title: 'Examples/Notifications',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A filterable activity feed: `Tabs` switch between all / unread / ' +\n          'mentions, each row is an `Item` with media, content and actions, and an ' +\n          'unread dot plus a count `Badge` track local state.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\ntype Kind = 'comment' | 'mention' | 'pr' | 'like'\n\ntype Note = {\n  id: string\n  kind: Kind\n  title: string\n  description: string\n  when: string\n  read: boolean\n}\n\nconst ICONS: Record<Kind, LucideIcon> = {\n  comment: MessageSquare,\n  mention: AtSign,\n  pr: GitPullRequest,\n  like: Heart,\n}\n\nconst initial: Note[] = [\n  {\n    id: '1',\n    kind: 'mention',\n    title: 'Bruno Lima mencionou você',\n    description: '“@ana pode revisar os tokens de contraste?” em #design-system',\n    when: 'há 5 min',\n    read: false,\n  },\n  {\n    id: '2',\n    kind: 'pr',\n    title: 'PR #128 aguardando revisão',\n    description: 'feat(table): agrupamento de linhas com header fixo',\n    when: 'há 1 hora',\n    read: false,\n  },\n  {\n    id: '3',\n    kind: 'comment',\n    title: 'Carla Dias comentou',\n    description: 'Adorei o novo Donut chart no dashboard!',\n    when: 'há 3 horas',\n    read: false,\n  },\n  {\n    id: '4',\n    kind: 'like',\n    title: 'Diego Reis curtiu sua atualização',\n    description: 'Release v0.4 — novos tokens de texto acessíveis',\n    when: 'ontem',\n    read: true,\n  },\n  {\n    id: '5',\n    kind: 'mention',\n    title: 'Elena Prado mencionou você',\n    description: '“@ana fechamos a sprint amanhã” em #produto',\n    when: 'ontem',\n    read: true,\n  },\n]\n\nfunction NotificationsFeed() {\n  const [notes, setNotes] = useState(initial)\n  const [tab, setTab] = useState<'all' | 'unread' | 'mentions'>('all')\n\n  const unreadCount = notes.filter((n) => !n.read).length\n\n  const visible = useMemo(() => {\n    if (tab === 'unread') return notes.filter((n) => !n.read)\n    if (tab === 'mentions') return notes.filter((n) => n.kind === 'mention')\n    return notes\n  }, [notes, tab])\n\n  function markRead(id: string) {\n    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))\n  }\n\n  function markAll() {\n    setNotes((prev) => prev.map((n) => ({ ...n, read: true })))\n  }\n\n  return (\n    <div className=\"mx-auto max-w-2xl py-2\">\n      <Card>\n        <CardHeader className=\"flex flex-row items-center justify-between gap-2\">\n          <CardTitle className=\"flex items-center gap-2\">\n            Notificações\n            {unreadCount > 0 ? <Badge>{unreadCount}</Badge> : null}\n          </CardTitle>\n          <Button\n            variant=\"ghost\"\n            size=\"sm\"\n            onClick={markAll}\n            disabled={unreadCount === 0}\n          >\n            <CheckCheck className=\"size-4\" aria-hidden=\"true\" /> Marcar todas\n          </Button>\n        </CardHeader>\n\n        <CardContent>\n          <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>\n            <TabsList className=\"w-full\">\n              <TabsTrigger value=\"all\" className=\"flex-1\">\n                Todas\n              </TabsTrigger>\n              <TabsTrigger value=\"unread\" className=\"flex-1\">\n                Não lidas\n              </TabsTrigger>\n              <TabsTrigger value=\"mentions\" className=\"flex-1\">\n                Menções\n              </TabsTrigger>\n            </TabsList>\n\n            <TabsContent value={tab} className=\"pt-3\">\n              <div className=\"flex flex-col gap-1\">\n                {visible.map((note) => {\n                  const Icon = ICONS[note.kind]\n                  return (\n                    <Item key={note.id} variant={note.read ? 'default' : 'muted'}>\n                      <ItemMedia variant=\"icon\">\n                        <Icon className=\"size-4\" aria-hidden=\"true\" />\n                      </ItemMedia>\n                      <ItemContent>\n                        <ItemTitle className=\"flex items-center gap-2\">\n                          {note.title}\n                          {!note.read ? (\n                            <>\n                              <span\n                                className=\"size-2 rounded-full bg-primary\"\n                                aria-hidden=\"true\"\n                              />\n                              <span className=\"sr-only\">Não lida</span>\n                            </>\n                          ) : null}\n                        </ItemTitle>\n                        <ItemDescription>{note.description}</ItemDescription>\n                        <ItemDescription className=\"text-xs\">{note.when}</ItemDescription>\n                      </ItemContent>\n                      <ItemActions>\n                        {!note.read ? (\n                          <Button\n                            variant=\"ghost\"\n                            size=\"sm\"\n                            onClick={() => markRead(note.id)}\n                          >\n                            Marcar lida\n                          </Button>\n                        ) : null}\n                      </ItemActions>\n                    </Item>\n                  )\n                })}\n                {visible.length === 0 ? (\n                  <p className=\"py-10 text-center text-muted-foreground text-sm\">\n                    Tudo em dia. Nenhuma notificação por aqui.\n                  </p>\n                ) : null}\n              </div>\n            </TabsContent>\n          </Tabs>\n        </CardContent>\n      </Card>\n    </div>\n  )\n}\n\nexport const Default: Story = {\n  render: () => <NotificationsFeed />,\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    // Começa com 3 não lidas; o filtro \"Não lidas\" mostra exatamente essas.\n    await expect(canvas.getByText('3')).toBeInTheDocument()\n    await userEvent.click(canvas.getByRole('tab', { name: 'Não lidas' }))\n    const markButtons = canvas.getAllByRole('button', { name: 'Marcar lida' })\n    await expect(markButtons).toHaveLength(3)\n    // Marcar todas zera o contador e desabilita o botão.\n    await userEvent.click(canvas.getByRole('button', { name: /Marcar todas/ }))\n    await expect(\n      canvas.queryByRole('button', { name: 'Marcar lida' }),\n    ).not.toBeInTheDocument()\n  },\n}\n"
+    },
+    {
+      "id": "pricing",
+      "name": "Pricing",
+      "description": "A pricing section: three `Card` tiers, a recommended tier highlighted with a brand ring and a `Badge`, feature lists with success-colored check icons, and a monthly/yearly `Tabs` toggle that recomputes prices.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport { Check, Sparkles } from 'lucide-react'\nimport { useState } from 'react'\nimport { expect, userEvent, within } from 'storybook/test'\n\nimport { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from '@/components/ui/card'\nimport { Separator } from '@/components/ui/separator'\nimport { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\n/**\n * **Pricing** — uma página de marketing. Mostra como `Card` + `Badge` + `Button`\n * compõem um comparativo de planos, com um destaque visual no plano recomendado\n * (borda e anel na cor da marca) e um seletor de período em `Tabs` que recalcula\n * os preços.\n */\nconst meta = {\n  title: 'Examples/Pricing',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A pricing section: three `Card` tiers, a recommended tier highlighted ' +\n          'with a brand ring and a `Badge`, feature lists with success-colored ' +\n          'check icons, and a monthly/yearly `Tabs` toggle that recomputes prices.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\ntype Plan = {\n  name: string\n  description: string\n  monthly: number\n  features: string[]\n  cta: string\n  variant: 'outline' | 'default'\n  featured?: boolean\n}\n\nconst plans: Plan[] = [\n  {\n    name: 'Starter',\n    description: 'Para projetos pessoais e protótipos.',\n    monthly: 0,\n    features: [\n      '1 projeto',\n      '5 mil eventos/mês',\n      'Dashboards básicos',\n      'Suporte por e-mail',\n    ],\n    cta: 'Começar grátis',\n    variant: 'outline',\n  },\n  {\n    name: 'Pro',\n    description: 'Para times em crescimento.',\n    monthly: 29,\n    features: [\n      'Projetos ilimitados',\n      '1 milhão de eventos/mês',\n      'Dashboards avançados',\n      'Integrações e webhooks',\n      'Suporte prioritário',\n    ],\n    cta: 'Assinar Pro',\n    variant: 'default',\n    featured: true,\n  },\n  {\n    name: 'Enterprise',\n    description: 'Para organizações com escala.',\n    monthly: 99,\n    features: [\n      'Tudo do Pro',\n      'SSO e SAML',\n      'Limites personalizados',\n      'SLA dedicado',\n      'Gerente de conta',\n    ],\n    cta: 'Falar com vendas',\n    variant: 'outline',\n  },\n]\n\nfunction PricingTable() {\n  const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly')\n  const yearly = period === 'yearly'\n\n  return (\n    <div className=\"mx-auto flex max-w-5xl flex-col gap-8 py-6\">\n      <header className=\"flex flex-col items-center gap-4 text-center\">\n        <Badge variant=\"secondary\" className=\"gap-1\">\n          <Sparkles className=\"size-3.5\" aria-hidden=\"true\" /> Preços simples\n        </Badge>\n        <h1 className=\"text-3xl font-bold tracking-tight\">\n          Escolha o plano ideal para você\n        </h1>\n        <p className=\"max-w-xl text-muted-foreground\">\n          Comece de graça e evolua conforme cresce. Sem surpresas, cancele quando quiser.\n        </p>\n        <ToggleGroup\n          type=\"single\"\n          variant=\"outline\"\n          value={period}\n          onValueChange={(v) => v && setPeriod(v as 'monthly' | 'yearly')}\n          aria-label=\"Período de cobrança\"\n        >\n          <ToggleGroupItem value=\"monthly\">Mensal</ToggleGroupItem>\n          <ToggleGroupItem value=\"yearly\">\n            Anual\n            <Badge variant=\"success\" className=\"ml-2\">\n              -20%\n            </Badge>\n          </ToggleGroupItem>\n        </ToggleGroup>\n      </header>\n\n      <div className=\"grid gap-6 md:grid-cols-3\">\n        {plans.map((plan) => {\n          const price = yearly ? Math.round(plan.monthly * 12 * 0.8) : plan.monthly\n          const suffix = plan.monthly === 0 ? '' : yearly ? '/ano' : '/mês'\n          return (\n            <Card\n              key={plan.name}\n              className={\n                plan.featured\n                  ? 'relative border-primary shadow-lg ring-1 ring-primary'\n                  : undefined\n              }\n            >\n              {plan.featured ? (\n                <Badge className=\"-top-3 absolute right-6\">Mais popular</Badge>\n              ) : null}\n              <CardHeader>\n                <CardTitle>{plan.name}</CardTitle>\n                <CardDescription>{plan.description}</CardDescription>\n              </CardHeader>\n              <CardContent className=\"flex flex-col gap-5\">\n                <div className=\"flex items-baseline gap-1\">\n                  <span className=\"text-4xl font-bold tracking-tight\">R$ {price}</span>\n                  {suffix ? (\n                    <span className=\"text-sm text-muted-foreground\">{suffix}</span>\n                  ) : null}\n                </div>\n                <Separator />\n                <ul className=\"flex flex-col gap-3 text-sm\">\n                  {plan.features.map((feature) => (\n                    <li key={feature} className=\"flex items-center gap-2\">\n                      <Check\n                        className=\"size-4 shrink-0 text-success-text\"\n                        aria-hidden=\"true\"\n                      />\n                      {feature}\n                    </li>\n                  ))}\n                </ul>\n              </CardContent>\n              <CardFooter>\n                <Button variant={plan.variant} className=\"w-full\">\n                  {plan.cta}\n                </Button>\n              </CardFooter>\n            </Card>\n          )\n        })}\n      </div>\n    </div>\n  )\n}\n\nexport const Default: Story = {\n  render: () => <PricingTable />,\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    // No mensal o Pro custa R$ 29; trocar para anual aplica o desconto (12×0,8).\n    await expect(canvas.getByText('R$ 29')).toBeInTheDocument()\n    await userEvent.click(canvas.getByText('Anual'))\n    await expect(canvas.getByText('R$ 278')).toBeInTheDocument()\n  },\n}\n"
+    },
+    {
+      "id": "profile",
+      "name": "Profile",
+      "description": "A profile page: a gradient cover, an overlapping `Avatar`, identity metadata with `Badge`s, a stats row and a tabbed body whose activity feed is an `ItemGroup`.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport {\n  CalendarDays,\n  GitCommitHorizontal,\n  MapPin,\n  MessageSquare,\n  Settings,\n  Star,\n  UserPlus,\n} from 'lucide-react'\nimport { expect, within } from 'storybook/test'\n\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent } from '@/components/ui/card'\nimport {\n  Item,\n  ItemContent,\n  ItemDescription,\n  ItemMedia,\n  ItemTitle,\n} from '@/components/ui/item'\nimport { Separator } from '@/components/ui/separator'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\n/**\n * **Profile** — uma página de identidade. Combina `Avatar`, `Badge`, `Card` e um\n * `ItemGroup` para o feed de atividades, organizados por `Tabs`. Demonstra como\n * uma faixa de capa e um cabeçalho sobreposto se montam só com tokens e radius.\n */\nconst meta = {\n  title: 'Examples/Profile',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A profile page: a gradient cover, an overlapping `Avatar`, identity ' +\n          'metadata with `Badge`s, a stats row and a tabbed body whose activity ' +\n          'feed is an `ItemGroup`.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\nconst stats = [\n  { label: 'Projetos', value: '24' },\n  { label: 'Seguidores', value: '1,2 mil' },\n  { label: 'Seguindo', value: '318' },\n  { label: 'Estrelas', value: '4,9' },\n]\n\nconst activity = [\n  {\n    icon: GitCommitHorizontal,\n    title: 'Publicou 12 commits em timds/design-system',\n    when: 'há 2 horas',\n  },\n  {\n    icon: Star,\n    title: 'Marcou recharts/recharts com estrela',\n    when: 'há 5 horas',\n  },\n  {\n    icon: MessageSquare,\n    title: 'Comentou na issue #128 — Tokens de contraste',\n    when: 'ontem',\n  },\n  {\n    icon: UserPlus,\n    title: 'Começou a seguir Bruno Lima',\n    when: 'há 2 dias',\n  },\n]\n\nexport const Default: Story = {\n  render: () => (\n    <div className=\"mx-auto max-w-3xl\">\n      <Card className=\"overflow-hidden p-0\">\n        {/* Capa */}\n        <div className=\"h-32 bg-gradient-to-r from-primary via-chart-3 to-chart-2\" />\n\n        <CardContent className=\"flex flex-col gap-6 pb-6\">\n          {/* Cabeçalho sobreposto à capa */}\n          <div className=\"-mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between\">\n            <div className=\"flex items-end gap-4\">\n              <Avatar className=\"size-24 ring-4 ring-card\">\n                <AvatarImage src=\"https://i.pravatar.cc/150?img=47\" alt=\"Ana Souza\" />\n                <AvatarFallback className=\"text-2xl\">AS</AvatarFallback>\n              </Avatar>\n              <div className=\"mb-1 flex flex-col gap-1\">\n                <div className=\"flex items-center gap-2\">\n                  <h1 className=\"font-bold text-xl\">Ana Souza</h1>\n                  <Badge variant=\"info\">Pro</Badge>\n                </div>\n                <p className=\"text-sm text-muted-foreground\">\n                  Design Engineer · @anasouza\n                </p>\n              </div>\n            </div>\n            <div className=\"flex gap-2\">\n              <Button variant=\"outline\" size=\"icon\" aria-label=\"Configurações\">\n                <Settings className=\"size-4\" aria-hidden=\"true\" />\n              </Button>\n              <Button>\n                <UserPlus className=\"size-4\" aria-hidden=\"true\" /> Seguir\n              </Button>\n            </div>\n          </div>\n\n          <p className=\"max-w-prose text-sm\">\n            Construindo design systems acessíveis e bem documentados. Apaixonada por\n            tokens, tipografia e bons defaults.\n          </p>\n\n          <div className=\"flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground text-sm\">\n            <span className=\"flex items-center gap-1.5\">\n              <MapPin className=\"size-4\" aria-hidden=\"true\" /> São Paulo, BR\n            </span>\n            <span className=\"flex items-center gap-1.5\">\n              <CalendarDays className=\"size-4\" aria-hidden=\"true\" /> Entrou em mar 2023\n            </span>\n          </div>\n\n          <Separator />\n\n          {/* Estatísticas */}\n          <div className=\"grid grid-cols-2 gap-4 sm:grid-cols-4\">\n            {stats.map((stat) => (\n              <div key={stat.label} className=\"flex flex-col\">\n                <span className=\"font-semibold text-2xl\">{stat.value}</span>\n                <span className=\"text-muted-foreground text-sm\">{stat.label}</span>\n              </div>\n            ))}\n          </div>\n\n          {/* Corpo em abas */}\n          <Tabs defaultValue=\"activity\">\n            <TabsList variant=\"line\">\n              <TabsTrigger value=\"activity\">Atividade</TabsTrigger>\n              <TabsTrigger value=\"about\">Sobre</TabsTrigger>\n            </TabsList>\n\n            <TabsContent value=\"activity\" className=\"pt-2\">\n              <div className=\"flex flex-col divide-y divide-border\">\n                {activity.map((entry) => (\n                  <Item key={entry.title}>\n                    <ItemMedia variant=\"icon\">\n                      <entry.icon className=\"size-4\" aria-hidden=\"true\" />\n                    </ItemMedia>\n                    <ItemContent>\n                      <ItemTitle>{entry.title}</ItemTitle>\n                      <ItemDescription>{entry.when}</ItemDescription>\n                    </ItemContent>\n                  </Item>\n                ))}\n              </div>\n            </TabsContent>\n\n            <TabsContent value=\"about\" className=\"pt-2\">\n              <p className=\"text-sm text-muted-foreground\">\n                Engenheira de design focada em sistemas reutilizáveis, acessibilidade e\n                experiência de desenvolvimento. Mantenedora do timds.\n              </p>\n            </TabsContent>\n          </Tabs>\n        </CardContent>\n      </Card>\n    </div>\n  ),\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    await expect(canvas.getByRole('heading', { name: 'Ana Souza' })).toBeInTheDocument()\n    // A aba de atividade é a padrão e lista o feed.\n    await expect(canvas.getByText(/Publicou 12 commits/)).toBeInTheDocument()\n  },\n}\n"
+    },
+    {
+      "id": "settings",
+      "name": "Settings",
+      "description": "A settings screen split by `Tabs` (account, notifications, security). Each section is a `Card`; preferences are labelled `Switch` rows; the security tab ends with a destructive \"danger zone\".",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport { Bell, Shield, User } from 'lucide-react'\nimport type { ReactNode } from 'react'\nimport { expect, userEvent, within } from 'storybook/test'\n\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Button } from '@/components/ui/button'\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Separator } from '@/components/ui/separator'\nimport { Switch } from '@/components/ui/switch'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Textarea } from '@/components/ui/textarea'\n\n/**\n * **Settings** — uma tela densa de configurações organizada por `Tabs`. Mostra o\n * casamento de `Card` para seccionar, `Switch` com rótulos acessíveis para\n * preferências, `Input`/`Textarea` para campos e uma \"zona de perigo\" usando o\n * token `destructive`.\n */\nconst meta = {\n  title: 'Examples/Settings',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A settings screen split by `Tabs` (account, notifications, security). ' +\n          'Each section is a `Card`; preferences are labelled `Switch` rows; the ' +\n          'security tab ends with a destructive \"danger zone\".',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\n// Linha de preferência: título + descrição à esquerda, Switch à direita.\nfunction ToggleRow({\n  id,\n  title,\n  description,\n  defaultChecked,\n}: {\n  id: string\n  title: string\n  description: string\n  defaultChecked?: boolean\n}) {\n  return (\n    <div className=\"flex items-center justify-between gap-4\">\n      <div className=\"flex flex-col gap-0.5\">\n        <label htmlFor={id} className=\"font-medium text-sm\">\n          {title}\n        </label>\n        <p className=\"text-muted-foreground text-sm\">{description}</p>\n      </div>\n      <Switch id={id} defaultChecked={defaultChecked} />\n    </div>\n  )\n}\n\nfunction Field({\n  id,\n  label,\n  children,\n}: {\n  id: string\n  label: string\n  children: ReactNode\n}) {\n  return (\n    <div className=\"flex flex-col gap-2\">\n      <label htmlFor={id} className=\"font-medium text-sm\">\n        {label}\n      </label>\n      {children}\n    </div>\n  )\n}\n\nexport const Default: Story = {\n  render: () => (\n    <div className=\"mx-auto flex max-w-2xl flex-col gap-6 py-2\">\n      <header className=\"flex flex-col gap-1\">\n        <h1 className=\"font-bold text-2xl tracking-tight\">Configurações</h1>\n        <p className=\"text-muted-foreground\">\n          Gerencie sua conta, preferências e segurança.\n        </p>\n      </header>\n\n      <Tabs defaultValue=\"account\">\n        <TabsList>\n          <TabsTrigger value=\"account\">\n            <User className=\"size-4\" aria-hidden=\"true\" /> Conta\n          </TabsTrigger>\n          <TabsTrigger value=\"notifications\">\n            <Bell className=\"size-4\" aria-hidden=\"true\" /> Notificações\n          </TabsTrigger>\n          <TabsTrigger value=\"security\">\n            <Shield className=\"size-4\" aria-hidden=\"true\" /> Segurança\n          </TabsTrigger>\n        </TabsList>\n\n        {/* Conta */}\n        <TabsContent value=\"account\" className=\"pt-4\">\n          <Card>\n            <CardHeader>\n              <CardTitle>Perfil</CardTitle>\n              <CardDescription>Estas informações aparecem publicamente.</CardDescription>\n            </CardHeader>\n            <CardContent className=\"flex flex-col gap-5\">\n              <div className=\"flex items-center gap-4\">\n                <Avatar className=\"size-16\">\n                  <AvatarImage src=\"https://i.pravatar.cc/150?img=47\" alt=\"Ana Souza\" />\n                  <AvatarFallback className=\"text-lg\">AS</AvatarFallback>\n                </Avatar>\n                <div className=\"flex gap-2\">\n                  <Button variant=\"outline\" size=\"sm\">\n                    Trocar foto\n                  </Button>\n                  <Button variant=\"ghost\" size=\"sm\">\n                    Remover\n                  </Button>\n                </div>\n              </div>\n              <div className=\"grid gap-5 sm:grid-cols-2\">\n                <Field id=\"set-name\" label=\"Nome\">\n                  <Input id=\"set-name\" defaultValue=\"Ana Souza\" />\n                </Field>\n                <Field id=\"set-username\" label=\"Usuário\">\n                  <Input id=\"set-username\" defaultValue=\"anasouza\" />\n                </Field>\n              </div>\n              <Field id=\"set-email\" label=\"E-mail\">\n                <Input id=\"set-email\" type=\"email\" defaultValue=\"ana@timds.dev\" />\n              </Field>\n              <Field id=\"set-bio\" label=\"Bio\">\n                <Textarea\n                  id=\"set-bio\"\n                  rows={3}\n                  defaultValue=\"Design Engineer construindo design systems acessíveis.\"\n                />\n              </Field>\n            </CardContent>\n            <CardFooter className=\"justify-end gap-2\">\n              <Button variant=\"ghost\">Cancelar</Button>\n              <Button>Salvar alterações</Button>\n            </CardFooter>\n          </Card>\n        </TabsContent>\n\n        {/* Notificações */}\n        <TabsContent value=\"notifications\" className=\"pt-4\">\n          <Card>\n            <CardHeader>\n              <CardTitle>Notificações</CardTitle>\n              <CardDescription>Escolha o que deseja receber.</CardDescription>\n            </CardHeader>\n            <CardContent className=\"flex flex-col gap-5\">\n              <ToggleRow\n                id=\"notif-product\"\n                title=\"Novidades do produto\"\n                description=\"Lançamentos, melhorias e dicas.\"\n                defaultChecked\n              />\n              <Separator />\n              <ToggleRow\n                id=\"notif-security\"\n                title=\"Alertas de segurança\"\n                description=\"Acessos e mudanças sensíveis na conta.\"\n                defaultChecked\n              />\n              <Separator />\n              <ToggleRow\n                id=\"notif-marketing\"\n                title=\"E-mails de marketing\"\n                description=\"Promoções e conteúdos ocasionais.\"\n              />\n            </CardContent>\n          </Card>\n        </TabsContent>\n\n        {/* Segurança */}\n        <TabsContent value=\"security\" className=\"flex flex-col gap-6 pt-4\">\n          <Card>\n            <CardHeader>\n              <CardTitle>Senha</CardTitle>\n              <CardDescription>\n                Use uma senha forte e única para esta conta.\n              </CardDescription>\n            </CardHeader>\n            <CardContent className=\"flex flex-col gap-5\">\n              <Field id=\"sec-current\" label=\"Senha atual\">\n                <Input id=\"sec-current\" type=\"password\" autoComplete=\"current-password\" />\n              </Field>\n              <Field id=\"sec-new\" label=\"Nova senha\">\n                <Input id=\"sec-new\" type=\"password\" autoComplete=\"new-password\" />\n              </Field>\n              <ToggleRow\n                id=\"sec-2fa\"\n                title=\"Autenticação em dois fatores\"\n                description=\"Exige um código além da senha ao entrar.\"\n                defaultChecked\n              />\n            </CardContent>\n            <CardFooter className=\"justify-end\">\n              <Button>Atualizar senha</Button>\n            </CardFooter>\n          </Card>\n\n          <Card className=\"border-destructive/40\">\n            <CardHeader>\n              <CardTitle className=\"text-destructive-text\">Zona de perigo</CardTitle>\n              <CardDescription>\n                Excluir a conta é permanente e não pode ser desfeito.\n              </CardDescription>\n            </CardHeader>\n            <CardFooter>\n              <Button variant=\"destructive\">Excluir conta</Button>\n            </CardFooter>\n          </Card>\n        </TabsContent>\n      </Tabs>\n    </div>\n  ),\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    // Navega até a aba de notificações e alterna uma preferência desligada.\n    await userEvent.click(canvas.getByRole('tab', { name: /Notificações/ }))\n    const marketing = canvas.getByRole('switch', { name: 'E-mails de marketing' })\n    await expect(marketing).toHaveAttribute('aria-checked', 'false')\n    await userEvent.click(marketing)\n    await expect(marketing).toHaveAttribute('aria-checked', 'true')\n  },\n}\n"
+    },
+    {
+      "id": "sign-up",
+      "name": "Sign Up",
+      "description": "A registration form that grows the Login pattern: labelled fields, a reveal-password button inside an `InputGroup`, a live password-strength `Progress`, a data-driven `Select` and a terms `Checkbox`.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport { Eye, EyeOff, UserPlus } from 'lucide-react'\nimport { useState } from 'react'\nimport { expect, userEvent, within } from 'storybook/test'\n\nimport { Button } from '@/components/ui/button'\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardFooter,\n  CardHeader,\n  CardTitle,\n} from '@/components/ui/card'\nimport { Checkbox } from '@/components/ui/checkbox'\nimport { Input } from '@/components/ui/input'\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupInput,\n} from '@/components/ui/input-group'\nimport { Progress } from '@/components/ui/progress'\nimport { Select } from '@/components/ui/select'\n\n/**\n * **Sign Up** — um passo acima do Login: mais campos, um medidor de força de\n * senha (`Progress`) que reage ao input, revelar/ocultar senha com\n * `InputGroupButton` e um `Select` data-driven para o papel do usuário.\n */\nconst meta = {\n  title: 'Examples/Sign Up',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A registration form that grows the Login pattern: labelled fields, a ' +\n          'reveal-password button inside an `InputGroup`, a live password-strength ' +\n          '`Progress`, a data-driven `Select` and a terms `Checkbox`.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\nconst roles = [\n  { value: 'eng', label: 'Engenharia' },\n  { value: 'design', label: 'Design' },\n  { value: 'product', label: 'Produto' },\n  { value: 'marketing', label: 'Marketing' },\n  { value: 'other', label: 'Outro' },\n]\n\n// Força da senha: 0–4 → rótulo + variante de cor do Progress.\nfunction strengthOf(value: string) {\n  let score = 0\n  if (value.length >= 8) score++\n  if (/[A-Z]/.test(value)) score++\n  if (/[0-9]/.test(value)) score++\n  if (/[^A-Za-z0-9]/.test(value)) score++\n  const levels = [\n    { label: 'Muito fraca', variant: 'destructive' as const },\n    { label: 'Fraca', variant: 'destructive' as const },\n    { label: 'Razoável', variant: 'warning' as const },\n    { label: 'Boa', variant: 'info' as const },\n    { label: 'Forte', variant: 'success' as const },\n  ][score]\n  return { score, ...levels }\n}\n\nfunction SignUpForm() {\n  const [password, setPassword] = useState('')\n  const [show, setShow] = useState(false)\n  const strength = strengthOf(password)\n\n  return (\n    <div className=\"flex min-h-[calc(100vh-3rem)] items-center justify-center\">\n      <Card className=\"w-full max-w-md\">\n        <CardHeader className=\"text-center\">\n          <div className=\"mx-auto flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm\">\n            <UserPlus className=\"size-5\" aria-hidden=\"true\" />\n          </div>\n          <CardTitle className=\"text-xl\">Crie sua conta</CardTitle>\n          <CardDescription>Leva menos de um minuto</CardDescription>\n        </CardHeader>\n\n        <CardContent className=\"flex flex-col gap-4\">\n          <div className=\"flex flex-col gap-2\">\n            <label htmlFor=\"su-name\" className=\"text-sm font-medium\">\n              Nome completo\n            </label>\n            <Input id=\"su-name\" placeholder=\"Ana Souza\" autoComplete=\"name\" />\n          </div>\n\n          <div className=\"flex flex-col gap-2\">\n            <label htmlFor=\"su-email\" className=\"text-sm font-medium\">\n              E-mail de trabalho\n            </label>\n            <Input\n              id=\"su-email\"\n              type=\"email\"\n              placeholder=\"ana@empresa.com\"\n              autoComplete=\"email\"\n            />\n          </div>\n\n          <div className=\"flex flex-col gap-2\">\n            <span className=\"text-sm font-medium\">Função</span>\n            <Select\n              options={roles}\n              placeholder=\"Selecione sua área...\"\n              aria-label=\"Função\"\n              triggerClassName=\"w-full\"\n            />\n          </div>\n\n          <div className=\"flex flex-col gap-2\">\n            <label htmlFor=\"su-password\" className=\"text-sm font-medium\">\n              Senha\n            </label>\n            <InputGroup>\n              <InputGroupInput\n                id=\"su-password\"\n                type={show ? 'text' : 'password'}\n                placeholder=\"Crie uma senha\"\n                autoComplete=\"new-password\"\n                value={password}\n                onChange={(e) => setPassword(e.target.value)}\n              />\n              <InputGroupAddon align=\"inline-end\">\n                <InputGroupButton\n                  size=\"icon-xs\"\n                  aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}\n                  onClick={() => setShow((s) => !s)}\n                >\n                  {show ? (\n                    <EyeOff className=\"size-4\" aria-hidden=\"true\" />\n                  ) : (\n                    <Eye className=\"size-4\" aria-hidden=\"true\" />\n                  )}\n                </InputGroupButton>\n              </InputGroupAddon>\n            </InputGroup>\n            {password ? (\n              <div className=\"flex items-center gap-3\">\n                <Progress\n                  value={(strength.score / 4) * 100}\n                  variant={strength.variant}\n                  className=\"flex-1\"\n                  aria-label=\"Força da senha\"\n                />\n                <span className=\"w-20 shrink-0 text-right text-xs font-medium text-muted-foreground\">\n                  {strength.label}\n                </span>\n              </div>\n            ) : (\n              <p className=\"text-xs text-muted-foreground\">\n                Use 8+ caracteres com letras, números e símbolos.\n              </p>\n            )}\n          </div>\n\n          <label\n            htmlFor=\"su-terms\"\n            className=\"flex items-start gap-2 text-sm text-muted-foreground\"\n          >\n            <Checkbox id=\"su-terms\" className=\"mt-0.5\" />\n            <span>\n              Concordo com os{' '}\n              <a href=\"#termos\" className=\"font-medium text-primary-text hover:underline\">\n                Termos de Serviço\n              </a>{' '}\n              e a{' '}\n              <a\n                href=\"#privacidade\"\n                className=\"font-medium text-primary-text hover:underline\"\n              >\n                Política de Privacidade\n              </a>\n              .\n            </span>\n          </label>\n\n          <Button className=\"w-full\">Criar conta</Button>\n        </CardContent>\n\n        <CardFooter className=\"justify-center\">\n          <p className=\"text-sm text-muted-foreground\">\n            Já tem conta?{' '}\n            <a href=\"#entrar\" className=\"font-medium text-primary-text hover:underline\">\n              Entrar\n            </a>\n          </p>\n        </CardFooter>\n      </Card>\n    </div>\n  )\n}\n\nexport const Default: Story = {\n  render: () => <SignUpForm />,\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    // Digitar uma senha forte move o medidor para \"Forte\".\n    await userEvent.type(canvas.getByLabelText('Senha'), 'Sup3r!Senha')\n    await expect(canvas.getByText('Forte')).toBeInTheDocument()\n    // Revelar a senha troca o tipo do campo para texto.\n    await userEvent.click(canvas.getByRole('button', { name: 'Mostrar senha' }))\n    await expect(canvas.getByLabelText('Senha')).toHaveAttribute('type', 'text')\n  },\n}\n"
+    },
+    {
+      "id": "team",
+      "name": "Team",
+      "description": "A data-management screen: a searchable, filterable, paginated `Table` with row selection, avatars, role and status `Badge`s and per-row `DropdownMenu` actions — wrapped in a `Card` toolbar.",
+      "source": "import type { Meta, StoryObj } from '@storybook/react-vite'\nimport { MoreHorizontal, Search, UserPlus } from 'lucide-react'\nimport { useMemo, useState } from 'react'\nimport { expect, userEvent, within } from 'storybook/test'\n\nimport { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardHeader } from '@/components/ui/card'\nimport { Checkbox } from '@/components/ui/checkbox'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\nimport { PaginationShort } from '@/components/ui/pagination'\nimport { Select } from '@/components/ui/select'\nimport {\n  Table,\n  TableBody,\n  TableCell,\n  TableHead,\n  TableHeader,\n  TableRow,\n} from '@/components/ui/table'\n\n/**\n * **Team** — uma tela de gestão orientada a dados. Reúne busca (`InputGroup`),\n * filtro (`Select`), seleção de linhas (`Checkbox` + `data-state=\"selected\"`),\n * status com `Badge`, ações por linha em `DropdownMenu` e `PaginationShort`,\n * tudo dentro de um `Card`.\n */\nconst meta = {\n  title: 'Examples/Team',\n  parameters: {\n    layout: 'fullscreen',\n    docs: {\n      description: {\n        component:\n          'A data-management screen: a searchable, filterable, paginated `Table` ' +\n          'with row selection, avatars, role and status `Badge`s and per-row ' +\n          '`DropdownMenu` actions — wrapped in a `Card` toolbar.',\n      },\n    },\n  },\n} satisfies Meta\n\nexport default meta\n\ntype Story = StoryObj<typeof meta>\n\ntype Status = 'Ativo' | 'Convidado' | 'Inativo'\n\ntype Member = {\n  id: string\n  name: string\n  email: string\n  role: string\n  status: Status\n  img: number\n}\n\nconst members: Member[] = [\n  {\n    id: '1',\n    name: 'Ana Souza',\n    email: 'ana@timds.dev',\n    role: 'Admin',\n    status: 'Ativo',\n    img: 47,\n  },\n  {\n    id: '2',\n    name: 'Bruno Lima',\n    email: 'bruno@timds.dev',\n    role: 'Dev',\n    status: 'Ativo',\n    img: 12,\n  },\n  {\n    id: '3',\n    name: 'Carla Dias',\n    email: 'carla@timds.dev',\n    role: 'Design',\n    status: 'Convidado',\n    img: 5,\n  },\n  {\n    id: '4',\n    name: 'Diego Reis',\n    email: 'diego@timds.dev',\n    role: 'Dev',\n    status: 'Ativo',\n    img: 33,\n  },\n  {\n    id: '5',\n    name: 'Elena Prado',\n    email: 'elena@timds.dev',\n    role: 'Produto',\n    status: 'Inativo',\n    img: 24,\n  },\n  {\n    id: '6',\n    name: 'Felipe Nunes',\n    email: 'felipe@timds.dev',\n    role: 'Dev',\n    status: 'Ativo',\n    img: 8,\n  },\n  {\n    id: '7',\n    name: 'Gabi Rocha',\n    email: 'gabi@timds.dev',\n    role: 'Design',\n    status: 'Convidado',\n    img: 16,\n  },\n  {\n    id: '8',\n    name: 'Hugo Mello',\n    email: 'hugo@timds.dev',\n    role: 'Produto',\n    status: 'Ativo',\n    img: 51,\n  },\n]\n\nconst statusVariant: Record<Status, 'success' | 'warning' | 'secondary'> = {\n  Ativo: 'success',\n  Convidado: 'warning',\n  Inativo: 'secondary',\n}\n\nconst roleOptions = [\n  { value: 'all', label: 'Todas as funções' },\n  { value: 'Admin', label: 'Admin' },\n  { value: 'Dev', label: 'Dev' },\n  { value: 'Design', label: 'Design' },\n  { value: 'Produto', label: 'Produto' },\n]\n\nconst PAGE_SIZE = 5\n\nfunction TeamTable() {\n  const [query, setQuery] = useState('')\n  const [role, setRole] = useState('all')\n  const [page, setPage] = useState(1)\n  const [selected, setSelected] = useState<Set<string>>(new Set())\n\n  const filtered = useMemo(() => {\n    const q = query.trim().toLowerCase()\n    return members.filter((m) => {\n      const matchesQuery =\n        !q || m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)\n      const matchesRole = role === 'all' || m.role === role\n      return matchesQuery && matchesRole\n    })\n  }, [query, role])\n\n  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))\n  const current = Math.min(page, totalPages)\n  const pageRows = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)\n\n  const allOnPageSelected =\n    pageRows.length > 0 && pageRows.every((m) => selected.has(m.id))\n\n  function toggle(id: string) {\n    setSelected((prev) => {\n      const next = new Set(prev)\n      if (next.has(id)) {\n        next.delete(id)\n      } else {\n        next.add(id)\n      }\n      return next\n    })\n  }\n\n  function toggleAllOnPage() {\n    setSelected((prev) => {\n      const next = new Set(prev)\n      if (allOnPageSelected) {\n        for (const m of pageRows) next.delete(m.id)\n      } else {\n        for (const m of pageRows) next.add(m.id)\n      }\n      return next\n    })\n  }\n\n  return (\n    <div className=\"mx-auto flex max-w-4xl flex-col gap-4 py-2\">\n      <div className=\"flex flex-wrap items-end justify-between gap-3\">\n        <div className=\"flex flex-col gap-1\">\n          <h1 className=\"font-bold text-2xl tracking-tight\">Equipe</h1>\n          <p className=\"text-muted-foreground\">\n            {filtered.length} {filtered.length === 1 ? 'membro' : 'membros'}\n            {selected.size > 0 ? ` · ${selected.size} selecionado(s)` : ''}\n          </p>\n        </div>\n        <Button>\n          <UserPlus className=\"size-4\" aria-hidden=\"true\" /> Convidar\n        </Button>\n      </div>\n\n      <Card className=\"overflow-hidden p-0\">\n        <CardHeader className=\"flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between\">\n          <InputGroup className=\"sm:max-w-xs\">\n            <InputGroupAddon>\n              <Search className=\"size-4\" aria-hidden=\"true\" />\n            </InputGroupAddon>\n            <InputGroupInput\n              placeholder=\"Buscar por nome ou e-mail...\"\n              aria-label=\"Buscar membros\"\n              value={query}\n              onChange={(e) => {\n                setQuery(e.target.value)\n                setPage(1)\n              }}\n            />\n          </InputGroup>\n          <Select\n            options={roleOptions}\n            defaultValue=\"all\"\n            aria-label=\"Filtrar por função\"\n            onValueChange={(v) => {\n              setRole(v as string)\n              setPage(1)\n            }}\n            triggerClassName=\"sm:w-48\"\n          />\n        </CardHeader>\n\n        <CardContent className=\"p-0\">\n          <Table>\n            <TableHeader>\n              <TableRow>\n                <TableHead className=\"w-10\">\n                  <Checkbox\n                    aria-label=\"Selecionar todos nesta página\"\n                    checked={allOnPageSelected}\n                    onCheckedChange={toggleAllOnPage}\n                  />\n                </TableHead>\n                <TableHead>Membro</TableHead>\n                <TableHead>Função</TableHead>\n                <TableHead>Status</TableHead>\n                <TableHead className=\"w-10 text-right\">\n                  <span className=\"sr-only\">Ações</span>\n                </TableHead>\n              </TableRow>\n            </TableHeader>\n            <TableBody>\n              {pageRows.map((m) => (\n                <TableRow\n                  key={m.id}\n                  data-state={selected.has(m.id) ? 'selected' : undefined}\n                >\n                  <TableCell>\n                    <Checkbox\n                      aria-label={`Selecionar ${m.name}`}\n                      checked={selected.has(m.id)}\n                      onCheckedChange={() => toggle(m.id)}\n                    />\n                  </TableCell>\n                  <TableCell>\n                    <div className=\"flex items-center gap-3\">\n                      <Avatar className=\"size-8\">\n                        <AvatarImage\n                          src={`https://i.pravatar.cc/80?img=${m.img}`}\n                          alt={m.name}\n                        />\n                        <AvatarFallback>\n                          {m.name\n                            .split(' ')\n                            .map((n) => n[0])\n                            .join('')}\n                        </AvatarFallback>\n                      </Avatar>\n                      <div className=\"flex flex-col\">\n                        <span className=\"font-medium\">{m.name}</span>\n                        <span className=\"text-muted-foreground text-xs\">{m.email}</span>\n                      </div>\n                    </div>\n                  </TableCell>\n                  <TableCell>\n                    <Badge variant=\"outline\">{m.role}</Badge>\n                  </TableCell>\n                  <TableCell>\n                    <Badge variant={statusVariant[m.status]}>{m.status}</Badge>\n                  </TableCell>\n                  <TableCell className=\"text-right\">\n                    <DropdownMenu>\n                      <DropdownMenuTrigger asChild>\n                        <Button\n                          variant=\"ghost\"\n                          size=\"icon\"\n                          aria-label={`Ações de ${m.name}`}\n                        >\n                          <MoreHorizontal className=\"size-4\" aria-hidden=\"true\" />\n                        </Button>\n                      </DropdownMenuTrigger>\n                      <DropdownMenuContent align=\"end\">\n                        <DropdownMenuLabel>Ações</DropdownMenuLabel>\n                        <DropdownMenuItem>Ver perfil</DropdownMenuItem>\n                        <DropdownMenuItem>Editar função</DropdownMenuItem>\n                        <DropdownMenuSeparator />\n                        <DropdownMenuItem variant=\"destructive\">\n                          Remover da equipe\n                        </DropdownMenuItem>\n                      </DropdownMenuContent>\n                    </DropdownMenu>\n                  </TableCell>\n                </TableRow>\n              ))}\n              {pageRows.length === 0 ? (\n                <TableRow>\n                  <TableCell\n                    colSpan={5}\n                    className=\"h-24 text-center text-muted-foreground\"\n                  >\n                    Nenhum membro encontrado.\n                  </TableCell>\n                </TableRow>\n              ) : null}\n            </TableBody>\n          </Table>\n        </CardContent>\n      </Card>\n\n      <div className=\"flex justify-end\">\n        <PaginationShort page={current} total={totalPages} onPageChange={setPage} />\n      </div>\n    </div>\n  )\n}\n\nexport const Default: Story = {\n  render: () => <TeamTable />,\n  play: async ({ canvasElement }) => {\n    const canvas = within(canvasElement)\n    // Buscar reduz a lista a um único membro.\n    await userEvent.type(canvas.getByLabelText('Buscar membros'), 'bruno')\n    await expect(canvas.getByText('Bruno Lima')).toBeInTheDocument()\n    await expect(canvas.queryByText('Ana Souza')).not.toBeInTheDocument()\n    // Selecionar a linha marca o estado \"selected\".\n    await userEvent.click(canvas.getByRole('checkbox', { name: 'Selecionar Bruno Lima' }))\n    await expect(canvas.getByText(/1 selecionado/)).toBeInTheDocument()\n  },\n}\n"
+    }
+  ]
+}

@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!package-lock.json", "!dist", "!storybook-static"]
+    "includes": [
+      "**",
+      "!package-lock.json",
+      "!dist",
+      "!storybook-static",
+      "!ai",
+      "!mcp/timds-mcp.mjs"
+    ]
   },
   "formatter": {
     "enabled": true,

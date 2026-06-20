@@ -4,6 +4,17 @@ import { useEffect } from 'react'
 import '../src/styles.css'
 import { allModes } from './modes'
 
+// A fonte (Inter) não vem mais do styles.css distribuído (ver comentário lá).
+// Carregamos aqui para o Storybook (dev, Chromatic e os testes vitest-browser).
+if (typeof document !== 'undefined' && !document.getElementById('timds-inter-font')) {
+  const link = document.createElement('link')
+  link.id = 'timds-inter-font'
+  link.rel = 'stylesheet'
+  link.href =
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap'
+  document.head.appendChild(link)
+}
+
 // Sob o test runner (vitest browser), zera animações/transições. As animações
 // de entrada/saída dos overlays (Radix + tw-animate-css) deixam opacity 0 no
 // primeiro frame e mantêm o nó no DOM durante o fade-out, causando flakiness em

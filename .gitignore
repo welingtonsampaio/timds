@@ -1,6 +1,9 @@
 node_modules
 dist
 storybook-static
+
+# bundle self-contained do servidor MCP (gerado por scripts/build-mcp.mjs no build)
+mcp/timds-mcp.mjs
 *.local
 .DS_Store
 .vite
