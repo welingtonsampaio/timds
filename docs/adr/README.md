@@ -27,6 +27,7 @@ and the consequences. We use a format based on
 | 0008 | [Ariakit (+ TanStack Virtual) for the advanced Select](./0008-ariakit-para-select-avancado.md) | Accepted |
 | 0009 | [Shared style presets in `src/lib/styles.ts`](./0009-shared-style-presets.md)              | Accepted |
 | 0010 | [Preserve module structure for tree-shaking](./0010-preserve-modules-tree-shaking.md)      | Accepted |
+| 0011 | [AI integration: `llms.txt` + a self-contained MCP server](./0011-ai-integration-llms-txt-mcp.md) | Accepted |
 
 ## Creating a new ADR
 

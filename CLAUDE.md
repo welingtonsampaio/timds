@@ -42,6 +42,8 @@ Run a single test file: `npx vitest run src/components/ui/button.test.tsx`. Run 
 
 **Public API (src/index.ts).** This is the only entrypoint that ships. Every component must be explicitly re-exported here (with its variants/types) to be part of the public API. Internal imports use the `@/` alias.
 
+**AI integration (ai/ + mcp/).** `scripts/generate-ai-docs.mjs` parses the sources (index.ts, components' `.tsx`/`.stories.tsx`/`.mdx`, styles.css, examples) into `ai/manifest.json`, `ai/llms.txt` and `ai/llms-full.txt`. `mcp/server.mjs` is the MCP server source; `scripts/build-mcp.mjs` bundles it (deps inlined) into `mcp/timds-mcp.mjs` so consumers run it with only Node. Both run in `prebuild`/`prepare`. The bundle is `.gitignore`d; the manifest is read at runtime. See ADR 0011 and `docs/ai-integration.md`. Commands: `npm run ai:docs`, `npm run mcp:build`, `npm run mcp` (run source in dev).
+
 ## Conventions
 
 - **Adding a shadcn/ui component:** `npx shadcn@latest add <component>` (config in `components.json` targets Tailwind v4, `src/styles.css`, lucide icons), then add the export to `src/index.ts`. Components are copied into `src/components/ui/`, not consumed as a dependency.
