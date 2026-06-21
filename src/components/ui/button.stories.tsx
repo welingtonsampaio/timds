@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ArrowRight, Rocket } from 'lucide-react'
+import { ArrowRight, Rocket, Trash2 } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { expect, fn, userEvent, within } from 'storybook/test'
 
@@ -15,8 +15,9 @@ const meta = {
       description: {
         component:
           'Primary interactive control. Built on a `cva` recipe with six **variants** ' +
-          '(default, secondary, destructive, outline, ghost, link), four **sizes** ' +
-          '(default, sm, lg, icon) and two **shapes** (default, rounded). Pass an `icon` ' +
+          '(default, secondary, destructive, outline, ghost, link), six **sizes** ' +
+          '(default, sm, lg, icon, icon-sm, icon-lg) and two **shapes** (default, rounded). ' +
+          'Pass an `icon` ' +
           'with `iconPlacement` to add a leading/trailing icon; the `loading` flag swaps ' +
           'that icon for a spinner and disables the button. Use `asChild` to render the ' +
           'styling on a custom element (e.g. an `<a>` link) without an extra wrapper.',
@@ -36,8 +37,10 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
-      description: 'Height and padding preset. Use `icon` for square icon-only buttons.',
+      options: ['default', 'sm', 'lg', 'icon', 'icon-sm', 'icon-lg'],
+      description:
+        'Height and padding preset. Use `icon`/`icon-sm`/`icon-lg` for square icon-only ' +
+        'buttons whose height matches `default`/`sm`/`lg` text buttons respectively.',
       table: { defaultValue: { summary: 'default' } },
     },
     shape: {
@@ -148,6 +151,52 @@ export const Sizes: Story = {
       </Button>
     </div>
   ),
+}
+
+/**
+ * Each icon-only size mirrors the height of its text counterpart, so an icon
+ * button can sit next to a text button of the same size without misaligning.
+ */
+export const IconSizes: Story = {
+  render: (args) => (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <Button {...args} size="sm">
+          Edit
+        </Button>
+        <Button {...args} size="icon-sm" variant="outline" aria-label="Delete">
+          <Trash2 />
+        </Button>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button {...args} size="default">
+          Edit
+        </Button>
+        <Button {...args} size="icon" variant="outline" aria-label="Delete">
+          <Trash2 />
+        </Button>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button {...args} size="lg">
+          Edit
+        </Button>
+        <Button {...args} size="icon-lg" variant="outline" aria-label="Delete">
+          <Trash2 />
+        </Button>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const texts = canvas.getAllByRole('button', { name: 'Edit' })
+    const icons = canvas.getAllByRole('button', { name: 'Delete' })
+    // Each text/icon pair in the same row must share the exact same height.
+    for (let i = 0; i < texts.length; i++) {
+      const textHeight = texts[i].getBoundingClientRect().height
+      const iconHeight = icons[i].getBoundingClientRect().height
+      await expect(iconHeight).toBe(textHeight)
+    }
+  },
 }
 
 /** Icon supplied via the `icon` prop instead of inline children. */

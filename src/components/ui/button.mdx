@@ -12,7 +12,7 @@ Triggers an action or event — the primary way users commit to something in the
 ## Overview
 
 Use a Button to let people take an action: submit a form, confirm a choice, open a
-dialog. Built on a `cva` recipe, it offers six `variant`s, four `size`s and two
+dialog. Built on a `cva` recipe, it offers six `variant`s, six `size`s and two
 `shape`s. Pass an `icon` (with `iconPlacement`) for a leading or trailing affordance;
 the `loading` flag swaps that icon for a spinner and disables the control. Each view
 should have a single primary Button for its main call to action.
@@ -74,9 +74,13 @@ The `icon` prop places an icon next to the label; `iconPlacement` chooses the si
 <Canvas of={Stories.IconRight} />
 
 ### Icon only
-Icon-only buttons must carry an accessible name via `aria-label`.
+Icon-only buttons must carry an accessible name via `aria-label`. Use the size that
+matches the text buttons around them: `icon` aligns with `default`, `icon-sm` with
+`sm`, and `icon-lg` with `lg` — so an icon button never looks taller or shorter than
+the text button beside it.
 
 <Canvas of={Stories.IconOnly} />
+<Canvas of={Stories.IconSizes} />
 
 ### Loading
 `loading` swaps the icon for a spinner, sets `aria-busy` and disables the button.
