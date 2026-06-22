@@ -36,10 +36,18 @@ npm install react react-dom
 
 ### Usage
 
+Import the design system CSS from your global CSS, **after** the Tailwind import:
+
+```css
+/* e.g. src/index.css */
+@import "tailwindcss";
+@import "timds/styles.css";
+```
+
+Then use the components:
+
 ```tsx
 import { Button } from 'timds'
-// Import the design system CSS ONCE, in the app entrypoint:
-import 'timds/styles.css'
 
 export function Example() {
   return (

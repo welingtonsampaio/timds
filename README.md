@@ -31,9 +31,17 @@ npm install github:welingtonsampaio/timds#v0.0.1
 
 ## Usage
 
+Import the design system CSS from your global CSS file, **after** the Tailwind import:
+
+```css
+/* e.g. src/index.css */
+@import "tailwindcss";
+@import "timds/styles.css";
+```
+
+Then use the components anywhere:
+
 ```tsx
-// Import the design system CSS once, in your app entrypoint (e.g. main.tsx):
-import 'timds/styles.css'
 import { Button } from 'timds'
 
 export function Example() {
@@ -42,8 +50,8 @@ export function Example() {
 ```
 
 The components ship their own compiled styles in `timds/styles.css` (tokens, dark
-mode and the Tailwind utilities the components use) — **no Tailwind setup is required**
-just to render them.
+mode and the Tailwind utilities the components use). The `timds/styles.css` import
+**must come after** `@import "tailwindcss"` so the cascade resolves correctly.
 
 ### Loading the font
 
@@ -70,6 +78,7 @@ which maps every token:
 
 ```css
 @import "tailwindcss";
+@import "timds/styles.css";
 
 @theme inline {
   --radius-lg: var(--radius);
@@ -80,8 +89,7 @@ which maps every token:
 }
 ```
 
-The values come from `timds/styles.css` (imported via JS), so light/dark resolve
-automatically.
+The values come from `timds/styles.css`, so light/dark resolve automatically.
 
 ### Dark mode
 
@@ -170,7 +178,7 @@ How to use it:
 
 Rules:
 - Import all components from `timds` (never from subpaths); icons from `lucide-react`.
-- Import `timds/styles.css` once in the app entrypoint.
+- Import `timds/styles.css` from your global CSS, after `@import "tailwindcss"`.
 ```
 
 ### `llms.txt`

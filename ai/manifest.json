@@ -4,23 +4,45 @@
   "version": "0.0.1",
   "setup": {
     "install": "npm install github:welingtonsampaio/timds",
-    "importStyles": "import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)",
+    "importStyles": "@import \"tailwindcss\";\n@import \"timds/styles.css\";",
     "importComponents": "import { Button, Card } from 'timds'",
     "darkMode": "Add the `dark` class to an ancestor (e.g.: <html class=\"dark\">). Opt-in.",
     "font": "The DS uses the Inter family (`--font-sans`), but does NOT load the font. Load Inter in your app (e.g.: a Google Fonts <link> or @font-face in index.html); without it, it falls back to system-ui.",
     "charts": "To use Chart/ChartContainer, install `recharts` (>=3) in the app: `npm i recharts`. It is a peerDependency (a single instance shared between the app and the DS); the chart primitives (AreaChart, Pie, …) come from `recharts`, and ChartContainer/ChartTooltip… from `timds`.",
-    "tailwindBridge": "@import \"tailwindcss\";\n\n@theme inline {\n  --radius-lg: var(--radius);\n  --font-sans: var(--font-sans);\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-primary-text: var(--primary-text);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n  --color-destructive-text: var(--destructive-text);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --color-chart-1: var(--chart-1);\n  --color-chart-2: var(--chart-2);\n  --color-chart-3: var(--chart-3);\n  --color-chart-4: var(--chart-4);\n  --color-chart-5: var(--chart-5);\n  --color-sidebar: var(--sidebar);\n  --color-sidebar-foreground: var(--sidebar-foreground);\n  --color-sidebar-primary: var(--sidebar-primary);\n  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);\n  --color-sidebar-accent: var(--sidebar-accent);\n  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);\n  --color-sidebar-border: var(--sidebar-border);\n  --color-sidebar-ring: var(--sidebar-ring);\n  --color-success: var(--success);\n  --color-success-foreground: var(--success-foreground);\n  --color-success-text: var(--success-text);\n  --color-warning: var(--warning);\n  --color-warning-foreground: var(--warning-foreground);\n  --color-warning-text: var(--warning-text);\n  --color-info: var(--info);\n  --color-info-foreground: var(--info-foreground);\n  --color-info-text: var(--info-text);\n}",
+    "tailwindBridge": "@import \"tailwindcss\";\n@import \"timds/styles.css\";\n\n@theme inline {\n  --radius-lg: var(--radius);\n  --font-sans: var(--font-sans);\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-primary-text: var(--primary-text);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-destructive-foreground: var(--destructive-foreground);\n  --color-destructive-text: var(--destructive-text);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --color-chart-1: var(--chart-1);\n  --color-chart-2: var(--chart-2);\n  --color-chart-3: var(--chart-3);\n  --color-chart-4: var(--chart-4);\n  --color-chart-5: var(--chart-5);\n  --color-sidebar: var(--sidebar);\n  --color-sidebar-foreground: var(--sidebar-foreground);\n  --color-sidebar-primary: var(--sidebar-primary);\n  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);\n  --color-sidebar-accent: var(--sidebar-accent);\n  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);\n  --color-sidebar-border: var(--sidebar-border);\n  --color-sidebar-ring: var(--sidebar-ring);\n  --color-success: var(--success);\n  --color-success-foreground: var(--success-foreground);\n  --color-success-text: var(--success-text);\n  --color-warning: var(--warning);\n  --color-warning-foreground: var(--warning-foreground);\n  --color-warning-text: var(--warning-text);\n  --color-info: var(--info);\n  --color-info-foreground: var(--info-foreground);\n  --color-info-text: var(--info-text);\n}",
     "rules": [
       "Import ALL components from `timds` — never from subpaths.",
-      "Import `timds/styles.css` via JS in the entrypoint.",
+      "Import `timds/styles.css` from a CSS file, right AFTER `@import \"tailwindcss\"` (not via JS) — see `setup.importStyles`.",
       "Load the Inter font in your app (the DS does not load it) — see `setup.font`.",
       "For charts, install `recharts` (peerDependency) — see `setup.charts`.",
-      "To use token utilities (bg-primary, etc.) in your own markup, add the `@theme` bridge from the `setup.tailwindBridge` field to your CSS (requires Tailwind v4 in the app).",
+      "To also use token utilities (bg-primary, etc.) in your own markup, add the full `@theme` bridge from the `setup.tailwindBridge` field (it already includes the Tailwind + `timds/styles.css` imports; requires Tailwind v4 in the app).",
       "Use only semantic color utilities (bg-primary, text-muted-foreground, etc.); never raw colors (bg-blue-500).",
       "Vivid colors have a fill token (bg-success) and a text token (text-success-text). For text/icons use the `-text` one.",
       "Icons via lucide-react. Icon-only buttons need an aria-label."
     ]
   },
+  "searchGuidance": [
+    {
+      "keywords": [
+        "tag",
+        "tags",
+        "chip",
+        "chips",
+        "token",
+        "tokens",
+        "pill",
+        "pills",
+        "multiselect",
+        "multi-select",
+        "multi select",
+        "multiedit",
+        "multi-edit",
+        "multivalue",
+        "multi-value"
+      ],
+      "message": "For tags / chips / multi-value selection, use **Select** in multi-edit mode (`multiple`). timds has no dedicated Tag/Chip input — the multiple Select renders the chosen values as removable chips (`SelectChipsValue`). Get details with `get_component` → \"Select\"."
+    }
+  ],
   "categories": [
     "Data Display",
     "Data Entry",
@@ -243,7 +265,9 @@
           "default",
           "sm",
           "lg",
-          "icon"
+          "icon",
+          "icon-sm",
+          "icon-lg"
         ],
         "shape": [
           "default",
@@ -284,7 +308,9 @@
             "default",
             "sm",
             "lg",
-            "icon"
+            "icon",
+            "icon-sm",
+            "icon-lg"
           ],
           "default": "default"
         },
