@@ -153,6 +153,11 @@ server.registerTool(
   },
   async ({ query }) => {
     const q = norm(query)
+    // Curated guidance: concepts without a dedicated component (tags, chips…)
+    // that map to an existing pattern. Surfaced on top of the keyword results.
+    const guidance = (manifest.searchGuidance || [])
+      .filter((g) => g.keywords.some((k) => norm(k) === q || q.includes(norm(k))))
+      .map((g) => g.message)
     const hits = manifest.components.filter((c) => {
       const hay = norm(
         [c.name, c.module, c.category, c.description || '', c.exports.join(' ')].join(
@@ -161,8 +166,18 @@ server.registerTool(
       )
       return hay.includes(q)
     })
-    if (!hits.length) return text(`No component found for "${query}".`)
-    let out = `# Results for "${query}" (${hits.length})\n\n`
+    let guidanceOut = ''
+    if (guidance.length) {
+      guidanceOut = `> **Guidance:** ${guidance.join('\n> ')}\n\n`
+    }
+    if (!hits.length) {
+      return text(
+        guidanceOut
+          ? `${guidanceOut}No component matched the keyword "${query}" directly.`
+          : `No component found for "${query}".`,
+      )
+    }
+    let out = `${guidanceOut}# Results for "${query}" (${hits.length})\n\n`
     for (const c of hits) {
       const d = c.description
         ? ` — ${c.description.split('. ')[0].replace(/\.$/, '')}`
@@ -208,7 +223,7 @@ server.registerTool(
     const s = manifest.setup
     let out = `# timds setup\n\n`
     out += `1. Install:\n\`\`\`bash\n${s.install}\n\`\`\`\n`
-    out += `2. Import the styles in the entrypoint (JS, e.g.: main.tsx):\n\`\`\`tsx\n${s.importStyles}\n\`\`\`\n`
+    out += `2. Import the styles from your global CSS — the \`timds/styles.css\` import MUST come after the Tailwind import:\n\`\`\`css\n${s.importStyles}\n\`\`\`\n`
     out += `3. Import components:\n\`\`\`tsx\n${s.importComponents}\n\`\`\`\n`
     if (s.font) out += `   - Font: ${s.font}\n`
     if (s.charts) out += `   - Charts: ${s.charts}\n`

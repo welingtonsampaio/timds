@@ -337,6 +337,7 @@ const tokens = parseTokens()
 // token classes hand-written by the app don't get generated.
 const tailwindBridge = [
   '@import "tailwindcss";',
+  '@import "timds/styles.css";',
   '',
   '@theme inline {',
   '  --radius-lg: var(--radius);',
@@ -353,11 +354,12 @@ const manifest = {
   version: JSON.parse(read(join(root, 'package.json'))).version,
   setup: {
     install: 'npm install github:welingtonsampaio/timds',
-    // Import via JS in the entrypoint — NOT via `@import` in CSS: the compiled
-    // CSS starts with a font `@import` that, re-imported inside another CSS,
-    // breaks the ordering (`@import must precede all other statements`).
-    importStyles:
-      "import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)",
+    // Import inside a CSS file, right AFTER the Tailwind import. The compiled CSS
+    // carries no remote `@import` (the font is loaded by the app), so it composes
+    // cleanly with Tailwind v4 — the only rule is ordering: `timds/styles.css`
+    // must come after `@import "tailwindcss"` and before your own rules.
+    // In your global CSS, the `timds/styles.css` import must come AFTER `tailwindcss`.
+    importStyles: '@import "tailwindcss";\n@import "timds/styles.css";',
     importComponents: "import { Button, Card } from 'timds'",
     darkMode: 'Add the `dark` class to an ancestor (e.g.: <html class="dark">). Opt-in.',
     font: 'The DS uses the Inter family (`--font-sans`), but does NOT load the font. Load Inter in your app (e.g.: a Google Fonts <link> or @font-face in index.html); without it, it falls back to system-ui.',
@@ -366,15 +368,42 @@ const manifest = {
     tailwindBridge,
     rules: [
       'Import ALL components from `timds` — never from subpaths.',
-      'Import `timds/styles.css` via JS in the entrypoint.',
+      'Import `timds/styles.css` from a CSS file, right AFTER `@import "tailwindcss"` (not via JS) — see `setup.importStyles`.',
       'Load the Inter font in your app (the DS does not load it) — see `setup.font`.',
       'For charts, install `recharts` (peerDependency) — see `setup.charts`.',
-      'To use token utilities (bg-primary, etc.) in your own markup, add the `@theme` bridge from the `setup.tailwindBridge` field to your CSS (requires Tailwind v4 in the app).',
+      'To also use token utilities (bg-primary, etc.) in your own markup, add the full `@theme` bridge from the `setup.tailwindBridge` field (it already includes the Tailwind + `timds/styles.css` imports; requires Tailwind v4 in the app).',
       'Use only semantic color utilities (bg-primary, text-muted-foreground, etc.); never raw colors (bg-blue-500).',
       'Vivid colors have a fill token (bg-success) and a text token (text-success-text). For text/icons use the `-text` one.',
       'Icons via lucide-react. Icon-only buttons need an aria-label.',
     ],
   },
+  // Curated guidance surfaced by the MCP `search_components` when a query matches
+  // a concept that has no dedicated component but maps to an existing pattern.
+  searchGuidance: [
+    {
+      keywords: [
+        'tag',
+        'tags',
+        'chip',
+        'chips',
+        'token',
+        'tokens',
+        'pill',
+        'pills',
+        'multiselect',
+        'multi-select',
+        'multi select',
+        'multiedit',
+        'multi-edit',
+        'multivalue',
+        'multi-value',
+      ],
+      message:
+        'For tags / chips / multi-value selection, use **Select** in multi-edit mode (`multiple`). ' +
+        'timds has no dedicated Tag/Chip input — the multiple Select renders the chosen values as removable chips ' +
+        '(`SelectChipsValue`). Get details with `get_component` → "Select".',
+    },
+  ],
   categories: [...new Set(components.map((c) => c.category))].sort(),
   components,
   tokens,
@@ -397,7 +426,7 @@ for (const c of components) {
 let llms = `# timds\n\n> ${manifest.description}\n\n`
 llms += `## Setup\n\n`
 llms += `- Install: \`${manifest.setup.install}\`\n`
-llms += `- Styles: \`${manifest.setup.importStyles}\`\n`
+llms += `- Styles (in your global CSS, after the Tailwind import):\n\`\`\`css\n${manifest.setup.importStyles}\n\`\`\`\n`
 llms += `- Import: \`${manifest.setup.importComponents}\`\n`
 llms += `- Dark mode: ${manifest.setup.darkMode}\n\n`
 llms += `## Components\n\n`
@@ -426,7 +455,10 @@ writeFileSync(join(outDir, 'llms.txt'), llms)
 let full = `# timds — full reference for AI agents\n\n${manifest.description}\n\n`
 full += `## Setup & rules\n\n`
 full += `\`\`\`bash\n${manifest.setup.install}\n\`\`\`\n\n`
-full += `\`\`\`tsx\n${manifest.setup.importStyles}\n${manifest.setup.importComponents}\n\`\`\`\n\n`
+full += `In your global CSS (the \`timds/styles.css\` import must come after \`tailwindcss\`):\n\n`
+full += `\`\`\`css\n${manifest.setup.importStyles}\n\`\`\`\n\n`
+full += `Then import components from \`timds\`:\n\n`
+full += `\`\`\`tsx\n${manifest.setup.importComponents}\n\`\`\`\n\n`
 for (const r of manifest.setup.rules) full += `- ${r}\n`
 full += `\n## Design tokens\n\n`
 full += `Radius base: \`${manifest.tokens.radius}\`. Font: \`${manifest.tokens.fontSans}\`.\n\n`

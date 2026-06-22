@@ -5,7 +5,11 @@
 ## Setup
 
 - Install: `npm install github:welingtonsampaio/timds`
-- Styles: `import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)`
+- Styles (in your global CSS, after the Tailwind import):
+```css
+@import "tailwindcss";
+@import "timds/styles.css";
+```
 - Import: `import { Button, Card } from 'timds'`
 - Dark mode: Add the `dark` class to an ancestor (e.g.: <html class="dark">). Opt-in.
 

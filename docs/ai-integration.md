@@ -62,8 +62,9 @@ reference.
 
 ## Consumer setup notes
 
-- **Import styles via JS** in your entrypoint (`import 'timds/styles.css'` in
-  `main.tsx`), not via a CSS `@import`.
+- **Import styles from your global CSS** — add `@import "timds/styles.css";` right
+  after `@import "tailwindcss";`. The compiled CSS carries no remote `@import`, so it
+  composes cleanly with Tailwind v4; the only requirement is that ordering.
 - **Load the Inter font yourself** — the DS declares the family but does not ship the
   font (so its CSS carries no remote `@import`). Add a `<link>` or `@font-face` in your
   app; otherwise text falls back to `system-ui`.

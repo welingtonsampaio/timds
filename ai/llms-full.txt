@@ -8,16 +8,24 @@ React component library with a built-in design system (shadcn/ui new-york + Tail
 npm install github:welingtonsampaio/timds
 ```
 
+In your global CSS (the `timds/styles.css` import must come after `tailwindcss`):
+
+```css
+@import "tailwindcss";
+@import "timds/styles.css";
+```
+
+Then import components from `timds`:
+
 ```tsx
-import 'timds/styles.css' // in main.tsx/entrypoint (JS, not via CSS @import)
 import { Button, Card } from 'timds'
 ```
 
 - Import ALL components from `timds` — never from subpaths.
-- Import `timds/styles.css` via JS in the entrypoint.
+- Import `timds/styles.css` from a CSS file, right AFTER `@import "tailwindcss"` (not via JS) — see `setup.importStyles`.
 - Load the Inter font in your app (the DS does not load it) — see `setup.font`.
 - For charts, install `recharts` (peerDependency) — see `setup.charts`.
-- To use token utilities (bg-primary, etc.) in your own markup, add the `@theme` bridge from the `setup.tailwindBridge` field to your CSS (requires Tailwind v4 in the app).
+- To also use token utilities (bg-primary, etc.) in your own markup, add the full `@theme` bridge from the `setup.tailwindBridge` field (it already includes the Tailwind + `timds/styles.css` imports; requires Tailwind v4 in the app).
 - Use only semantic color utilities (bg-primary, text-muted-foreground, etc.); never raw colors (bg-blue-500).
 - Vivid colors have a fill token (bg-success) and a text token (text-success-text). For text/icons use the `-text` one.
 - Icons via lucide-react. Icon-only buttons need an aria-label.
@@ -301,7 +309,7 @@ Import: `import { Button, buttonVariants, ButtonProps } from 'timds'`
 
 Variants:
 - `variant`: `default`, `destructive`, `outline`, `secondary`, `ghost`, `link`
-- `size`: `default`, `sm`, `lg`, `icon`
+- `size`: `default`, `sm`, `lg`, `icon`, `icon-sm`, `icon-lg`
 - `shape`: `default`, `rounded`
 - `block`: `true`, `false`
 - `iconPlacement`: `left`, `right`
